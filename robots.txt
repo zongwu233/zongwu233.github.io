@@ -1,2 +1,2 @@
 User-agent: *
-Sitemap: https://zongwu233.github.io/sitemap.xml
+Sitemap: https://blog.zongwu233.com/sitemap.xml

@@ -2,18 +2,18 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title></title>
-        <link>https%3A//zongwu233.github.io</link>
+        <link>https%3A//blog.zongwu233.com</link>
         <description></description>
         <generator>Zola</generator>
         <language>en</language>
-        <atom:link href="https%3A//zongwu233.github.io/categories/blog/rss.xml" rel="self" type="application/rss+xml"/>
+        <atom:link href="https%3A//blog.zongwu233.com/categories/blog/rss.xml" rel="self" type="application/rss+xml"/>
         <lastBuildDate>Wed, 30 Oct 2019 00:00:00 +0000</lastBuildDate>
         
             <item>
                 <title>Rust mio库源码情景分析</title>
                 <pubDate>Wed, 30 Oct 2019 00:00:00 +0000</pubDate>
-                <link>https%3A//zongwu233.github.io/rust-mio-source-scenario-analysis/</link>
-                <guid>https%3A//zongwu233.github.io/rust-mio-source-scenario-analysis/</guid>
+                <link>https%3A//blog.zongwu233.com/rust-mio-source-scenario-analysis/</link>
+                <guid>https%3A//blog.zongwu233.com/rust-mio-source-scenario-analysis/</guid>
                 <description>&lt;p&gt;mio 是 Metal IO，Rust语言生态比较底层的I&#x2F;O库，官网的介绍：&lt;&#x2F;p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Mio is a lightweight I&#x2F;O library for Rust with a focus on adding as little overhead as possible over the OS abstractions.&lt;&#x2F;p&gt;
@@ -26,8 +26,8 @@
             <item>
                 <title>如何放大你的个人能力（一）</title>
                 <pubDate>Fri, 11 Oct 2019 00:00:00 +0000</pubDate>
-                <link>https%3A//zongwu233.github.io/enlarge-your-personal-ability-1/</link>
-                <guid>https%3A//zongwu233.github.io/enlarge-your-personal-ability-1/</guid>
+                <link>https%3A//blog.zongwu233.com/enlarge-your-personal-ability-1/</link>
+                <guid>https%3A//blog.zongwu233.com/enlarge-your-personal-ability-1/</guid>
                 <description>&lt;!-- Math rendering --&gt;
 &lt;script src=&#x27;https:&#x2F;&#x2F;cdnjs.cloudflare.com&#x2F;ajax&#x2F;libs&#x2F;mathjax&#x2F;2.7.5&#x2F;latest.js?config=TeX-MML-AM_CHTML&#x27; async&gt;&lt;&#x2F;script&gt;
 &lt;script type=&quot;text&#x2F;x-mathjax-config&quot;&gt;
@@ -41,8 +41,8 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
             <item>
                 <title>最简单的内网导航网站</title>
                 <pubDate>Sat, 26 Jan 2019 00:00:00 +0000</pubDate>
-                <link>https%3A//zongwu233.github.io/the-simplest-navigation-website/</link>
-                <guid>https%3A//zongwu233.github.io/the-simplest-navigation-website/</guid>
+                <link>https%3A//blog.zongwu233.com/the-simplest-navigation-website/</link>
+                <guid>https%3A//blog.zongwu233.com/the-simplest-navigation-website/</guid>
                 <description>&lt;p&gt;随着业务系统的增长，运维工具的增多，我们经常需要访问监控页面、ssh登录机器，需要记住很多常用信息，但是这些信息不值得占用宝贵的大脑资源，只需要存储下来用的时候访问即可。
 我们需要一个超简单的导航网站。&lt;&#x2F;p&gt;
 &lt;p&gt;如何最简单地实现一个静态的网站？不要任何多余的东西。&lt;&#x2F;p&gt;
@@ -53,8 +53,8 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
             <item>
                 <title>服务端架构演进</title>
                 <pubDate>Sun, 23 Dec 2018 00:00:00 +0000</pubDate>
-                <link>https%3A//zongwu233.github.io/architecture-evolution/</link>
-                <guid>https%3A//zongwu233.github.io/architecture-evolution/</guid>
+                <link>https%3A//blog.zongwu233.com/architecture-evolution/</link>
+                <guid>https%3A//blog.zongwu233.com/architecture-evolution/</guid>
                 <description>&lt;h2 id=&quot;fu-wu-duan-jia-gou-v1-0&quot;&gt;服务端架构v1.0&lt;&#x2F;h2&gt;
 &lt;p&gt;先来看一看服务端架构的1.0版本：&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2019&#x2F;04&#x2F;28&#x2F;5cc576ce0976d.png&quot;&gt;&lt;img src=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2019&#x2F;04&#x2F;28&#x2F;5cc576ce0976d.png&quot; alt=&quot;架构1_0.png&quot; &#x2F;&gt;&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
@@ -139,8 +139,8 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
             <item>
                 <title>Consul+Registrator+Nginx方案的部署</title>
                 <pubDate>Thu, 20 Dec 2018 00:00:00 +0000</pubDate>
-                <link>https%3A//zongwu233.github.io/consul-registrator-nginx/</link>
-                <guid>https%3A//zongwu233.github.io/consul-registrator-nginx/</guid>
+                <link>https%3A//blog.zongwu233.com/consul-registrator-nginx/</link>
+                <guid>https%3A//blog.zongwu233.com/consul-registrator-nginx/</guid>
                 <description>&lt;p&gt;详细介绍Consul+Registrator+Nginx方案的部署细节。&lt;&#x2F;p&gt;
 </description>
             </item>
@@ -148,8 +148,8 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
             <item>
                 <title>更新配置自动化工具</title>
                 <pubDate>Sat, 03 Nov 2018 00:00:00 +0000</pubDate>
-                <link>https%3A//zongwu233.github.io/update-config-automated-tool/</link>
-                <guid>https%3A//zongwu233.github.io/update-config-automated-tool/</guid>
+                <link>https%3A//blog.zongwu233.com/update-config-automated-tool/</link>
+                <guid>https%3A//blog.zongwu233.com/update-config-automated-tool/</guid>
                 <description>&lt;h2 id=&quot;yuan-qi&quot;&gt;缘起&lt;&#x2F;h2&gt;
 &lt;p&gt;  我们小创业公司使用的宽带是个人家庭宽带（申请企业宽带的成本很高，每月几千块），公网IP过一段时间就会变动，平时使用都没有什么影响，只有一点，阿里云上的服务都配置了安全组，只允许阿里云内网或者白名单IP访问，从而保障公司服务安全性。公司公网IP会动态变更，每一次变更之后都要修改安全组的ip配置，十分麻烦。&lt;&#x2F;p&gt;
 &lt;p&gt;  来自攻城师的思考：每一次IP变动都打断了大家专心工作的心流（Flow）状态，而且登录阿里云控制台修改也很繁琐，修改安全组配置的IP名单，能不能自动化？&lt;&#x2F;p&gt;
@@ -396,8 +396,8 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
             <item>
                 <title>使用Gradle 构建SpringBoot应用的Docker镜像</title>
                 <pubDate>Wed, 24 Oct 2018 00:00:00 +0000</pubDate>
-                <link>https%3A//zongwu233.github.io/gradle-build-springboot-dockerimage/</link>
-                <guid>https%3A//zongwu233.github.io/gradle-build-springboot-dockerimage/</guid>
+                <link>https%3A//blog.zongwu233.com/gradle-build-springboot-dockerimage/</link>
+                <guid>https%3A//blog.zongwu233.com/gradle-build-springboot-dockerimage/</guid>
                 <description>&lt;h2 id=&quot;ying-yong-fa-bu-liu-cheng&quot;&gt;应用发布流程&lt;&#x2F;h2&gt;
 &lt;p&gt;通过结合docker容器，目前我们应用的发布流程大致如下：&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2019&#x2F;04&#x2F;28&#x2F;5cc5177f1c1a9.png&quot; alt=&quot;应用发布流程.png&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
@@ -552,8 +552,8 @@ import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
             <item>
                 <title>《从0到1》读书笔记</title>
                 <pubDate>Sun, 09 Sep 2018 00:00:00 +0000</pubDate>
-                <link>https%3A//zongwu233.github.io/zerotoone-reading-notes/</link>
-                <guid>https%3A//zongwu233.github.io/zerotoone-reading-notes/</guid>
+                <link>https%3A//blog.zongwu233.com/zerotoone-reading-notes/</link>
+                <guid>https%3A//blog.zongwu233.com/zerotoone-reading-notes/</guid>
                 <description>&lt;p&gt;市面上大把的书教你如何变得优秀：如何成为优秀的人，如何创立优秀的公司。&lt;&#x2F;p&gt;
 &lt;p&gt;这本书谈的是卓越。&lt;&#x2F;p&gt;
 &lt;p&gt;优秀是大众看得到的，显而易见的好，但卓越一开始是反直觉的，而且很难，直到最后的结果太强大，大家不得不接受。&lt;&#x2F;p&gt;
@@ -569,8 +569,8 @@ import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
             <item>
                 <title>高性能OLAP调研</title>
                 <pubDate>Sun, 29 Jul 2018 00:00:00 +0000</pubDate>
-                <link>https%3A//zongwu233.github.io/high-performance-olap/</link>
-                <guid>https%3A//zongwu233.github.io/high-performance-olap/</guid>
+                <link>https%3A//blog.zongwu233.com/high-performance-olap/</link>
+                <guid>https%3A//blog.zongwu233.com/high-performance-olap/</guid>
                 <description>&lt;p&gt;业界有没有面向亿级数据多维度组合查询能够亚秒级响应的系统？&lt;&#x2F;p&gt;
 </description>
             </item>
@@ -578,8 +578,8 @@ import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
             <item>
                 <title>到底是谁的All In</title>
                 <pubDate>Thu, 14 Jun 2018 00:00:00 +0000</pubDate>
-                <link>https%3A//zongwu233.github.io/whose-all-in/</link>
-                <guid>https%3A//zongwu233.github.io/whose-all-in/</guid>
+                <link>https%3A//blog.zongwu233.com/whose-all-in/</link>
+                <guid>https%3A//blog.zongwu233.com/whose-all-in/</guid>
                 <description>&lt;p&gt;3周了，朋友圈还是陆续有创业者转发这篇文章。&lt;&#x2F;p&gt;
 &lt;p&gt;https:&#x2F;&#x2F;mp.weixin.qq.com&#x2F;s&#x2F;-PZ-NtXAfg2jNEmvKN5OBQ &lt;&#x2F;p&gt;
 &lt;p&gt;很可惜这篇文章出现了严重的定位错误。&lt;&#x2F;p&gt;

@@ -2,18 +2,18 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title></title>
-        <link>https%3A//zongwu233.github.io</link>
+        <link>https%3A//blog.zongwu233.com</link>
         <description></description>
         <generator>Zola</generator>
         <language>en</language>
-        <atom:link href="https%3A//zongwu233.github.io/tags/jia-gou/rss.xml" rel="self" type="application/rss+xml"/>
+        <atom:link href="https%3A//blog.zongwu233.com/tags/jia-gou/rss.xml" rel="self" type="application/rss+xml"/>
         <lastBuildDate>Sun, 23 Dec 2018 00:00:00 +0000</lastBuildDate>
         
             <item>
                 <title>服务端架构演进</title>
                 <pubDate>Sun, 23 Dec 2018 00:00:00 +0000</pubDate>
-                <link>https%3A//zongwu233.github.io/architecture-evolution/</link>
-                <guid>https%3A//zongwu233.github.io/architecture-evolution/</guid>
+                <link>https%3A//blog.zongwu233.com/architecture-evolution/</link>
+                <guid>https%3A//blog.zongwu233.com/architecture-evolution/</guid>
                 <description>&lt;h2 id=&quot;fu-wu-duan-jia-gou-v1-0&quot;&gt;服务端架构v1.0&lt;&#x2F;h2&gt;
 &lt;p&gt;先来看一看服务端架构的1.0版本：&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2019&#x2F;04&#x2F;28&#x2F;5cc576ce0976d.png&quot;&gt;&lt;img src=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2019&#x2F;04&#x2F;28&#x2F;5cc576ce0976d.png&quot; alt=&quot;架构1_0.png&quot; &#x2F;&gt;&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;

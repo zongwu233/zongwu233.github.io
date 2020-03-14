@@ -2,18 +2,18 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title></title>
-        <link>https%3A//zongwu233.github.io</link>
+        <link>https%3A//blog.zongwu233.com</link>
         <description></description>
         <generator>Zola</generator>
         <language>en</language>
-        <atom:link href="https%3A//zongwu233.github.io/tags/ruan-jian-gong-cheng/rss.xml" rel="self" type="application/rss+xml"/>
+        <atom:link href="https%3A//blog.zongwu233.com/tags/ruan-jian-gong-cheng/rss.xml" rel="self" type="application/rss+xml"/>
         <lastBuildDate>Thu, 24 May 2018 00:00:00 +0000</lastBuildDate>
         
             <item>
                 <title>软件工程的手工艺时代</title>
                 <pubDate>Thu, 24 May 2018 00:00:00 +0000</pubDate>
-                <link>https%3A//zongwu233.github.io/the-handicraft-software-age/</link>
-                <guid>https%3A//zongwu233.github.io/the-handicraft-software-age/</guid>
+                <link>https%3A//blog.zongwu233.com/the-handicraft-software-age/</link>
+                <guid>https%3A//blog.zongwu233.com/the-handicraft-software-age/</guid>
                 <description>&lt;p&gt;目前的软件设计&#x2F;软件架构非常依赖个人经验。&lt;&#x2F;p&gt;
 &lt;p&gt;基本上是从个人经验出发定义问题，分析问题抽象模型然后做决策，不具备普适性更不能形式化证明，不能流程化，没有坚实的系统化的理论指导。&lt;&#x2F;p&gt;
 &lt;p&gt;很多人喜欢谈架构，在架构设计上争高低，但大部分都是谈论基于自己经验的认知甚至都没有对当前问题做统一定义。&lt;&#x2F;p&gt;
