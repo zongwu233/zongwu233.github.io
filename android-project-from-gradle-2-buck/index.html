@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title> - Android工程构建</title>
+
+      
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;rss.xml">
+      
+
+      
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
+          
+      
+
+      
+          <link rel="stylesheet" href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;site.css">
+          
+      
+
+      
+      
+    </head>
+
+    <body>
+        <div class="container">
+
+            <div id="mobile-navbar" class="mobile-navbar">
+              <div class="mobile-header-logo">
+                <a href="/" class="logo">zongwu&#x27;s blog</a>
+              </div>
+              <div class="mobile-navbar-icon icon-out">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+
+            <nav id="mobile-menu" class="mobile-menu slideout-menu slideout-menu-left">
+              <ul class="mobile-menu-list">
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io">
+                            Home
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;categories">
+                            Categories
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;tags">
+                            Tags
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;about">
+                            About
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;rss.xml">
+                            RSS
+                        </a>
+                    </li>
+                
+              </ul>
+            </nav>
+
+            <header id="header">
+                <div class="logo"><a href="https:&#x2F;&#x2F;zongwu233.github.io">zongwu&#x27;s blog</a></div>
+                <nav class="menu">
+                    <ul>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io">
+                                    Home
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;categories">
+                                    Categories
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;tags">
+                                    Tags
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;about">
+                                    About
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;rss.xml">
+                                    RSS
+                                </a>
+                            </li>
+                        
+                    </ul>
+                </nav>
+            </header>
+
+            <main>
+                <div class="content" id="mobile-panel">
+                    
+
+
+<div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content always-active">
+        <nav id="TableOfContents">
+            <ul>
+                
+                <li>
+                    <a href="https://zongwu233.github.io/android-project-from-gradle-2-buck/#why" class="toc-link">Why</a>
+                    
+                </li>
+                
+                <li>
+                    <a href="https://zongwu233.github.io/android-project-from-gradle-2-buck/#buckjian-jie" class="toc-link">Buck简介</a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a href="https://zongwu233.github.io/android-project-from-gradle-2-buck/#he-xin-gai-nian" class="toc-link">核心概念</a>
+                        </li>
+                        
+                        <li>
+                            <a href="https://zongwu233.github.io/android-project-from-gradle-2-buck/#an-zhuang" class="toc-link">安装</a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li>
+                    <a href="https://zongwu233.github.io/android-project-from-gradle-2-buck/#qian-yi-bu-zou" class="toc-link">迁移步骤</a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a href="https://zongwu233.github.io/android-project-from-gradle-2-buck/#butterknifejian-rong" class="toc-link">ButterKnife兼容</a>
+                        </li>
+                        
+                        <li>
+                            <a href="https://zongwu233.github.io/android-project-from-gradle-2-buck/#jiao-ben-bian-xie" class="toc-link">脚本编写</a>
+                        </li>
+                        
+                        <li>
+                            <a href="https://zongwu233.github.io/android-project-from-gradle-2-buck/#exopackagezhi-chi" class="toc-link">exopackage支持</a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li>
+                    <a href="https://zongwu233.github.io/android-project-from-gradle-2-buck/#yu-dao-de-wen-ti" class="toc-link">遇到的问题</a>
+                    
+                </li>
+                
+            </ul>
+        </nav>
+    </div>
+</div>
+
+
+<article class="post">
+    
+    <header class="post__header">
+        <h1 class="post__title">
+            <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;android-project-from-gradle-2-buck&#x2F;">Android工程构建</a>
+        </h1>
+        <div class="post__meta">
+            <span class="post__time">2016-08-19</span>
+            
+        </div>
+    </header>
+
+    <div class="post-content">
+      <h4 id="why">Why</h4>
+<p>为什么我要从官方指定的gradle构建方式迁移到buck？</p>
+<p>​	我们的项目包含20+个模块。如果是纯工程依赖，在Android studio＋gradle 下面做日常开发一旦进行项目构建，AS就变得又慢又卡。通过检测AS的jvm发现，高峰期可以占用7G的内存（AS本身进程＋启动的gradle进程）。而且还持续进行GC，不卡才怪。</p>
+<p>​	虽然可以使用AAR依赖的方式来组织，但是作为AAR库也是经常需要新增功能，频繁打包发布AAR，让使用方更新集成，对开发者来说并不友好。</p>
+<p>​	不要提AS 的InstantRun了，刚发布的时候，那个激动啊，Android App终于可以热部署了。然而实际上，修改代码run一下经常不是最新代码，反而更影响开发效率。团队成员最终都很失望地关闭了这个特性。</p>
+<p>​	gradle的脚本写起来确实比较简单，不过你需要有点groovy的语法基础，然后学习一下gradle 的project，task相关概念，明白task的lifecycle。最后还要看看google在gradle之上定制的 build tools api。这时候你才有能力修改build.gradle ，或者写个plugin。 gradle本身的文档算是详尽清晰，但是google的gradle build tools 从开始到现在，文档十分匮乏，而且有些重要API还在持续修改。为了实现一个功能不得不 google＋stack voerflow，最后还是得读源码，浪费大量时间在不重要的事情上，真心折腾。</p>
+<p>​	或许build tools api的定位本来就不是向开发者提供灵活强大的定制化功能。</p>
+<p>​	总结下来就是：<strong>全量构建又慢又卡，增量构建不靠谱，定制化代价高。</strong></p>
+<h4 id="buckjian-jie">Buck简介</h4>
+<p>官网https://buckbuild.com上对buck的定位：</p>
+<blockquote>
+<p>Buck is a build system developed and used by Facebook. It encourages the creation of small, reusable modules consisting of code and resources, and supports a variety of languages on many platforms.</p>
+</blockquote>
+<p>​	Buck是facebook公司开发并在使用的构建系统，支持很多平台和语言（对windows的支持不好）。Buck鼓励创建一些小的可服用的模块。</p>
+<p>​	为什么Buck可以做到更快？</p>
+<p>​	1.并行编译依赖</p>
+<p>​	2.复用上次的编译结果，最大限度减少增量编译时间</p>
+<p>​	3.内置了定制化的Dx工具</p>
+<p>​	其实gradle也做了这2件事情，但是在第2点上一直做的不好，复用粒度是Task级别，最耗时的是classes－&gt;dex的步骤，如果你修改了一个类，必然导致classes跟上次一不一致，就会触发再次执行dex。于是谷歌憋出了instantRun这个大招。可惜instantRun经常不生效。</p>
+<p>​	在https://buckbuild.com/article/exopackage.html 官方给出了一个小工程对比了buck和gradle的性能，解释了buck热部署的实现方式。简单地说buck将Android App拆分成 bootstrap ＋ application code。bootstrap非常小，启动很快，然后再加载真正的代码。注：这个性能对比还是在AS没有发布instantRun 的时候，现在跑估计会有出入。</p>
+<p>​	通过在android_binary()指定<code>use_split_dex = True,</code> buck会将主模块、依赖的模块、第三方库分别打成dex。这样就生成了很多小dex。在app运行的时候动态加载这些dex。如果代码修改，只需要重新生成对应的dex。所以整个过程比较快。</p>
+<p>​	完成迁移后的实际测试发现编译速度确实很快，现在全量编译1min6s。增量编译10+s, 热部署10s内完成。</p>
+<h5 id="he-xin-gai-nian">核心概念</h5>
+<p>这里只做概括介绍，更多细节看官网</p>
+<p>build rule</p>
+<p>就是一段程序，将输入处理成输出。（这不废话么）</p>
+<p>每一个build rule 都有0个或者1个输出，这个输出可以做为另外一个build rule的输入。</p>
+<p>buck内置了一些常用的rule 比如java_library()， android_binary()等等。</p>
+<p>build target</p>
+<p>一个用于标识build rule的字符串。这样可以用 buck build xxxx 执行构建。</p>
+<p>build file</p>
+<p>更简单，命名为BUCK，保存build rule的文件。这里有点要注意，buck约定文件只能被&quot;距离最近&quot;的BUCK引用。这里的距离最近指文件目录层次，比如在同一个父目录下就比在另外目录的距离更近。</p>
+<p>好了，核心概念就这些，剩下的就是用各种内置的build rule了！</p>
+<h5 id="an-zhuang">安装</h5>
+<p>参照https://buckbuild.com/setup/install.html </p>
+<p>macOS下可以直接 brew install buck，也可源码下载build。另外需要JDK，Ant，python2.7，Git。</p>
+<p>还需要额外安装Watchman。也是个很有意思的工具，实时监控目录下的文件变化。</p>
+<p>buck本身是用Ant构建的，关于为什么没有用buck构建自己的解答在这里https://buckbuild.com/concept/faq.html 主要是操作起来麻烦。</p>
+<h4 id="qian-yi-bu-zou">迁移步骤</h4>
+<h5 id="butterknifejian-rong">ButterKnife兼容</h5>
+<p>https://buckbuild.com/article/exopackage.html 有说明，rule android_library() 代表 android library project ，这个库工程里的R值都不再是final类型，也就无法用switch case。</p>
+<p>与gradle不同的是，在application 工程里的代码也是用android_library() 定义，不过还好使用IDE的智能提示可以很方便地变换为if esle。</p>
+<p>还有另外一个影响点是ButterKnife，在application 工程里的注解都是传入了R的常量id。现在ButterKnife 还提供了 对library project的支持。可以看官网介绍</p>
+<p>https://github.com/JakeWharton/butterknife</p>
+<p>除了添加额外的依赖库还需要将之前类似 @BindView(R.id.user) 中的R替换为R2 即 @BindView(R2.id.user) 。</p>
+<p>在脚本里要指定 final_r_name = 'R2'</p>
+<h5 id="jiao-ben-bian-xie">脚本编写</h5>
+<p>我们的工程是multi-project的，为了支持跨工程依赖，在总工程的setting.gradle里面配置：</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">  include(&#39;</span><span style="color:#a3be8c;">:core</span><span style="color:#c0c5ce;">&#39;)
+  project(&#39;</span><span style="color:#a3be8c;">:core</span><span style="color:#c0c5ce;">&#39;).projectDir = </span><span style="color:#b48ead;">new File</span><span style="color:#c0c5ce;">(&#39;</span><span style="color:#a3be8c;">../sdk/core</span><span style="color:#c0c5ce;">&#39;)
+</span></pre>
+<p>就可以在其他模块里配置依赖':core' 模块了。 </p>
+<p>buck也支持类似的功能：</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#65737e;"># .buckconfig
+</span><span style="color:#c0c5ce;">[repositories]
+  core = ../sdk/core
+</span><span style="color:#65737e;"># ../sdk/core/lib/BUCK
+
+</span><span style="color:#bf616a;">android_library</span><span style="color:#c0c5ce;">(
+  </span><span style="color:#bf616a;">name </span><span style="color:#c0c5ce;">= &#39;</span><span style="color:#a3be8c;">lib</span><span style="color:#c0c5ce;">&#39;,
+  </span><span style="color:#d08770;">...
+</span><span style="color:#c0c5ce;">)
+</span><span style="color:#65737e;"># BUCK
+
+</span><span style="color:#bf616a;">android_binary</span><span style="color:#c0c5ce;">(
+  </span><span style="color:#bf616a;">name </span><span style="color:#c0c5ce;">= &#39;</span><span style="color:#a3be8c;">MyApp</span><span style="color:#c0c5ce;">&#39;,
+  </span><span style="color:#bf616a;">deps </span><span style="color:#c0c5ce;">= core//lib:lib
+  </span><span style="color:#d08770;">...
+</span><span style="color:#c0c5ce;">)
+</span></pre>
+<p>​	工程的gradle脚本也比较多， 逐个写太耗费时间，网上有个okbuck的开源库可以提供从gradle脚本生成buck脚本。尝试了一下，会有些错误，比如对依赖的jar生成存在问题，需要自己修复。</p>
+<p>buck与gradle很大的不同点在于buck没有使用maven那一套依赖管理，而是全部指定本地文件的依赖。不过buck提供了一个下载远程文件的rule：remote_file()，可以指定http url 或者mvn坐标。</p>
+<p>另一个问题是buck里没有依赖传递。如果工程使用maven管理，通常配置pom文件声明依赖关系，比如A依赖B ，如果B依赖了C，那么A是间接依赖C的不需要特别声明。构建A的时候B和C都会被下载到本地maven库参与编译。对于buck需要在A里显示配置依赖B和C。这点优缺点都很明显，不过我个人还是比较喜欢支持依赖传递。对于多模块项目的第三方依赖jar/aar，比较推荐的方式是放到一个公共的目录下。</p>
+<p>对于需要apt处理的库，比如依赖了dagger，butterKnife，按照下面的配置：</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#bf616a;">java_library</span><span style="color:#c0c5ce;">(
+	</span><span style="color:#bf616a;">name </span><span style="color:#c0c5ce;">= &#39;</span><span style="color:#a3be8c;">apt_jar_productDebug</span><span style="color:#c0c5ce;">&#39;,
+	</span><span style="color:#bf616a;">deps </span><span style="color:#c0c5ce;">= [
+		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.google.guava.guava-18.0.jar</span><span style="color:#c0c5ce;">&#39;,
+		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.squareup.dagger.dagger-1.2.2.jar</span><span style="color:#c0c5ce;">&#39;,
+		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.squareup.dagger.dagger-compiler-1.2.2.jar</span><span style="color:#c0c5ce;">&#39;,
+		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.squareup.javawriter-2.5.0.jar</span><span style="color:#c0c5ce;">&#39;,
+		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:javax.inject.javax.inject-1.jar</span><span style="color:#c0c5ce;">&#39;,
+		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.google.auto.auto-common-0.6.jar</span><span style="color:#c0c5ce;">&#39;,
+		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.google.auto.service.auto-service-1.0-rc2.jar</span><span style="color:#c0c5ce;">&#39;,
+		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.jakewharton.butterknife-8.2.0.aar</span><span style="color:#c0c5ce;">&#39;,
+		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.jakewharton.butterknife-annotations-8.2.0.jar</span><span style="color:#c0c5ce;">&#39;,
+		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.jakewharton.butterknife-compiler-8.2.0.jar</span><span style="color:#c0c5ce;">&#39;,
+		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.squareup.javapoet-1.7.0.jar</span><span style="color:#c0c5ce;">&#39;,
+	],
+)
+
+</span></pre><pre style="background-color:#2b303b;">
+<span style="color:#bf616a;">android_library</span><span style="color:#c0c5ce;">(
+	</span><span style="color:#bf616a;">name </span><span style="color:#c0c5ce;">= &#39;</span><span style="color:#a3be8c;">src_productDebug</span><span style="color:#c0c5ce;">&#39;,
+	</span><span style="color:#bf616a;">srcs </span><span style="color:#c0c5ce;">= </span><span style="color:#bf616a;">glob</span><span style="color:#c0c5ce;">([
+		&#39;</span><span style="color:#a3be8c;">src/main/java/**/*.java</span><span style="color:#c0c5ce;">&#39;,
+	], </span><span style="color:#bf616a;">excludes </span><span style="color:#c0c5ce;">= [</span><span style="color:#bf616a;">APP_CLASS_SOURCE</span><span style="color:#c0c5ce;">]),
+	</span><span style="color:#bf616a;">manifest </span><span style="color:#c0c5ce;">= &#39;</span><span style="color:#a3be8c;">src/main/AndroidManifest.xml</span><span style="color:#c0c5ce;">&#39;,
+	</span><span style="color:#bf616a;">annotation_processors </span><span style="color:#c0c5ce;">= [
+		&#39;</span><span style="color:#a3be8c;">dagger.internal.codegen.ValidationProcessor</span><span style="color:#c0c5ce;">&#39;,
+		&#39;</span><span style="color:#a3be8c;">dagger.internal.codegen.InjectAdapterProcessor</span><span style="color:#c0c5ce;">&#39;,
+		&#39;</span><span style="color:#a3be8c;">dagger.internal.codegen.ModuleAdapterProcessor</span><span style="color:#c0c5ce;">&#39;,
+		&#39;</span><span style="color:#a3be8c;">dagger.internal.codegen.GraphAnalysisProcessor</span><span style="color:#c0c5ce;">&#39;,
+		&#39;</span><span style="color:#a3be8c;">butterknife.compiler.ButterKnifeProcessor</span><span style="color:#c0c5ce;">&#39;,
+		&#39;</span><span style="color:#a3be8c;">com.google.auto.service.processor.AutoServiceProcessor</span><span style="color:#c0c5ce;">&#39;,
+		
+	],
+	</span><span style="color:#bf616a;">annotation_processor_deps </span><span style="color:#c0c5ce;">= [
+		&#39;</span><span style="color:#a3be8c;">:apt_jar_productDebug</span><span style="color:#c0c5ce;">&#39;,
+	],
+	</span><span style="color:#bf616a;">final_r_name </span><span style="color:#c0c5ce;">= &#39;</span><span style="color:#a3be8c;">R2</span><span style="color:#c0c5ce;">&#39;,
+	</span><span style="color:#bf616a;">source </span><span style="color:#c0c5ce;">= &#39;</span><span style="color:#a3be8c;">7</span><span style="color:#c0c5ce;">&#39;,
+	</span><span style="color:#bf616a;">target </span><span style="color:#c0c5ce;">= &#39;</span><span style="color:#a3be8c;">7</span><span style="color:#c0c5ce;">&#39;,
+	</span><span style="color:#bf616a;">deps </span><span style="color:#c0c5ce;">= [
+		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.google.guava.guava-18.0.jar</span><span style="color:#c0c5ce;">&#39;,	   
+		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.squareup.dagger.dagger-1.2.2.jar</span><span style="color:#c0c5ce;">&#39;,	 
+		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:javax.inject.javax.inject-1.jar</span><span style="color:#c0c5ce;">&#39;,
+		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:org.javassist.javassist-3.18.1-GA.jar</span><span style="color:#c0c5ce;">&#39;,
+		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.jakewharton.butterknife-8.2.0.aar</span><span style="color:#c0c5ce;">&#39;,
+		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:buck-android-support.jar</span><span style="color:#c0c5ce;">&#39;,
+		&#39;</span><span style="color:#a3be8c;">:res_productDebug</span><span style="color:#c0c5ce;">&#39;,
+	],
+	</span><span style="color:#bf616a;">visibility </span><span style="color:#c0c5ce;">= [
+		&#39;</span><span style="color:#a3be8c;">PUBLIC</span><span style="color:#c0c5ce;">&#39;,
+	],
+)
+</span></pre>
+<p>脚本的内容比较容易理解：</p>
+<p>annotation_processors指定注解处理器，</p>
+<p>annotation_processor_deps指定注解处理器的依赖。</p>
+<p>在deps里也要依赖相应的jar。</p>
+<p>gradle可以在dependencies里面分别配置：provided ，apt，compile 三种依赖形式，整体类似，只是gradle不需要指定annotation_processors而是通过jar的resources文件自动找到。</p>
+<h5 id="exopackagezhi-chi">exopackage支持</h5>
+<p>可以参考https://buckbuild.com/article/exopackage.html 不再详述。</p>
+<h4 id="yu-dao-de-wen-ti">遇到的问题</h4>
+<p>首先是这个https://github.com/facebook/buck/pull/205，这个bug是说对于aar库buck不会copy空的res文件夹导致aapt失败， issue状态显示已经修复。按照android官方定义res是必须存在的目录，然而我遇到gms的一个aar本身就是没有res文件夹，导致aapt 步骤失败，无奈只能修改源码，检测是否存在res，如果不存在就创建一个。</p>
+<p>最棘手的问题是https://github.com/facebook/buck/issues/828 ，由于工程依赖较多的aar库，aar库的R值都会被重新创建一遍。导致app最后生成的R.java的int value太多，超过了65535 dex失败。只得再次读源码，自行修复。修复的思路是拆分最后生成的R.java为2个组，一组是与app同包名的R，其他的分一组。第一组遵照原有的逻辑，跟app的源码一起打成dex，第二组做为依赖库打成dex。</p>
+<p>有空再写一篇buck源码分析的文章。</p>
+
+    </div>
+
+    
+    
+
+    <div class="post-footer">
+        
+            
+            
+                <div class="post-nav">
+                    
+                        <a class="previous" href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;data-abstract&#x2F;">‹ 数据抽象</a>
+                    
+                    
+                        <a class="next" href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;severe-info-reading&#x2F;">重度信息阅读症 ›</a>
+                    
+                    
+                    
+                </div>
+            
+
+        
+
+    </div>
+
+    
+    
+</article>
+
+
+                </div>
+            </main>
+
+            
+            
+        </div>
+
+      
+          <script type="text/javascript" src="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;even.js" ></script>
+      
+      <!--  add cnzz trace code  -->
+      
+          <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1273937782'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s22.cnzz.com/z_stat.php%3Fid%3D1273937782' type='text/javascript'%3E%3C/script%3E"));</script>
+      
+    </body>
+
+</html>

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title> - 使用Gradle 构建SpringBoot应用的Docker镜像</title>
+
+      
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;rss.xml">
+      
+
+      
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
+          
+      
+
+      
+          <link rel="stylesheet" href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;site.css">
+          
+      
+
+      
+      
+    </head>
+
+    <body>
+        <div class="container">
+
+            <div id="mobile-navbar" class="mobile-navbar">
+              <div class="mobile-header-logo">
+                <a href="/" class="logo">zongwu&#x27;s blog</a>
+              </div>
+              <div class="mobile-navbar-icon icon-out">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+
+            <nav id="mobile-menu" class="mobile-menu slideout-menu slideout-menu-left">
+              <ul class="mobile-menu-list">
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io">
+                            Home
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;categories">
+                            Categories
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;tags">
+                            Tags
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;about">
+                            About
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;rss.xml">
+                            RSS
+                        </a>
+                    </li>
+                
+              </ul>
+            </nav>
+
+            <header id="header">
+                <div class="logo"><a href="https:&#x2F;&#x2F;zongwu233.github.io">zongwu&#x27;s blog</a></div>
+                <nav class="menu">
+                    <ul>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io">
+                                    Home
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;categories">
+                                    Categories
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;tags">
+                                    Tags
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;about">
+                                    About
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;rss.xml">
+                                    RSS
+                                </a>
+                            </li>
+                        
+                    </ul>
+                </nav>
+            </header>
+
+            <main>
+                <div class="content" id="mobile-panel">
+                    
+
+
+<div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content always-active">
+        <nav id="TableOfContents">
+            <ul>
+                
+                <li>
+                    <a href="https://zongwu233.github.io/gradle-build-springboot-dockerimage/#ying-yong-fa-bu-liu-cheng" class="toc-link">应用发布流程</a>
+                    
+                </li>
+                
+                <li>
+                    <a href="https://zongwu233.github.io/gradle-build-springboot-dockerimage/#gradlejiao-ben-gou-jian-jing-xiang" class="toc-link">Gradle脚本构建镜像</a>
+                    
+                </li>
+                
+            </ul>
+        </nav>
+    </div>
+</div>
+
+
+<article class="post">
+    
+    <header class="post__header">
+        <h1 class="post__title">
+            <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;gradle-build-springboot-dockerimage&#x2F;">使用Gradle 构建SpringBoot应用的Docker镜像</a>
+        </h1>
+        <div class="post__meta">
+            <span class="post__time">2018-10-24</span>
+            
+        </div>
+    </header>
+
+    <div class="post-content">
+      <h2 id="ying-yong-fa-bu-liu-cheng">应用发布流程</h2>
+<p>通过结合docker容器，目前我们应用的发布流程大致如下：</p>
+<p><img src="https://i.loli.net/2019/04/28/5cc5177f1c1a9.png" alt="应用发布流程.png" /></p>
+<h2 id="gradlejiao-ben-gou-jian-jing-xiang">Gradle脚本构建镜像</h2>
+<p>我们的工程是：</p>
+<ul>
+<li>基于SpringBoot 2.0.3.RELEASE</li>
+<li>采用JDK8编译</li>
+<li>gradle 构建</li>
+</ul>
+<p>根据我们发布流程的要求，构建出最终的镜像需要满足几个目标：</p>
+<ul>
+<li>尽可能构建体积小的镜像</li>
+<li>通过执行简单的gradle命令，构建镜像并push到阿里云的dockerHub仓库</li>
+<li>构建的镜像版本，有唯一标识，方便发布。比如版本中含有日期和 最后一次git commit的hash值</li>
+</ul>
+<p>我们最终选用了 <a href="https://github.com/bmuschko/gradle-docker-plugin">https://github.com/bmuschko/gradle-docker-plugin</a> 的gradle-docker-plugin来实现构建docker镜像。该插件支持<code>java-application</code>  和 <code>spring-boot-application</code> 两种方式，很明显我们选取spring-boot-applicaiton插件。</p>
+<p>在原工程的build.gradle 最后加上：</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">apply </span><span style="color:#d08770;">from</span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">docker.gradle</span><span style="color:#c0c5ce;">&#39;
+</span></pre>
+<p>在build.gradle的同一级目录下新建文件docker.gradle。</p>
+<p>添加：</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">buildscript {
+    repositories {
+
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath &#39;</span><span style="color:#a3be8c;">com.bmuschko:gradle-docker-plugin:4.0.1</span><span style="color:#c0c5ce;">&#39;
+    }
+}
+
+apply </span><span style="color:#d08770;">plugin</span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">java</span><span style="color:#c0c5ce;">&#39;
+apply </span><span style="color:#d08770;">plugin</span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">org.springframework.boot</span><span style="color:#c0c5ce;">&#39;
+apply </span><span style="color:#d08770;">plugin</span><span style="color:#c0c5ce;">: </span><span style="color:#b48ead;">DockerRemoteApiPlugin</span><span style="color:#c0c5ce;">
+apply </span><span style="color:#d08770;">plugin</span><span style="color:#c0c5ce;">: </span><span style="color:#b48ead;">com.bmuschko.gradle.docker.DockerSpringBootApplicationPlugin
+
+</span></pre>
+<p>都是一些基础配置。</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">
+</span><span style="color:#b48ead;">def</span><span style="color:#c0c5ce;"> projectname = &quot;</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">project.getName()</span><span style="color:#ab7967;">}</span><span style="color:#c0c5ce;">&quot;
+</span><span style="color:#b48ead;">def</span><span style="color:#c0c5ce;"> dockerVer = getGitVersion()
+</span><span style="color:#b48ead;">def</span><span style="color:#c0c5ce;"> port = </span><span style="color:#d08770;">8990
+
+</span></pre>
+<p>这里定义一些全局变量使用。port可以根据实际情况定义。其中<code>getGitVersion()</code>的定义：</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#b48ead;">import java.text.SimpleDateFormat
+def </span><span style="color:#c0c5ce;">getGitVersion() {
+    </span><span style="color:#b48ead;">def</span><span style="color:#c0c5ce;"> logTime = &#39;</span><span style="color:#a3be8c;">git log</span><span style="color:#c0c5ce;">&#39;.execute() | &#39;</span><span style="color:#a3be8c;">grep Date:</span><span style="color:#c0c5ce;">&#39;.execute() | &#39;</span><span style="color:#a3be8c;">head -n 1</span><span style="color:#c0c5ce;">&#39;.execute()
+    logTime.waitFor()
+    </span><span style="color:#b48ead;">Date</span><span style="color:#c0c5ce;"> date = </span><span style="color:#b48ead;">new Date</span><span style="color:#c0c5ce;">(logTime.text.replace(&quot;</span><span style="color:#a3be8c;">Date:</span><span style="color:#c0c5ce;">&quot;, &quot;&quot;).trim())
+    </span><span style="color:#b48ead;">String</span><span style="color:#c0c5ce;"> pushTime = </span><span style="color:#b48ead;">new SimpleDateFormat</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">yyyyMMddHHmmss</span><span style="color:#c0c5ce;">&quot;).format(date)
+    </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> pushTime + &quot;</span><span style="color:#a3be8c;">.</span><span style="color:#c0c5ce;">&quot; + (&#39;</span><span style="color:#a3be8c;">git rev-parse --short HEAD</span><span style="color:#c0c5ce;">&#39;.execute().text.trim())
+}
+
+</span></pre>
+<p>可以看到拼接了git仓库的最后一个commit 的提交时间和hash值。</p>
+<p>gradle-docker-plugin 预定义了一些task，我们只需要简单配置：</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">docker { 
+    url = getDefaultDockerUrl()
+    registryCredentials {
+        url = &quot;</span><span style="color:#a3be8c;">registry.cn-hangzhou.aliyuncs.com</span><span style="color:#c0c5ce;">&quot;
+        username = &#39;</span><span style="color:#a3be8c;">yourRepoUsername</span><span style="color:#c0c5ce;">&#39;
+        password = &#39;</span><span style="color:#a3be8c;">yourRepopswd</span><span style="color:#c0c5ce;">&#39;
+    }
+    springBootApplication {
+        baseImage = &#39;</span><span style="color:#a3be8c;">openjdk:8-alpine</span><span style="color:#c0c5ce;">&#39;
+        ports = [port, port]
+    }
+
+}
+</span></pre>
+<p><code>getDefaultDockerUrl</code> 是本地docker 的url，plugin对windows、linux、mac都已经有了相应实现。</p>
+<p><code>registryCredentials</code> 是docker Hub的认证信息配置。 阿里云的dockerHub配置如上。</p>
+<p><code>springBootApplication</code> 只需要配置<code>baseImage</code> 和端口映射。可以看到我们基于<code>openjdk:8-alpine</code> ，alpine linux 镜像只有4.4M，不过 <code>openjdk:8-alpine</code>镜像体积赫然有103MB那么大了。</p>
+<p>配置这些就可以构建镜像，但是有些小问题需要解决。</p>
+<ol>
+<li>``openjdk:8-alpine` 默认是标准时区，而不是+8时区，需要修改。</li>
+<li>该插件对私有docker仓库的tag支持存在bug，需要特殊处理。</li>
+</ol>
+<p>接下来我们需要重写其中的 createDockerFile，buildImage，PushImage Task 来解决这两个问题。</p>
+<p>其中 createDockerFile：</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">
+task createDockerfile(</span><span style="color:#d08770;">type</span><span style="color:#c0c5ce;">: </span><span style="color:#b48ead;">Dockerfile</span><span style="color:#c0c5ce;">) {
+    dependsOn dockerSyncArchive
+    from(docker.springBootApplication.baseImage.get())
+    copyFile(bootWar.archiveName, &quot;</span><span style="color:#a3be8c;">/app/</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">bootWar.archiveName</span><span style="color:#ab7967;">}</span><span style="color:#c0c5ce;">&quot;.toString())
+    </span><span style="color:#65737e;">//https://wiki.alpinelinux.org/wiki/Setting_the_timezone
+    //https://github.com/gliderlabs/docker-alpine/issues/428
+    </span><span style="color:#c0c5ce;">runCommand(&#39;</span><span style="color:#a3be8c;"> echo </span><span style="color:#96b5b4;">\&#39;</span><span style="color:#a3be8c;">http://mirrors.ustc.edu.cn/alpine/v3.8/main</span><span style="color:#96b5b4;">\&#39;</span><span style="color:#a3be8c;"> &gt; /etc/apk/repositories  </span><span style="color:#c0c5ce;">&#39; +
+            &#39;</span><span style="color:#a3be8c;"> &amp;&amp; echo </span><span style="color:#96b5b4;">\&#39;</span><span style="color:#a3be8c;">http://mirrors.ustc.edu.cn/alpine/v3.8/community</span><span style="color:#96b5b4;">\&#39;</span><span style="color:#a3be8c;"> &gt;&gt;/etc/apk/repositories  </span><span style="color:#c0c5ce;">&#39; +
+            &#39;</span><span style="color:#a3be8c;"> &amp;&amp; apk update &amp;&amp; apk add tzdata  </span><span style="color:#c0c5ce;">&#39; +
+            &#39;</span><span style="color:#a3be8c;"> &amp;&amp; ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime  </span><span style="color:#c0c5ce;">&#39; +
+            &#39;</span><span style="color:#a3be8c;"> &amp;&amp; echo &quot;Asia/Shanghai&quot; &gt; /etc/timezone  </span><span style="color:#c0c5ce;">&#39; +
+            &#39;</span><span style="color:#a3be8c;"> &amp;&amp; date </span><span style="color:#c0c5ce;">&#39;+
+            &#39;</span><span style="color:#a3be8c;"> &amp;&amp; rm -rf /var/cache/apk/* </span><span style="color:#c0c5ce;">&#39; +
+            &#39;</span><span style="color:#a3be8c;"> &amp;&amp; rm -rf /usr/local/share/.cache</span><span style="color:#c0c5ce;">&#39;)
+    entryPoint(&quot;</span><span style="color:#a3be8c;">java</span><span style="color:#c0c5ce;">&quot;)
+    defaultCommand(&quot;</span><span style="color:#a3be8c;">-jar</span><span style="color:#c0c5ce;">&quot;, &quot;</span><span style="color:#a3be8c;">/app/</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">bootWar.archiveName</span><span style="color:#ab7967;">}</span><span style="color:#c0c5ce;">&quot;.toString())
+    exposePort(docker.springBootApplication.ports)
+
+
+}
+</span></pre>
+<p>上面主要是创建Dockerfile，编写指令来配置合适的<code>timezone</code>。使用中科大的apk安装源（mirrors.ustc.edu.cn）更快。。。</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">task buildImage(</span><span style="color:#d08770;">type</span><span style="color:#c0c5ce;">: </span><span style="color:#b48ead;">DockerBuildImage</span><span style="color:#c0c5ce;">) {
+    dependsOn createDockerfile
+    inputDir = createDockerfile.destFile.get().asFile.parentFile
+    tag = &quot;</span><span style="color:#a3be8c;">zongwu233/</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">projectname</span><span style="color:#ab7967;">}</span><span style="color:#a3be8c;">:</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">dockerVer</span><span style="color:#ab7967;">}</span><span style="color:#c0c5ce;">&quot;.toLowerCase()
+}
+
+</span><span style="color:#65737e;">//https://github.com/bmuschko/gradle-docker-plugin/issues/209
+</span><span style="color:#c0c5ce;">task dockerTag(</span><span style="color:#d08770;">type</span><span style="color:#c0c5ce;">: </span><span style="color:#b48ead;">com.bmuschko.gradle.docker.tasks.image.DockerTagImage</span><span style="color:#c0c5ce;">) {
+    dependsOn buildImage
+    imageId = &quot;</span><span style="color:#a3be8c;">zongwu233/</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">projectname</span><span style="color:#ab7967;">}</span><span style="color:#a3be8c;">:</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">dockerVer</span><span style="color:#ab7967;">}</span><span style="color:#c0c5ce;">&quot;.toLowerCase()
+    tag = &quot;</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">dockerVer</span><span style="color:#ab7967;">}</span><span style="color:#c0c5ce;">&quot;.toLowerCase()
+    repository = &quot;</span><span style="color:#a3be8c;">registry.cn-hangzhou.aliyuncs.com/zongwu233/</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">projectname</span><span style="color:#ab7967;">}</span><span style="color:#c0c5ce;">&quot;.toLowerCase()
+}
+</span></pre>
+<p>解决私有DockerHub 的tag问题。更详细的讨论见<code>https://github.com/bmuschko/gradle-docker-plugin/issues/209</code></p>
+<p>其中<code>zongwu233</code> 是在阿里云DockerHub中的命名空间，<code>${projectname}</code> 是仓库名称。</p>
+<p>最后是push task：</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">task pushImage(</span><span style="color:#d08770;">type</span><span style="color:#c0c5ce;">: </span><span style="color:#b48ead;">DockerPushImage</span><span style="color:#c0c5ce;">) {
+    dependsOn dockerTag
+    imageName = &quot;</span><span style="color:#a3be8c;">registry.cn-hangzhou.aliyuncs.com/zongwu233/</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">projectname</span><span style="color:#ab7967;">}</span><span style="color:#c0c5ce;">&quot;.toLowerCase()
+}
+</span></pre>
+<p>另外要在createDockerFile，buildImage 等task之前 加上import 声明：</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#b48ead;">import com.bmuschko.gradle.docker.DockerRemoteApiPlugin
+import</span><span style="color:#c0c5ce;"> com.bmuschko.gradle.docker.tasks.image.*
+</span><span style="color:#b48ead;">import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+</span></pre>
+<p>这样，在控制台输入命令:</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#bf616a;">gradle</span><span style="color:#c0c5ce;"> pushImage
+</span></pre>
+<p>即可完成应用的docker镜像构建并且push到阿里云仓库。</p>
+
+    </div>
+
+    
+    
+
+    <div class="post-footer">
+        
+            
+            
+                <div class="post-nav">
+                    
+                        <a class="previous" href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;zerotoone-reading-notes&#x2F;">‹ 《从0到1》读书笔记</a>
+                    
+                    
+                        <a class="next" href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;update-config-automated-tool&#x2F;">更新配置自动化工具 ›</a>
+                    
+                    
+                    
+                </div>
+            
+
+        
+
+    </div>
+
+    
+    
+</article>
+
+
+                </div>
+            </main>
+
+            
+            
+        </div>
+
+      
+          <script type="text/javascript" src="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;even.js" ></script>
+      
+      <!--  add cnzz trace code  -->
+      
+          <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1273937782'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s22.cnzz.com/z_stat.php%3Fid%3D1273937782' type='text/javascript'%3E%3C/script%3E"));</script>
+      
+    </body>
+
+</html>

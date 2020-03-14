@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title> - 业务模块无耦合通信协议的设计</title>
+
+      
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;rss.xml">
+      
+
+      
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
+          
+      
+
+      
+          <link rel="stylesheet" href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;site.css">
+          
+      
+
+      
+      
+    </head>
+
+    <body>
+        <div class="container">
+
+            <div id="mobile-navbar" class="mobile-navbar">
+              <div class="mobile-header-logo">
+                <a href="/" class="logo">zongwu&#x27;s blog</a>
+              </div>
+              <div class="mobile-navbar-icon icon-out">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+
+            <nav id="mobile-menu" class="mobile-menu slideout-menu slideout-menu-left">
+              <ul class="mobile-menu-list">
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io">
+                            Home
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;categories">
+                            Categories
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;tags">
+                            Tags
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;about">
+                            About
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;rss.xml">
+                            RSS
+                        </a>
+                    </li>
+                
+              </ul>
+            </nav>
+
+            <header id="header">
+                <div class="logo"><a href="https:&#x2F;&#x2F;zongwu233.github.io">zongwu&#x27;s blog</a></div>
+                <nav class="menu">
+                    <ul>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io">
+                                    Home
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;categories">
+                                    Categories
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;tags">
+                                    Tags
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;about">
+                                    About
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;rss.xml">
+                                    RSS
+                                </a>
+                            </li>
+                        
+                    </ul>
+                </nav>
+            </header>
+
+            <main>
+                <div class="content" id="mobile-panel">
+                    
+
+
+<div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content always-active">
+        <nav id="TableOfContents">
+            <ul>
+                
+                <li>
+                    <a href="https://zongwu233.github.io/module-protocol-design-think/#ding-yi" class="toc-link">定义</a>
+                    
+                </li>
+                
+                <li>
+                    <a href="https://zongwu233.github.io/module-protocol-design-think/#wen-ti" class="toc-link">问题</a>
+                    
+                </li>
+                
+                <li>
+                    <a href="https://zongwu233.github.io/module-protocol-design-think/#mo-kuai-hua" class="toc-link">模块化</a>
+                    
+                </li>
+                
+                <li>
+                    <a href="https://zongwu233.github.io/module-protocol-design-think/#shi-xian-tong-xin-xie-yi" class="toc-link">实现通信协议				</a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a href="https://zongwu233.github.io/module-protocol-design-think/#xie-yi-can-shu" class="toc-link">协议参数</a>
+                        </li>
+                        
+                        <li>
+                            <a href="https://zongwu233.github.io/module-protocol-design-think/#xie-yi-de-lu-you" class="toc-link">协议的路由						</a>
+                        </li>
+                        
+                        <li>
+                            <a href="https://zongwu233.github.io/module-protocol-design-think/#xie-yi-can-shu-de-chuan-shu" class="toc-link">协议参数的传输					</a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li>
+                    <a href="https://zongwu233.github.io/module-protocol-design-think/#xiang-ying-dong-zuo" class="toc-link">响应动作</a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a href="https://zongwu233.github.io/module-protocol-design-think/#yi-bu-diao-yong" class="toc-link">异步调用				</a>
+                        </li>
+                        
+                        <li>
+                            <a href="https://zongwu233.github.io/module-protocol-design-think/#quan-ju-yan-bo" class="toc-link">全局广播				</a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li>
+                    <a href="https://zongwu233.github.io/module-protocol-design-think/#zhu-ke-hu-duan-yu-mo-kuai" class="toc-link">主客户端与模块		</a>
+                    
+                </li>
+                
+                <li>
+                    <a href="https://zongwu233.github.io/module-protocol-design-think/#hou-ji" class="toc-link">后记		</a>
+                    
+                </li>
+                
+            </ul>
+        </nav>
+    </div>
+</div>
+
+
+<article class="post">
+    
+    <header class="post__header">
+        <h1 class="post__title">
+            <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;module-protocol-design-think&#x2F;">业务模块无耦合通信协议的设计</a>
+        </h1>
+        <div class="post__meta">
+            <span class="post__time">2016-03-27</span>
+            
+        </div>
+    </header>
+
+    <div class="post-content">
+      <h3 id="ding-yi">定义</h3>
+<p>模块：独立提供特定业务功能的完整体，这里并不指代无业务的基础组件<br />
+主客户端：接入各个模块的容器App<br />
+通信解释器：实现了本文定义的通信协议的组件</p>
+<h3 id="wen-ti">问题</h3>
+<p>虽然目前我们已经在代码组织形式上拆分了出了各个module，避免了代码级别的到处复制，在主客户端组合了每一个业务模块，但是目前的模块化依然存在诸多问题：</p>
+<p id="zola-continue-reading"><a name="continue-reading"></a></p>
+<ol>
+<li>模块间存在直接的代码依赖	，严格意义上讲并没有完成模块化</li>
+<li>模块间通信协议比较混乱，各自为政，最终主客户端接入模块的时候做了很多重复性的对接动作</li>
+<li>目前的通信协议是强约束，一旦修改，其他人就有编译不通过的问题，这个是完全可以避免的</li>
+<li>主客户端在代码层面上直接依赖所有的模块</li>
+</ol>
+<h3 id="mo-kuai-hua">模块化</h3>
+<p>在解决这些问题之前，先思考下为什么要模块化？<br />
+如果是一个很简单工程我们一般不会进行重量级的模块化设计，为没有出现的问题写多余的代码是过度设计行为(这跟设计模式不同)。当业务的持续增长导致代码复杂度快速膨胀，我们意识到在一个大而全的复杂工程上开发的速度已经跟不上业务诉求的速度，这才迫使我们思考如何应对。<br />
+人类理解并解决一个大的复杂问题最有效的手段是分而治之。模块化就是对复杂工程的分治。模块的高内聚低耦合降低代码整体复杂度，同时也让使用者能够在较高的抽象层次工作。带来的一个好的副作用是模块间的开发可以在很大程度上并行化。<br />
+模块的内聚过程，划分模块边界其实并不难，因为这是具体业务决定的，业务模型决定了该模块的边界。<br />
+模块化的难点和核心点在于通信协议的设计，通信协议的设计直接影响高内聚低耦合的程度。<br />
+模块间为何要通信？<br />
+<strong>因为模块A想读写模块B的某些状态。(无数据返回的调用可以视为上述问题的特殊形式)</strong><br />
+那么模块A必然要感知到模块B的存在吗？模块A必然要依赖模块B吗？<br />
+这里的感知是指模块A要调用模块B的接口的时候是否要<strong>知道</strong>模块B的<strong>接口</strong>定义。<br />
+依赖是指模块A是否要引入模块B的类文件，直接使用B的类。<br />
+在应用内业务模块化这个大前提下，模块A必然要感知模块B的接口形式。无论是将这个接口提升到何等抽象层次，A都必须要知道这个接口的定义形式，才能依照格式提供相应参数进行通信。那这个<strong>知道</strong>是否就意味着A必然依赖B？如果存在直接依赖关系，模块B的改动必然直接影响A，甚至直接导致模块A无法构建成功，模块间的<strong>低耦合</strong>实质上就形同虚设。目前我们就是为了实现让A感知B的接口定义导致了A依赖B(A模块直接import了interface的定义)，这是一种非常简单粗暴的做法。<br />
+我们想要实现的是<strong>一种模块间不需要产生直接依赖关系的通信协议。</strong><br />
+那所有模块都依赖一个模块管理中心呢？通过模块管理中心统一注册服务接口，发现服务接口？这是一个看起来比刚才更好的方案。但是这强制要求所有模块依赖模块中心，而这个依赖也不是必须的。而且最核心的问题其实还没解决：模块A如何感知模块B并且是以一种不依赖的方式。<br />
+<strong>解决问题的思路依然是：增加一个中间层+面向接口编程</strong><br />
+但是这里的面向接口并不是指java的<strong>interface</strong>，否则必然还是产生依赖。这里的接口更多指代一个定义形式宽松、但是内容明确的契约。<br />
+要怎么定义这个接口？先看看模块A与外部环境通信必须的元素：<br />
+通信解释器、用于读写外部状态的这个<strong>动作的标识</strong>、<strong>此次的参数(包含入参，出参）</strong><br />
+<br />
+<strong>这里没有列出通信目标标识</strong>，模块A要不要知道此次通信的目标的标识？如果外部环境能够响应模块A要求的动作，是否还有必要要求模块A明确指出通信目标？如果从面向接口编程的角度出发，我只关心能应答这次请求就好，至于是哪个类哪个对象，真不关心。此外通信目标的标识可以作为入参传递，在通信协议的解释器那里再做转发也可以的。所以我们选择将通信目标标识视为一个参数而不是必须元素。<br />
+那照这个逻辑，动作也可以定义为唯一标识从而视为参数了，模块A拿到应用内的通信解释器，传入动作标识+参数，通信解释器解析就返回相应的结果，这样也可以咯？到这里我们发现，这种思路跟HTTP的协议很相似，只不过，HTTP是发生在WWW上的通信协议，显式要求指名响应动作的目标标识，而我们在做的是应用内的模块间协议，想要接口的动态实现能力而不强制要求指名目标标识。(检查系统内是否存在实现响应该动作的模块的解决方案后面论述)<br />
+依据刚才的思考，通信解释器要具有解释参数能力，路由能力和传输能力。<br />
+解释参数：其实就是解析出动作标识，入参(或者含有调用目标标识)。
+路由：将请求的动作转发给能应答的目标。
+传输：将调用入参和出参完整地在调用方和响应方之间传输。</p>
+<h3 id="shi-xian-tong-xin-xie-yi">实现通信协议				</h3>
+<p>我们在逐步确协议的核心元素：<strong>动作的标识</strong>，**业务参数(包含入参，出参）**定义的同时，也将逐步细化通信解释器功能的定义。</p>
+<h4 id="xie-yi-can-shu">协议参数</h4>
+<p>这里的参数主要指：动作标识，业务参数，响应目标标识(支持，但是非必需)。<br />
+动作标识只需要满足全应用唯一。意味着完全可以用唯一字符串标识。**当然统一资源标识符（Uniform Resource Identifier，URI)简直是完美胜任了该职责，但是要明确的是这里仅仅需要实现全应用唯一标识的能力即可，URI依然不是必需的。**响应目标的标识同理。那么他们可以用Map&lt;String,String&gt;()传输。key是约定常量,value就是动作标识。<br />
+具体的业务参数，由于业务本身的多样性，无法定义统一的参数接口。这里只能将所有的参数放入Map容器，约定固定的key，将实际参数放入Map。
+这些key常量的定义必然是跟随动作标识key一起定义在一个文件里。调用者需要够感知该文件的存在，也即是依赖该文件。到这里还未看到响应者必须依赖该文件的必然条件。</p>
+<h4 id="xie-yi-de-lu-you">协议的路由						</h4>
+<p>**路由的作用就是将一个请求mapping到合适的响应者。**通过刚才细化的协议参数，请求已经可以解析完毕，如何找到实现了该动作的响应者+相应方法？常用方法：</p>
+<h5 id="rang-xiang-ying-zhe-zi-ji-zhu-dong-zhu-ce">让响应者自己主动注册					</h5>
+<p>主动注册可以分成：注册类名+方法，用的时候实例化响应对象和注册对象+方法。注册时机可以是协议解释器初始化的时候，也可以是后面的任意时刻。主动注册要求存在一个统一管理者。这里可以方便地检测是否所有的动作都有响应者。主动注册机制将导致响应者依赖注册管理器，感知到注册接口定义。</p>
+<h5 id="qing-qiu-zhong-zhi-ming-xiang-ying-zhe-de-biao-shi">请求中指明响应者的标识</h5>
+<p>这里的响应者标识一般为类名/接口标识。此方法是去中心化的。不需要存在统一管理者。只需完成<strong>从响应者标识到响应者对象的映射</strong>即可。为了不丧失多态性的响应能力，一般不建议指定对象的唯一标识。<br />
+直到现在为止，论述还未涉及到实现系统和编程语言，为了实现<strong>从响应者标识到响应者对象的映射</strong>，必须落地到具体语言。<br />
+以Java为例，可以实现一个给定 ClassName 返回该 Class/Interface 的实例对象(是否以单例的形式构建支持配置)的一个Bean管理容器。而且动作与方法名直接映射。<br />
+iOS则同样可以通过 NSClassFromString 拿到Class 进而构建相应对象。<br />
+可以看出，这里借助语言的Runtime特性完成：响应者标识(ClassName)-&gt;响应者类(Class) -&gt;响应者对象，这一Mapping过程。<br />
+此方案响应者不需要依赖通信协议层，甚至可以不用感知通信解释器的存在。这是因为模块间共享一个Runtime。而通过Runtime环境通信协议路由可以找到响应者。<br />
+另外，可以看出两种方法都可以扩展支持运行时更换/转发响应动作的能力。<br />
+这里的缺陷是：<br />
+<strong>利用Runtime映射到响应者存在一定的性能开销。</strong><br />
+无法明确知道是否所有的动作都存在响应者，只有在运行时调用的那一刻才能发觉。关于这一点的补救方案是，实现一个协议校验模块，专门用于校验所有动作是否都有响应者。</p>
+<h4 id="xie-yi-can-shu-de-chuan-shu">协议参数的传输					</h4>
+<p>上面已经说明动作标识类的参数可以用Map&lt;String,String&gt;来实现，传输上并无困难。<br />
+比较复杂的是业务参数。业务参数通常是因业务需求而组织成一定结构的复杂数据，这里将业务参数分成两类：</p>
+<ol>
+<li>模块间不需额外定义的,而且已经共同依赖的类型，比如语言基础类型，系统Api提供出来的各种类型，这里称为模块公共类型</li>
+<li>不属于类型1的所有类型，这里称为特定模块私有类型
+<br />
+模块公共类型放入map&lt;String,Object&gt;传输无问题，响应者直接取出value转型即可。
+特定模块私有类型要想办法替换成第一类。而不要额外定义新类型引入到模块中。这也是该方案的限制。但是这些类型本来就是靠第一种类型组建出来的，所以总能转换为模块公共类型.</li>
+</ol>
+<h3 id="xiang-ying-dong-zuo">响应动作</h3>
+<p>之前在讲述响应动作的时候都是简单视为一次方法调用，但是实际情况有点复杂，方法调用又可以分类成同步调用、异步调用。或者分类成普通方法调用，全局广播等等。<br />
+同步调用、普通方法调用比较普通，不再论述。这里主要关注异步调用，全局广播。</p>
+<h4 id="yi-bu-diao-yong">异步调用				</h4>
+<p>异步调用的不同点在于方法参数带有callback，方法执行到某处会回调callback的方法。这个问题归约为协议参数的传输问题，不在展开论述。</p>
+<h4 id="quan-ju-yan-bo">全局广播				</h4>
+<p>一个比较常见的场景就是用户的状态发生变更比如用户登录成功，用户身份变换等等，这种情况下，用户信息模块通常是发出广播或者通知观察者数据更新。在模块间使用观察者将不再是一个好的方式。全应用广播更符合我们对解耦的要求。如何做模块间的广播？<br />
+通用做法是大家都对接到数据总线，有任何需要广播的数据发送到数据总线，由数据总线进行通知。这样看来所有需要收发广播的模块都要与数据总线做双向通信。<br />
+如果将我们的通信解释器也视为一个提供数据总线功能的模块，那么问题归约为模块间通信的问题。直到这里可以看到，如果要支持全局广播功能，所有模块必须感知到通信解释器的数据总线接口。</p>
+<h3 id="zhu-ke-hu-duan-yu-mo-kuai">主客户端与模块		</h3>
+<p>虽然主客户端作为容器接入了各个模块，在初始化各个模块的时候必然要调用模块的初始化方法，要感知模块相关接口的存在，但是主客户端并不需要特殊处理，与模块完全可以做到上述的模块间的通信。做到这点将最大化解耦主客户端与各个模块的关系。模块化也将是后续的插件化必备条件之一。<br />
+所有的模块对外暴露接口定义文件，可以统一放到一个模块接口声明工程(也可以直接放入通信解释器工程)。需要调用接口的模块仅依赖该声明工程。与以往的直接定义模块间interface的接口不同，修改接口定义这里可以做到几乎不影响其他模块的构建，接口格式以及响应者的校验可以通过一个独立的校验模块完成。</p>
+<h3 id="hou-ji">后记		</h3>
+<p>这里没有论述通过URL实现的解耦方案，因为该方案在参数传递、路由映射存在的缺陷性不足以担当组件间通信协议。<br />
+**实质上我们是将模块间接口的声明和实现从原生语言的支持提升为使用协议的支持。**接口的声明是String描述的。通信协议几乎降维到String层面(为了便利性参数传递还是支持了模块公共数据类型)，在各个模块以及路由器之间传输。当然这些字符串都是遵循了我们定义的协议格式有明确意义的字符串，接收者都会做自己的特定解析。为什么可以这样做？因为所有的模块都共同依赖了String类。是各个模块都已经承认的通用语言。那么进一步地，接口的声明可以做到使用文件描述(比如xml)，而不再限定为类文件。在本文论述的场景下，有没有比String再高级一点的通用载体语言？至少在Java和ObjectC里面没有。</p>
+<p>参考文献<br />
+<a href="http://casatwy.com/iOS-Modulization.html">casatwy iOS应用架构谈 组件化方案</a></p>
+
+    </div>
+
+    
+    
+
+    <div class="post-footer">
+        
+            
+            
+                <div class="post-nav">
+                    
+                        <a class="previous" href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;nonstandard-204-response&#x2F;">‹ 不规范的HTTP 204 响应格式</a>
+                    
+                    
+                        <a class="next" href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;data-abstract&#x2F;">数据抽象 ›</a>
+                    
+                    
+                    
+                </div>
+            
+
+        
+
+    </div>
+
+    
+    
+</article>
+
+
+                </div>
+            </main>
+
+            
+            
+        </div>
+
+      
+          <script type="text/javascript" src="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;even.js" ></script>
+      
+      <!--  add cnzz trace code  -->
+      
+          <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1273937782'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s22.cnzz.com/z_stat.php%3Fid%3D1273937782' type='text/javascript'%3E%3C/script%3E"));</script>
+      
+    </body>
+
+</html>

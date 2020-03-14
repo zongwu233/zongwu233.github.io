@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title> - 服务端架构演进</title>
+
+      
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;rss.xml">
+      
+
+      
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
+          
+      
+
+      
+          <link rel="stylesheet" href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;site.css">
+          
+      
+
+      
+      
+    </head>
+
+    <body>
+        <div class="container">
+
+            <div id="mobile-navbar" class="mobile-navbar">
+              <div class="mobile-header-logo">
+                <a href="/" class="logo">zongwu&#x27;s blog</a>
+              </div>
+              <div class="mobile-navbar-icon icon-out">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+
+            <nav id="mobile-menu" class="mobile-menu slideout-menu slideout-menu-left">
+              <ul class="mobile-menu-list">
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io">
+                            Home
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;categories">
+                            Categories
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;tags">
+                            Tags
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;about">
+                            About
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;rss.xml">
+                            RSS
+                        </a>
+                    </li>
+                
+              </ul>
+            </nav>
+
+            <header id="header">
+                <div class="logo"><a href="https:&#x2F;&#x2F;zongwu233.github.io">zongwu&#x27;s blog</a></div>
+                <nav class="menu">
+                    <ul>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io">
+                                    Home
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;categories">
+                                    Categories
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;tags">
+                                    Tags
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;about">
+                                    About
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;rss.xml">
+                                    RSS
+                                </a>
+                            </li>
+                        
+                    </ul>
+                </nav>
+            </header>
+
+            <main>
+                <div class="content" id="mobile-panel">
+                    
+
+
+<div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content always-active">
+        <nav id="TableOfContents">
+            <ul>
+                
+                <li>
+                    <a href="https://zongwu233.github.io/architecture-evolution/#fu-wu-duan-jia-gou-v1-0" class="toc-link">服务端架构v1.0</a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a href="https://zongwu233.github.io/architecture-evolution/#jia-gou-jie-shao" class="toc-link">架构介绍</a>
+                        </li>
+                        
+                        <li>
+                            <a href="https://zongwu233.github.io/architecture-evolution/#cun-zai-de-ji-ge-zhu-yao-wen-ti" class="toc-link">存在的几个主要问题</a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+                <li>
+                    <a href="https://zongwu233.github.io/architecture-evolution/#wei-fu-wu-jia-gou-shi-xian" class="toc-link">微服务架构实现</a>
+                    
+                    <ul>
+                        
+                        <li>
+                            <a href="https://zongwu233.github.io/architecture-evolution/#cai-yong-consul-registrator-nginxfang-an-zuo-fu-wu-de-zhu-ce-yu-fa-xian-kuang-jia" class="toc-link">采用Consul + Registrator + Nginx方案做服务的注册与发现框架</a>
+                        </li>
+                        
+                        <li>
+                            <a href="https://zongwu233.github.io/architecture-evolution/#fu-wu-jian-de-diao-yong" class="toc-link">服务间的调用</a>
+                        </li>
+                        
+                        <li>
+                            <a href="https://zongwu233.github.io/architecture-evolution/#openresty" class="toc-link">OpenResty</a>
+                        </li>
+                        
+                        <li>
+                            <a href="https://zongwu233.github.io/architecture-evolution/#ying-yong-zi-yuan-chai-fen" class="toc-link">应用资源拆分</a>
+                        </li>
+                        
+                        <li>
+                            <a href="https://zongwu233.github.io/architecture-evolution/#zui-zhong-de-fu-wu-duan-jia-gou" class="toc-link">最终的服务端架构</a>
+                        </li>
+                        
+                    </ul>
+                    
+                </li>
+                
+            </ul>
+        </nav>
+    </div>
+</div>
+
+
+<article class="post">
+    
+    <header class="post__header">
+        <h1 class="post__title">
+            <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;architecture-evolution&#x2F;">服务端架构演进</a>
+        </h1>
+        <div class="post__meta">
+            <span class="post__time">2018-12-23</span>
+            
+        </div>
+    </header>
+
+    <div class="post-content">
+      <h2 id="fu-wu-duan-jia-gou-v1-0">服务端架构v1.0</h2>
+<p>先来看一看服务端架构的1.0版本：</p>
+<p><a href="https://i.loli.net/2019/04/28/5cc576ce0976d.png"><img src="https://i.loli.net/2019/04/28/5cc576ce0976d.png" alt="架构1_0.png" /></a></p>
+<h3 id="jia-gou-jie-shao">架构介绍</h3>
+<p>客户端包括：PC站和m站的web站点，Android和iOS App客户端，管理后台和小程序。其中主要流量来自于Android和iOS。</p>
+<p>接入层：采用了阿里云的Service Load Balance。底层实现是通过LVS+keepalived。该层主要提供了负载均衡和双机热备功能，客户端通过域名访问API接口，当应用的其中一台机器出问题时，依然能保障正常服务。</p>
+<p>服务层：实际上是使用两台阿里云ECS部署Main Api server 和support server 两个应用。Main Api server 提供App需要的API接口。support server提供运营管理后台页面需要的API接口。</p>
+<p>缓存层：采用阿里云Redis服务8G主从版（标准版-双副本）。连接上限10000，QPS约80000。正常情况下完全满足我们的应用需求。不需要集群版本。</p>
+<p>数据层：采用阿里云RDS服务高可用版，4Core8G。最大IOPS:4000，最大连接数:4000。偶尔出现慢SQL导致数据库CPU跑满、接口响应慢。</p>
+<h3 id="cun-zai-de-ji-ge-zhu-yao-wen-ti">存在的几个主要问题</h3>
+<ol>
+<li>无法应用灵活的流量控制策略，当前所有流量最终会压到应用实例上，一旦出现流量过大现象，只能增加应用实例，或者改动应用响应逻辑并发布。</li>
+<li>无自动化的负载均衡，新增ECS就必须同时修改SLB的后端服务配置，扩容方案不够灵活、需要人为介入并且不易配置。</li>
+<li>管理后台应用与前台应用共用同一个数据库，后台耗时的读操作影响线上接口。</li>
+<li>Main Api server 是一个Monolith Application（巨石应用），任何业务的改动都需要发布该应用，打包发布时间较长。</li>
+<li>非核心业务和核心业务共用资源，比如web容器线程、数据库连接池、Redis连接池等等，一旦非核心业务占用较多资源，将导致其他业务响应变慢。</li>
+</ol>
+<p>考虑到后续业务发展、当前应用现状和服务端团队人员的实际情况，趁此机会我们决定向微服务架构方向演进。</p>
+<p>选取微服务端架构方案时的一些原则：</p>
+<ul>
+<li>高质量高可用的服务架构体系</li>
+<li>技术实现成熟稳定</li>
+<li>充分利用Docker容器优势</li>
+<li>团队学习门槛较低</li>
+<li>对当前应用系统入侵较小</li>
+<li>减少不必要的部署和维护代价</li>
+<li>方便支持非JVM的web服务</li>
+</ul>
+<h2 id="wei-fu-wu-jia-gou-shi-xian">微服务架构实现</h2>
+<h4 id="cai-yong-consul-registrator-nginxfang-an-zuo-fu-wu-de-zhu-ce-yu-fa-xian-kuang-jia">采用<code>Consul + Registrator + Nginx</code>方案做服务的注册与发现框架</h4>
+<p>简单介绍一下Consul 、Consul template 和Registrator：</p>
+<blockquote>
+<p>Consul是一种 service mesh解决方案，提供具有服务发现和配置的工具，它提供了一些重要特性<a href="https://www.consul.io/intro/index.html">1</a>：</p>
+<ol>
+<li>服务发现</li>
+<li>健康检查</li>
+<li>KV存储</li>
+<li>多数据中心</li>
+</ol>
+<p>Consul集群间使用了GOSSIP协议通信和Raft一致性算法，Consul本身是一个分布式的高可用的系统。</p>
+</blockquote>
+<blockquote>
+<p>Consul template 通过解析模板，从Consul查询所需的配置数据，接下来后台进程监听<a href="https://www.consul.io/docs/agent/watches.html">8</a>Consul中这些数据的变化，并将数据更新到配置的模版文件中。模板更新完成之后，可以配置后续执行命令。<a href="https://learn.hashicorp.com/consul/developer-configuration/consul-template">7</a></p>
+<p>Consul template的模板文件是采用<a href="https://github.com/hashicorp/hcl">HashiCorp Configuration Language (HCL)</a>语法编写，同时提供了一些API函数。<a href="https://github.com/hashicorp/consul-template">4</a></p>
+</blockquote>
+<blockquote>
+<p>Registrator是一种通过监控宿主机上所有的Docker容器的状态，自动地为Docker容器注册和反注册服务的组件。Registrator支持可拔插的服务注册，包括：Consul，etcd，SkyDNS2。<a href="http://gliderlabs.github.io/registrator/latest/">5</a></p>
+</blockquote>
+<p>各组件协调工作如图：</p>
+<p><img src="https://i.loli.net/2019/04/28/5cc599b66fe83.png" alt="consul_registrator_ngnix.png" /></p>
+<p>Registrator监听应用容器的变化，实时向consul注册/反注册容器内的服务，而consul template也在监听consul server的变化，任何服务的变更或者KV 存储的变更，都触发consul template 的模板文件的变化，这里，consul template 配置的模板一般是生成nginx.conf文件，最后调用nginx的reload config 命令，即可全自动地完成服务的刷新。</p>
+<p>更详细的部署方案见<a href="../consul-registrator-nginx">Consul+Registrator+Nginx方案的部署</a></p>
+<h4 id="fu-wu-jian-de-diao-yong">服务间的调用</h4>
+<p>通过上面的方案完成服务的注册和发现，但是服务之间如何调用？</p>
+<p>比如服务A要调用服务B的接口，服务A和服务B都已经注册到Consul server中，服务A要获取服务B的地址很方便，请求Consul Api 即可。可是服务B有多个实例，这时候调用策略有两种选择：</p>
+<ol>
+<li>服务端负载均衡，服务A通过nignx调用服务B，负载均衡策略由nginx支持。</li>
+<li>客户端负载均衡，服务A自行维护服务B的列表，自行选择一个负载均衡策略，然后调用服务B。</li>
+</ol>
+<p>出于性能考虑，我们选取第二种方式，即客户端负载均衡。</p>
+<p>通过封装Consul API 和Feign-ribbon，我们实现了客户端之间相互调用的中间件。</p>
+<h4 id="openresty">OpenResty</h4>
+<p>服务架构v1.0版本由于缺失统一网关，导致无法实现灵活的负载均衡、鉴权、流量控制等功能。为了方便实现网关的功能，采用 OpenResty <a href="https://openresty.org/cn/">6</a>而不是Nginx来作为网关的基础组件。</p>
+<p>通过 OpenResty 强大的lua脚本，可以对网络请求做各种复杂的控制和安全检测。</p>
+<p>负载均衡是 OpenResty 自带功能。</p>
+<p>请求鉴权，通过 lua 脚本调用用户中心接口完成各种场景的鉴权功能，如果鉴权失败，则阻断请求。</p>
+<p>流量控制，通过 lua 脚本对请求的header和uri 解析，灵活定制流量控制策略。</p>
+<p>蓝绿发布，结合consul、consul-template 和OpenResty，实现服务的蓝绿发布功能。</p>
+<p>通过在网关处向 request header 中写入 request Id，支持完整请求链追踪的日志分析。</p>
+<p>服务路由，v1.0版本的架构，受限于SLB的实现，必须为每一个业务应用单独配置一个端口和域名， 给客户端调用带来很大不便。新的架构可以采用统一的 API 域名，在网关处做服务路由即可（比如通过path区分业务服务），从而实现API 域名的收敛。</p>
+<p>对接SLB服务的是OpenResty，目前有三个实例，后续任意应用水平扩展的时候，会自动注册到consul server，无需变动SLB配置。</p>
+<h4 id="ying-yong-zi-yuan-chai-fen">应用资源拆分</h4>
+<p>新增的Finance应用是金币业务，使用独立数据库。</p>
+<p>新增的Data server应用是搜集数据埋点业务，该应用需要存储客户端上报的大量的埋点数据，使用PostgreSQL，并且采用PostgreSQL自带的分表功能。</p>
+<p>Support server是之前的管理后台服务，通过对Main Api server 的数据库配置主从架构，让Support server 的读操作走从库，写操作走主库，解决Support server 拖慢生产环境数据库的问题。</p>
+<p>Kafka消息队列主要用于应用间异步通信的场景。Main Api server 和 Finance server 都会产生金币计费消息，Finance server应用负责消费该消息。</p>
+<h4 id="zui-zhong-de-fu-wu-duan-jia-gou">最终的服务端架构</h4>
+<p><img src="https://i.loli.net/2019/04/28/5cc5abf8e0385.png" alt="架构2_0.png" /></p>
+
+    </div>
+
+    
+    
+
+    <div class="post-footer">
+        
+            
+                <div class="post-tags">
+                    
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;tags&#x2F;wei-fu-wu&#x2F;">#微服务</a>
+                    
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;tags&#x2F;jia-gou&#x2F;">#架构</a>
+                    
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;tags&#x2F;consul&#x2F;">#consul</a>
+                    
+                </div>
+            
+            
+                <div class="post-nav">
+                    
+                        <a class="previous" href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;consul-registrator-nginx&#x2F;">‹ Consul+Registrator+Nginx方案的部署</a>
+                    
+                    
+                        <a class="next" href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;the-simplest-navigation-website&#x2F;">最简单的内网导航网站 ›</a>
+                    
+                    
+                    
+                </div>
+            
+
+        
+
+    </div>
+
+    
+    
+</article>
+
+
+                </div>
+            </main>
+
+            
+            
+        </div>
+
+      
+          <script type="text/javascript" src="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;even.js" ></script>
+      
+      <!--  add cnzz trace code  -->
+      
+          <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1273937782'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s22.cnzz.com/z_stat.php%3Fid%3D1273937782' type='text/javascript'%3E%3C/script%3E"));</script>
+      
+    </body>
+
+</html>

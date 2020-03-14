@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title></title>
+        <link>https%3A//zongwu233.github.io</link>
+        <description></description>
+        <generator>Zola</generator>
+        <language>en</language>
+        <atom:link href="https%3A//zongwu233.github.io/tags/yuan-ma-fen-xi/rss.xml" rel="self" type="application/rss+xml"/>
+        <lastBuildDate>Wed, 30 Oct 2019 00:00:00 +0000</lastBuildDate>
+        
+            <item>
+                <title>Rust mio库源码情景分析</title>
+                <pubDate>Wed, 30 Oct 2019 00:00:00 +0000</pubDate>
+                <link>https%3A//zongwu233.github.io/rust-mio-source-scenario-analysis/</link>
+                <guid>https%3A//zongwu233.github.io/rust-mio-source-scenario-analysis/</guid>
+                <description>&lt;p&gt;mio 是 Metal IO，Rust语言生态比较底层的I&#x2F;O库，官网的介绍：&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Mio is a lightweight I&#x2F;O library for Rust with a focus on adding as little overhead as possible over the OS abstractions.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;mio目前已经发布了v0.6.19版本，这次分析代码版本选择 &lt;code&gt;master&lt;&#x2F;code&gt;分支，&lt;code&gt;commit id  &lt;&#x2F;code&gt; &lt;code&gt;14f37f283576040c8763f45de6c2b2bbcb82436d&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;我们从官方自带的example进行源码跟踪分析。&lt;&#x2F;p&gt;
+</description>
+            </item>
+        
+    </channel>
+</rss>

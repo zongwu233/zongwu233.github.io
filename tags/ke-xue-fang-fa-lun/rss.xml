@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title></title>
+        <link>https%3A//zongwu233.github.io</link>
+        <description></description>
+        <generator>Zola</generator>
+        <language>en</language>
+        <atom:link href="https%3A//zongwu233.github.io/tags/ke-xue-fang-fa-lun/rss.xml" rel="self" type="application/rss+xml"/>
+        <lastBuildDate>Fri, 11 Oct 2019 00:00:00 +0000</lastBuildDate>
+        
+            <item>
+                <title>如何放大你的个人能力（一）</title>
+                <pubDate>Fri, 11 Oct 2019 00:00:00 +0000</pubDate>
+                <link>https%3A//zongwu233.github.io/enlarge-your-personal-ability-1/</link>
+                <guid>https%3A//zongwu233.github.io/enlarge-your-personal-ability-1/</guid>
+                <description>&lt;!-- Math rendering --&gt;
+&lt;script src=&#x27;https:&#x2F;&#x2F;cdnjs.cloudflare.com&#x2F;ajax&#x2F;libs&#x2F;mathjax&#x2F;2.7.5&#x2F;latest.js?config=TeX-MML-AM_CHTML&#x27; async&gt;&lt;&#x2F;script&gt;
+&lt;script type=&quot;text&#x2F;x-mathjax-config&quot;&gt;
+MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27;\\(&#x27;,&#x27;\\)&#x27;]]}});
+&lt;&#x2F;script&gt;
+&lt;h2 id=&quot;wen-ti&quot;&gt;问题&lt;&#x2F;h2&gt;
+&lt;p&gt;一个普通人如何具有强大的能力，做到某些他原本无法做到的事情呢？&lt;&#x2F;p&gt;
+</description>
+            </item>
+        
+    </channel>
+</rss>

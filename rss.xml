@@ -1,0 +1,589 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title></title>
+        <link>https%3A//zongwu233.github.io</link>
+        <description></description>
+        <generator>Zola</generator>
+        <language>en</language>
+        <atom:link href="https%3A//zongwu233.github.io/rss.xml" rel="self" type="application/rss+xml"/>
+        <lastBuildDate>Wed, 01 Jan 2020 00:00:00 +0000</lastBuildDate>
+        
+            <item>
+                <title>The Starter</title>
+                <pubDate>Wed, 01 Jan 2020 00:00:00 +0000</pubDate>
+                <link>https%3A//zongwu233.github.io/the-starter/</link>
+                <guid>https%3A//zongwu233.github.io/the-starter/</guid>
+                <description>&lt;p&gt;You must really master the concept of：&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;HTTP&lt;&#x2F;code&gt; &lt;code&gt;HTTPS&lt;&#x2F;code&gt; &lt;code&gt;TLS&lt;&#x2F;code&gt; &lt;code&gt;RSA&lt;&#x2F;code&gt; &lt;code&gt;AES&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+</description>
+            </item>
+        
+            <item>
+                <title>Rust mio库源码情景分析</title>
+                <pubDate>Wed, 30 Oct 2019 00:00:00 +0000</pubDate>
+                <link>https%3A//zongwu233.github.io/rust-mio-source-scenario-analysis/</link>
+                <guid>https%3A//zongwu233.github.io/rust-mio-source-scenario-analysis/</guid>
+                <description>&lt;p&gt;mio 是 Metal IO，Rust语言生态比较底层的I&#x2F;O库，官网的介绍：&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Mio is a lightweight I&#x2F;O library for Rust with a focus on adding as little overhead as possible over the OS abstractions.&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;mio目前已经发布了v0.6.19版本，这次分析代码版本选择 &lt;code&gt;master&lt;&#x2F;code&gt;分支，&lt;code&gt;commit id  &lt;&#x2F;code&gt; &lt;code&gt;14f37f283576040c8763f45de6c2b2bbcb82436d&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;我们从官方自带的example进行源码跟踪分析。&lt;&#x2F;p&gt;
+</description>
+            </item>
+        
+            <item>
+                <title>如何放大你的个人能力（一）</title>
+                <pubDate>Fri, 11 Oct 2019 00:00:00 +0000</pubDate>
+                <link>https%3A//zongwu233.github.io/enlarge-your-personal-ability-1/</link>
+                <guid>https%3A//zongwu233.github.io/enlarge-your-personal-ability-1/</guid>
+                <description>&lt;!-- Math rendering --&gt;
+&lt;script src=&#x27;https:&#x2F;&#x2F;cdnjs.cloudflare.com&#x2F;ajax&#x2F;libs&#x2F;mathjax&#x2F;2.7.5&#x2F;latest.js?config=TeX-MML-AM_CHTML&#x27; async&gt;&lt;&#x2F;script&gt;
+&lt;script type=&quot;text&#x2F;x-mathjax-config&quot;&gt;
+MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27;\\(&#x27;,&#x27;\\)&#x27;]]}});
+&lt;&#x2F;script&gt;
+&lt;h2 id=&quot;wen-ti&quot;&gt;问题&lt;&#x2F;h2&gt;
+&lt;p&gt;一个普通人如何具有强大的能力，做到某些他原本无法做到的事情呢？&lt;&#x2F;p&gt;
+</description>
+            </item>
+        
+            <item>
+                <title>最简单的内网导航网站</title>
+                <pubDate>Sat, 26 Jan 2019 00:00:00 +0000</pubDate>
+                <link>https%3A//zongwu233.github.io/the-simplest-navigation-website/</link>
+                <guid>https%3A//zongwu233.github.io/the-simplest-navigation-website/</guid>
+                <description>&lt;p&gt;随着业务系统的增长，运维工具的增多，我们经常需要访问监控页面、ssh登录机器，需要记住很多常用信息，但是这些信息不值得占用宝贵的大脑资源，只需要存储下来用的时候访问即可。
+我们需要一个超简单的导航网站。&lt;&#x2F;p&gt;
+&lt;p&gt;如何最简单地实现一个静态的网站？不要任何多余的东西。&lt;&#x2F;p&gt;
+&lt;p&gt;最好几行代码实现服务，向外提供一个html文件访问服务。新增内容时候，只需要添加到html文件即可。&lt;&#x2F;p&gt;
+</description>
+            </item>
+        
+            <item>
+                <title>服务端架构演进</title>
+                <pubDate>Sun, 23 Dec 2018 00:00:00 +0000</pubDate>
+                <link>https%3A//zongwu233.github.io/architecture-evolution/</link>
+                <guid>https%3A//zongwu233.github.io/architecture-evolution/</guid>
+                <description>&lt;h2 id=&quot;fu-wu-duan-jia-gou-v1-0&quot;&gt;服务端架构v1.0&lt;&#x2F;h2&gt;
+&lt;p&gt;先来看一看服务端架构的1.0版本：&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2019&#x2F;04&#x2F;28&#x2F;5cc576ce0976d.png&quot;&gt;&lt;img src=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2019&#x2F;04&#x2F;28&#x2F;5cc576ce0976d.png&quot; alt=&quot;架构1_0.png&quot; &#x2F;&gt;&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;jia-gou-jie-shao&quot;&gt;架构介绍&lt;&#x2F;h3&gt;
+&lt;p&gt;客户端包括：PC站和m站的web站点，Android和iOS App客户端，管理后台和小程序。其中主要流量来自于Android和iOS。&lt;&#x2F;p&gt;
+&lt;p&gt;接入层：采用了阿里云的Service Load Balance。底层实现是通过LVS+keepalived。该层主要提供了负载均衡和双机热备功能，客户端通过域名访问API接口，当应用的其中一台机器出问题时，依然能保障正常服务。&lt;&#x2F;p&gt;
+&lt;p&gt;服务层：实际上是使用两台阿里云ECS部署Main Api server 和support server 两个应用。Main Api server 提供App需要的API接口。support server提供运营管理后台页面需要的API接口。&lt;&#x2F;p&gt;
+&lt;p&gt;缓存层：采用阿里云Redis服务8G主从版（标准版-双副本）。连接上限10000，QPS约80000。正常情况下完全满足我们的应用需求。不需要集群版本。&lt;&#x2F;p&gt;
+&lt;p&gt;数据层：采用阿里云RDS服务高可用版，4Core8G。最大IOPS:4000，最大连接数:4000。偶尔出现慢SQL导致数据库CPU跑满、接口响应慢。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;cun-zai-de-ji-ge-zhu-yao-wen-ti&quot;&gt;存在的几个主要问题&lt;&#x2F;h3&gt;
+&lt;ol&gt;
+&lt;li&gt;无法应用灵活的流量控制策略，当前所有流量最终会压到应用实例上，一旦出现流量过大现象，只能增加应用实例，或者改动应用响应逻辑并发布。&lt;&#x2F;li&gt;
+&lt;li&gt;无自动化的负载均衡，新增ECS就必须同时修改SLB的后端服务配置，扩容方案不够灵活、需要人为介入并且不易配置。&lt;&#x2F;li&gt;
+&lt;li&gt;管理后台应用与前台应用共用同一个数据库，后台耗时的读操作影响线上接口。&lt;&#x2F;li&gt;
+&lt;li&gt;Main Api server 是一个Monolith Application（巨石应用），任何业务的改动都需要发布该应用，打包发布时间较长。&lt;&#x2F;li&gt;
+&lt;li&gt;非核心业务和核心业务共用资源，比如web容器线程、数据库连接池、Redis连接池等等，一旦非核心业务占用较多资源，将导致其他业务响应变慢。&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;考虑到后续业务发展、当前应用现状和服务端团队人员的实际情况，趁此机会我们决定向微服务架构方向演进。&lt;&#x2F;p&gt;
+&lt;p&gt;选取微服务端架构方案时的一些原则：&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;高质量高可用的服务架构体系&lt;&#x2F;li&gt;
+&lt;li&gt;技术实现成熟稳定&lt;&#x2F;li&gt;
+&lt;li&gt;充分利用Docker容器优势&lt;&#x2F;li&gt;
+&lt;li&gt;团队学习门槛较低&lt;&#x2F;li&gt;
+&lt;li&gt;对当前应用系统入侵较小&lt;&#x2F;li&gt;
+&lt;li&gt;减少不必要的部署和维护代价&lt;&#x2F;li&gt;
+&lt;li&gt;方便支持非JVM的web服务&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;wei-fu-wu-jia-gou-shi-xian&quot;&gt;微服务架构实现&lt;&#x2F;h2&gt;
+&lt;h4 id=&quot;cai-yong-consul-registrator-nginxfang-an-zuo-fu-wu-de-zhu-ce-yu-fa-xian-kuang-jia&quot;&gt;采用&lt;code&gt;Consul + Registrator + Nginx&lt;&#x2F;code&gt;方案做服务的注册与发现框架&lt;&#x2F;h4&gt;
+&lt;p&gt;简单介绍一下Consul 、Consul template 和Registrator：&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Consul是一种 service mesh解决方案，提供具有服务发现和配置的工具，它提供了一些重要特性&lt;a href=&quot;https:&#x2F;&#x2F;www.consul.io&#x2F;intro&#x2F;index.html&quot;&gt;1&lt;&#x2F;a&gt;：&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;服务发现&lt;&#x2F;li&gt;
+&lt;li&gt;健康检查&lt;&#x2F;li&gt;
+&lt;li&gt;KV存储&lt;&#x2F;li&gt;
+&lt;li&gt;多数据中心&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;Consul集群间使用了GOSSIP协议通信和Raft一致性算法，Consul本身是一个分布式的高可用的系统。&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Consul template 通过解析模板，从Consul查询所需的配置数据，接下来后台进程监听&lt;a href=&quot;https:&#x2F;&#x2F;www.consul.io&#x2F;docs&#x2F;agent&#x2F;watches.html&quot;&gt;8&lt;&#x2F;a&gt;Consul中这些数据的变化，并将数据更新到配置的模版文件中。模板更新完成之后，可以配置后续执行命令。&lt;a href=&quot;https:&#x2F;&#x2F;learn.hashicorp.com&#x2F;consul&#x2F;developer-configuration&#x2F;consul-template&quot;&gt;7&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Consul template的模板文件是采用&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;hashicorp&#x2F;hcl&quot;&gt;HashiCorp Configuration Language (HCL)&lt;&#x2F;a&gt;语法编写，同时提供了一些API函数。&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;hashicorp&#x2F;consul-template&quot;&gt;4&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Registrator是一种通过监控宿主机上所有的Docker容器的状态，自动地为Docker容器注册和反注册服务的组件。Registrator支持可拔插的服务注册，包括：Consul，etcd，SkyDNS2。&lt;a href=&quot;http:&#x2F;&#x2F;gliderlabs.github.io&#x2F;registrator&#x2F;latest&#x2F;&quot;&gt;5&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;各组件协调工作如图：&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2019&#x2F;04&#x2F;28&#x2F;5cc599b66fe83.png&quot; alt=&quot;consul_registrator_ngnix.png&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Registrator监听应用容器的变化，实时向consul注册&#x2F;反注册容器内的服务，而consul template也在监听consul server的变化，任何服务的变更或者KV 存储的变更，都触发consul template 的模板文件的变化，这里，consul template 配置的模板一般是生成nginx.conf文件，最后调用nginx的reload config 命令，即可全自动地完成服务的刷新。&lt;&#x2F;p&gt;
+&lt;p&gt;更详细的部署方案见&lt;a href=&quot;..&#x2F;consul-registrator-nginx&quot;&gt;Consul+Registrator+Nginx方案的部署&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;h4 id=&quot;fu-wu-jian-de-diao-yong&quot;&gt;服务间的调用&lt;&#x2F;h4&gt;
+&lt;p&gt;通过上面的方案完成服务的注册和发现，但是服务之间如何调用？&lt;&#x2F;p&gt;
+&lt;p&gt;比如服务A要调用服务B的接口，服务A和服务B都已经注册到Consul server中，服务A要获取服务B的地址很方便，请求Consul Api 即可。可是服务B有多个实例，这时候调用策略有两种选择：&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;服务端负载均衡，服务A通过nignx调用服务B，负载均衡策略由nginx支持。&lt;&#x2F;li&gt;
+&lt;li&gt;客户端负载均衡，服务A自行维护服务B的列表，自行选择一个负载均衡策略，然后调用服务B。&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;出于性能考虑，我们选取第二种方式，即客户端负载均衡。&lt;&#x2F;p&gt;
+&lt;p&gt;通过封装Consul API 和Feign-ribbon，我们实现了客户端之间相互调用的中间件。&lt;&#x2F;p&gt;
+&lt;h4 id=&quot;openresty&quot;&gt;OpenResty&lt;&#x2F;h4&gt;
+&lt;p&gt;服务架构v1.0版本由于缺失统一网关，导致无法实现灵活的负载均衡、鉴权、流量控制等功能。为了方便实现网关的功能，采用 OpenResty &lt;a href=&quot;https:&#x2F;&#x2F;openresty.org&#x2F;cn&#x2F;&quot;&gt;6&lt;&#x2F;a&gt;而不是Nginx来作为网关的基础组件。&lt;&#x2F;p&gt;
+&lt;p&gt;通过 OpenResty 强大的lua脚本，可以对网络请求做各种复杂的控制和安全检测。&lt;&#x2F;p&gt;
+&lt;p&gt;负载均衡是 OpenResty 自带功能。&lt;&#x2F;p&gt;
+&lt;p&gt;请求鉴权，通过 lua 脚本调用用户中心接口完成各种场景的鉴权功能，如果鉴权失败，则阻断请求。&lt;&#x2F;p&gt;
+&lt;p&gt;流量控制，通过 lua 脚本对请求的header和uri 解析，灵活定制流量控制策略。&lt;&#x2F;p&gt;
+&lt;p&gt;蓝绿发布，结合consul、consul-template 和OpenResty，实现服务的蓝绿发布功能。&lt;&#x2F;p&gt;
+&lt;p&gt;通过在网关处向 request header 中写入 request Id，支持完整请求链追踪的日志分析。&lt;&#x2F;p&gt;
+&lt;p&gt;服务路由，v1.0版本的架构，受限于SLB的实现，必须为每一个业务应用单独配置一个端口和域名， 给客户端调用带来很大不便。新的架构可以采用统一的 API 域名，在网关处做服务路由即可（比如通过path区分业务服务），从而实现API 域名的收敛。&lt;&#x2F;p&gt;
+&lt;p&gt;对接SLB服务的是OpenResty，目前有三个实例，后续任意应用水平扩展的时候，会自动注册到consul server，无需变动SLB配置。&lt;&#x2F;p&gt;
+&lt;h4 id=&quot;ying-yong-zi-yuan-chai-fen&quot;&gt;应用资源拆分&lt;&#x2F;h4&gt;
+&lt;p&gt;新增的Finance应用是金币业务，使用独立数据库。&lt;&#x2F;p&gt;
+&lt;p&gt;新增的Data server应用是搜集数据埋点业务，该应用需要存储客户端上报的大量的埋点数据，使用PostgreSQL，并且采用PostgreSQL自带的分表功能。&lt;&#x2F;p&gt;
+&lt;p&gt;Support server是之前的管理后台服务，通过对Main Api server 的数据库配置主从架构，让Support server 的读操作走从库，写操作走主库，解决Support server 拖慢生产环境数据库的问题。&lt;&#x2F;p&gt;
+&lt;p&gt;Kafka消息队列主要用于应用间异步通信的场景。Main Api server 和 Finance server 都会产生金币计费消息，Finance server应用负责消费该消息。&lt;&#x2F;p&gt;
+&lt;h4 id=&quot;zui-zhong-de-fu-wu-duan-jia-gou&quot;&gt;最终的服务端架构&lt;&#x2F;h4&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2019&#x2F;04&#x2F;28&#x2F;5cc5abf8e0385.png&quot; alt=&quot;架构2_0.png&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+</description>
+            </item>
+        
+            <item>
+                <title>Consul+Registrator+Nginx方案的部署</title>
+                <pubDate>Thu, 20 Dec 2018 00:00:00 +0000</pubDate>
+                <link>https%3A//zongwu233.github.io/consul-registrator-nginx/</link>
+                <guid>https%3A//zongwu233.github.io/consul-registrator-nginx/</guid>
+                <description>&lt;p&gt;详细介绍Consul+Registrator+Nginx方案的部署细节。&lt;&#x2F;p&gt;
+</description>
+            </item>
+        
+            <item>
+                <title>更新配置自动化工具</title>
+                <pubDate>Sat, 03 Nov 2018 00:00:00 +0000</pubDate>
+                <link>https%3A//zongwu233.github.io/update-config-automated-tool/</link>
+                <guid>https%3A//zongwu233.github.io/update-config-automated-tool/</guid>
+                <description>&lt;h2 id=&quot;yuan-qi&quot;&gt;缘起&lt;&#x2F;h2&gt;
+&lt;p&gt;  我们小创业公司使用的宽带是个人家庭宽带（申请企业宽带的成本很高，每月几千块），公网IP过一段时间就会变动，平时使用都没有什么影响，只有一点，阿里云上的服务都配置了安全组，只允许阿里云内网或者白名单IP访问，从而保障公司服务安全性。公司公网IP会动态变更，每一次变更之后都要修改安全组的ip配置，十分麻烦。&lt;&#x2F;p&gt;
+&lt;p&gt;  来自攻城师的思考：每一次IP变动都打断了大家专心工作的心流（Flow）状态，而且登录阿里云控制台修改也很繁琐，修改安全组配置的IP名单，能不能自动化？&lt;&#x2F;p&gt;
+&lt;p&gt;  大概瞄了一下阿里云相关的API，这事情可以搞。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;dong-shou-shi-xian&quot;&gt;动手实现&lt;&#x2F;h2&gt;
+&lt;p&gt;看看需要实现哪些功能：&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;定时调度&lt;&#x2F;li&gt;
+&lt;li&gt;获取公司宽带的公网IP地址&lt;&#x2F;li&gt;
+&lt;li&gt;调用阿里云API刷新安全组的白名单IP&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;如何获取公司宽带的公网IP地址？&lt;&#x2F;p&gt;
+&lt;p&gt;这个简单，市场上有很多ip查询的网站，比如 ip.cn，ipip.net ，你访问他们的网站，默认就会显示你的公网ip。&lt;&#x2F;p&gt;
+&lt;p&gt;调用阿里云API没什么难度，只是工作量。&lt;&#x2F;p&gt;
+&lt;p&gt;核心逻辑就是，获取当前公司ip，存储下来，每隔N分钟，再次获取公司当前ip，与之前记录对比，如果不同，则调用阿里云api，更新安全组白名单IP，最后存储新IP。否则什么也不做。&lt;&#x2F;p&gt;
+&lt;p&gt;于是我创建了一个SpringBoot应用，为什么要创建一个java web应用？首先因为最熟悉java，其次是工程创建快速，使用简单，之前我实现了一个模版工程，可以快速创建SpringBoot应用，而且配置了常用的类库，非常方便。&lt;&#x2F;p&gt;
+&lt;p&gt;一些核心功能实现：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#c0c5ce;&quot;&gt;@&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Component
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;ScheduleComp &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Logger &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;logger &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;LoggerFactory&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;getLogger&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;ScheduleComp&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;class&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;);
+
+    @&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Autowired
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;RefreshSecurityRulService &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;securityRulService;
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;**
+     * 每隔3分钟检查一下
+     *&#x2F;
+    @Scheduled(cron = &amp;quot;0 *&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;3&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; * * * ?&amp;quot;)
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;cornJob&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;() {
+        logger.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;warn&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; &amp;gt;&amp;gt;cron执行....&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;);
+        securityRulService.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;refreshAll&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;);
+    }
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;code&gt;securityRulService 的refreshAll()方法&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#b48ead;&quot;&gt;public&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;refreshAll&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;boolean&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; force) {
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; nowIp = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;getLocalIp&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;();
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;StringUtils&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;isEmpty&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(nowIp)) {
+            logger.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;error&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;get current ip is empty! try next time...&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;);
+            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;;
+        }
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; oldIp = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;getCurrentIp&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;();
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;StringUtils&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;isEmpty&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(oldIp)) {
+            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;throw new &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;RuntimeException&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;current ip data is empty!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;);
+        }
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;StringUtils&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;equals&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(nowIp, oldIp) &amp;amp;&amp;amp; !force) {
+            logger.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;warn&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;same ip, nothing todo&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;);
+            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;;
+        }
+        ecsRefreshSecurityRuleService.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;refreshAll&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(nowIp, oldIp);
+
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;updateCurrentIp&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(nowIp);
+    }
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;code&gt;getLocalIp()&lt;&#x2F;code&gt;的实现：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#b48ead;&quot;&gt;public static &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;getLocalIp&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;() {
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; ip = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;getIpCN&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;();
+  			...
+          
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; ip;
+    }
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public static &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;getIpCN&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;() {
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F;&amp;lt;p&amp;gt;您现在的 IP：&amp;lt;code&amp;gt;114.0.1.2&amp;lt;&#x2F;code&amp;gt;
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;getLocalIp&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;http:&#x2F;&#x2F;ip.cn&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;lt;p&amp;gt;您现在的 IP：&amp;lt;code&amp;gt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;);
+    }
+
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public static &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;getLocalIp&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; url, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; prefix) {
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Request&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; request = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;new &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Request&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Builder&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;()
+                .&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;get&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;()
+                .&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;url&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(url)
+                .&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;build&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;();
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;try &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;{
+            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Response&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; response = okHttpClient.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;newCall&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(request).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;execute&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;();
+            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(response.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;isSuccessful&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;()) {
+                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; regexPatten = prefix + &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;((?:(?:25[0-5]|2[0-4]&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\\&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;d|((1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\\&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;d{2})|([1-9]?&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\\&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;d))).){3}(?:25[0-5]|2[0-4]&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\\&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;d|((1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\\&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;d{2})|([1-9]?&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\\&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;d))))&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;;
+                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Pattern&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; pattern = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Pattern&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;compile&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(regexPatten);
+                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; resp = response.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;body&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;().&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;string&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;();
+                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Matcher&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; matcher = pattern.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;matcher&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(resp);
+                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(matcher.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;find&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;()) {
+                    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; matchStr = matcher.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;group&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;);
+                    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; matchStr.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;replace&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(prefix, &amp;quot;&amp;quot;);
+                }
+            }
+            response.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;close&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;();
+        } &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;catch &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;IOException &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;e&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;) {
+            e.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;printStackTrace&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;();
+        }
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;&amp;quot;;
+    }
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;这里通过 ip.cn 获取本机的公网地址。&lt;&#x2F;p&gt;
+&lt;p&gt;还可以配置其他网站，防止ip.cn挂掉而导致服务失败。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;getCurrentIp&lt;&#x2F;code&gt; 的实现很简单，从本地文件读取上次记录的ip地址。&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#b48ead;&quot;&gt;public &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;getCurrentIp&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;() {
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;File&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; file = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;new &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;File&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;ip.txt&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;);
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(!file.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;exists&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;()) {
+            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;throw new &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;RuntimeException&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;cannot find ip data!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;);
+        }
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;try &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;{
+            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;BufferedReader&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; bufferedReader =
+                    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;new &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;BufferedReader&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;new &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;InputStreamReader&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;new &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;FileInputStream&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(file)));
+            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; strLine = bufferedReader.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;readLine&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;();
+            bufferedReader.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;close&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;();
+            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; strLine.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;trim&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;();
+        } &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;catch &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Exception &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;e&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;) {
+            e.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;printStackTrace&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;();
+        }
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;&amp;quot;;
+    }
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;采用文件存储是最简单直接的方式。更新文件内容的代码：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#b48ead;&quot;&gt;private&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;updateCurrentIp&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; ip) {
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;StringUtils&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;isEmpty&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(ip))
+            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;;
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;File&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; file = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;new &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;File&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;ip.txt&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;);
+        file.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;delete&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;();
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;try &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;{
+            file.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;createNewFile&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;();
+            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;BufferedWriter&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; bufferedWriter =
+                    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;new &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;BufferedWriter&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;new &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;OutputStreamWriter&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;new &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;FileOutputStream&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(file)));
+            bufferedWriter.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;write&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(ip.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;trim&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;());
+            bufferedWriter.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;close&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;();
+        } &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;catch &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Exception &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;e&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;) {
+            e.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;printStackTrace&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;();
+        }
+    }
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;刷新阿里云安全组配置的逻辑：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#b48ead;&quot;&gt;public&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;refreshAll&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; nowIp, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; oldIp) {
+
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;List&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;SecurityRuleDO&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;gt; newSecurityRuleDOList = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;new &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;ArrayList&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;lt;&amp;gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;testServer&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(nowIp));
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;SecurityRuleDO&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; securityRuleDO : newSecurityRuleDOList) {
+            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;refresh&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(securityRuleDO);
+
+        }
+
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;StringUtils&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;equals&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(nowIp, oldIp)) {
+            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;List&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;SecurityRuleDO&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;gt; oldSecurityRuleDOList = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;new &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;ArrayList&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;lt;&amp;gt;();
+            oldSecurityRuleDOList.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;addAll&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;testServer&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(oldIp));
+            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;SecurityRuleDO&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; securityRuleDO : oldSecurityRuleDOList) {
+                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;deleteOld&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(securityRuleDO);
+            }
+
+        }
+    }
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;private &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;List&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;SecurityRuleDO&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;testServer&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; ip) {
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;List&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;SecurityRuleDO&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;gt; securityRuleDOList = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;new &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;ArrayList&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;lt;&amp;gt;();
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;SecurityRuleDO&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; securityRuleDO = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;new &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;SecurityRuleDO&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;();
+        securityRuleDO.sourceIp = ip;
+        securityRuleDO.groupId = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;YourECSGroupId&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;;
+        securityRuleDO.ipProtocol = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;tcp&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;;
+        securityRuleDO.portRange = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;yourPort&#x2F;yourPort&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;;
+        securityRuleDOList.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;add&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(securityRuleDO);
+				...
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; securityRuleDOList;
+    }
+
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public boolean &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;refresh&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;SecurityRuleDO&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; securityRuleDO) {
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;AuthorizeSecurityGroupRequest&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; request =
+                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;new &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;AuthorizeSecurityGroupRequest&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;();
+        request.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;setSecurityGroupId&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(securityRuleDO.groupId);
+        request.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;setIpProtocol&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(securityRuleDO.ipProtocol);
+        request.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;setPortRange&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(securityRuleDO.portRange);
+        request.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;setNicType&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(securityRuleDO.nicType);
+        request.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;setPolicy&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;accept&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;);
+        request.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;setSourceCidrIp&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(securityRuleDO.sourceIp);
+
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;try &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;{
+            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;AuthorizeSecurityGroupResponse&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; response = client.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;getAcsResponse&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(request);
+            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; requestId = response.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;getRequestId&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;();
+            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;System&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;.out.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;println&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(requestId);
+            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;true&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;;
+        } &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;catch &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;ClientException &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;e&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;) {
+            e.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;printStackTrace&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;();
+            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;;
+        }
+    }
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public boolean &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;deleteOld&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;SecurityRuleDO&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; securityRuleDO) {
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;RevokeSecurityGroupRequest&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; request = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;new &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;RevokeSecurityGroupRequest&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;();
+        request.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;setSecurityGroupId&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(securityRuleDO.groupId);
+        request.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;setIpProtocol&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(securityRuleDO.ipProtocol);
+        request.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;setPortRange&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(securityRuleDO.portRange);
+        request.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;setNicType&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(securityRuleDO.nicType);
+        request.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;setPolicy&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;accept&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;);
+        request.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;setSourceCidrIp&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(securityRuleDO.sourceIp);
+
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;try &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;{
+            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;RevokeSecurityGroupResponse&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; response = client.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;getAcsResponse&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(request);
+            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; requestId = response.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;getRequestId&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;();
+            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;System&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;.out.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;println&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(requestId);
+            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;true&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;;
+        } &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;catch &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;Exception &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;e&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;) {
+            e.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;printStackTrace&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;();
+            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;false&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;;
+        }
+    }
+
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;其中client的初始化：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#ebcb8b;&quot;&gt;DefaultProfile&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; profile = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;DefaultProfile&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;getProfile&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(reginId, appkey, secret);
+                    client = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;new &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;DefaultAcsClient&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(profile);
+
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;xiao-wen-ti&quot;&gt;小问题&lt;&#x2F;h2&gt;
+&lt;p&gt;定时3分钟刷新有个小问题，就是有极小的概率，发生IP变更但是还没有及时刷新安全组的配置。怎么办，再加一个主动刷新的接口呗：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#c0c5ce;&quot;&gt;@&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;RestController
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public class &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;RefreshSecurityRuleController &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;{
+    @&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;Autowired
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;RefreshSecurityRulService &lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;securityRulService;
+
+    @&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetMapping&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;ip&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;)
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;getMyIp&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;() {
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt; securityRulService.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;getLocalIp&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;();
+    }
+
+    @&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;GetMapping&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;fresh&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;)
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;public &lt;&#x2F;span&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;String &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;forceFresh&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;() {
+        securityRulService.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;refreshAll&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;true&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;);
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;done!&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#eff1f5;&quot;&gt;;
+    }
+
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;其中的&lt;code&gt;&#x2F;fresh&lt;&#x2F;code&gt;强制刷新IP。还附赠了一个接口，获取公司当前的IP。&lt;&#x2F;p&gt;
+&lt;p&gt;这个小应用部署在公司局域网内，一直工作的很好，再也不用烦心IP变动这些琐事。&lt;&#x2F;p&gt;
+&lt;p&gt;直到有一次，ip.cn 网站挂了。挂了很久，我们就增加了从&lt;code&gt;ip.tool.chinaz.com&lt;&#x2F;code&gt; 网站获取IP。&lt;&#x2F;p&gt;
+&lt;p&gt;收工。&lt;&#x2F;p&gt;
+</description>
+            </item>
+        
+            <item>
+                <title>使用Gradle 构建SpringBoot应用的Docker镜像</title>
+                <pubDate>Wed, 24 Oct 2018 00:00:00 +0000</pubDate>
+                <link>https%3A//zongwu233.github.io/gradle-build-springboot-dockerimage/</link>
+                <guid>https%3A//zongwu233.github.io/gradle-build-springboot-dockerimage/</guid>
+                <description>&lt;h2 id=&quot;ying-yong-fa-bu-liu-cheng&quot;&gt;应用发布流程&lt;&#x2F;h2&gt;
+&lt;p&gt;通过结合docker容器，目前我们应用的发布流程大致如下：&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2019&#x2F;04&#x2F;28&#x2F;5cc5177f1c1a9.png&quot; alt=&quot;应用发布流程.png&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;gradlejiao-ben-gou-jian-jing-xiang&quot;&gt;Gradle脚本构建镜像&lt;&#x2F;h2&gt;
+&lt;p&gt;我们的工程是：&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;基于SpringBoot 2.0.3.RELEASE&lt;&#x2F;li&gt;
+&lt;li&gt;采用JDK8编译&lt;&#x2F;li&gt;
+&lt;li&gt;gradle 构建&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;根据我们发布流程的要求，构建出最终的镜像需要满足几个目标：&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;尽可能构建体积小的镜像&lt;&#x2F;li&gt;
+&lt;li&gt;通过执行简单的gradle命令，构建镜像并push到阿里云的dockerHub仓库&lt;&#x2F;li&gt;
+&lt;li&gt;构建的镜像版本，有唯一标识，方便发布。比如版本中含有日期和 最后一次git commit的hash值&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;我们最终选用了 &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;bmuschko&#x2F;gradle-docker-plugin&quot;&gt;https:&#x2F;&#x2F;github.com&#x2F;bmuschko&#x2F;gradle-docker-plugin&lt;&#x2F;a&gt; 的gradle-docker-plugin来实现构建docker镜像。该插件支持&lt;code&gt;java-application&lt;&#x2F;code&gt;  和 &lt;code&gt;spring-boot-application&lt;&#x2F;code&gt; 两种方式，很明显我们选取spring-boot-applicaiton插件。&lt;&#x2F;p&gt;
+&lt;p&gt;在原工程的build.gradle 最后加上：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#c0c5ce;&quot;&gt;apply &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;from&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;docker.gradle&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;在build.gradle的同一级目录下新建文件docker.gradle。&lt;&#x2F;p&gt;
+&lt;p&gt;添加：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#c0c5ce;&quot;&gt;buildscript {
+    repositories {
+
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;com.bmuschko:gradle-docker-plugin:4.0.1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39;
+    }
+}
+
+apply &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;plugin&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;java&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39;
+apply &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;plugin&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;org.springframework.boot&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39;
+apply &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;plugin&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;DockerRemoteApiPlugin&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;
+apply &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;plugin&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;com.bmuschko.gradle.docker.DockerSpringBootApplicationPlugin
+
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;都是一些基础配置。&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#c0c5ce;&quot;&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; projectname = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;project.getName()&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; dockerVer = getGitVersion()
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; port = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;8990
+
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;这里定义一些全局变量使用。port可以根据实际情况定义。其中&lt;code&gt;getGitVersion()&lt;&#x2F;code&gt;的定义：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#b48ead;&quot;&gt;import java.text.SimpleDateFormat
+def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;getGitVersion() {
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; logTime = &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;git log&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39;.execute() | &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;grep Date:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39;.execute() | &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;head -n 1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39;.execute()
+    logTime.waitFor()
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;Date&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; date = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;new Date&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(logTime.text.replace(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Date:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;, &amp;quot;&amp;quot;).trim())
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; pushTime = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;new SimpleDateFormat&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;yyyyMMddHHmmss&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;).format(date)
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; pushTime + &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot; + (&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;git rev-parse --short HEAD&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39;.execute().text.trim())
+}
+
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;可以看到拼接了git仓库的最后一个commit 的提交时间和hash值。&lt;&#x2F;p&gt;
+&lt;p&gt;gradle-docker-plugin 预定义了一些task，我们只需要简单配置：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#c0c5ce;&quot;&gt;docker { 
+    url = getDefaultDockerUrl()
+    registryCredentials {
+        url = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;registry.cn-hangzhou.aliyuncs.com&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;
+        username = &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;yourRepoUsername&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39;
+        password = &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;yourRepopswd&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39;
+    }
+    springBootApplication {
+        baseImage = &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;openjdk:8-alpine&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39;
+        ports = [port, port]
+    }
+
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;code&gt;getDefaultDockerUrl&lt;&#x2F;code&gt; 是本地docker 的url，plugin对windows、linux、mac都已经有了相应实现。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;registryCredentials&lt;&#x2F;code&gt; 是docker Hub的认证信息配置。 阿里云的dockerHub配置如上。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;springBootApplication&lt;&#x2F;code&gt; 只需要配置&lt;code&gt;baseImage&lt;&#x2F;code&gt; 和端口映射。可以看到我们基于&lt;code&gt;openjdk:8-alpine&lt;&#x2F;code&gt; ，alpine linux 镜像只有4.4M，不过 &lt;code&gt;openjdk:8-alpine&lt;&#x2F;code&gt;镜像体积赫然有103MB那么大了。&lt;&#x2F;p&gt;
+&lt;p&gt;配置这些就可以构建镜像，但是有些小问题需要解决。&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;&#96;&#96;openjdk:8-alpine&#96; 默认是标准时区，而不是+8时区，需要修改。&lt;&#x2F;li&gt;
+&lt;li&gt;该插件对私有docker仓库的tag支持存在bug，需要特殊处理。&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;接下来我们需要重写其中的 createDockerFile，buildImage，PushImage Task 来解决这两个问题。&lt;&#x2F;p&gt;
+&lt;p&gt;其中 createDockerFile：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#c0c5ce;&quot;&gt;
+task createDockerfile(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;Dockerfile&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;) {
+    dependsOn dockerSyncArchive
+    from(docker.springBootApplication.baseImage.get())
+    copyFile(bootWar.archiveName, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;app&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;bootWar.archiveName&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;.toString())
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F;https:&#x2F;&#x2F;wiki.alpinelinux.org&#x2F;wiki&#x2F;Setting_the_timezone
+    &#x2F;&#x2F;https:&#x2F;&#x2F;github.com&#x2F;gliderlabs&#x2F;docker-alpine&#x2F;issues&#x2F;428
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;runCommand(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; echo &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;http:&#x2F;&#x2F;mirrors.ustc.edu.cn&#x2F;alpine&#x2F;v3.8&#x2F;main&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; &amp;gt; &#x2F;etc&#x2F;apk&#x2F;repositories  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39; +
+            &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; &amp;amp;&amp;amp; echo &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;http:&#x2F;&#x2F;mirrors.ustc.edu.cn&#x2F;alpine&#x2F;v3.8&#x2F;community&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; &amp;gt;&amp;gt;&#x2F;etc&#x2F;apk&#x2F;repositories  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39; +
+            &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; &amp;amp;&amp;amp; apk update &amp;amp;&amp;amp; apk add tzdata  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39; +
+            &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; &amp;amp;&amp;amp; ln -snf &#x2F;usr&#x2F;share&#x2F;zoneinfo&#x2F;Asia&#x2F;Shanghai &#x2F;etc&#x2F;localtime  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39; +
+            &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; &amp;amp;&amp;amp; echo &amp;quot;Asia&#x2F;Shanghai&amp;quot; &amp;gt; &#x2F;etc&#x2F;timezone  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39; +
+            &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; &amp;amp;&amp;amp; date &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39;+
+            &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; &amp;amp;&amp;amp; rm -rf &#x2F;var&#x2F;cache&#x2F;apk&#x2F;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39; +
+            &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; &amp;amp;&amp;amp; rm -rf &#x2F;usr&#x2F;local&#x2F;share&#x2F;.cache&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39;)
+    entryPoint(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;java&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;)
+    defaultCommand(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-jar&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;app&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;bootWar.archiveName&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;.toString())
+    exposePort(docker.springBootApplication.ports)
+
+
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;上面主要是创建Dockerfile，编写指令来配置合适的&lt;code&gt;timezone&lt;&#x2F;code&gt;。使用中科大的apk安装源（mirrors.ustc.edu.cn）更快。。。&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#c0c5ce;&quot;&gt;task buildImage(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;DockerBuildImage&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;) {
+    dependsOn createDockerfile
+    inputDir = createDockerfile.destFile.get().asFile.parentFile
+    tag = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;zongwu233&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;projectname&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;dockerVer&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;.toLowerCase()
+}
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F;https:&#x2F;&#x2F;github.com&#x2F;bmuschko&#x2F;gradle-docker-plugin&#x2F;issues&#x2F;209
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;task dockerTag(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;com.bmuschko.gradle.docker.tasks.image.DockerTagImage&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;) {
+    dependsOn buildImage
+    imageId = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;zongwu233&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;projectname&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;dockerVer&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;.toLowerCase()
+    tag = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;dockerVer&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;.toLowerCase()
+    repository = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;registry.cn-hangzhou.aliyuncs.com&#x2F;zongwu233&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;projectname&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;.toLowerCase()
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;解决私有DockerHub 的tag问题。更详细的讨论见&lt;code&gt;https:&#x2F;&#x2F;github.com&#x2F;bmuschko&#x2F;gradle-docker-plugin&#x2F;issues&#x2F;209&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;其中&lt;code&gt;zongwu233&lt;&#x2F;code&gt; 是在阿里云DockerHub中的命名空间，&lt;code&gt;${projectname}&lt;&#x2F;code&gt; 是仓库名称。&lt;&#x2F;p&gt;
+&lt;p&gt;最后是push task：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#c0c5ce;&quot;&gt;task pushImage(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;DockerPushImage&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;) {
+    dependsOn dockerTag
+    imageName = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;registry.cn-hangzhou.aliyuncs.com&#x2F;zongwu233&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;projectname&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;.toLowerCase()
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;另外要在createDockerFile，buildImage 等task之前 加上import 声明：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#b48ead;&quot;&gt;import com.bmuschko.gradle.docker.DockerRemoteApiPlugin
+import&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; com.bmuschko.gradle.docker.tasks.image.*
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;这样，在控制台输入命令:&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#bf616a;&quot;&gt;gradle&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; pushImage
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;即可完成应用的docker镜像构建并且push到阿里云仓库。&lt;&#x2F;p&gt;
+</description>
+            </item>
+        
+            <item>
+                <title>《从0到1》读书笔记</title>
+                <pubDate>Sun, 09 Sep 2018 00:00:00 +0000</pubDate>
+                <link>https%3A//zongwu233.github.io/zerotoone-reading-notes/</link>
+                <guid>https%3A//zongwu233.github.io/zerotoone-reading-notes/</guid>
+                <description>&lt;p&gt;市面上大把的书教你如何变得优秀：如何成为优秀的人，如何创立优秀的公司。&lt;&#x2F;p&gt;
+&lt;p&gt;这本书谈的是卓越。&lt;&#x2F;p&gt;
+&lt;p&gt;优秀是大众看得到的，显而易见的好，但卓越一开始是反直觉的，而且很难，直到最后的结果太强大，大家不得不接受。&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;如果你照搬他们（比尔盖茨，拉奇佩里，扎克伯格）的成果，你就不是在向他们学习。&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;画家齐白石也有过类似的话：&lt;&#x2F;p&gt;
+&lt;p&gt;学我者生，似我者死。&lt;&#x2F;p&gt;
+&lt;p&gt;模仿大师的产品，是没有前途的。要模仿学习的的是他们的思考方式。&lt;&#x2F;p&gt;
+</description>
+            </item>
+        
+            <item>
+                <title>高性能OLAP调研</title>
+                <pubDate>Sun, 29 Jul 2018 00:00:00 +0000</pubDate>
+                <link>https%3A//zongwu233.github.io/high-performance-olap/</link>
+                <guid>https%3A//zongwu233.github.io/high-performance-olap/</guid>
+                <description>&lt;p&gt;业界有没有面向亿级数据多维度组合查询能够亚秒级响应的系统？&lt;&#x2F;p&gt;
+</description>
+            </item>
+        
+    </channel>
+</rss>

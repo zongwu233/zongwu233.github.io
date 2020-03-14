@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title> - 更新配置自动化工具</title>
+
+      
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;rss.xml">
+      
+
+      
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
+          
+      
+
+      
+          <link rel="stylesheet" href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;site.css">
+          
+      
+
+      
+      
+    </head>
+
+    <body>
+        <div class="container">
+
+            <div id="mobile-navbar" class="mobile-navbar">
+              <div class="mobile-header-logo">
+                <a href="/" class="logo">zongwu&#x27;s blog</a>
+              </div>
+              <div class="mobile-navbar-icon icon-out">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+
+            <nav id="mobile-menu" class="mobile-menu slideout-menu slideout-menu-left">
+              <ul class="mobile-menu-list">
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io">
+                            Home
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;categories">
+                            Categories
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;tags">
+                            Tags
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;about">
+                            About
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;rss.xml">
+                            RSS
+                        </a>
+                    </li>
+                
+              </ul>
+            </nav>
+
+            <header id="header">
+                <div class="logo"><a href="https:&#x2F;&#x2F;zongwu233.github.io">zongwu&#x27;s blog</a></div>
+                <nav class="menu">
+                    <ul>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io">
+                                    Home
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;categories">
+                                    Categories
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;tags">
+                                    Tags
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;about">
+                                    About
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;rss.xml">
+                                    RSS
+                                </a>
+                            </li>
+                        
+                    </ul>
+                </nav>
+            </header>
+
+            <main>
+                <div class="content" id="mobile-panel">
+                    
+
+
+<div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content always-active">
+        <nav id="TableOfContents">
+            <ul>
+                
+                <li>
+                    <a href="https://zongwu233.github.io/update-config-automated-tool/#yuan-qi" class="toc-link">缘起</a>
+                    
+                </li>
+                
+                <li>
+                    <a href="https://zongwu233.github.io/update-config-automated-tool/#dong-shou-shi-xian" class="toc-link">动手实现</a>
+                    
+                </li>
+                
+                <li>
+                    <a href="https://zongwu233.github.io/update-config-automated-tool/#xiao-wen-ti" class="toc-link">小问题</a>
+                    
+                </li>
+                
+            </ul>
+        </nav>
+    </div>
+</div>
+
+
+<article class="post">
+    
+    <header class="post__header">
+        <h1 class="post__title">
+            <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;update-config-automated-tool&#x2F;">更新配置自动化工具</a>
+        </h1>
+        <div class="post__meta">
+            <span class="post__time">2018-11-03</span>
+            
+        </div>
+    </header>
+
+    <div class="post-content">
+      <h2 id="yuan-qi">缘起</h2>
+<p>  我们小创业公司使用的宽带是个人家庭宽带（申请企业宽带的成本很高，每月几千块），公网IP过一段时间就会变动，平时使用都没有什么影响，只有一点，阿里云上的服务都配置了安全组，只允许阿里云内网或者白名单IP访问，从而保障公司服务安全性。公司公网IP会动态变更，每一次变更之后都要修改安全组的ip配置，十分麻烦。</p>
+<p>  来自攻城师的思考：每一次IP变动都打断了大家专心工作的心流（Flow）状态，而且登录阿里云控制台修改也很繁琐，修改安全组配置的IP名单，能不能自动化？</p>
+<p>  大概瞄了一下阿里云相关的API，这事情可以搞。</p>
+<h2 id="dong-shou-shi-xian">动手实现</h2>
+<p>看看需要实现哪些功能：</p>
+<ul>
+<li>定时调度</li>
+<li>获取公司宽带的公网IP地址</li>
+<li>调用阿里云API刷新安全组的白名单IP</li>
+</ul>
+<p>如何获取公司宽带的公网IP地址？</p>
+<p>这个简单，市场上有很多ip查询的网站，比如 ip.cn，ipip.net ，你访问他们的网站，默认就会显示你的公网ip。</p>
+<p>调用阿里云API没什么难度，只是工作量。</p>
+<p>核心逻辑就是，获取当前公司ip，存储下来，每隔N分钟，再次获取公司当前ip，与之前记录对比，如果不同，则调用阿里云api，更新安全组白名单IP，最后存储新IP。否则什么也不做。</p>
+<p>于是我创建了一个SpringBoot应用，为什么要创建一个java web应用？首先因为最熟悉java，其次是工程创建快速，使用简单，之前我实现了一个模版工程，可以快速创建SpringBoot应用，而且配置了常用的类库，非常方便。</p>
+<p>一些核心功能实现：</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">@</span><span style="color:#bf616a;">Component
+</span><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">ScheduleComp </span><span style="color:#eff1f5;">{
+
+    </span><span style="color:#ebcb8b;">Logger </span><span style="color:#eff1f5;">logger </span><span style="color:#c0c5ce;">= </span><span style="color:#ebcb8b;">LoggerFactory</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">getLogger</span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">ScheduleComp</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">class</span><span style="color:#eff1f5;">);
+
+    @</span><span style="color:#bf616a;">Autowired
+    </span><span style="color:#ebcb8b;">RefreshSecurityRulService </span><span style="color:#eff1f5;">securityRulService;
+
+    </span><span style="color:#65737e;">/**
+     * 每隔3分钟检查一下
+     */
+    @Scheduled(cron = &quot;0 */</span><span style="color:#d08770;">3</span><span style="color:#eff1f5;"> * * * ?&quot;)
+    </span><span style="color:#b48ead;">public void </span><span style="color:#8fa1b3;">cornJob</span><span style="color:#eff1f5;">() {
+        logger.</span><span style="color:#bf616a;">warn</span><span style="color:#eff1f5;">(</span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;"> &gt;&gt;cron执行....</span><span style="color:#c0c5ce;">&quot;</span><span style="color:#eff1f5;">);
+        securityRulService.</span><span style="color:#bf616a;">refreshAll</span><span style="color:#eff1f5;">(</span><span style="color:#d08770;">false</span><span style="color:#eff1f5;">);
+    }
+}
+</span></pre>
+<p><code>securityRulService 的refreshAll()方法</code></p>
+<pre style="background-color:#2b303b;">
+<span style="color:#b48ead;">public</span><span style="color:#c0c5ce;"> void </span><span style="color:#bf616a;">refreshAll</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">boolean</span><span style="color:#c0c5ce;"> force) {
+        </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> nowIp = </span><span style="color:#bf616a;">getLocalIp</span><span style="color:#c0c5ce;">();
+        </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">StringUtils</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">isEmpty</span><span style="color:#c0c5ce;">(nowIp)) {
+            logger.</span><span style="color:#bf616a;">error</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">get current ip is empty! try next time...</span><span style="color:#c0c5ce;">&quot;);
+            </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;">;
+        }
+        </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> oldIp = </span><span style="color:#bf616a;">getCurrentIp</span><span style="color:#c0c5ce;">();
+        </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">StringUtils</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">isEmpty</span><span style="color:#c0c5ce;">(oldIp)) {
+            </span><span style="color:#b48ead;">throw new </span><span style="color:#ebcb8b;">RuntimeException</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">current ip data is empty!</span><span style="color:#c0c5ce;">&quot;);
+        }
+        </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">StringUtils</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">equals</span><span style="color:#c0c5ce;">(nowIp, oldIp) &amp;&amp; !force) {
+            logger.</span><span style="color:#bf616a;">warn</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">same ip, nothing todo</span><span style="color:#c0c5ce;">&quot;);
+            </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;">;
+        }
+        ecsRefreshSecurityRuleService.</span><span style="color:#bf616a;">refreshAll</span><span style="color:#c0c5ce;">(nowIp, oldIp);
+
+        </span><span style="color:#bf616a;">updateCurrentIp</span><span style="color:#c0c5ce;">(nowIp);
+    }
+</span></pre>
+<p><code>getLocalIp()</code>的实现：</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#b48ead;">public static </span><span style="color:#ebcb8b;">String </span><span style="color:#bf616a;">getLocalIp</span><span style="color:#c0c5ce;">() {
+        </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> ip = </span><span style="color:#bf616a;">getIpCN</span><span style="color:#c0c5ce;">();
+  			...
+          
+        </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> ip;
+    }
+
+</span><span style="color:#b48ead;">public static </span><span style="color:#ebcb8b;">String </span><span style="color:#bf616a;">getIpCN</span><span style="color:#c0c5ce;">() {
+        </span><span style="color:#65737e;">//&lt;p&gt;您现在的 IP：&lt;code&gt;114.0.1.2&lt;/code&gt;
+        </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">getLocalIp</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">http://ip.cn</span><span style="color:#c0c5ce;">&quot;, &quot;</span><span style="color:#a3be8c;">&lt;p&gt;您现在的 IP：&lt;code&gt;</span><span style="color:#c0c5ce;">&quot;);
+    }
+
+
+</span><span style="color:#b48ead;">public static </span><span style="color:#ebcb8b;">String </span><span style="color:#bf616a;">getLocalIp</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> url, </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> prefix) {
+        </span><span style="color:#ebcb8b;">Request</span><span style="color:#c0c5ce;"> request = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">Request</span><span style="color:#c0c5ce;">.</span><span style="color:#ebcb8b;">Builder</span><span style="color:#c0c5ce;">()
+                .</span><span style="color:#bf616a;">get</span><span style="color:#c0c5ce;">()
+                .</span><span style="color:#bf616a;">url</span><span style="color:#c0c5ce;">(url)
+                .</span><span style="color:#bf616a;">build</span><span style="color:#c0c5ce;">();
+        </span><span style="color:#b48ead;">try </span><span style="color:#c0c5ce;">{
+            </span><span style="color:#ebcb8b;">Response</span><span style="color:#c0c5ce;"> response = okHttpClient.</span><span style="color:#bf616a;">newCall</span><span style="color:#c0c5ce;">(request).</span><span style="color:#bf616a;">execute</span><span style="color:#c0c5ce;">();
+            </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(response.</span><span style="color:#bf616a;">isSuccessful</span><span style="color:#c0c5ce;">()) {
+                </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> regexPatten = prefix + &quot;</span><span style="color:#a3be8c;">((?:(?:25[0-5]|2[0-4]</span><span style="color:#96b5b4;">\\</span><span style="color:#a3be8c;">d|((1</span><span style="color:#96b5b4;">\\</span><span style="color:#a3be8c;">d{2})|([1-9]?</span><span style="color:#96b5b4;">\\</span><span style="color:#a3be8c;">d))).){3}(?:25[0-5]|2[0-4]</span><span style="color:#96b5b4;">\\</span><span style="color:#a3be8c;">d|((1</span><span style="color:#96b5b4;">\\</span><span style="color:#a3be8c;">d{2})|([1-9]?</span><span style="color:#96b5b4;">\\</span><span style="color:#a3be8c;">d))))</span><span style="color:#c0c5ce;">&quot;;
+                </span><span style="color:#ebcb8b;">Pattern</span><span style="color:#c0c5ce;"> pattern = </span><span style="color:#ebcb8b;">Pattern</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">compile</span><span style="color:#c0c5ce;">(regexPatten);
+                </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> resp = response.</span><span style="color:#bf616a;">body</span><span style="color:#c0c5ce;">().</span><span style="color:#bf616a;">string</span><span style="color:#c0c5ce;">();
+                </span><span style="color:#ebcb8b;">Matcher</span><span style="color:#c0c5ce;"> matcher = pattern.</span><span style="color:#bf616a;">matcher</span><span style="color:#c0c5ce;">(resp);
+                </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(matcher.</span><span style="color:#bf616a;">find</span><span style="color:#c0c5ce;">()) {
+                    </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> matchStr = matcher.</span><span style="color:#bf616a;">group</span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">);
+                    </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> matchStr.</span><span style="color:#bf616a;">replace</span><span style="color:#c0c5ce;">(prefix, &quot;&quot;);
+                }
+            }
+            response.</span><span style="color:#bf616a;">close</span><span style="color:#c0c5ce;">();
+        } </span><span style="color:#b48ead;">catch </span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">IOException </span><span style="color:#bf616a;">e</span><span style="color:#c0c5ce;">) {
+            e.</span><span style="color:#bf616a;">printStackTrace</span><span style="color:#c0c5ce;">();
+        }
+        </span><span style="color:#b48ead;">return </span><span style="color:#c0c5ce;">&quot;&quot;;
+    }
+</span></pre>
+<p>这里通过 ip.cn 获取本机的公网地址。</p>
+<p>还可以配置其他网站，防止ip.cn挂掉而导致服务失败。</p>
+<p><code>getCurrentIp</code> 的实现很简单，从本地文件读取上次记录的ip地址。</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#b48ead;">public </span><span style="color:#ebcb8b;">String </span><span style="color:#bf616a;">getCurrentIp</span><span style="color:#c0c5ce;">() {
+        </span><span style="color:#ebcb8b;">File</span><span style="color:#c0c5ce;"> file = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">File</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">ip.txt</span><span style="color:#c0c5ce;">&quot;);
+        </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(!file.</span><span style="color:#bf616a;">exists</span><span style="color:#c0c5ce;">()) {
+            </span><span style="color:#b48ead;">throw new </span><span style="color:#ebcb8b;">RuntimeException</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">cannot find ip data!</span><span style="color:#c0c5ce;">&quot;);
+        }
+        </span><span style="color:#b48ead;">try </span><span style="color:#c0c5ce;">{
+            </span><span style="color:#ebcb8b;">BufferedReader</span><span style="color:#c0c5ce;"> bufferedReader =
+                    </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">BufferedReader</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">InputStreamReader</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">FileInputStream</span><span style="color:#c0c5ce;">(file)));
+            </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> strLine = bufferedReader.</span><span style="color:#bf616a;">readLine</span><span style="color:#c0c5ce;">();
+            bufferedReader.</span><span style="color:#bf616a;">close</span><span style="color:#c0c5ce;">();
+            </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> strLine.</span><span style="color:#bf616a;">trim</span><span style="color:#c0c5ce;">();
+        } </span><span style="color:#b48ead;">catch </span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">Exception </span><span style="color:#bf616a;">e</span><span style="color:#c0c5ce;">) {
+            e.</span><span style="color:#bf616a;">printStackTrace</span><span style="color:#c0c5ce;">();
+        }
+        </span><span style="color:#b48ead;">return </span><span style="color:#c0c5ce;">&quot;&quot;;
+    }
+</span></pre>
+<p>采用文件存储是最简单直接的方式。更新文件内容的代码：</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#b48ead;">private</span><span style="color:#c0c5ce;"> void </span><span style="color:#bf616a;">updateCurrentIp</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> ip) {
+        </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">StringUtils</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">isEmpty</span><span style="color:#c0c5ce;">(ip))
+            </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;">;
+        </span><span style="color:#ebcb8b;">File</span><span style="color:#c0c5ce;"> file = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">File</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">ip.txt</span><span style="color:#c0c5ce;">&quot;);
+        file.</span><span style="color:#bf616a;">delete</span><span style="color:#c0c5ce;">();
+        </span><span style="color:#b48ead;">try </span><span style="color:#c0c5ce;">{
+            file.</span><span style="color:#bf616a;">createNewFile</span><span style="color:#c0c5ce;">();
+            </span><span style="color:#ebcb8b;">BufferedWriter</span><span style="color:#c0c5ce;"> bufferedWriter =
+                    </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">BufferedWriter</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">OutputStreamWriter</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">FileOutputStream</span><span style="color:#c0c5ce;">(file)));
+            bufferedWriter.</span><span style="color:#bf616a;">write</span><span style="color:#c0c5ce;">(ip.</span><span style="color:#bf616a;">trim</span><span style="color:#c0c5ce;">());
+            bufferedWriter.</span><span style="color:#bf616a;">close</span><span style="color:#c0c5ce;">();
+        } </span><span style="color:#b48ead;">catch </span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">Exception </span><span style="color:#bf616a;">e</span><span style="color:#c0c5ce;">) {
+            e.</span><span style="color:#bf616a;">printStackTrace</span><span style="color:#c0c5ce;">();
+        }
+    }
+</span></pre>
+<p>刷新阿里云安全组配置的逻辑：</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#b48ead;">public</span><span style="color:#c0c5ce;"> void </span><span style="color:#bf616a;">refreshAll</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> nowIp, </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> oldIp) {
+
+        </span><span style="color:#ebcb8b;">List</span><span style="color:#c0c5ce;">&lt;</span><span style="color:#ebcb8b;">SecurityRuleDO</span><span style="color:#c0c5ce;">&gt; newSecurityRuleDOList = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">ArrayList</span><span style="color:#c0c5ce;">&lt;&gt;(</span><span style="color:#bf616a;">testServer</span><span style="color:#c0c5ce;">(nowIp));
+        </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">SecurityRuleDO</span><span style="color:#c0c5ce;"> securityRuleDO : newSecurityRuleDOList) {
+            </span><span style="color:#bf616a;">refresh</span><span style="color:#c0c5ce;">(securityRuleDO);
+
+        }
+
+        </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(!</span><span style="color:#ebcb8b;">StringUtils</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">equals</span><span style="color:#c0c5ce;">(nowIp, oldIp)) {
+            </span><span style="color:#ebcb8b;">List</span><span style="color:#c0c5ce;">&lt;</span><span style="color:#ebcb8b;">SecurityRuleDO</span><span style="color:#c0c5ce;">&gt; oldSecurityRuleDOList = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">ArrayList</span><span style="color:#c0c5ce;">&lt;&gt;();
+            oldSecurityRuleDOList.</span><span style="color:#bf616a;">addAll</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">testServer</span><span style="color:#c0c5ce;">(oldIp));
+            </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">SecurityRuleDO</span><span style="color:#c0c5ce;"> securityRuleDO : oldSecurityRuleDOList) {
+                </span><span style="color:#bf616a;">deleteOld</span><span style="color:#c0c5ce;">(securityRuleDO);
+            }
+
+        }
+    }
+
+</span><span style="color:#b48ead;">private </span><span style="color:#ebcb8b;">List</span><span style="color:#c0c5ce;">&lt;</span><span style="color:#ebcb8b;">SecurityRuleDO</span><span style="color:#c0c5ce;">&gt; </span><span style="color:#bf616a;">testServer</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> ip) {
+        </span><span style="color:#ebcb8b;">List</span><span style="color:#c0c5ce;">&lt;</span><span style="color:#ebcb8b;">SecurityRuleDO</span><span style="color:#c0c5ce;">&gt; securityRuleDOList = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">ArrayList</span><span style="color:#c0c5ce;">&lt;&gt;();
+        </span><span style="color:#ebcb8b;">SecurityRuleDO</span><span style="color:#c0c5ce;"> securityRuleDO = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">SecurityRuleDO</span><span style="color:#c0c5ce;">();
+        securityRuleDO.sourceIp = ip;
+        securityRuleDO.groupId = &quot;</span><span style="color:#a3be8c;">YourECSGroupId</span><span style="color:#c0c5ce;">&quot;;
+        securityRuleDO.ipProtocol = &quot;</span><span style="color:#a3be8c;">tcp</span><span style="color:#c0c5ce;">&quot;;
+        securityRuleDO.portRange = &quot;</span><span style="color:#a3be8c;">yourPort/yourPort</span><span style="color:#c0c5ce;">&quot;;
+        securityRuleDOList.</span><span style="color:#bf616a;">add</span><span style="color:#c0c5ce;">(securityRuleDO);
+				...
+        </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> securityRuleDOList;
+    }
+
+
+</span><span style="color:#b48ead;">public boolean </span><span style="color:#bf616a;">refresh</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">SecurityRuleDO</span><span style="color:#c0c5ce;"> securityRuleDO) {
+        </span><span style="color:#ebcb8b;">AuthorizeSecurityGroupRequest</span><span style="color:#c0c5ce;"> request =
+                </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">AuthorizeSecurityGroupRequest</span><span style="color:#c0c5ce;">();
+        request.</span><span style="color:#bf616a;">setSecurityGroupId</span><span style="color:#c0c5ce;">(securityRuleDO.groupId);
+        request.</span><span style="color:#bf616a;">setIpProtocol</span><span style="color:#c0c5ce;">(securityRuleDO.ipProtocol);
+        request.</span><span style="color:#bf616a;">setPortRange</span><span style="color:#c0c5ce;">(securityRuleDO.portRange);
+        request.</span><span style="color:#bf616a;">setNicType</span><span style="color:#c0c5ce;">(securityRuleDO.nicType);
+        request.</span><span style="color:#bf616a;">setPolicy</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">accept</span><span style="color:#c0c5ce;">&quot;);
+        request.</span><span style="color:#bf616a;">setSourceCidrIp</span><span style="color:#c0c5ce;">(securityRuleDO.sourceIp);
+
+        </span><span style="color:#b48ead;">try </span><span style="color:#c0c5ce;">{
+            </span><span style="color:#ebcb8b;">AuthorizeSecurityGroupResponse</span><span style="color:#c0c5ce;"> response = client.</span><span style="color:#bf616a;">getAcsResponse</span><span style="color:#c0c5ce;">(request);
+            </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> requestId = response.</span><span style="color:#bf616a;">getRequestId</span><span style="color:#c0c5ce;">();
+            </span><span style="color:#ebcb8b;">System</span><span style="color:#c0c5ce;">.out.</span><span style="color:#bf616a;">println</span><span style="color:#c0c5ce;">(requestId);
+            </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">true</span><span style="color:#c0c5ce;">;
+        } </span><span style="color:#b48ead;">catch </span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">ClientException </span><span style="color:#bf616a;">e</span><span style="color:#c0c5ce;">) {
+            e.</span><span style="color:#bf616a;">printStackTrace</span><span style="color:#c0c5ce;">();
+            </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">false</span><span style="color:#c0c5ce;">;
+        }
+    }
+
+</span><span style="color:#b48ead;">public boolean </span><span style="color:#bf616a;">deleteOld</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">SecurityRuleDO</span><span style="color:#c0c5ce;"> securityRuleDO) {
+        </span><span style="color:#ebcb8b;">RevokeSecurityGroupRequest</span><span style="color:#c0c5ce;"> request = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">RevokeSecurityGroupRequest</span><span style="color:#c0c5ce;">();
+        request.</span><span style="color:#bf616a;">setSecurityGroupId</span><span style="color:#c0c5ce;">(securityRuleDO.groupId);
+        request.</span><span style="color:#bf616a;">setIpProtocol</span><span style="color:#c0c5ce;">(securityRuleDO.ipProtocol);
+        request.</span><span style="color:#bf616a;">setPortRange</span><span style="color:#c0c5ce;">(securityRuleDO.portRange);
+        request.</span><span style="color:#bf616a;">setNicType</span><span style="color:#c0c5ce;">(securityRuleDO.nicType);
+        request.</span><span style="color:#bf616a;">setPolicy</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">accept</span><span style="color:#c0c5ce;">&quot;);
+        request.</span><span style="color:#bf616a;">setSourceCidrIp</span><span style="color:#c0c5ce;">(securityRuleDO.sourceIp);
+
+        </span><span style="color:#b48ead;">try </span><span style="color:#c0c5ce;">{
+            </span><span style="color:#ebcb8b;">RevokeSecurityGroupResponse</span><span style="color:#c0c5ce;"> response = client.</span><span style="color:#bf616a;">getAcsResponse</span><span style="color:#c0c5ce;">(request);
+            </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> requestId = response.</span><span style="color:#bf616a;">getRequestId</span><span style="color:#c0c5ce;">();
+            </span><span style="color:#ebcb8b;">System</span><span style="color:#c0c5ce;">.out.</span><span style="color:#bf616a;">println</span><span style="color:#c0c5ce;">(requestId);
+            </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">true</span><span style="color:#c0c5ce;">;
+        } </span><span style="color:#b48ead;">catch </span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">Exception </span><span style="color:#bf616a;">e</span><span style="color:#c0c5ce;">) {
+            e.</span><span style="color:#bf616a;">printStackTrace</span><span style="color:#c0c5ce;">();
+            </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">false</span><span style="color:#c0c5ce;">;
+        }
+    }
+
+</span></pre>
+<p>其中client的初始化：</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#ebcb8b;">DefaultProfile</span><span style="color:#c0c5ce;"> profile = </span><span style="color:#ebcb8b;">DefaultProfile</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">getProfile</span><span style="color:#c0c5ce;">(reginId, appkey, secret);
+                    client = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">DefaultAcsClient</span><span style="color:#c0c5ce;">(profile);
+
+</span></pre><h2 id="xiao-wen-ti">小问题</h2>
+<p>定时3分钟刷新有个小问题，就是有极小的概率，发生IP变更但是还没有及时刷新安全组的配置。怎么办，再加一个主动刷新的接口呗：</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">@</span><span style="color:#bf616a;">RestController
+</span><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">RefreshSecurityRuleController </span><span style="color:#eff1f5;">{
+    @</span><span style="color:#bf616a;">Autowired
+    </span><span style="color:#ebcb8b;">RefreshSecurityRulService </span><span style="color:#eff1f5;">securityRulService;
+
+    @</span><span style="color:#bf616a;">GetMapping</span><span style="color:#eff1f5;">(</span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">/ip</span><span style="color:#c0c5ce;">&quot;</span><span style="color:#eff1f5;">)
+    </span><span style="color:#b48ead;">public </span><span style="color:#ebcb8b;">String </span><span style="color:#8fa1b3;">getMyIp</span><span style="color:#eff1f5;">() {
+        </span><span style="color:#b48ead;">return</span><span style="color:#eff1f5;"> securityRulService.</span><span style="color:#bf616a;">getLocalIp</span><span style="color:#eff1f5;">();
+    }
+
+    @</span><span style="color:#bf616a;">GetMapping</span><span style="color:#eff1f5;">(</span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">/fresh</span><span style="color:#c0c5ce;">&quot;</span><span style="color:#eff1f5;">)
+    </span><span style="color:#b48ead;">public </span><span style="color:#ebcb8b;">String </span><span style="color:#8fa1b3;">forceFresh</span><span style="color:#eff1f5;">() {
+        securityRulService.</span><span style="color:#bf616a;">refreshAll</span><span style="color:#eff1f5;">(</span><span style="color:#d08770;">true</span><span style="color:#eff1f5;">);
+        </span><span style="color:#b48ead;">return </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">done!</span><span style="color:#c0c5ce;">&quot;</span><span style="color:#eff1f5;">;
+    }
+
+}
+</span></pre>
+<p>其中的<code>/fresh</code>强制刷新IP。还附赠了一个接口，获取公司当前的IP。</p>
+<p>这个小应用部署在公司局域网内，一直工作的很好，再也不用烦心IP变动这些琐事。</p>
+<p>直到有一次，ip.cn 网站挂了。挂了很久，我们就增加了从<code>ip.tool.chinaz.com</code> 网站获取IP。</p>
+<p>收工。</p>
+
+    </div>
+
+    
+    
+
+    <div class="post-footer">
+        
+            
+            
+                <div class="post-nav">
+                    
+                        <a class="previous" href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;gradle-build-springboot-dockerimage&#x2F;">‹ 使用Gradle 构建SpringBoot应用的Docker镜像</a>
+                    
+                    
+                        <a class="next" href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;consul-registrator-nginx&#x2F;">Consul+Registrator+Nginx方案的部署 ›</a>
+                    
+                    
+                    
+                </div>
+            
+
+        
+
+    </div>
+
+    
+    
+</article>
+
+
+                </div>
+            </main>
+
+            
+            
+        </div>
+
+      
+          <script type="text/javascript" src="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;even.js" ></script>
+      
+      <!--  add cnzz trace code  -->
+      
+          <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1273937782'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s22.cnzz.com/z_stat.php%3Fid%3D1273937782' type='text/javascript'%3E%3C/script%3E"));</script>
+      
+    </body>
+
+</html>

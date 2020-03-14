@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title> - 最简单的内网导航网站</title>
+
+      
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;rss.xml">
+      
+
+      
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
+          
+      
+
+      
+          <link rel="stylesheet" href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;site.css">
+          
+      
+
+      
+      
+    </head>
+
+    <body>
+        <div class="container">
+
+            <div id="mobile-navbar" class="mobile-navbar">
+              <div class="mobile-header-logo">
+                <a href="/" class="logo">zongwu&#x27;s blog</a>
+              </div>
+              <div class="mobile-navbar-icon icon-out">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+
+            <nav id="mobile-menu" class="mobile-menu slideout-menu slideout-menu-left">
+              <ul class="mobile-menu-list">
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io">
+                            Home
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;categories">
+                            Categories
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;tags">
+                            Tags
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;about">
+                            About
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;rss.xml">
+                            RSS
+                        </a>
+                    </li>
+                
+              </ul>
+            </nav>
+
+            <header id="header">
+                <div class="logo"><a href="https:&#x2F;&#x2F;zongwu233.github.io">zongwu&#x27;s blog</a></div>
+                <nav class="menu">
+                    <ul>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io">
+                                    Home
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;categories">
+                                    Categories
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;tags">
+                                    Tags
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;about">
+                                    About
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;rss.xml">
+                                    RSS
+                                </a>
+                            </li>
+                        
+                    </ul>
+                </nav>
+            </header>
+
+            <main>
+                <div class="content" id="mobile-panel">
+                    
+
+
+
+<article class="post">
+    
+    <header class="post__header">
+        <h1 class="post__title">
+            <a href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;the-simplest-navigation-website&#x2F;">最简单的内网导航网站</a>
+        </h1>
+        <div class="post__meta">
+            <span class="post__time">2019-01-26</span>
+            
+        </div>
+    </header>
+
+    <div class="post-content">
+      <p>随着业务系统的增长，运维工具的增多，我们经常需要访问监控页面、ssh登录机器，需要记住很多常用信息，但是这些信息不值得占用宝贵的大脑资源，只需要存储下来用的时候访问即可。
+我们需要一个超简单的导航网站。</p>
+<p>如何最简单地实现一个静态的网站？不要任何多余的东西。</p>
+<p>最好几行代码实现服务，向外提供一个html文件访问服务。新增内容时候，只需要添加到html文件即可。</p>
+<p id="zola-continue-reading"><a name="continue-reading"></a></p>
+<p>这时候就要介绍一下python3的HTTP server。</p>
+<p>在控制台执行：</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">python -m http.server
+</span></pre>
+<p>就可以看到<code>Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) …</code>  ，python启动了一个http server端口默认是8000。访问<code>loalhost:8000</code>可以看到当前目录的文件列表。</p>
+<p>我们就通过pyhton 的http server 来实现这个最简单的内网导航。</p>
+<p>小项目就叫my123吧，项目只有2个文件，server.py和index.html。</p>
+<p>服务代码<code>server.py</code>很简单：</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#65737e;">#coding=utf-8
+
+</span><span style="color:#b48ead;">from </span><span style="color:#c0c5ce;">http.server </span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">HTTPServer, BaseHTTPRequestHandler
+</span><span style="color:#b48ead;">from </span><span style="color:#c0c5ce;">os </span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">curdir, sep
+
+</span><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">MyRequestHandler</span><span style="color:#eff1f5;">(</span><span style="color:#a3be8c;">BaseHTTPRequestHandler</span><span style="color:#eff1f5;">):
+    </span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">do_GET</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">):
+        </span><span style="color:#b48ead;">if </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.path==&quot;</span><span style="color:#a3be8c;">/index.html</span><span style="color:#c0c5ce;">&quot; or </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.path==&#39;</span><span style="color:#a3be8c;">/</span><span style="color:#c0c5ce;">&#39;:
+                file = </span><span style="color:#96b5b4;">open</span><span style="color:#c0c5ce;">(curdir+sep +&#39;</span><span style="color:#a3be8c;">index.html</span><span style="color:#c0c5ce;">&#39;)
+                </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">send_response</span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">200</span><span style="color:#c0c5ce;">)
+                </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">send_header</span><span style="color:#c0c5ce;">(&#39;</span><span style="color:#a3be8c;">Content-Type</span><span style="color:#c0c5ce;">&#39;, &#39;</span><span style="color:#a3be8c;">text/html;charset=utf-8</span><span style="color:#c0c5ce;">&#39;)
+                </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">end_headers</span><span style="color:#c0c5ce;">()
+                </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.wfile.</span><span style="color:#bf616a;">write</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">bytes</span><span style="color:#c0c5ce;">(file.</span><span style="color:#bf616a;">read</span><span style="color:#c0c5ce;">(),&#39;</span><span style="color:#a3be8c;">utf-8</span><span style="color:#c0c5ce;">&#39;))
+                file.</span><span style="color:#bf616a;">close</span><span style="color:#c0c5ce;">()
+
+server = </span><span style="color:#bf616a;">HTTPServer</span><span style="color:#c0c5ce;">((&#39;</span><span style="color:#a3be8c;">0.0.0.0</span><span style="color:#c0c5ce;">&#39;, </span><span style="color:#d08770;">8123</span><span style="color:#c0c5ce;">), MyRequestHandler)
+server.</span><span style="color:#bf616a;">serve_forever</span><span style="color:#c0c5ce;">()
+</span></pre>
+<p>主要逻辑就有访问<code>/index.html</code>或者<code>/</code>的时候，读取当前目录下的index.html文件，将内容返回。</p>
+<p>index.html文件的内容：</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">&lt;</span><span style="color:#bf616a;">html</span><span style="color:#c0c5ce;">&gt;
+
+&lt;</span><span style="color:#bf616a;">head</span><span style="color:#c0c5ce;">&gt;
+      &lt;</span><span style="color:#bf616a;">meta </span><span style="color:#d08770;">charset</span><span style="color:#c0c5ce;">=&quot;</span><span style="color:#a3be8c;">UTF-8</span><span style="color:#c0c5ce;">&quot;&gt;
+        &lt;</span><span style="color:#bf616a;">title</span><span style="color:#c0c5ce;">&gt;常用网址导航&lt;/</span><span style="color:#bf616a;">title</span><span style="color:#c0c5ce;">&gt;
+&lt;/</span><span style="color:#bf616a;">head</span><span style="color:#c0c5ce;">&gt;
+
+&lt;</span><span style="color:#bf616a;">body</span><span style="color:#c0c5ce;">&gt;
+
+&lt;</span><span style="color:#bf616a;">h2</span><span style="color:#c0c5ce;">&gt;监控&lt;/</span><span style="color:#bf616a;">h2</span><span style="color:#c0c5ce;">&gt;
+
+ &lt;</span><span style="color:#bf616a;">a </span><span style="color:#d08770;">href</span><span style="color:#c0c5ce;">=&quot;</span><span style="color:#a3be8c;">http://your.server.name.com</span><span style="color:#c0c5ce;">&quot; </span><span style="color:#d08770;">target</span><span style="color:#c0c5ce;">=&quot;</span><span style="color:#a3be8c;">view_window</span><span style="color:#c0c5ce;">&quot;&gt;A服务监控&lt;/</span><span style="color:#bf616a;">a</span><span style="color:#c0c5ce;">&gt;  
+ &lt;/</span><span style="color:#bf616a;">br</span><span style="color:#c0c5ce;">&gt;
+
+ &lt;</span><span style="color:#bf616a;">a </span><span style="color:#d08770;">href</span><span style="color:#c0c5ce;">=&quot;</span><span style="color:#a3be8c;">http://your.server2.name.com</span><span style="color:#c0c5ce;">&quot; </span><span style="color:#d08770;">target</span><span style="color:#c0c5ce;">=&quot;</span><span style="color:#a3be8c;">view_window</span><span style="color:#c0c5ce;">&quot;&gt;B服务监控&lt;/</span><span style="color:#bf616a;">a</span><span style="color:#c0c5ce;">&gt;
+&lt;/</span><span style="color:#bf616a;">br</span><span style="color:#c0c5ce;">&gt;
+
+...
+
+&lt;/</span><span style="color:#bf616a;">br</span><span style="color:#c0c5ce;">&gt;&lt;/</span><span style="color:#bf616a;">br</span><span style="color:#c0c5ce;">&gt;&lt;/</span><span style="color:#bf616a;">br</span><span style="color:#c0c5ce;">&gt;&lt;/</span><span style="color:#bf616a;">br</span><span style="color:#c0c5ce;">&gt;
+
+&lt;/</span><span style="color:#bf616a;">body</span><span style="color:#c0c5ce;">&gt;
+&lt;/</span><span style="color:#bf616a;">html</span><span style="color:#c0c5ce;">&gt;
+</span></pre>
+<p>就是简单的html内容，连CSS都没有。简单粗暴。</p>
+<p>调用命令启动：</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">python server.py
+</span></pre>
+<p>搞定。</p>
+
+    </div>
+
+    
+    
+
+    <div class="post-footer">
+        
+            
+            
+                <div class="post-nav">
+                    
+                        <a class="previous" href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;architecture-evolution&#x2F;">‹ 服务端架构演进</a>
+                    
+                    
+                        <a class="next" href="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;enlarge-your-personal-ability-1&#x2F;">如何放大你的个人能力（一） ›</a>
+                    
+                    
+                    
+                </div>
+            
+
+        
+
+    </div>
+
+    
+    
+</article>
+
+
+                </div>
+            </main>
+
+            
+            
+        </div>
+
+      
+          <script type="text/javascript" src="https:&#x2F;&#x2F;zongwu233.github.io&#x2F;even.js" ></script>
+      
+      <!--  add cnzz trace code  -->
+      
+          <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1273937782'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s22.cnzz.com/z_stat.php%3Fid%3D1273937782' type='text/javascript'%3E%3C/script%3E"));</script>
+      
+    </body>
+
+</html>

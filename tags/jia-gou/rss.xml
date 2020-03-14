@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title></title>
+        <link>https%3A//zongwu233.github.io</link>
+        <description></description>
+        <generator>Zola</generator>
+        <language>en</language>
+        <atom:link href="https%3A//zongwu233.github.io/tags/jia-gou/rss.xml" rel="self" type="application/rss+xml"/>
+        <lastBuildDate>Sun, 23 Dec 2018 00:00:00 +0000</lastBuildDate>
+        
+            <item>
+                <title>服务端架构演进</title>
+                <pubDate>Sun, 23 Dec 2018 00:00:00 +0000</pubDate>
+                <link>https%3A//zongwu233.github.io/architecture-evolution/</link>
+                <guid>https%3A//zongwu233.github.io/architecture-evolution/</guid>
+                <description>&lt;h2 id=&quot;fu-wu-duan-jia-gou-v1-0&quot;&gt;服务端架构v1.0&lt;&#x2F;h2&gt;
+&lt;p&gt;先来看一看服务端架构的1.0版本：&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2019&#x2F;04&#x2F;28&#x2F;5cc576ce0976d.png&quot;&gt;&lt;img src=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2019&#x2F;04&#x2F;28&#x2F;5cc576ce0976d.png&quot; alt=&quot;架构1_0.png&quot; &#x2F;&gt;&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;jia-gou-jie-shao&quot;&gt;架构介绍&lt;&#x2F;h3&gt;
+&lt;p&gt;客户端包括：PC站和m站的web站点，Android和iOS App客户端，管理后台和小程序。其中主要流量来自于Android和iOS。&lt;&#x2F;p&gt;
+&lt;p&gt;接入层：采用了阿里云的Service Load Balance。底层实现是通过LVS+keepalived。该层主要提供了负载均衡和双机热备功能，客户端通过域名访问API接口，当应用的其中一台机器出问题时，依然能保障正常服务。&lt;&#x2F;p&gt;
+&lt;p&gt;服务层：实际上是使用两台阿里云ECS部署Main Api server 和support server 两个应用。Main Api server 提供App需要的API接口。support server提供运营管理后台页面需要的API接口。&lt;&#x2F;p&gt;
+&lt;p&gt;缓存层：采用阿里云Redis服务8G主从版（标准版-双副本）。连接上限10000，QPS约80000。正常情况下完全满足我们的应用需求。不需要集群版本。&lt;&#x2F;p&gt;
+&lt;p&gt;数据层：采用阿里云RDS服务高可用版，4Core8G。最大IOPS:4000，最大连接数:4000。偶尔出现慢SQL导致数据库CPU跑满、接口响应慢。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;cun-zai-de-ji-ge-zhu-yao-wen-ti&quot;&gt;存在的几个主要问题&lt;&#x2F;h3&gt;
+&lt;ol&gt;
+&lt;li&gt;无法应用灵活的流量控制策略，当前所有流量最终会压到应用实例上，一旦出现流量过大现象，只能增加应用实例，或者改动应用响应逻辑并发布。&lt;&#x2F;li&gt;
+&lt;li&gt;无自动化的负载均衡，新增ECS就必须同时修改SLB的后端服务配置，扩容方案不够灵活、需要人为介入并且不易配置。&lt;&#x2F;li&gt;
+&lt;li&gt;管理后台应用与前台应用共用同一个数据库，后台耗时的读操作影响线上接口。&lt;&#x2F;li&gt;
+&lt;li&gt;Main Api server 是一个Monolith Application（巨石应用），任何业务的改动都需要发布该应用，打包发布时间较长。&lt;&#x2F;li&gt;
+&lt;li&gt;非核心业务和核心业务共用资源，比如web容器线程、数据库连接池、Redis连接池等等，一旦非核心业务占用较多资源，将导致其他业务响应变慢。&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;考虑到后续业务发展、当前应用现状和服务端团队人员的实际情况，趁此机会我们决定向微服务架构方向演进。&lt;&#x2F;p&gt;
+&lt;p&gt;选取微服务端架构方案时的一些原则：&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;高质量高可用的服务架构体系&lt;&#x2F;li&gt;
+&lt;li&gt;技术实现成熟稳定&lt;&#x2F;li&gt;
+&lt;li&gt;充分利用Docker容器优势&lt;&#x2F;li&gt;
+&lt;li&gt;团队学习门槛较低&lt;&#x2F;li&gt;
+&lt;li&gt;对当前应用系统入侵较小&lt;&#x2F;li&gt;
+&lt;li&gt;减少不必要的部署和维护代价&lt;&#x2F;li&gt;
+&lt;li&gt;方便支持非JVM的web服务&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;wei-fu-wu-jia-gou-shi-xian&quot;&gt;微服务架构实现&lt;&#x2F;h2&gt;
+&lt;h4 id=&quot;cai-yong-consul-registrator-nginxfang-an-zuo-fu-wu-de-zhu-ce-yu-fa-xian-kuang-jia&quot;&gt;采用&lt;code&gt;Consul + Registrator + Nginx&lt;&#x2F;code&gt;方案做服务的注册与发现框架&lt;&#x2F;h4&gt;
+&lt;p&gt;简单介绍一下Consul 、Consul template 和Registrator：&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Consul是一种 service mesh解决方案，提供具有服务发现和配置的工具，它提供了一些重要特性&lt;a href=&quot;https:&#x2F;&#x2F;www.consul.io&#x2F;intro&#x2F;index.html&quot;&gt;1&lt;&#x2F;a&gt;：&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;服务发现&lt;&#x2F;li&gt;
+&lt;li&gt;健康检查&lt;&#x2F;li&gt;
+&lt;li&gt;KV存储&lt;&#x2F;li&gt;
+&lt;li&gt;多数据中心&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;Consul集群间使用了GOSSIP协议通信和Raft一致性算法，Consul本身是一个分布式的高可用的系统。&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Consul template 通过解析模板，从Consul查询所需的配置数据，接下来后台进程监听&lt;a href=&quot;https:&#x2F;&#x2F;www.consul.io&#x2F;docs&#x2F;agent&#x2F;watches.html&quot;&gt;8&lt;&#x2F;a&gt;Consul中这些数据的变化，并将数据更新到配置的模版文件中。模板更新完成之后，可以配置后续执行命令。&lt;a href=&quot;https:&#x2F;&#x2F;learn.hashicorp.com&#x2F;consul&#x2F;developer-configuration&#x2F;consul-template&quot;&gt;7&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Consul template的模板文件是采用&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;hashicorp&#x2F;hcl&quot;&gt;HashiCorp Configuration Language (HCL)&lt;&#x2F;a&gt;语法编写，同时提供了一些API函数。&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;hashicorp&#x2F;consul-template&quot;&gt;4&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Registrator是一种通过监控宿主机上所有的Docker容器的状态，自动地为Docker容器注册和反注册服务的组件。Registrator支持可拔插的服务注册，包括：Consul，etcd，SkyDNS2。&lt;a href=&quot;http:&#x2F;&#x2F;gliderlabs.github.io&#x2F;registrator&#x2F;latest&#x2F;&quot;&gt;5&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;各组件协调工作如图：&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2019&#x2F;04&#x2F;28&#x2F;5cc599b66fe83.png&quot; alt=&quot;consul_registrator_ngnix.png&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Registrator监听应用容器的变化，实时向consul注册&#x2F;反注册容器内的服务，而consul template也在监听consul server的变化，任何服务的变更或者KV 存储的变更，都触发consul template 的模板文件的变化，这里，consul template 配置的模板一般是生成nginx.conf文件，最后调用nginx的reload config 命令，即可全自动地完成服务的刷新。&lt;&#x2F;p&gt;
+&lt;p&gt;更详细的部署方案见&lt;a href=&quot;..&#x2F;consul-registrator-nginx&quot;&gt;Consul+Registrator+Nginx方案的部署&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;h4 id=&quot;fu-wu-jian-de-diao-yong&quot;&gt;服务间的调用&lt;&#x2F;h4&gt;
+&lt;p&gt;通过上面的方案完成服务的注册和发现，但是服务之间如何调用？&lt;&#x2F;p&gt;
+&lt;p&gt;比如服务A要调用服务B的接口，服务A和服务B都已经注册到Consul server中，服务A要获取服务B的地址很方便，请求Consul Api 即可。可是服务B有多个实例，这时候调用策略有两种选择：&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;服务端负载均衡，服务A通过nignx调用服务B，负载均衡策略由nginx支持。&lt;&#x2F;li&gt;
+&lt;li&gt;客户端负载均衡，服务A自行维护服务B的列表，自行选择一个负载均衡策略，然后调用服务B。&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;出于性能考虑，我们选取第二种方式，即客户端负载均衡。&lt;&#x2F;p&gt;
+&lt;p&gt;通过封装Consul API 和Feign-ribbon，我们实现了客户端之间相互调用的中间件。&lt;&#x2F;p&gt;
+&lt;h4 id=&quot;openresty&quot;&gt;OpenResty&lt;&#x2F;h4&gt;
+&lt;p&gt;服务架构v1.0版本由于缺失统一网关，导致无法实现灵活的负载均衡、鉴权、流量控制等功能。为了方便实现网关的功能，采用 OpenResty &lt;a href=&quot;https:&#x2F;&#x2F;openresty.org&#x2F;cn&#x2F;&quot;&gt;6&lt;&#x2F;a&gt;而不是Nginx来作为网关的基础组件。&lt;&#x2F;p&gt;
+&lt;p&gt;通过 OpenResty 强大的lua脚本，可以对网络请求做各种复杂的控制和安全检测。&lt;&#x2F;p&gt;
+&lt;p&gt;负载均衡是 OpenResty 自带功能。&lt;&#x2F;p&gt;
+&lt;p&gt;请求鉴权，通过 lua 脚本调用用户中心接口完成各种场景的鉴权功能，如果鉴权失败，则阻断请求。&lt;&#x2F;p&gt;
+&lt;p&gt;流量控制，通过 lua 脚本对请求的header和uri 解析，灵活定制流量控制策略。&lt;&#x2F;p&gt;
+&lt;p&gt;蓝绿发布，结合consul、consul-template 和OpenResty，实现服务的蓝绿发布功能。&lt;&#x2F;p&gt;
+&lt;p&gt;通过在网关处向 request header 中写入 request Id，支持完整请求链追踪的日志分析。&lt;&#x2F;p&gt;
+&lt;p&gt;服务路由，v1.0版本的架构，受限于SLB的实现，必须为每一个业务应用单独配置一个端口和域名， 给客户端调用带来很大不便。新的架构可以采用统一的 API 域名，在网关处做服务路由即可（比如通过path区分业务服务），从而实现API 域名的收敛。&lt;&#x2F;p&gt;
+&lt;p&gt;对接SLB服务的是OpenResty，目前有三个实例，后续任意应用水平扩展的时候，会自动注册到consul server，无需变动SLB配置。&lt;&#x2F;p&gt;
+&lt;h4 id=&quot;ying-yong-zi-yuan-chai-fen&quot;&gt;应用资源拆分&lt;&#x2F;h4&gt;
+&lt;p&gt;新增的Finance应用是金币业务，使用独立数据库。&lt;&#x2F;p&gt;
+&lt;p&gt;新增的Data server应用是搜集数据埋点业务，该应用需要存储客户端上报的大量的埋点数据，使用PostgreSQL，并且采用PostgreSQL自带的分表功能。&lt;&#x2F;p&gt;
+&lt;p&gt;Support server是之前的管理后台服务，通过对Main Api server 的数据库配置主从架构，让Support server 的读操作走从库，写操作走主库，解决Support server 拖慢生产环境数据库的问题。&lt;&#x2F;p&gt;
+&lt;p&gt;Kafka消息队列主要用于应用间异步通信的场景。Main Api server 和 Finance server 都会产生金币计费消息，Finance server应用负责消费该消息。&lt;&#x2F;p&gt;
+&lt;h4 id=&quot;zui-zhong-de-fu-wu-duan-jia-gou&quot;&gt;最终的服务端架构&lt;&#x2F;h4&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2019&#x2F;04&#x2F;28&#x2F;5cc5abf8e0385.png&quot; alt=&quot;架构2_0.png&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+</description>
+            </item>
+        
+    </channel>
+</rss>

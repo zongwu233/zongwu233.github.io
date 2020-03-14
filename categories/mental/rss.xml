@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title></title>
+        <link>https%3A//zongwu233.github.io</link>
+        <description></description>
+        <generator>Zola</generator>
+        <language>en</language>
+        <atom:link href="https%3A//zongwu233.github.io/categories/mental/rss.xml" rel="self" type="application/rss+xml"/>
+        <lastBuildDate>Wed, 01 Jan 2020 00:00:00 +0000</lastBuildDate>
+        
+            <item>
+                <title>The Starter</title>
+                <pubDate>Wed, 01 Jan 2020 00:00:00 +0000</pubDate>
+                <link>https%3A//zongwu233.github.io/the-starter/</link>
+                <guid>https%3A//zongwu233.github.io/the-starter/</guid>
+                <description>&lt;p&gt;You must really master the concept of：&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;code&gt;HTTP&lt;&#x2F;code&gt; &lt;code&gt;HTTPS&lt;&#x2F;code&gt; &lt;code&gt;TLS&lt;&#x2F;code&gt; &lt;code&gt;RSA&lt;&#x2F;code&gt; &lt;code&gt;AES&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
+</description>
+            </item>
+        
+            <item>
+                <title>重度信息阅读症</title>
+                <pubDate>Thu, 11 May 2017 00:00:00 +0000</pubDate>
+                <link>https%3A//zongwu233.github.io/severe-info-reading/</link>
+                <guid>https%3A//zongwu233.github.io/severe-info-reading/</guid>
+                <description>&lt;p&gt;从什么时候开始，我成为了重度信息阅读症人群的一员了呢？&lt;&#x2F;p&gt;
+&lt;p&gt;起床先刷一下微信&lt;&#x2F;p&gt;
+&lt;p&gt;无聊刷刷微博&lt;&#x2F;p&gt;
+&lt;p&gt;等车刷刷轻芒阅读、小密圈&lt;&#x2F;p&gt;
+&lt;p&gt;坐车刷刷开发者头条、湾区日报、知乎日报&lt;&#x2F;p&gt;
+&lt;p&gt;每天都要刷个几十遍，所有未读消息全部刷完才安心。&lt;&#x2F;p&gt;
+&lt;p&gt;为什么这么热衷于接收各种各样的信息以至于刷手机成瘾？&lt;&#x2F;p&gt;
+&lt;p&gt;如果脑力也有形体，那重度阅读症者早就肥胖臃肿严重影响行动。&lt;&#x2F;p&gt;
+</description>
+            </item>
+        
+    </channel>
+</rss>
