@@ -106,6 +106,13 @@
         </url>
     
         <url>
+            <loc>https%3A//blog.zongwu233.com/kolla-ansible-deploy-all-in-one-mode-openstack-stein-version/</loc>
+            
+                <lastmod>2020-08-15</lastmod>
+            
+        </url>
+    
+        <url>
             <loc>https%3A//blog.zongwu233.com/module-protocol-design-think/</loc>
             
                 <lastmod>2016-03-27</lastmod>
@@ -123,6 +130,13 @@
             <loc>https%3A//blog.zongwu233.com/oneplus3t-root/</loc>
             
                 <lastmod>2017-07-03</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>https%3A//blog.zongwu233.com/openstack-management/</loc>
+            
+                <lastmod>2020-08-16</lastmod>
             
         </url>
     
@@ -161,6 +175,11 @@
         </url>
     
         <url>
+            <loc>https%3A//blog.zongwu233.com/tags/ansible/</loc>
+            
+        </url>
+    
+        <url>
             <loc>https%3A//blog.zongwu233.com/tags/consul/</loc>
             
         </url>
@@ -176,7 +195,17 @@
         </url>
     
         <url>
+            <loc>https%3A//blog.zongwu233.com/tags/kolla-ansible/</loc>
+            
+        </url>
+    
+        <url>
             <loc>https%3A//blog.zongwu233.com/tags/mio/</loc>
+            
+        </url>
+    
+        <url>
+            <loc>https%3A//blog.zongwu233.com/tags/openstack/</loc>
             
         </url>
     
@@ -187,6 +216,16 @@
     
         <url>
             <loc>https%3A//blog.zongwu233.com/tags/rust/</loc>
+            
+        </url>
+    
+        <url>
+            <loc>https%3A//blog.zongwu233.com/tags/shi-yong/</loc>
+            
+        </url>
+    
+        <url>
+            <loc>https%3A//blog.zongwu233.com/tags/stein/</loc>
             
         </url>
     

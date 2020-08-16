@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title></title>
+        <link>https%3A//blog.zongwu233.com</link>
+        <description></description>
+        <generator>Zola</generator>
+        <language>en</language>
+        <atom:link href="https%3A//blog.zongwu233.com/tags/stein/rss.xml" rel="self" type="application/rss+xml"/>
+        <lastBuildDate>Sun, 16 Aug 2020 00:00:00 +0000</lastBuildDate>
+        
+            <item>
+                <title>OpenStack 管理</title>
+                <pubDate>Sun, 16 Aug 2020 00:00:00 +0000</pubDate>
+                <link>https%3A//blog.zongwu233.com/openstack-management/</link>
+                <guid>https%3A//blog.zongwu233.com/openstack-management/</guid>
+                <description>&lt;h2 id=&quot;pei-zhi-wai-bu-wang-luo&quot;&gt;配置外部网络&lt;&#x2F;h2&gt;
+&lt;p&gt;前提，本机双网卡，用于管理地址的 IP 地址为10.0.0.104，用于联网的 IP 地址为 192.168.1.1.100。&lt;&#x2F;p&gt;
+&lt;p&gt;在后台管理界面进入 管理员 -&amp;gt; 网络 -&amp;gt; 网络&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2020&#x2F;08&#x2F;13&#x2F;Ll4b3aZ7BNrUmwA.png&quot; alt=&quot;external_net_1.jpg&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;选择 新建网络，名称填写 external ，项目选择 admin ，供应商网络类型 选择 Flat，物理网络填写 physnet1，勾选 共享的，外部网络。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2020&#x2F;08&#x2F;13&#x2F;lG2QUuISFhC8NsO.png&quot; alt=&quot;external_net_2.jpg&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;对于物理网络名称，不能填错，具体名称可以通过以下步骤查看。&lt;&#x2F;p&gt;
+&lt;p&gt;在本机执行以下命令进入 neutron docker 容器&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#c0c5ce;&quot;&gt;docker exec -it neutron_server  bash
+
+#查看
+cat &#x2F;etc&#x2F;neutron&#x2F;plugins&#x2F;ml2&#x2F;ml2_conf.ini 
+
+[ml2_type_flat]
+flat_networks = physnet1
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;点击下一项，创建子网。子网填写本机器所在的真实网络配置，本机ip地址 192.168.1.100。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2020&#x2F;08&#x2F;13&#x2F;iglDKoTBNtAXw43.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;子网名称 ext_subnet，网络地址 192.168.1.0&#x2F;24 网关IP 192.168.1.1&lt;&#x2F;p&gt;
+&lt;p&gt;点击下一项，子网详情， 分配地址池， 填写192.168.1.160,192.168.1.200 这里预留40个ip。dns服务器 填写 223.5.5.5 。最后点创建。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;pei-zhi-nei-bu-wang-luo&quot;&gt;配置内部网络&lt;&#x2F;h2&gt;
+&lt;p&gt;在后台管理界面进入  项目 -&amp;gt; 网络 -&amp;gt; 网络&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2020&#x2F;08&#x2F;13&#x2F;2UXtKvWJbyVqFL4.png&quot; alt=&quot;normal_net_1.jpg&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2020&#x2F;08&#x2F;13&#x2F;TB9KnI7MdmCgbUD.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;选择创建网络 ，填写网络名称 normal，点下一项，填写子网名称，网络地址，这里填写 172.16.0.0&#x2F;24 网关填写 172.16.0.1 。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2020&#x2F;08&#x2F;13&#x2F;WYFpgAfvJGLlkBK.png&quot; alt=&quot;&quot; &#x2F;&gt;点击下一项，填写子网详情，分配地址池 填写 172.16.0.100,127.16.0.200 。dns服务器填写 223.5.5.5 。最后点创建。&lt;&#x2F;p&gt;
+&lt;p&gt;然后点击 项目 -&amp;gt; 网络 -&amp;gt; 路由&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2020&#x2F;08&#x2F;13&#x2F;uzRmcjpNfBoC7ks.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;创建路由，填写路由名称， 选择刚才创建的外网 external， 点击创建。&lt;&#x2F;p&gt;
+&lt;p&gt;进入 项目 -&amp;gt; 网络 -&amp;gt; 网络拓扑&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2020&#x2F;08&#x2F;13&#x2F;vFNLkqJPpWwBSgV.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;选择图中的路由，点击添加接口，选择子网，就是刚才创建的 normal。&lt;&#x2F;p&gt;
+&lt;p&gt;到此，网络创建完毕。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;an-quan-zu-pei-zhi&quot;&gt;安全组配置&lt;&#x2F;h2&gt;
+&lt;p&gt;进入 项目 -&amp;gt; 网络 -&amp;gt; 安全组&lt;&#x2F;p&gt;
+&lt;p&gt;点击管理规则，点击添加规则&lt;&#x2F;p&gt;
+&lt;p&gt;分别添加 所有ICMP的入口方向和出口方向，TCP 22端口(用于SSH)的出口方向和入口方向，TCP 53端口(用于DNS)的出口方向和入口方向，UDP 53端口(用于DNS)的出口方向和入口方向。&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2020&#x2F;08&#x2F;13&#x2F;Rt6qQCcOgAHsEkM.png&quot; alt=&quot;安全组&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;jing-xiang-guan-li&quot;&gt;镜像管理&lt;&#x2F;h2&gt;
+&lt;p&gt;镜像下载，下载地址 http:&#x2F;&#x2F;cloud.centos.org&#x2F;centos&#x2F;7&#x2F;images&#x2F;?C=M;O=D 或者阿里云 https:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;centos&#x2F;&lt;&#x2F;p&gt;
+&lt;p&gt;这里选择其中一个，wget http:&#x2F;&#x2F;cloud.centos.org&#x2F;centos&#x2F;7&#x2F;images&#x2F;CentOS-7-x86_64-GenericCloud.qcow2c&lt;&#x2F;p&gt;
+&lt;p&gt;在本机的控制台输入&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#c0c5ce;&quot;&gt;. &#x2F;etc&#x2F;kolla&#x2F;admin-openrc.sh
+
+#上传镜像到glance
+openstack image create &amp;quot;CentOS7-image&amp;quot; \
+  --file CentOS-7-x86_64-GenericCloud.qcow2c \
+  --disk-format qcow2 --container-format bare \
+  --public
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;创建虚拟机规格&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#c0c5ce;&quot;&gt;    openstack flavor create --id 1 --ram 512 --disk 1 --vcpus 1 m1.tiny 
+    openstack flavor create --id 2 --ram 2048 --disk 20 --vcpus 1 m1.small
+    openstack flavor create --id 3 --ram 4096 --disk 40 --vcpus 2 m1.medium
+    openstack flavor create --id 4 --ram 8192 --disk 80 --vcpus 4 m1.large
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;chuang-jian-xu-ni-ji-shi-li&quot;&gt;创建虚拟机实例&lt;&#x2F;h2&gt;
+&lt;p&gt;进入 项目 -&amp;gt; 计算 -&amp;gt; 实例&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2020&#x2F;08&#x2F;13&#x2F;TVs8PBNpudxEAH3.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;点击创建实例，填写实例名称，镜像选择刚才创建的 CentOS7-image ，云主机类型选择 m1.medium ，网络选择normal，安全组默认是 default，不创建密钥对，在配置里面输入下面的shell&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#c0c5ce;&quot;&gt;#!&#x2F;bin&#x2F;sh
+passwd root &amp;lt;&amp;lt;EOF
+123456
+123456
+EOF
+sed -i &amp;#39;s&#x2F;PasswordAuthentication no&#x2F;PasswordAuthentication yes&#x2F;g&amp;#39; &#x2F;etc&#x2F;ssh&#x2F;sshd_config
+sed -i &amp;#39;s&#x2F;#PubkeyAuthentication yes&#x2F;PubkeyAuthentication yes&#x2F;g&amp;#39;  &#x2F;etc&#x2F;ssh&#x2F;sshd_config
+service ssh restart
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;该脚本会修改虚拟机实例用户 root 的密码为123456&lt;&#x2F;p&gt;
+&lt;p&gt;点击创建实例。&lt;&#x2F;p&gt;
+&lt;p&gt;创建成功之后， 点击该实例名称，进入控制台界面，然后登陆即可。&lt;&#x2F;p&gt;
+&lt;p&gt;此时实例可访问外网，但是在局域网环境 (10.0.0.x) 无法访问该实例。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;fen-pei-fu-dong-ip&quot;&gt;分配浮动IP&lt;&#x2F;h2&gt;
+&lt;p&gt;进入 项目 -&amp;gt; 网络 -&amp;gt; 浮动IP&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2020&#x2F;08&#x2F;13&#x2F;FQfsDRxlM1X7b4n.png&quot; alt=&quot;&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;点击分配IP给项目，点击分配IP，则生成一个IP地址，属于 192.168.1.0&#x2F;24 网段。然后对刚刚生成的IP点击关联，关联到刚刚创建的虚拟机实例上。&lt;&#x2F;p&gt;
+&lt;p&gt;可以在局域网其他机器上通过SSH登陆该虚拟机实例。&lt;&#x2F;p&gt;
+</description>
+            </item>
+        
+    </channel>
+</rss>

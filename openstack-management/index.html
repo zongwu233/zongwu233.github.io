@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title> - OpenStack 管理</title>
+
+      
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">
+      
+
+      
+          <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
+          
+      
+
+      
+          <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;site.css">
+          
+      
+
+      
+      
+    </head>
+
+    <body>
+        <div class="container">
+
+            <div id="mobile-navbar" class="mobile-navbar">
+              <div class="mobile-header-logo">
+                <a href="/" class="logo">zongwu&#x27;s blog</a>
+              </div>
+              <div class="mobile-navbar-icon icon-out">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+
+            <nav id="mobile-menu" class="mobile-menu slideout-menu slideout-menu-left">
+              <ul class="mobile-menu-list">
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;blog.zongwu233.com">
+                            Home
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories">
+                            Categories
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags">
+                            Tags
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about">
+                            About
+                        </a>
+                    </li>
+                
+                    <li class="mobile-menu-item">
+                        <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">
+                            RSS
+                        </a>
+                    </li>
+                
+              </ul>
+            </nav>
+
+            <header id="header">
+                <div class="logo"><a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a></div>
+                <nav class="menu">
+                    <ul>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;blog.zongwu233.com">
+                                    Home
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories">
+                                    Categories
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags">
+                                    Tags
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about">
+                                    About
+                                </a>
+                            </li>
+                        
+                            <li>
+                                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">
+                                    RSS
+                                </a>
+                            </li>
+                        
+                    </ul>
+                </nav>
+            </header>
+
+            <main>
+                <div class="content" id="mobile-panel">
+                    
+
+
+<div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">Contents</h2>
+    <div class="post-toc-content always-active">
+        <nav id="TableOfContents">
+            <ul>
+                
+                <li>
+                    <a href="https://blog.zongwu233.com/openstack-management/#pei-zhi-wai-bu-wang-luo" class="toc-link">配置外部网络</a>
+                    
+                </li>
+                
+                <li>
+                    <a href="https://blog.zongwu233.com/openstack-management/#pei-zhi-nei-bu-wang-luo" class="toc-link">配置内部网络</a>
+                    
+                </li>
+                
+                <li>
+                    <a href="https://blog.zongwu233.com/openstack-management/#an-quan-zu-pei-zhi" class="toc-link">安全组配置</a>
+                    
+                </li>
+                
+                <li>
+                    <a href="https://blog.zongwu233.com/openstack-management/#jing-xiang-guan-li" class="toc-link">镜像管理</a>
+                    
+                </li>
+                
+                <li>
+                    <a href="https://blog.zongwu233.com/openstack-management/#chuang-jian-xu-ni-ji-shi-li" class="toc-link">创建虚拟机实例</a>
+                    
+                </li>
+                
+                <li>
+                    <a href="https://blog.zongwu233.com/openstack-management/#fen-pei-fu-dong-ip" class="toc-link">分配浮动IP</a>
+                    
+                </li>
+                
+            </ul>
+        </nav>
+    </div>
+</div>
+
+
+<article class="post">
+    
+    <header class="post__header">
+        <h1 class="post__title">
+            <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;openstack-management&#x2F;">OpenStack 管理</a>
+        </h1>
+        <div class="post__meta">
+            <span class="post__time">2020-08-16</span>
+            
+        </div>
+    </header>
+
+    <div class="post-content">
+      <h2 id="pei-zhi-wai-bu-wang-luo">配置外部网络</h2>
+<p>前提，本机双网卡，用于管理地址的 IP 地址为10.0.0.104，用于联网的 IP 地址为 192.168.1.1.100。</p>
+<p>在后台管理界面进入 管理员 -&gt; 网络 -&gt; 网络</p>
+<p><img src="https://i.loli.net/2020/08/13/Ll4b3aZ7BNrUmwA.png" alt="external_net_1.jpg" /></p>
+<p>选择 新建网络，名称填写 external ，项目选择 admin ，供应商网络类型 选择 Flat，物理网络填写 physnet1，勾选 共享的，外部网络。</p>
+<p><img src="https://i.loli.net/2020/08/13/lG2QUuISFhC8NsO.png" alt="external_net_2.jpg" /></p>
+<p>对于物理网络名称，不能填错，具体名称可以通过以下步骤查看。</p>
+<p>在本机执行以下命令进入 neutron docker 容器</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">docker exec -it neutron_server  bash
+
+#查看
+cat /etc/neutron/plugins/ml2/ml2_conf.ini 
+
+[ml2_type_flat]
+flat_networks = physnet1
+</span></pre>
+<p>点击下一项，创建子网。子网填写本机器所在的真实网络配置，本机ip地址 192.168.1.100。</p>
+<p><img src="https://i.loli.net/2020/08/13/iglDKoTBNtAXw43.png" alt="" /></p>
+<p>子网名称 ext_subnet，网络地址 192.168.1.0/24 网关IP 192.168.1.1</p>
+<p>点击下一项，子网详情， 分配地址池， 填写192.168.1.160,192.168.1.200 这里预留40个ip。dns服务器 填写 223.5.5.5 。最后点创建。</p>
+<h2 id="pei-zhi-nei-bu-wang-luo">配置内部网络</h2>
+<p>在后台管理界面进入  项目 -&gt; 网络 -&gt; 网络</p>
+<p><img src="https://i.loli.net/2020/08/13/2UXtKvWJbyVqFL4.png" alt="normal_net_1.jpg" /></p>
+<p><img src="https://i.loli.net/2020/08/13/TB9KnI7MdmCgbUD.png" alt="" /></p>
+<p>选择创建网络 ，填写网络名称 normal，点下一项，填写子网名称，网络地址，这里填写 172.16.0.0/24 网关填写 172.16.0.1 。</p>
+<p><img src="https://i.loli.net/2020/08/13/WYFpgAfvJGLlkBK.png" alt="" />点击下一项，填写子网详情，分配地址池 填写 172.16.0.100,127.16.0.200 。dns服务器填写 223.5.5.5 。最后点创建。</p>
+<p>然后点击 项目 -&gt; 网络 -&gt; 路由</p>
+<p><img src="https://i.loli.net/2020/08/13/uzRmcjpNfBoC7ks.png" alt="" /></p>
+<p>创建路由，填写路由名称， 选择刚才创建的外网 external， 点击创建。</p>
+<p>进入 项目 -&gt; 网络 -&gt; 网络拓扑</p>
+<p><img src="https://i.loli.net/2020/08/13/vFNLkqJPpWwBSgV.png" alt="" /></p>
+<p>选择图中的路由，点击添加接口，选择子网，就是刚才创建的 normal。</p>
+<p>到此，网络创建完毕。</p>
+<h2 id="an-quan-zu-pei-zhi">安全组配置</h2>
+<p>进入 项目 -&gt; 网络 -&gt; 安全组</p>
+<p>点击管理规则，点击添加规则</p>
+<p>分别添加 所有ICMP的入口方向和出口方向，TCP 22端口(用于SSH)的出口方向和入口方向，TCP 53端口(用于DNS)的出口方向和入口方向，UDP 53端口(用于DNS)的出口方向和入口方向。</p>
+<p><img src="https://i.loli.net/2020/08/13/Rt6qQCcOgAHsEkM.png" alt="安全组" /></p>
+<h2 id="jing-xiang-guan-li">镜像管理</h2>
+<p>镜像下载，下载地址 http://cloud.centos.org/centos/7/images/?C=M;O=D 或者阿里云 https://mirrors.aliyun.com/centos/</p>
+<p>这里选择其中一个，wget http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2c</p>
+<p>在本机的控制台输入</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">. /etc/kolla/admin-openrc.sh
+
+#上传镜像到glance
+openstack image create &quot;CentOS7-image&quot; \
+  --file CentOS-7-x86_64-GenericCloud.qcow2c \
+  --disk-format qcow2 --container-format bare \
+  --public
+</span></pre>
+<p>创建虚拟机规格</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">    openstack flavor create --id 1 --ram 512 --disk 1 --vcpus 1 m1.tiny 
+    openstack flavor create --id 2 --ram 2048 --disk 20 --vcpus 1 m1.small
+    openstack flavor create --id 3 --ram 4096 --disk 40 --vcpus 2 m1.medium
+    openstack flavor create --id 4 --ram 8192 --disk 80 --vcpus 4 m1.large
+</span></pre><h2 id="chuang-jian-xu-ni-ji-shi-li">创建虚拟机实例</h2>
+<p>进入 项目 -&gt; 计算 -&gt; 实例</p>
+<p><img src="https://i.loli.net/2020/08/13/TVs8PBNpudxEAH3.png" alt="" /></p>
+<p>点击创建实例，填写实例名称，镜像选择刚才创建的 CentOS7-image ，云主机类型选择 m1.medium ，网络选择normal，安全组默认是 default，不创建密钥对，在配置里面输入下面的shell</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">#!/bin/sh
+passwd root &lt;&lt;EOF
+123456
+123456
+EOF
+sed -i &#39;s/PasswordAuthentication no/PasswordAuthentication yes/g&#39; /etc/ssh/sshd_config
+sed -i &#39;s/#PubkeyAuthentication yes/PubkeyAuthentication yes/g&#39;  /etc/ssh/sshd_config
+service ssh restart
+</span></pre>
+<p>该脚本会修改虚拟机实例用户 root 的密码为123456</p>
+<p>点击创建实例。</p>
+<p>创建成功之后， 点击该实例名称，进入控制台界面，然后登陆即可。</p>
+<p>此时实例可访问外网，但是在局域网环境 (10.0.0.x) 无法访问该实例。</p>
+<h2 id="fen-pei-fu-dong-ip">分配浮动IP</h2>
+<p>进入 项目 -&gt; 网络 -&gt; 浮动IP</p>
+<p><img src="https://i.loli.net/2020/08/13/FQfsDRxlM1X7b4n.png" alt="" /></p>
+<p>点击分配IP给项目，点击分配IP，则生成一个IP地址，属于 192.168.1.0/24 网段。然后对刚刚生成的IP点击关联，关联到刚刚创建的虚拟机实例上。</p>
+<p>可以在局域网其他机器上通过SSH登陆该虚拟机实例。</p>
+
+    </div>
+
+    
+    
+
+    <div class="post-footer">
+        
+            
+                <div class="post-tags">
+                    
+                        <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;openstack&#x2F;">#OpenStack</a>
+                    
+                        <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;shi-yong&#x2F;">#使用</a>
+                    
+                        <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;stein&#x2F;">#stein</a>
+                    
+                </div>
+            
+            
+                <div class="post-nav">
+                    
+                        <a class="previous" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;kolla-ansible-deploy-all-in-one-mode-openstack-stein-version&#x2F;">‹ kolla-ansible 部署 all-in-one 模式 OpenStack stein版</a>
+                    
+                    
+                    
+                    
+                </div>
+            
+
+        
+
+    </div>
+
+    
+    
+</article>
+
+
+                </div>
+            </main>
+
+            
+            
+        </div>
+
+      
+          <script type="text/javascript" src="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;even.js" ></script>
+      
+      <!--  add cnzz trace code  -->
+      
+          <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1273937782'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s22.cnzz.com/z_stat.php%3Fid%3D1273937782' type='text/javascript'%3E%3C/script%3E"));</script>
+      
+    </body>
+
+</html>
