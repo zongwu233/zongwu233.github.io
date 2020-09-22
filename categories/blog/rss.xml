@@ -7,7 +7,18 @@
         <generator>Zola</generator>
         <language>en</language>
         <atom:link href="https%3A//blog.zongwu233.com/categories/blog/rss.xml" rel="self" type="application/rss+xml"/>
-        <lastBuildDate>Sun, 16 Aug 2020 00:00:00 +0000</lastBuildDate>
+        <lastBuildDate>Tue, 22 Sep 2020 00:00:00 +0000</lastBuildDate>
+        
+            <item>
+                <title>一致性模型</title>
+                <pubDate>Tue, 22 Sep 2020 00:00:00 +0000</pubDate>
+                <link>https%3A//blog.zongwu233.com/consistency-models/</link>
+                <guid>https%3A//blog.zongwu233.com/consistency-models/</guid>
+                <description>&lt;h2 id=&quot;ji-ben-gai-nian&quot;&gt;基本概念&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;zheng-que-xing-correctness&quot;&gt;正确性（Correctness）&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;strong&gt;一个系统是由一个状态和一些转换该状态的操作组成的&lt;&#x2F;strong&gt;。当系统运行时，它通过一些操作记录从一个状态转换到另一个状态。&lt;&#x2F;p&gt;
+</description>
+            </item>
         
             <item>
                 <title>OpenStack 管理</title>
@@ -828,23 +839,6 @@ import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
 &lt;span style=&quot;color:#bf616a;&quot;&gt;gradle&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; pushImage
 &lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;即可完成应用的docker镜像构建并且push到阿里云仓库。&lt;&#x2F;p&gt;
-</description>
-            </item>
-        
-            <item>
-                <title>《从0到1》读书笔记</title>
-                <pubDate>Sun, 09 Sep 2018 00:00:00 +0000</pubDate>
-                <link>https%3A//blog.zongwu233.com/zerotoone-reading-notes/</link>
-                <guid>https%3A//blog.zongwu233.com/zerotoone-reading-notes/</guid>
-                <description>&lt;p&gt;市面上大把的书教你如何变得优秀：如何成为优秀的人，如何创立优秀的公司。&lt;&#x2F;p&gt;
-&lt;p&gt;这本书谈的是卓越。&lt;&#x2F;p&gt;
-&lt;p&gt;优秀是大众看得到的，显而易见的好，但卓越一开始是反直觉的，而且很难，直到最后的结果太强大，大家不得不接受。&lt;&#x2F;p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;如果你照搬他们（比尔盖茨，拉奇佩里，扎克伯格）的成果，你就不是在向他们学习。&lt;&#x2F;p&gt;
-&lt;&#x2F;blockquote&gt;
-&lt;p&gt;画家齐白石也有过类似的话：&lt;&#x2F;p&gt;
-&lt;p&gt;学我者生，似我者死。&lt;&#x2F;p&gt;
-&lt;p&gt;模仿大师的产品，是没有前途的。要模仿学习的的是他们的思考方式。&lt;&#x2F;p&gt;
 </description>
             </item>
         

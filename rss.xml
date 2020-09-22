@@ -7,7 +7,18 @@
         <generator>Zola</generator>
         <language>en</language>
         <atom:link href="https%3A//blog.zongwu233.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <lastBuildDate>Sun, 16 Aug 2020 00:00:00 +0000</lastBuildDate>
+        <lastBuildDate>Tue, 22 Sep 2020 00:00:00 +0000</lastBuildDate>
+        
+            <item>
+                <title>一致性模型</title>
+                <pubDate>Tue, 22 Sep 2020 00:00:00 +0000</pubDate>
+                <link>https%3A//blog.zongwu233.com/consistency-models/</link>
+                <guid>https%3A//blog.zongwu233.com/consistency-models/</guid>
+                <description>&lt;h2 id=&quot;ji-ben-gai-nian&quot;&gt;基本概念&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;zheng-que-xing-correctness&quot;&gt;正确性（Correctness）&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;strong&gt;一个系统是由一个状态和一些转换该状态的操作组成的&lt;&#x2F;strong&gt;。当系统运行时，它通过一些操作记录从一个状态转换到另一个状态。&lt;&#x2F;p&gt;
+</description>
+            </item>
         
             <item>
                 <title>OpenStack 管理</title>
@@ -682,162 +693,6 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
 &lt;p&gt;这个小应用部署在公司局域网内，一直工作的很好，再也不用烦心IP变动这些琐事。&lt;&#x2F;p&gt;
 &lt;p&gt;直到有一次，ip.cn 网站挂了。挂了很久，我们就增加了从&lt;code&gt;ip.tool.chinaz.com&lt;&#x2F;code&gt; 网站获取IP。&lt;&#x2F;p&gt;
 &lt;p&gt;收工。&lt;&#x2F;p&gt;
-</description>
-            </item>
-        
-            <item>
-                <title>使用Gradle 构建SpringBoot应用的Docker镜像</title>
-                <pubDate>Wed, 24 Oct 2018 00:00:00 +0000</pubDate>
-                <link>https%3A//blog.zongwu233.com/gradle-build-springboot-dockerimage/</link>
-                <guid>https%3A//blog.zongwu233.com/gradle-build-springboot-dockerimage/</guid>
-                <description>&lt;h2 id=&quot;ying-yong-fa-bu-liu-cheng&quot;&gt;应用发布流程&lt;&#x2F;h2&gt;
-&lt;p&gt;通过结合docker容器，目前我们应用的发布流程大致如下：&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2019&#x2F;04&#x2F;28&#x2F;5cc5177f1c1a9.png&quot; alt=&quot;应用发布流程.png&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
-&lt;h2 id=&quot;gradlejiao-ben-gou-jian-jing-xiang&quot;&gt;Gradle脚本构建镜像&lt;&#x2F;h2&gt;
-&lt;p&gt;我们的工程是：&lt;&#x2F;p&gt;
-&lt;ul&gt;
-&lt;li&gt;基于SpringBoot 2.0.3.RELEASE&lt;&#x2F;li&gt;
-&lt;li&gt;采用JDK8编译&lt;&#x2F;li&gt;
-&lt;li&gt;gradle 构建&lt;&#x2F;li&gt;
-&lt;&#x2F;ul&gt;
-&lt;p&gt;根据我们发布流程的要求，构建出最终的镜像需要满足几个目标：&lt;&#x2F;p&gt;
-&lt;ul&gt;
-&lt;li&gt;尽可能构建体积小的镜像&lt;&#x2F;li&gt;
-&lt;li&gt;通过执行简单的gradle命令，构建镜像并push到阿里云的dockerHub仓库&lt;&#x2F;li&gt;
-&lt;li&gt;构建的镜像版本，有唯一标识，方便发布。比如版本中含有日期和 最后一次git commit的hash值&lt;&#x2F;li&gt;
-&lt;&#x2F;ul&gt;
-&lt;p&gt;我们最终选用了 &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;bmuschko&#x2F;gradle-docker-plugin&quot;&gt;https:&#x2F;&#x2F;github.com&#x2F;bmuschko&#x2F;gradle-docker-plugin&lt;&#x2F;a&gt; 的gradle-docker-plugin来实现构建docker镜像。该插件支持&lt;code&gt;java-application&lt;&#x2F;code&gt;  和 &lt;code&gt;spring-boot-application&lt;&#x2F;code&gt; 两种方式，很明显我们选取spring-boot-applicaiton插件。&lt;&#x2F;p&gt;
-&lt;p&gt;在原工程的build.gradle 最后加上：&lt;&#x2F;p&gt;
-&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
-&lt;span style=&quot;color:#c0c5ce;&quot;&gt;apply &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;from&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;docker.gradle&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39;
-&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;在build.gradle的同一级目录下新建文件docker.gradle。&lt;&#x2F;p&gt;
-&lt;p&gt;添加：&lt;&#x2F;p&gt;
-&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
-&lt;span style=&quot;color:#c0c5ce;&quot;&gt;buildscript {
-    repositories {
-
-        mavenCentral()
-        gradlePluginPortal()
-    }
-    dependencies {
-        classpath &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;com.bmuschko:gradle-docker-plugin:4.0.1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39;
-    }
-}
-
-apply &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;plugin&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;java&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39;
-apply &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;plugin&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;org.springframework.boot&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39;
-apply &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;plugin&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;DockerRemoteApiPlugin&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;
-apply &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;plugin&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;com.bmuschko.gradle.docker.DockerSpringBootApplicationPlugin
-
-&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;都是一些基础配置。&lt;&#x2F;p&gt;
-&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
-&lt;span style=&quot;color:#c0c5ce;&quot;&gt;
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; projectname = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;project.getName()&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; dockerVer = getGitVersion()
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; port = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;8990
-
-&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;这里定义一些全局变量使用。port可以根据实际情况定义。其中&lt;code&gt;getGitVersion()&lt;&#x2F;code&gt;的定义：&lt;&#x2F;p&gt;
-&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
-&lt;span style=&quot;color:#b48ead;&quot;&gt;import java.text.SimpleDateFormat
-def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;getGitVersion() {
-    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; logTime = &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;git log&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39;.execute() | &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;grep Date:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39;.execute() | &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;head -n 1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39;.execute()
-    logTime.waitFor()
-    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;Date&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; date = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;new Date&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(logTime.text.replace(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Date:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;, &amp;quot;&amp;quot;).trim())
-    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; pushTime = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;new SimpleDateFormat&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;yyyyMMddHHmmss&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;).format(date)
-    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; pushTime + &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot; + (&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;git rev-parse --short HEAD&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39;.execute().text.trim())
-}
-
-&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;可以看到拼接了git仓库的最后一个commit 的提交时间和hash值。&lt;&#x2F;p&gt;
-&lt;p&gt;gradle-docker-plugin 预定义了一些task，我们只需要简单配置：&lt;&#x2F;p&gt;
-&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
-&lt;span style=&quot;color:#c0c5ce;&quot;&gt;docker { 
-    url = getDefaultDockerUrl()
-    registryCredentials {
-        url = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;registry.cn-hangzhou.aliyuncs.com&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;
-        username = &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;yourRepoUsername&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39;
-        password = &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;yourRepopswd&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39;
-    }
-    springBootApplication {
-        baseImage = &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;openjdk:8-alpine&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39;
-        ports = [port, port]
-    }
-
-}
-&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;&lt;code&gt;getDefaultDockerUrl&lt;&#x2F;code&gt; 是本地docker 的url，plugin对windows、linux、mac都已经有了相应实现。&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;code&gt;registryCredentials&lt;&#x2F;code&gt; 是docker Hub的认证信息配置。 阿里云的dockerHub配置如上。&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;code&gt;springBootApplication&lt;&#x2F;code&gt; 只需要配置&lt;code&gt;baseImage&lt;&#x2F;code&gt; 和端口映射。可以看到我们基于&lt;code&gt;openjdk:8-alpine&lt;&#x2F;code&gt; ，alpine linux 镜像只有4.4M，不过 &lt;code&gt;openjdk:8-alpine&lt;&#x2F;code&gt;镜像体积赫然有103MB那么大了。&lt;&#x2F;p&gt;
-&lt;p&gt;配置这些就可以构建镜像，但是有些小问题需要解决。&lt;&#x2F;p&gt;
-&lt;ol&gt;
-&lt;li&gt;&#96;&#96;openjdk:8-alpine&#96; 默认是标准时区，而不是+8时区，需要修改。&lt;&#x2F;li&gt;
-&lt;li&gt;该插件对私有docker仓库的tag支持存在bug，需要特殊处理。&lt;&#x2F;li&gt;
-&lt;&#x2F;ol&gt;
-&lt;p&gt;接下来我们需要重写其中的 createDockerFile，buildImage，PushImage Task 来解决这两个问题。&lt;&#x2F;p&gt;
-&lt;p&gt;其中 createDockerFile：&lt;&#x2F;p&gt;
-&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
-&lt;span style=&quot;color:#c0c5ce;&quot;&gt;
-task createDockerfile(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;Dockerfile&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;) {
-    dependsOn dockerSyncArchive
-    from(docker.springBootApplication.baseImage.get())
-    copyFile(bootWar.archiveName, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;app&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;bootWar.archiveName&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;.toString())
-    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F;https:&#x2F;&#x2F;wiki.alpinelinux.org&#x2F;wiki&#x2F;Setting_the_timezone
-    &#x2F;&#x2F;https:&#x2F;&#x2F;github.com&#x2F;gliderlabs&#x2F;docker-alpine&#x2F;issues&#x2F;428
-    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;runCommand(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; echo &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;http:&#x2F;&#x2F;mirrors.ustc.edu.cn&#x2F;alpine&#x2F;v3.8&#x2F;main&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; &amp;gt; &#x2F;etc&#x2F;apk&#x2F;repositories  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39; +
-            &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; &amp;amp;&amp;amp; echo &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;http:&#x2F;&#x2F;mirrors.ustc.edu.cn&#x2F;alpine&#x2F;v3.8&#x2F;community&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; &amp;gt;&amp;gt;&#x2F;etc&#x2F;apk&#x2F;repositories  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39; +
-            &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; &amp;amp;&amp;amp; apk update &amp;amp;&amp;amp; apk add tzdata  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39; +
-            &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; &amp;amp;&amp;amp; ln -snf &#x2F;usr&#x2F;share&#x2F;zoneinfo&#x2F;Asia&#x2F;Shanghai &#x2F;etc&#x2F;localtime  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39; +
-            &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; &amp;amp;&amp;amp; echo &amp;quot;Asia&#x2F;Shanghai&amp;quot; &amp;gt; &#x2F;etc&#x2F;timezone  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39; +
-            &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; &amp;amp;&amp;amp; date &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39;+
-            &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; &amp;amp;&amp;amp; rm -rf &#x2F;var&#x2F;cache&#x2F;apk&#x2F;* &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39; +
-            &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt; &amp;amp;&amp;amp; rm -rf &#x2F;usr&#x2F;local&#x2F;share&#x2F;.cache&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;#39;)
-    entryPoint(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;java&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;)
-    defaultCommand(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;-jar&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&#x2F;app&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;bootWar.archiveName&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;.toString())
-    exposePort(docker.springBootApplication.ports)
-
-
-}
-&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;上面主要是创建Dockerfile，编写指令来配置合适的&lt;code&gt;timezone&lt;&#x2F;code&gt;。使用中科大的apk安装源（mirrors.ustc.edu.cn）更快。。。&lt;&#x2F;p&gt;
-&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
-&lt;span style=&quot;color:#c0c5ce;&quot;&gt;task buildImage(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;DockerBuildImage&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;) {
-    dependsOn createDockerfile
-    inputDir = createDockerfile.destFile.get().asFile.parentFile
-    tag = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;zongwu233&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;projectname&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;dockerVer&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;.toLowerCase()
-}
-
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F;https:&#x2F;&#x2F;github.com&#x2F;bmuschko&#x2F;gradle-docker-plugin&#x2F;issues&#x2F;209
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;task dockerTag(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;com.bmuschko.gradle.docker.tasks.image.DockerTagImage&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;) {
-    dependsOn buildImage
-    imageId = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;zongwu233&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;projectname&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;dockerVer&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;.toLowerCase()
-    tag = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;dockerVer&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;.toLowerCase()
-    repository = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;registry.cn-hangzhou.aliyuncs.com&#x2F;zongwu233&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;projectname&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;.toLowerCase()
-}
-&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;解决私有DockerHub 的tag问题。更详细的讨论见&lt;code&gt;https:&#x2F;&#x2F;github.com&#x2F;bmuschko&#x2F;gradle-docker-plugin&#x2F;issues&#x2F;209&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;其中&lt;code&gt;zongwu233&lt;&#x2F;code&gt; 是在阿里云DockerHub中的命名空间，&lt;code&gt;${projectname}&lt;&#x2F;code&gt; 是仓库名称。&lt;&#x2F;p&gt;
-&lt;p&gt;最后是push task：&lt;&#x2F;p&gt;
-&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
-&lt;span style=&quot;color:#c0c5ce;&quot;&gt;task pushImage(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;type&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;DockerPushImage&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;) {
-    dependsOn dockerTag
-    imageName = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;registry.cn-hangzhou.aliyuncs.com&#x2F;zongwu233&#x2F;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;${&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;projectname&lt;&#x2F;span&gt;&lt;span style=&quot;color:#ab7967;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;.toLowerCase()
-}
-&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;另外要在createDockerFile，buildImage 等task之前 加上import 声明：&lt;&#x2F;p&gt;
-&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
-&lt;span style=&quot;color:#b48ead;&quot;&gt;import com.bmuschko.gradle.docker.DockerRemoteApiPlugin
-import&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; com.bmuschko.gradle.docker.tasks.image.*
-&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
-import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
-&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;这样，在控制台输入命令:&lt;&#x2F;p&gt;
-&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
-&lt;span style=&quot;color:#bf616a;&quot;&gt;gradle&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; pushImage
-&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;即可完成应用的docker镜像构建并且push到阿里云仓库。&lt;&#x2F;p&gt;
 </description>
             </item>
         

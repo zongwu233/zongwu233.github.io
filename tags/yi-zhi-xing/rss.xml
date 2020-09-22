@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title></title>
+        <link>https%3A//blog.zongwu233.com</link>
+        <description></description>
+        <generator>Zola</generator>
+        <language>en</language>
+        <atom:link href="https%3A//blog.zongwu233.com/tags/yi-zhi-xing/rss.xml" rel="self" type="application/rss+xml"/>
+        <lastBuildDate>Tue, 22 Sep 2020 00:00:00 +0000</lastBuildDate>
+        
+            <item>
+                <title>一致性模型</title>
+                <pubDate>Tue, 22 Sep 2020 00:00:00 +0000</pubDate>
+                <link>https%3A//blog.zongwu233.com/consistency-models/</link>
+                <guid>https%3A//blog.zongwu233.com/consistency-models/</guid>
+                <description>&lt;h2 id=&quot;ji-ben-gai-nian&quot;&gt;基本概念&lt;&#x2F;h2&gt;
+&lt;h3 id=&quot;zheng-que-xing-correctness&quot;&gt;正确性（Correctness）&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;strong&gt;一个系统是由一个状态和一些转换该状态的操作组成的&lt;&#x2F;strong&gt;。当系统运行时，它通过一些操作记录从一个状态转换到另一个状态。&lt;&#x2F;p&gt;
+</description>
+            </item>
+        
+    </channel>
+</rss>
