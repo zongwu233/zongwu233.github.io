@@ -184,7 +184,7 @@
                 </li>
                 
                 <li>
-                    <a href="https://blog.zongwu233.com/consistency-models/#can-kao" class="toc-link">参考</a>
+                    <a href="https://blog.zongwu233.com/consistency-models/#qi-ta" class="toc-link">其他</a>
                     
                 </li>
                 
@@ -263,8 +263,8 @@
 <p>更强约束的一致性模型也往往需要更多的协调--更多的消息来回传递，以确保它们的操作以正确的顺序发生。这不仅意味着可用性较低，而且还导致更高的延迟。这就是为什么现代CPU内存模型默认情况下是不可线性化的--除非你明确说出来。现代CPU会在多核之间重排内存操作的顺序，甚至更糟。虽然指令操作更难推理，但性能优势是惊人的。在不同地理位置上部署的分布式系统，数据中心之间有数百毫秒的延迟，通常会做出类似的权衡。</p>
 <p>所以在实践中，我们使用混合数据存储，将不同一致性模型的数据库混合在一起，以实现我们的冗余、可用性、性能和安全目标。尽可能采用 &quot;较弱 &quot;的一致性模型，以实现可用性和性能。必要时采用 &quot;较强 &quot;的一致性模型，因为所表达的算法要求更严格的操作顺序。</p>
 <p>例如，你可以将大量数据写入S3、Riak或Cassandra，然后将这些数据的指针，线性地写入Postgres、Zookeeper或Etcd。有些数据库支持多种一致性模型，比如关系型数据库中的可调整隔离级别，或者Cassandra和Riak的可线性化事务，这有助于减少使用的系统数量。不过底线是：任何说自己的一致性模型是唯一正确选择的人，很可能是想推销什么。鱼和熊掌不可兼得。</p>
-<h2 id="can-kao">参考</h2>
-<p>[][]https://aphyr.com/posts/313-strong-consistency-models </p>
+<h2 id="qi-ta">其他</h2>
+<p>参考翻译 https://aphyr.com/posts/313-strong-consistency-models ，在理解基础上稍微做了修改。</p>
 
     </div>
 
