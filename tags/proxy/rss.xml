@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title></title>
+        <link>https%3A//blog.zongwu233.com</link>
+        <description></description>
+        <generator>Zola</generator>
+        <language>en</language>
+        <atom:link href="https%3A//blog.zongwu233.com/tags/proxy/rss.xml" rel="self" type="application/rss+xml"/>
+        <lastBuildDate>Sat, 17 Oct 2020 00:00:00 +0000</lastBuildDate>
+        
+            <item>
+                <title>Git协议代理配置</title>
+                <pubDate>Sat, 17 Oct 2020 00:00:00 +0000</pubDate>
+                <link>https%3A//blog.zongwu233.com/git-proxy-config/</link>
+                <guid>https%3A//blog.zongwu233.com/git-proxy-config/</guid>
+                <description>&lt;p&gt;&lt;code&gt;Git&lt;&#x2F;code&gt;使用四种主要的协议来传输资料：本地协议（Local），HTTP 协议，SSH（Secure Shell）协议及 Git 协议。&lt;&#x2F;p&gt;
+&lt;p&gt;为了能够顺畅使用&lt;code&gt;GitHub&lt;&#x2F;code&gt; ，我们需要为 &lt;code&gt;HTTPS&lt;&#x2F;code&gt; &lt;code&gt;SSH&lt;&#x2F;code&gt;配置代理。&lt;&#x2F;p&gt;
+</description>
+            </item>
+        
+    </channel>
+</rss>

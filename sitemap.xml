@@ -92,6 +92,13 @@
         </url>
     
         <url>
+            <loc>https%3A//blog.zongwu233.com/git-proxy-config/</loc>
+            
+                <lastmod>2020-10-17</lastmod>
+            
+        </url>
+    
+        <url>
             <loc>https%3A//blog.zongwu233.com/gradle-build-springboot-dockerimage/</loc>
             
                 <lastmod>2018-10-24</lastmod>
@@ -197,6 +204,11 @@
         </url>
     
         <url>
+            <loc>https%3A//blog.zongwu233.com/tags/git/</loc>
+            
+        </url>
+    
+        <url>
             <loc>https%3A//blog.zongwu233.com/tags/jia-gou/</loc>
             
         </url>
@@ -207,7 +219,17 @@
         </url>
     
         <url>
+            <loc>https%3A//blog.zongwu233.com/tags/ke-xue-shang-wang/</loc>
+            
+        </url>
+    
+        <url>
             <loc>https%3A//blog.zongwu233.com/tags/kolla-ansible/</loc>
+            
+        </url>
+    
+        <url>
+            <loc>https%3A//blog.zongwu233.com/tags/macos/</loc>
             
         </url>
     
@@ -218,6 +240,11 @@
     
         <url>
             <loc>https%3A//blog.zongwu233.com/tags/openstack/</loc>
+            
+        </url>
+    
+        <url>
+            <loc>https%3A//blog.zongwu233.com/tags/proxy/</loc>
             
         </url>
     
@@ -233,6 +260,11 @@
     
         <url>
             <loc>https%3A//blog.zongwu233.com/tags/shi-yong/</loc>
+            
+        </url>
+    
+        <url>
+            <loc>https%3A//blog.zongwu233.com/tags/ssh/</loc>
             
         </url>
     
