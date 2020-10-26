@@ -225,7 +225,7 @@ setenforce 0
 <span style="color:#c0c5ce;">cd /home
 truncate -s 2000G disk.img
 </span></pre>
-<p>这里创建了一个大小为2T的文件。采用下面这种方式创建大文件的速度太慢：</p>
+<p>创建了一个大小为2T的文件。采用下面这种方式创建大文件的速度太慢：</p>
 <pre style="background-color:#2b303b;">
 <span style="color:#c0c5ce;">dd if=/dev/zero of=./disk.img count=4096 bs=512MB 
 </span></pre>
@@ -239,7 +239,9 @@ losetup /dev/loop0 disk.img
 pvcreate /dev/loop0
 #创建卷组 cinder-volumes，将PV加入到VG中
 vgcreate cinder-volumes /dev/loop0
-</span></pre><h2 id="an-zhuang">安装</h2>
+</span></pre>
+<p>（注意生产环境要单独配置真正的硬盘到VG，不要采用上述挂载方式，否则机器重启导致虚拟机文件找不到）</p>
+<h2 id="an-zhuang">安装</h2>
 <h3 id="an-zhuang-docker">安装 docker</h3>
 <pre style="background-color:#2b303b;">
 <span style="color:#c0c5ce;">curl -sSL https://get.docker.io | bash

@@ -147,7 +147,7 @@ setenforce 0
 &lt;span style=&quot;color:#c0c5ce;&quot;&gt;cd &#x2F;home
 truncate -s 2000G disk.img
 &lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
-&lt;p&gt;这里创建了一个大小为2T的文件。采用下面这种方式创建大文件的速度太慢：&lt;&#x2F;p&gt;
+&lt;p&gt;创建了一个大小为2T的文件。采用下面这种方式创建大文件的速度太慢：&lt;&#x2F;p&gt;
 &lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
 &lt;span style=&quot;color:#c0c5ce;&quot;&gt;dd if=&#x2F;dev&#x2F;zero of=.&#x2F;disk.img count=4096 bs=512MB 
 &lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
@@ -161,7 +161,9 @@ losetup &#x2F;dev&#x2F;loop0 disk.img
 pvcreate &#x2F;dev&#x2F;loop0
 #创建卷组 cinder-volumes，将PV加入到VG中
 vgcreate cinder-volumes &#x2F;dev&#x2F;loop0
-&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;&lt;h2 id=&quot;an-zhuang&quot;&gt;安装&lt;&#x2F;h2&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;（注意生产环境要单独配置真正的硬盘到VG，不要采用上述挂载方式，否则机器重启导致虚拟机文件找不到）&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;an-zhuang&quot;&gt;安装&lt;&#x2F;h2&gt;
 &lt;h3 id=&quot;an-zhuang-docker&quot;&gt;安装 docker&lt;&#x2F;h3&gt;
 &lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
 &lt;span style=&quot;color:#c0c5ce;&quot;&gt;curl -sSL https:&#x2F;&#x2F;get.docker.io | bash
