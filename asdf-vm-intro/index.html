@@ -7,7 +7,7 @@
       <!-- Enable responsiveness on mobile devices-->
       <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
-      <title> - Git协议代理配置</title>
+      <title> - adsf-vm </title>
 
       
         <link rel="alternate" type="application/rss+xml" title="RSS" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">
@@ -128,17 +128,22 @@
             <ul>
                 
                 <li>
-                    <a href="https://blog.zongwu233.com/git-proxy-config/#zhun-bei" class="toc-link">准备</a>
+                    <a href="https://blog.zongwu233.com/asdf-vm-intro/#an-zhuang" class="toc-link">安装</a>
                     
                 </li>
                 
                 <li>
-                    <a href="https://blog.zongwu233.com/git-proxy-config/#sshxie-yi-dai-li" class="toc-link">SSH协议代理</a>
+                    <a href="https://blog.zongwu233.com/asdf-vm-intro/#cha-jian-guan-li" class="toc-link">插件管理</a>
                     
                 </li>
                 
                 <li>
-                    <a href="https://blog.zongwu233.com/git-proxy-config/#httpsxie-yi-dai-li" class="toc-link">HTTPS协议代理</a>
+                    <a href="https://blog.zongwu233.com/asdf-vm-intro/#cha-jian-de-ban-ben-guan-li" class="toc-link">插件的版本管理</a>
+                    
+                </li>
+                
+                <li>
+                    <a href="https://blog.zongwu233.com/asdf-vm-intro/#shen-ru-cha-jian" class="toc-link">深入插件</a>
                     
                 </li>
                 
@@ -152,54 +157,111 @@
     
     <header class="post__header">
         <h1 class="post__title">
-            <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;git-proxy-config&#x2F;">Git协议代理配置</a>
+            <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;asdf-vm-intro&#x2F;">adsf-vm </a>
         </h1>
         <div class="post__meta">
-            <span class="post__time">2020-10-17</span>
+            <span class="post__time">2020-11-10</span>
             
         </div>
     </header>
 
     <div class="post-content">
-      <p><code>Git</code>使用四种主要的协议来传输资料：本地协议（Local），HTTP 协议，SSH（Secure Shell）协议及 Git 协议。</p>
-<p>为了能够顺畅使用<code>GitHub</code> ，我们需要为 <code>HTTPS</code> <code>SSH</code>配置代理。</p>
+      <p>官方给出的定义是：</p>
+<blockquote>
+<p>Manage multiple runtime versions with a single CLI tool</p>
+</blockquote>
+<p>大家在日常开发时，经常遇到需要对同一个编程语言/框架安装不同版本的情况，比如 python 2/3 ，ruby 1.8/1.9，scala 2.11/2.12/... ，gradle 4.x/5.x 等等。虽然已经有pyenv，rvm，sdkman 等等针对这些语言进行多版本的管理，方便不同版本的环境切换，但是：</p>
 <p id="zola-continue-reading"><a name="continue-reading"></a></p>
-<p>以下是在<code>MacOS</code>环境的配置。</p>
-<h2 id="zhun-bei">准备</h2>
-<p>先安装<code>nmap</code>库，<code>macOS</code>下也可以安装<code>netcat</code>，但是该库版本太低而且相对于<code>Linux</code>下的<code>netcat</code>，功能太弱。</p>
+<ol>
+<li>要安装很多这种管理软件</li>
+<li>有些编程语言/框架没有类似的多版本环境管理软件</li>
+</ol>
+<p>于是有了<code>adsf-vm</code>。一个工具管理多版本的运行时环境，而且提供了<code>plugin</code>的概念，方便所有人扩展定义针对编程语言/框架的管理。比如 <code>Elasticsearch</code> <code>Kubectl</code> <code>MySQL</code> 等都可以用<code>adsf-vm</code>进行版本管理。</p>
+<h2 id="an-zhuang">安装</h2>
+<p>参考官方文档即可。https://asdf-vm.com/#/core-manage-asdf-vm
+对于<code>macOS</code> 我是通过<code>brew</code>安装，比较简单：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">brew install nmap
+<span style="color:#c0c5ce;">brew install coreutils curl git
+brew install asdf
 </span></pre>
-<p>等下会用到<code>nmap</code>的<code>ncat</code>命令。</p>
-<p>一个可用的<code>socks5</code>服务。我这里是 socks5://127.0.0.1:1080</p>
-<h2 id="sshxie-yi-dai-li">SSH协议代理</h2>
+<p>添加到<code>zsh</code>环境：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">vim  ~/.ssh/config
+<span style="color:#c0c5ce;">echo -e &quot;\n. $(brew --prefix asdf)/asdf.sh&quot; &gt;&gt; ~/.zshrc
 </span></pre>
-<p>写入以下内容：</p>
+<p>搞定。</p>
+<h2 id="cha-jian-guan-li">插件管理</h2>
+<p>主要流程是：先添加插件，然后安装，设置当前使用的版本。就可以使用了。
+添加插件：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">Host github.com
-    User    git
-    Hostname     github.com
-    Port    22
-    ProxyCommand ncat --proxy-type socks5  --proxy 127.0.0.1:1080 %h %p
+<span style="color:#c0c5ce;">asdf plugin add &lt;name&gt;
+# asdf plugin add gradle
 </span></pre>
-<p><code>User</code>设置是<code>git</code>，不是<code>github</code>上的账号名。</p>
-<p>ProxyCommand ncat --proxy-type socks5  --proxy 127.0.0.1:1080 %h %p：</p>
-<p>是调用<code>ncat</code> 将传入的%h %p （host 和port） 代理到 --proxy 127.0.0.1:1080  ，代理协议由--proxy-type socks5 指定。</p>
-<p>127.0.0.1:1080 可根据实际情况更换成自己的ss服务设置。</p>
-<h2 id="httpsxie-yi-dai-li">HTTPS协议代理</h2>
+<p>如果需要安装的插件不在当前插件库，也可以指定插件的仓库url:</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">vim ~/.gitconfig
+<span style="color:#c0c5ce;">asdf plugin add &lt;name&gt; &lt;git-url&gt;
 </span></pre>
-<p>编辑<code>git</code>的全局配置文件，写入以下内容：</p>
+<p>查看当前添加的插件列表：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">[http]
-proxy = socks5://127.0.0.1:1080
-[https]
-proxy = socks5://127.0.0.1:1080
+<span style="color:#c0c5ce;">asdf plugin list
+# asdf plugin list
+# java
+# nodejs
+</span></pre><pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">asdf plugin list --urls
+# asdf plugin list
+# java            https://github.com/halcyon/asdf-java.git
+# nodejs          https://github.com/asdf-vm/asdf-nodejs.git
 </span></pre>
-<p>OK了，从<code>GitHub</code>下载再也不是8Kb的速度了。</p>
+<p>更新插件：</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">asdf plugin update --all
+
+asdf plugin update &lt;name&gt;
+</span></pre>
+<p>移除一个插件：</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">asdf plugin remove &lt;name&gt;
+</span></pre><h2 id="cha-jian-de-ban-ben-guan-li">插件的版本管理</h2>
+<p>查看插件库里所有可用的版本</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">asdf list all &lt;name&gt;
+
+asdf list all &lt;name&gt; &lt;version&gt;
+</span></pre>
+<p>指定插件的版本安装：</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">asdf install &lt;name&gt; &lt;version&gt;
+</span></pre>
+<p>查看已经安装的插件版本：</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">asdf list &lt;name&gt;
+</span></pre>
+<p>设置插件的当前版本：</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">asdf global &lt;name&gt; &lt;version&gt; [&lt;version&gt;...]
+asdf shell &lt;name&gt; &lt;version&gt; [&lt;version&gt;...]
+asdf local &lt;name&gt; &lt;version&gt; [&lt;version&gt;...]
+</span></pre>
+<p><code>global</code> 就是全局设定了，会把版本写入<code>$HOME/.tool-versions</code> 
+<code>shell</code> 就是设定在当前shell环境生效。实际上是把版本信息写入了当前环境变量<code>ASDF_${LANG}_VERSION</code>
+<code>local</code> 会写入<code>$PWD/.tool-versions</code></p>
+<p>查看插件的当前版本</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">asdf current
+
+asdf current &lt;name&gt;
+</span></pre>
+<p>卸载当前版本</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#c0c5ce;">asdf uninstall &lt;name&gt; &lt;version&gt;
+</span></pre><h2 id="shen-ru-cha-jian">深入插件</h2>
+<p>插件非常简单，就是一个git库。包含3个脚本，用于响应<code>list-all</code>, <code>install</code> 或者 <code>uninstall</code> 命令。</p>
+<ol>
+<li><code>bin/list-all</code> 列出插件所有可用版本</li>
+<li><code>bin/download</code> 下载插件</li>
+<li><code>bin/install</code> 安装特定版本的插件</li>
+</ol>
+<p>实际上大部分插件都只有<code>bin/list-all</code> <code>bin/install</code> 这俩个文件。</p>
 
     </div>
 
@@ -211,25 +273,21 @@ proxy = socks5://127.0.0.1:1080
             
                 <div class="post-tags">
                     
-                        <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;ke-xue-shang-wang&#x2F;">#科学上网</a>
+                        <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;duo-ban-ben-guan-li&#x2F;">#多版本管理</a>
                     
-                        <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;git&#x2F;">#git</a>
+                        <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;gong-ju&#x2F;">#工具</a>
                     
-                        <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;ssh&#x2F;">#ssh</a>
+                        <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;cli&#x2F;">#CLI</a>
                     
-                        <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;proxy&#x2F;">#proxy</a>
-                    
-                        <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;macos&#x2F;">#macOS</a>
+                        <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;ruan-jian&#x2F;">#软件</a>
                     
                 </div>
             
             
                 <div class="post-nav">
                     
-                        <a class="previous" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;consistency-models&#x2F;">‹ 一致性模型</a>
+                        <a class="previous" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;git-proxy-config&#x2F;">‹ Git协议代理配置</a>
                     
-                    
-                        <a class="next" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;asdf-vm-intro&#x2F;">adsf-vm  ›</a>
                     
                     
                     

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title></title>
+        <link>https%3A//blog.zongwu233.com</link>
+        <description></description>
+        <generator>Zola</generator>
+        <language>en</language>
+        <atom:link href="https%3A//blog.zongwu233.com/tags/cli/rss.xml" rel="self" type="application/rss+xml"/>
+        <lastBuildDate>Tue, 10 Nov 2020 00:00:00 +0000</lastBuildDate>
+        
+            <item>
+                <title>adsf-vm </title>
+                <pubDate>Tue, 10 Nov 2020 00:00:00 +0000</pubDate>
+                <link>https%3A//blog.zongwu233.com/asdf-vm-intro/</link>
+                <guid>https%3A//blog.zongwu233.com/asdf-vm-intro/</guid>
+                <description>&lt;p&gt;官方给出的定义是：&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Manage multiple runtime versions with a single CLI tool&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;大家在日常开发时，经常遇到需要对同一个编程语言&#x2F;框架安装不同版本的情况，比如 python 2&#x2F;3 ，ruby 1.8&#x2F;1.9，scala 2.11&#x2F;2.12&#x2F;... ，gradle 4.x&#x2F;5.x 等等。虽然已经有pyenv，rvm，sdkman 等等针对这些语言进行多版本的管理，方便不同版本的环境切换，但是：&lt;&#x2F;p&gt;
+</description>
+            </item>
+        
+    </channel>
+</rss>

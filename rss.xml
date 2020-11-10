@@ -7,7 +7,20 @@
         <generator>Zola</generator>
         <language>en</language>
         <atom:link href="https%3A//blog.zongwu233.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <lastBuildDate>Sat, 17 Oct 2020 00:00:00 +0000</lastBuildDate>
+        <lastBuildDate>Tue, 10 Nov 2020 00:00:00 +0000</lastBuildDate>
+        
+            <item>
+                <title>adsf-vm </title>
+                <pubDate>Tue, 10 Nov 2020 00:00:00 +0000</pubDate>
+                <link>https%3A//blog.zongwu233.com/asdf-vm-intro/</link>
+                <guid>https%3A//blog.zongwu233.com/asdf-vm-intro/</guid>
+                <description>&lt;p&gt;官方给出的定义是：&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Manage multiple runtime versions with a single CLI tool&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;大家在日常开发时，经常遇到需要对同一个编程语言&#x2F;框架安装不同版本的情况，比如 python 2&#x2F;3 ，ruby 1.8&#x2F;1.9，scala 2.11&#x2F;2.12&#x2F;... ，gradle 4.x&#x2F;5.x 等等。虽然已经有pyenv，rvm，sdkman 等等针对这些语言进行多版本的管理，方便不同版本的环境切换，但是：&lt;&#x2F;p&gt;
+</description>
+            </item>
         
             <item>
                 <title>Git协议代理配置</title>
@@ -448,15 +461,6 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
 &lt;p&gt;Kafka消息队列主要用于应用间异步通信的场景。Main Api server 和 Finance server 都会产生金币计费消息，Finance server应用负责消费该消息。&lt;&#x2F;p&gt;
 &lt;h4 id=&quot;zui-zhong-de-fu-wu-duan-jia-gou&quot;&gt;最终的服务端架构&lt;&#x2F;h4&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2019&#x2F;04&#x2F;28&#x2F;5cc5abf8e0385.png&quot; alt=&quot;架构2_0.png&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
-</description>
-            </item>
-        
-            <item>
-                <title>Consul+Registrator+Nginx方案的部署</title>
-                <pubDate>Thu, 20 Dec 2018 00:00:00 +0000</pubDate>
-                <link>https%3A//blog.zongwu233.com/consul-registrator-nginx/</link>
-                <guid>https%3A//blog.zongwu233.com/consul-registrator-nginx/</guid>
-                <description>&lt;p&gt;详细介绍Consul+Registrator+Nginx方案的部署细节。&lt;&#x2F;p&gt;
 </description>
             </item>
         
