@@ -225,9 +225,9 @@
 <li>When the owner goes out of scope, the value will be dropped.</li>
 </ol>
 </blockquote>
-<p>规则1：Rust 中的每一个值都有一个被称为其 所有者（owner）的变量。
-规则2：值在任一时刻有且只有一个所有者。
-规则3：当所有者（变量）离开作用域，这个值将被丢弃。</p>
+<p>规则1：Rust 中的每一个值都有一个被称为其 所有者（owner）的变量。</p>
+<p>规则2：值在任一时刻有且只有一个所有者。</p>
+<p>规则3：当所有者（变量）离开作用域，这个值将被丢弃。</p>
 <h2 id="nei-cun-guan-li">内存管理</h2>
 <p>Rust所有权规则1中的值，要么分配在栈上，要么分配在堆上。栈上的数据会随着入栈出栈操作被自动清理，编程语言主要是对堆进行内存管理。</p>
 <h2 id="gui-ze-1yu-gui-ze-2">规则1与规则2</h2>
@@ -270,10 +270,10 @@ error: aborting due to previous error
 
 For more information about this error, try `rustc --explain </span><span style="color:#d08770;">E0382</span><span style="color:#c0c5ce;">`.
 </span></pre>
-<p>直接错误提示是：<code>error[E0382]: borrow of moved value: 'a'</code>借用已经move的值a。
-同时在<code>let b = a;</code>那行编译器提示<code>value moved here</code>，在此处值被move了。
-我们对<code>let</code> 关键字的理解更加深入：对于形如 <code>let  x  = y;</code> 的语句，如果<code>y</code>是变量，<strong><code>let</code> 会引发变量的所有权转移。</strong>
-也即是：<strong><code>let</code>操作默认是<code>move</code>语义。</strong> 从而保障了规则2的约束。</p>
+<p>直接错误提示是：<code>error[E0382]: borrow of moved value: 'a'</code>借用已经move的值a。</p>
+<p>同时在<code>let b = a;</code>那行编译器提示<code>value moved here</code>，在此处值被move了。</p>
+<p>我们对<code>let</code> 关键字的理解更加深入：对于形如 <code>let  x  = y;</code> 的语句，如果<code>y</code>是变量，<strong><code>let</code> 会引发变量的所有权转移。</strong></p>
+<p>也即是：<strong><code>let</code>操作默认是<code>move</code>语义。</strong> 从而保障了规则2的约束。</p>
 <h3 id="copy-trait">Copy trait</h3>
 <p>新的问题出现，下面这段代码没有遵循<code>move</code>语义，但编译成功：</p>
 <pre style="background-color:#2b303b;">
@@ -287,8 +287,8 @@ For more information about this error, try `rustc --explain </span><span style="
 
 </span><span style="color:#c0c5ce;">}
 </span></pre>
-<p>那是因为考虑到使用上的便利性，在有些场景下并不希望应用默认的<code>move</code>语义。Rust的基础数据类型都实现了 std::marker::Copy <code>trait</code>，所以在进行<code>let</code>操作时，实际上发生了<code>copy</code>。
-哪些类型是满足<code>Copy</code>特性的？类似整型这样的存储在栈上的类型、不需要分配内存或某种形式资源的类型。常见的<code>Copy</code> 类型如下：</p>
+<p>那是因为考虑到使用上的便利性，在有些场景下并不希望应用默认的<code>move</code>语义。Rust的基础数据类型都实现了 std::marker::Copy <code>trait</code>，所以在进行<code>let</code>操作时，实际上发生了<code>copy</code>。</p>
+<p>哪些类型是满足<code>Copy</code>特性的？类似整型这样的存储在栈上的类型、不需要分配内存或某种形式资源的类型。常见的<code>Copy</code> 类型如下：</p>
 <ul>
 <li>所有整数类型，比如 u32。</li>
 <li>布尔类型，bool，它的值是 true 和 false。</li>
@@ -328,8 +328,8 @@ For more information about this error, try `rustc --explain </span><span style="
 }
 </span></pre>
 <p>当然这里的例子有一点点特殊，<code>Foo</code>结构体的成员都是基础类型，所以我们标记注解<code>#[derive(Debug,Copy,Clone)]</code> 即可满足。
-如果其成员是复杂的类型，就需要实现<code>Copy</code>和<code>Clone</code>的<code>trait</code>。
-注意：<code>Clone trait</code>是<code>Copy trait</code>的 <code>supertrait</code>，所以任何一个实现<code>Copy</code>的类型必须实现<code>Clone</code>。</p>
+如果其成员是复杂的类型，就需要实现<code>Copy</code>和<code>Clone</code>的<code>trait</code>。</p>
+<p>注意：<code>Clone trait</code>是<code>Copy trait</code>的 <code>supertrait</code>，所以任何一个实现<code>Copy</code>的类型必须实现<code>Clone</code>。</p>
 <h3 id="suo-you-quan-yu-han-shu">所有权与函数</h3>
 <p>调用函数的时候，会将实际参传递给形式参数，这个操作在语义上与给变量赋值相似。可能会移动或者复制，遵循与赋值语句一样的规则。例如：</p>
 <pre style="background-color:#2b303b;">
@@ -373,8 +373,8 @@ For more information about this error, try `rustc --explain </span><span style="
     </span><span style="color:#c0c5ce;">(s, length)
 }
 </span></pre>
-<p>在每一次函数调用的时候，都获取所有权，然后在函数调用完成的时候，再返回所有权，这种方式略显繁琐。而这种调用在实际场景中极其常见，Rust提供了引用（references）功能来解决这个问题。
-利用引用，上面的代码可以改写成：</p>
+<p>在每一次函数调用的时候，都获取所有权，然后在函数调用完成的时候，再返回所有权，这种方式略显繁琐。而这种调用在实际场景中极其常见，Rust提供了引用（references）功能来解决这个问题。</p>
+<p>利用引用，上面的代码可以改写成：</p>
 <pre style="background-color:#2b303b;">
 <span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">() {
     </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> s1 = String::from(&quot;</span><span style="color:#a3be8c;">hello</span><span style="color:#c0c5ce;">&quot;);
@@ -388,11 +388,11 @@ For more information about this error, try `rustc --explain </span><span style="
     s.</span><span style="color:#96b5b4;">len</span><span style="color:#c0c5ce;">()
 }
 </span></pre>
-<p>传给<code>calculate_length()</code>的是<code>&amp;s1</code>而不是<code>s1</code>。函数的声明是<code>calculate_length(s: &amp;String)</code>参数是<code>s: &amp;String</code>。
-<strong><code>&amp;</code>就是引用。它允许你使用值但不获取其所有权。</strong> 毕竟我们需要遵循规则2。
-<strong>我们把采用引用作为函数参数称为借用（borrowing）</strong> 
-这里并不想展开讨论不可变引用和可变引用的相关规则，那是并发编程场景下需要关注的点。
-关于引用还需要特别注意的一个点是作用域。一个<strong>引用的作用域</strong>从声明的地方开始一直持续到<strong>最后一次使用为止</strong>。如下代码是可以编译的：</p>
+<p>传给<code>calculate_length()</code>的是<code>&amp;s1</code>而不是<code>s1</code>。函数的声明是<code>calculate_length(s: &amp;String)</code>参数是<code>s: &amp;String</code>。</p>
+<p><strong><code>&amp;</code>就是引用。它允许你使用值但不获取其所有权。</strong> 毕竟我们需要遵循规则2。</p>
+<p><strong>我们把采用引用作为函数参数称为借用（borrowing）</strong> </p>
+<p>这里并不想展开讨论不可变引用和可变引用的相关规则，那是并发编程场景下需要关注的点。</p>
+<p>关于引用还需要特别注意的一个点是作用域。一个<strong>引用的作用域</strong>从声明的地方开始一直持续到<strong>最后一次使用为止</strong>。如下代码是可以编译的：</p>
 <pre style="background-color:#2b303b;">
 <span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">(){
     </span><span style="color:#b48ead;">let mut</span><span style="color:#c0c5ce;"> s = String::from(&quot;</span><span style="color:#a3be8c;">hello</span><span style="color:#c0c5ce;">&quot;);
@@ -419,14 +419,14 @@ For more information about this error, try `rustc --explain </span><span style="
     
 }
 </span></pre>
-<p>实际上，字符串字面量就是 <code>slice</code> 。
-<code>let s = &quot;Hello, world!&quot;;</code>
-这里的 <code>s</code>的类型是 <code>&amp;str</code>，它是一个指向二进制程序特定位置的 <code>slice</code>。<code>&amp;str</code>是一个不可变引用。</p>
+<p>实际上，字符串字面量就是 <code>slice</code> 。</p>
+<p><code>let s = &quot;Hello, world!&quot;;</code></p>
+<p>这里的 <code>s</code>的类型是 <code>&amp;str</code>，它是一个指向二进制程序特定位置的 <code>slice</code>。<code>&amp;str</code>是一个不可变引用。</p>
 <h2 id="gui-ze-3">规则3</h2>
-<p>当所有者（变量）离开作用域，这个值将被丢弃。
-如何在合适的时机清理回收内存？当持有堆内存数据的变量离开作用域的时候，堆内存的数据将被<code>drop</code>掉。
-编译器会自动插入<code>drop</code>相关的代码，在运行时需要<code>drop</code> 的时候调用。
-这条规则的重点就是作用域了。</p>
+<p>当所有者（变量）离开作用域，这个值将被丢弃。</p>
+<p>如何在合适的时机清理回收内存？当持有堆内存数据的变量离开作用域的时候，堆内存的数据将被<code>drop</code>掉。</p>
+<p>编译器会自动插入<code>drop</code>相关的代码，在运行时需要<code>drop</code> 的时候调用。</p>
+<p>这条规则的重点就是作用域了。</p>
 <h3 id="zuo-yong-yu">作用域</h3>
 <p>作用域是一个项（item）在程序中有效的范围。最常见的就是<strong>函数作用域</strong>，比如</p>
 <pre style="background-color:#2b303b;">
@@ -507,9 +507,9 @@ error: aborting due to previous error
 
 For more information about this error, try `rustc --explain </span><span style="color:#d08770;">E0597</span><span style="color:#c0c5ce;">`.
 </span></pre>
-<p>这里提示说<code>'x' does not live long enough</code>。<code>r</code>引用了一个存活不够久的 <code>x</code>。<code>r</code>的生命周期比<code>x</code>的生命周期长。
-Rust 通过借用检查器（borrow checker）比较作用域来确保所有的引用都是有效的。
-继续看下面的代码：</p>
+<p>这里提示说<code>'x' does not live long enough</code>。<code>r</code>引用了一个存活不够久的 <code>x</code>。<code>r</code>的生命周期比<code>x</code>的生命周期长。</p>
+<p>Rust 通过借用检查器（borrow checker）比较作用域来确保所有的引用都是有效的。</p>
+<p>继续看下面的代码：</p>
 <pre style="background-color:#2b303b;">
 <span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">() {
     </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> string1 = String::from(&quot;</span><span style="color:#a3be8c;">abcd</span><span style="color:#c0c5ce;">&quot;);
@@ -545,9 +545,9 @@ error: aborting due to previous error
 
 For more information about this error, try `rustc --explain </span><span style="color:#d08770;">E0106</span><span style="color:#c0c5ce;">`.
 </span></pre>
-<p>错误提示说，函数返回值包含借用值，但是签名未说明是借用了<code>x</code>还是<code>y</code>。同时给出了建议将函数签名改写成:
-<code>fn longest&lt;'a&gt;(x: &amp;'a str, y: &amp;'a str) -&gt; &amp;'a str</code>
-实际上我们无法在编译期确定该函数到底返回<code>x</code>还是<code>y</code>，也无法知道传入参数（引用）的生命周期，这就导致编译器无法判定返回的引用是否有效。这就需要按照提示改写函数签名。</p>
+<p>错误提示说，函数返回值包含借用值，但是签名未说明是借用了<code>x</code>还是<code>y</code>。同时给出了建议将函数签名改写成:</p>
+<p><code>fn longest&lt;'a&gt;(x: &amp;'a str, y: &amp;'a str) -&gt; &amp;'a str</code></p>
+<p>实际上我们无法在编译期确定该函数到底返回<code>x</code>还是<code>y</code>，也无法知道传入参数（引用）的生命周期，这就导致编译器无法判定返回的引用是否有效。这就需要按照提示改写函数签名。</p>
 <pre style="background-color:#2b303b;">
 <span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">longest</span><span style="color:#c0c5ce;">&lt;</span><span style="color:#b48ead;">&#39;a</span><span style="color:#c0c5ce;">&gt;(</span><span style="color:#bf616a;">x</span><span style="color:#c0c5ce;">: &amp;</span><span style="color:#b48ead;">&#39;a str</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">y</span><span style="color:#c0c5ce;">: &amp;</span><span style="color:#b48ead;">&#39;a str</span><span style="color:#c0c5ce;">) -&gt; &amp;</span><span style="color:#b48ead;">&#39;a str </span><span style="color:#c0c5ce;">{
     </span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> x.</span><span style="color:#96b5b4;">len</span><span style="color:#c0c5ce;">() &gt; y.</span><span style="color:#96b5b4;">len</span><span style="color:#c0c5ce;">() {
@@ -557,8 +557,8 @@ For more information about this error, try `rustc --explain </span><span style="
     }
 }
 </span></pre>
-<p>现在函数签名表明对于生命周期 'a，函数会获取两个参数，他们都是与生命周期 'a 存在的一样长的字符串 slice。函数会返回一个同样也与生命周期 'a 存在的一样长的字符串 slice。这样Rust 的借用检查器就可以在编译期检查传给该函数的参数是否合法。
-当具体的引用被传递给 longest 时，被 'a 所替代的具体生命周期是 x 的作用域与 y 的作用域相重叠的那一部分。换一种说法就是泛型生命周期 'a 的具体生命周期等同于 x 和 y 的生命周期中较小的那一个。因为我们用相同的生命周期参数 'a 标注了返回的引用值，所以返回的引用值就能保证在 x 和 y 中较短的那个生命周期结束之前保持有效。</p>
+<p>现在函数签名表明对于生命周期 'a，函数会获取两个参数，他们都是与生命周期 'a 存在的一样长的字符串 slice。函数会返回一个同样也与生命周期 'a 存在的一样长的字符串 slice。这样Rust 的借用检查器就可以在编译期检查传给该函数的参数是否合法。</p>
+<p>当具体的引用被传递给 longest 时，被 'a 所替代的具体生命周期是 x 的作用域与 y 的作用域相重叠的那一部分。换一种说法就是泛型生命周期 'a 的具体生命周期等同于 x 和 y 的生命周期中较小的那一个。因为我们用相同的生命周期参数 'a 标注了返回的引用值，所以返回的引用值就能保证在 x 和 y 中较短的那个生命周期结束之前保持有效。</p>
 <p>如果结构体中使用引用，同样也需要手工标注生命周期。如下代码：</p>
 <pre style="background-color:#2b303b;">
 <span style="color:#c0c5ce;">#[</span><span style="color:#bf616a;">derive</span><span style="color:#c0c5ce;">(Debug)]
