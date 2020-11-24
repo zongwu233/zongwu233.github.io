@@ -7,7 +7,416 @@
         <generator>Zola</generator>
         <language>en</language>
         <atom:link href="https%3A//blog.zongwu233.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <lastBuildDate>Tue, 10 Nov 2020 00:00:00 +0000</lastBuildDate>
+        <lastBuildDate>Tue, 24 Nov 2020 00:00:00 +0000</lastBuildDate>
+        
+            <item>
+                <title>让我们聊一聊Rust的所有权系统</title>
+                <pubDate>Tue, 24 Nov 2020 00:00:00 +0000</pubDate>
+                <link>https%3A//blog.zongwu233.com/talk-about-rust-ownership/</link>
+                <guid>https%3A//blog.zongwu233.com/talk-about-rust-ownership/</guid>
+                <description>&lt;p&gt;所有权（ownership）系统是 Rust 最与众不同的特性，让Rust实现了&lt;strong&gt;既要&lt;&#x2F;strong&gt;保障内存安全&lt;strong&gt;又要&lt;&#x2F;strong&gt;无GC，运行时高性能的目标。&lt;&#x2F;p&gt;
+&lt;p&gt;所有的编程语言都需要考虑内存管理机制。
+一些语言提供垃圾回收机制（garbage collection,GC），例如：Java、Python、Golang、Lisp、Haskell、JavaScript 等等。
+另一些语言需要编程人员手工管理内存，进行分配和释放内存。例如：C、C++。
+两种机制各有优势和缺点：
+带GC的编程语言，自动管理内存，消除人工管理带来的内存管理安全性问题，降低编程语言学习复杂度和使用复杂度，但是带来了额外的运行时性能开销，无法保证高性能和高实时性。
+手工管理内存，运行时高性能， 但是增加编程人员的使用心智负担，容易造成内存管理安全性上的bug。
+Rust选择了第三种方式，通过（自己创立的）所有权系统进行内存管理。这也是为什么最近Rust编程语言从一出现就备受瞩目的原因之一。
+关于所有权系统，编译器会在&lt;strong&gt;编译期&lt;&#x2F;strong&gt;依据所有权规则对代码进行检查。不会给运行期带来额外的开销。（缺点是编译期阶段的时间变的很长，编译后的代码体积会膨胀（就所有权而言，实际上跟范型化的生命周期标记的实现相关））。&lt;&#x2F;p&gt;
+&lt;p&gt;让我们来看看所有权规则：&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;rust-suo-you-quan-gui-ze-rust-ownership-rules&quot;&gt;Rust 所有权规则（Rust ownership rules）&lt;&#x2F;h2&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;Each value in Rust has a variable that’s called its owner.&lt;&#x2F;li&gt;
+&lt;li&gt;There can only be one owner at a time.&lt;&#x2F;li&gt;
+&lt;li&gt;When the owner goes out of scope, the value will be dropped.&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;规则1：Rust 中的每一个值都有一个被称为其 所有者（owner）的变量。
+规则2：值在任一时刻有且只有一个所有者。
+规则3：当所有者（变量）离开作用域，这个值将被丢弃。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;nei-cun-guan-li&quot;&gt;内存管理&lt;&#x2F;h2&gt;
+&lt;p&gt;Rust所有权规则1中的值，要么分配在栈上，要么分配在堆上。栈上的数据会随着入栈出栈操作被自动清理，编程语言主要是对堆进行内存管理。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;gui-ze-1yu-gui-ze-2&quot;&gt;规则1与规则2&lt;&#x2F;h2&gt;
+&lt;p&gt;规则1 理解起来比较简单直观，在 Rust 中通过 &lt;code&gt;let&lt;&#x2F;code&gt; 关键字将一个值绑定到一个变量上。&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(){
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; a = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;12&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;;
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; b = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hello&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;;
+    
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(c,d) = (&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;str1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;,&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;str2&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;);
+    
+    println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;,a ,b ,c ,d)
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;&lt;h3 id=&quot;moveyu-yi&quot;&gt;move语义&lt;&#x2F;h3&gt;
+&lt;p&gt;如果将一个变量赋值给另外一个变量会如何？考虑下面这种情况：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(){
+   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; a = String::from(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hello world&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;);
+   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; b = a;
+   
+   println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;,a);
+   println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;,b);
+
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;编译会报错：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#c0c5ce;&quot;&gt;error[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;E0382&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;]: borrow of moved value: &#96;a&#96;
+ --&amp;gt; src&#x2F;main.rs:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;5&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;18
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;|
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;2 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;|    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; a = String::from(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hello world&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;);
+  |        - move occurs because &#96;a&#96; has type &#96;String&#96;, which does not implement the &#96;Copy&#96; trait
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;3 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;|    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; b = a;
+  |            - value moved here
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;4 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;|    
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;5 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;|    println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;,a);
+  |                  ^ value borrowed here after move
+
+error: aborting due to previous error
+
+For more information about this error, try &#96;rustc --explain &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;E0382&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&#96;.
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;直接错误提示是：&lt;code&gt;error[E0382]: borrow of moved value: &#x27;a&#x27;&lt;&#x2F;code&gt;借用已经move的值a。
+同时在&lt;code&gt;let b = a;&lt;&#x2F;code&gt;那行编译器提示&lt;code&gt;value moved here&lt;&#x2F;code&gt;，在此处值被move了。
+我们对&lt;code&gt;let&lt;&#x2F;code&gt; 关键字的理解更加深入：对于形如 &lt;code&gt;let  x  = y;&lt;&#x2F;code&gt; 的语句，如果&lt;code&gt;y&lt;&#x2F;code&gt;是变量，&lt;strong&gt;&lt;code&gt;let&lt;&#x2F;code&gt; 会引发变量的所有权转移。&lt;&#x2F;strong&gt;
+也即是：&lt;strong&gt;&lt;code&gt;let&lt;&#x2F;code&gt;操作默认是&lt;code&gt;move&lt;&#x2F;code&gt;语义。&lt;&#x2F;strong&gt; 从而保障了规则2的约束。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;copy-trait&quot;&gt;Copy trait&lt;&#x2F;h3&gt;
+&lt;p&gt;新的问题出现，下面这段代码没有遵循&lt;code&gt;move&lt;&#x2F;code&gt;语义，但编译成功：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(){
+
+   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; a = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;128&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;;
+   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; b = a;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; move ?
+   
+   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;,a);&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F;128
+   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;,b);&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F;128
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;那是因为考虑到使用上的便利性，在有些场景下并不希望应用默认的&lt;code&gt;move&lt;&#x2F;code&gt;语义。Rust的基础数据类型都实现了 std::marker::Copy &lt;code&gt;trait&lt;&#x2F;code&gt;，所以在进行&lt;code&gt;let&lt;&#x2F;code&gt;操作时，实际上发生了&lt;code&gt;copy&lt;&#x2F;code&gt;。
+哪些类型是满足&lt;code&gt;Copy&lt;&#x2F;code&gt;特性的？类似整型这样的存储在栈上的类型、不需要分配内存或某种形式资源的类型。常见的&lt;code&gt;Copy&lt;&#x2F;code&gt; 类型如下：&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;所有整数类型，比如 u32。&lt;&#x2F;li&gt;
+&lt;li&gt;布尔类型，bool，它的值是 true 和 false。&lt;&#x2F;li&gt;
+&lt;li&gt;所有浮点数类型，比如 f64。&lt;&#x2F;li&gt;
+&lt;li&gt;字符类型，char。&lt;&#x2F;li&gt;
+&lt;li&gt;元组，当且仅当其包含的类型也都是 Copy 的时候。比如，(i32, i32) 是 Copy 的，但 (i32, String) 就不是。&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;clone-trait&quot;&gt;Clone trait&lt;&#x2F;h3&gt;
+&lt;p&gt;保留原来的变量，并且将值内容拷贝给新的变量，对简单的数字类型很容易理解接受，那如果是复杂类型或者说是自定义类型呢？
+如果不希望发生所有权转移，可以使用&lt;code&gt;clone&lt;&#x2F;code&gt;。如下：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(){
+
+   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; a = String::from(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hello world&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;);
+   &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; b = a.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;clone&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;();
+   
+   println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;,a);
+   println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;,b);
+
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;code&gt;String&lt;&#x2F;code&gt;实现了std::clone::Clone &lt;code&gt;trait&lt;&#x2F;code&gt;。使用&lt;code&gt;clone&lt;&#x2F;code&gt;操作后两个变量持有不同的值（这两个值是不同的内存空间）。
+能不能像使用基础数据类型那样方便地应用&lt;code&gt;copy&lt;&#x2F;code&gt;语义呢？可以的，如下：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#c0c5ce;&quot;&gt;#[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;derive&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(Debug,Copy,Clone)] &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; here！
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;Foo {
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;x&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;i32&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;,
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;y&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;i64&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;,
+}
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;pub fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;() {
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; f1 = Foo { x: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;, y: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;2 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;};
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; f2: Foo = f1;
+    println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;p1 = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{:?}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;, f1);
+    println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;p1 = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{:?}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;, f2);
+
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;当然这里的例子有一点点特殊，&lt;code&gt;Foo&lt;&#x2F;code&gt;结构体的成员都是基础类型，所以我们标记注解&lt;code&gt;#[derive(Debug,Copy,Clone)]&lt;&#x2F;code&gt; 即可满足。
+如果其成员是复杂的类型，就需要实现&lt;code&gt;Copy&lt;&#x2F;code&gt;和&lt;code&gt;Clone&lt;&#x2F;code&gt;的&lt;code&gt;trait&lt;&#x2F;code&gt;。
+注意：&lt;code&gt;Clone trait&lt;&#x2F;code&gt;是&lt;code&gt;Copy trait&lt;&#x2F;code&gt;的 &lt;code&gt;supertrait&lt;&#x2F;code&gt;，所以任何一个实现&lt;code&gt;Copy&lt;&#x2F;code&gt;的类型必须实现&lt;code&gt;Clone&lt;&#x2F;code&gt;。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;suo-you-quan-yu-han-shu&quot;&gt;所有权与函数&lt;&#x2F;h3&gt;
+&lt;p&gt;调用函数的时候，会将实际参传递给形式参数，这个操作在语义上与给变量赋值相似。可能会移动或者复制，遵循与赋值语句一样的规则。例如：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;() {
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; s = String::from(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hello&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;);  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; s 进入作用域
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;takes_ownership&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(s);             &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; s 的值移动到函数里 ...
+                                    &#x2F;&#x2F; ... 所以到这里不再有效
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; x = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;5&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;;                      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; x 进入作用域
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;makes_copy&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(x);                  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; x 应该移动函数里，
+                                    &#x2F;&#x2F; 但 i32 是 Copy 的，所以在后面可继续使用 x
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;} &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 这里, x 先移出了作用域，然后是 s。但因为 s 的值已被移走，
+  &#x2F;&#x2F; 所以不会有特殊操作
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;takes_ownership&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;some_string&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: String) { &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; some_string 进入作用域
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;, some_string);
+} &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 这里，some_string 移出作用域并调用 &#96;drop&#96; 方法。占用的内存被释放
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;makes_copy&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;some_integer&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;i32&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;) { &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; some_integer 进入作用域
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;, some_integer);
+} &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 这里，some_integer 移出作用域。不会有特殊操作
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;这里没有特殊情况，很好。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;yin-yong-yu-jie-yong&quot;&gt;引用与借用&lt;&#x2F;h3&gt;
+&lt;p&gt;再看如下的代码：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;() {
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; s1 = String::from(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hello&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;);
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(s2, len) = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;calculate_length&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(s1);
+
+    println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;The length of &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;#39; is &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;, s2, len);
+}
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;calculate_length&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;s&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: String) -&amp;gt; (String, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;usize&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;) {
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; length = s.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;len&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; len() 返回字符串的长度
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(s, length)
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;在每一次函数调用的时候，都获取所有权，然后在函数调用完成的时候，再返回所有权，这种方式略显繁琐。而这种调用在实际场景中极其常见，Rust提供了引用（references）功能来解决这个问题。
+利用引用，上面的代码可以改写成：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;() {
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; s1 = String::from(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hello&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;);
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; len = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;calculate_length&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&amp;amp;s1);
+
+    println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;The length of &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;&amp;#39; is &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;, s1, len);
+}
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;calculate_length&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;s&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &amp;amp;String) -&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;usize &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;{
+    s.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;len&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;()
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;传给&lt;code&gt;calculate_length()&lt;&#x2F;code&gt;的是&lt;code&gt;&amp;amp;s1&lt;&#x2F;code&gt;而不是&lt;code&gt;s1&lt;&#x2F;code&gt;。函数的声明是&lt;code&gt;calculate_length(s: &amp;amp;String)&lt;&#x2F;code&gt;参数是&lt;code&gt;s: &amp;amp;String&lt;&#x2F;code&gt;。
+&lt;strong&gt;&lt;code&gt;&amp;amp;&lt;&#x2F;code&gt;就是引用。它允许你使用值但不获取其所有权。&lt;&#x2F;strong&gt; 毕竟我们需要遵循规则2。
+&lt;strong&gt;我们把采用引用作为函数参数称为借用（borrowing）&lt;&#x2F;strong&gt; 
+这里并不想展开讨论不可变引用和可变引用的相关规则，那是并发编程场景下需要关注的点。
+关于引用还需要特别注意的一个点是作用域。一个&lt;strong&gt;引用的作用域&lt;&#x2F;strong&gt;从声明的地方开始一直持续到&lt;strong&gt;最后一次使用为止&lt;&#x2F;strong&gt;。如下代码是可以编译的：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(){
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let mut&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; s = String::from(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hello&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;);
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; r1 = &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;mut&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; s; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 没问题
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;, r1); &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F;r1最后使用的地方
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; r2 = &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;mut&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; s; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; 没问题
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;, r2);
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;编译器负责推断引用最后一次使用的代码位置。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;slice&quot;&gt;[slice]&lt;&#x2F;h3&gt;
+&lt;p&gt;对集合一段连续元素的引用就是[slice类型]。
+例如：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(){
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; s = String::from(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hello world&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;);
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; hello = &amp;amp;s[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;..&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;5&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;];
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; world = &amp;amp;s[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;6&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;..&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;11&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;];
+    
+    println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{} {}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;,hello,world);
+    
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;实际上，字符串字面量就是 &lt;code&gt;slice&lt;&#x2F;code&gt; 。
+&lt;code&gt;let s = &amp;quot;Hello, world!&amp;quot;;&lt;&#x2F;code&gt;
+这里的 &lt;code&gt;s&lt;&#x2F;code&gt;的类型是 &lt;code&gt;&amp;amp;str&lt;&#x2F;code&gt;，它是一个指向二进制程序特定位置的 &lt;code&gt;slice&lt;&#x2F;code&gt;。&lt;code&gt;&amp;amp;str&lt;&#x2F;code&gt;是一个不可变引用。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;gui-ze-3&quot;&gt;规则3&lt;&#x2F;h2&gt;
+&lt;p&gt;当所有者（变量）离开作用域，这个值将被丢弃。
+如何在合适的时机清理回收内存？当持有堆内存数据的变量离开作用域的时候，堆内存的数据将被&lt;code&gt;drop&lt;&#x2F;code&gt;掉。
+编译器会自动插入&lt;code&gt;drop&lt;&#x2F;code&gt;相关的代码，在运行时需要&lt;code&gt;drop&lt;&#x2F;code&gt; 的时候调用。
+这条规则的重点就是作用域了。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;zuo-yong-yu&quot;&gt;作用域&lt;&#x2F;h3&gt;
+&lt;p&gt;作用域是一个项（item）在程序中有效的范围。最常见的就是&lt;strong&gt;函数作用域&lt;&#x2F;strong&gt;，比如&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(){&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; s无效
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; s = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hello world&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; s进入作用域
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;,s);
+    
+}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; s离开作用域
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;还有块作用域，例如：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(){&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; s无效
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; s = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hello world&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; s进入作用域
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;,s);
+    {
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; a = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F;a 进入作用域
+         &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;,a);
+    }&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; a离开作用域
+    
+    &#x2F;&#x2F;println!(&amp;quot;{}&amp;quot;,a); 这里会出错
+    
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; s离开作用域
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;实际上，&lt;code&gt;let&lt;&#x2F;code&gt;关键字会隐式地开启一个作用域，对于以下代码：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(){ 
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; s1 = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hello&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;; 
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; s2 =&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;world&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;;
+    
+} 
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;利用 https:&#x2F;&#x2F;play.rust-lang.org&#x2F;  的 SHOW MIR 功能可以看到：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;() -&amp;gt; () {
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let mut &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;_0&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: ();                      &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; return place in scope 0 at src&#x2F;main.rs:1:10: 1:10
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;_1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;;                        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; in scope 0 at src&#x2F;main.rs:3:9: 3:11
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;    scope &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;{
+        debug s1 =&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;_1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;;                  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; in scope 1 at src&#x2F;main.rs:3:9: 3:11
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;_2&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;;                    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; in scope 1 at src&#x2F;main.rs:4:9: 4:11
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;        scope &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;2 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;{
+            debug s2 =&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;_2&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;;              &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; in scope 2 at src&#x2F;main.rs:4:9: 4:11
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;}
+    }
+
+...
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;code&gt;main&lt;&#x2F;code&gt;函数的作用域&lt;code&gt;scope 0&lt;&#x2F;code&gt;，在其中，&lt;code&gt;let s1 = &amp;quot;hello&amp;quot;; &lt;&#x2F;code&gt; 创建一个作用域&lt;code&gt;scope 1&lt;&#x2F;code&gt;，然后&lt;code&gt;let s2 =&amp;quot;world&amp;quot;;&lt;&#x2F;code&gt; 又在&lt;code&gt;scope 1&lt;&#x2F;code&gt;里面创建了&lt;code&gt;scope 2&lt;&#x2F;code&gt;。&lt;&#x2F;p&gt;
+&lt;p&gt;关于引用的特殊作用域问题，上一小节已经说明，这里不再重复。&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;yin-yong-de-sheng-ming-zhou-qi-lifetime-biao-ji&quot;&gt;引用的生命周期(lifetime)标记&lt;&#x2F;h3&gt;
+&lt;p&gt;大部分场景下，我们使用变量的时候，编译器能够自动推断变量的作用域并正常工作。但有时候不那么明显，特别是使用引用的很多场景下，需要手工标记变量的生命周期，帮助编译器检查引用的生命周期不会超过对象的生命周期。
+例如：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;() {
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; r;
+    {
+        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; x = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;5&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;;
+        r = &amp;amp;x;
+    }
+    println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;r: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;, r);
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;编译失败：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#c0c5ce;&quot;&gt;error[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;E0597&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;]: &#96;x&#96; does not live long enough
+ --&amp;gt; src&#x2F;main.rs:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;5&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;13
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;|
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;5 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;|         r = &amp;amp;x;
+  |             ^^ borrowed value does not live long enough
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;6 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;|     }
+  |     - &#96;x&#96; dropped here &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;while&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; still borrowed
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;7 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;|     println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;r: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;, r);
+  |                       - borrow later used here
+
+error: aborting due to previous error
+
+For more information about this error, try &#96;rustc --explain &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;E0597&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&#96;.
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;这里提示说&lt;code&gt;&#x27;x&#x27; does not live long enough&lt;&#x2F;code&gt;。&lt;code&gt;r&lt;&#x2F;code&gt;引用了一个存活不够久的 &lt;code&gt;x&lt;&#x2F;code&gt;。&lt;code&gt;r&lt;&#x2F;code&gt;的生命周期比&lt;code&gt;x&lt;&#x2F;code&gt;的生命周期长。
+Rust 通过借用检查器（borrow checker）比较作用域来确保所有的引用都是有效的。
+继续看下面的代码：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;() {
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; string1 = String::from(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;abcd&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;);
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; string2 = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;xyz&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;;
+
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; result = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;longest&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(string1.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;as_str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(), string2);
+    println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;The longest string is &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;, result);
+}
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;longest&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;x&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;y&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;) -&amp;gt; &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;str &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;{
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; x.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;len&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;() &amp;gt; y.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;len&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;() {
+        x
+    } &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;else &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;{
+        y
+    }
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;编译错误：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#c0c5ce;&quot;&gt;error[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;E0106&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;]: missing lifetime specifier
+ --&amp;gt; src&#x2F;main.rs:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;9&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;33
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;|
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;9 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;| &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;longest&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;x&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;y&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;) -&amp;gt; &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;str &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;{
+  |               ----     ----     ^ expected named lifetime parameter
+  |
+  = help: this function&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;&amp;#39;s return type &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;contains a borrowed value, but the signature does not say whether it is borrowed from &#96;x&#96; or &#96;y&#96;
+help: consider introducing a named lifetime parameter
+  |
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;9 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;| &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;longest&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;&amp;#39;a&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;x&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;&amp;#39;a str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;y&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;&amp;#39;a str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;) -&amp;gt; &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;&amp;#39;a str &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;{
+  |           ^^^^    ^^^^^^^     ^^^^^^^     ^^^
+
+error: aborting due to previous error
+
+For more information about this error, try &#96;rustc --explain &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;E0106&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&#96;.
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;错误提示说，函数返回值包含借用值，但是签名未说明是借用了&lt;code&gt;x&lt;&#x2F;code&gt;还是&lt;code&gt;y&lt;&#x2F;code&gt;。同时给出了建议将函数签名改写成:
+&lt;code&gt;fn longest&amp;lt;&#x27;a&amp;gt;(x: &amp;amp;&#x27;a str, y: &amp;amp;&#x27;a str) -&amp;gt; &amp;amp;&#x27;a str&lt;&#x2F;code&gt;
+实际上我们无法在编译期确定该函数到底返回&lt;code&gt;x&lt;&#x2F;code&gt;还是&lt;code&gt;y&lt;&#x2F;code&gt;，也无法知道传入参数（引用）的生命周期，这就导致编译器无法判定返回的引用是否有效。这就需要按照提示改写函数签名。&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#b48ead;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;longest&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;&amp;#39;a&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;x&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;&amp;#39;a str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;y&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;&amp;#39;a str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;) -&amp;gt; &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;&amp;#39;a str &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;{
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; x.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;len&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;() &amp;gt; y.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;len&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;() {
+        x
+    } &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;else &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;{
+        y
+    }
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;现在函数签名表明对于生命周期 &#x27;a，函数会获取两个参数，他们都是与生命周期 &#x27;a 存在的一样长的字符串 slice。函数会返回一个同样也与生命周期 &#x27;a 存在的一样长的字符串 slice。这样Rust 的借用检查器就可以在编译期检查传给该函数的参数是否合法。
+当具体的引用被传递给 longest 时，被 &#x27;a 所替代的具体生命周期是 x 的作用域与 y 的作用域相重叠的那一部分。换一种说法就是泛型生命周期 &#x27;a 的具体生命周期等同于 x 和 y 的生命周期中较小的那一个。因为我们用相同的生命周期参数 &#x27;a 标注了返回的引用值，所以返回的引用值就能保证在 x 和 y 中较短的那个生命周期结束之前保持有效。&lt;&#x2F;p&gt;
+&lt;p&gt;如果结构体中使用引用，同样也需要手工标注生命周期。如下代码：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#c0c5ce;&quot;&gt;#[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;derive&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(Debug)]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;Foo{
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;,
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;i32&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;,
+}
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;pub fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(){
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; x = Foo{&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hello&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;,a: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;};
+    println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{:?}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;,x);
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;同样会编译错误：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#c0c5ce;&quot;&gt;error[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;E0106&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;]: missing lifetime specifier
+ --&amp;gt; src&#x2F;main.rs:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;3&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;10
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;|
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;3 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;|     &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;,
+  |          ^ expected named lifetime &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;parameter
+  &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;|
+help: consider introducing a named lifetime parameter
+  |
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;2 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;| &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;Foo&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;&amp;#39;a&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;gt;{
+3 |     &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;&amp;#39;a str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;,
+  |
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;error&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: aborting due to previous error
+
+For more information about this error, try &#96;rustc --explain E0106&#96;.
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;改写成带标记生命周期的形式：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;span style=&quot;color:#c0c5ce;&quot;&gt;#[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;derive&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(Debug)]
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;struct &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;Foo&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;&amp;#39;a&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;gt;{
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;&amp;#39;a str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;,
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;a &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;i32&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;,
+}
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;pub fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;main&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(){
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; x = Foo{&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;str&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hello&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;,a: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;};
+    println!(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;{:?}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;,x);
+}
+&lt;&#x2F;span&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;保证编译器可以检查对比&lt;code&gt;x&lt;&#x2F;code&gt;结构体的生命周期与其成员&lt;code&gt;str&lt;&#x2F;code&gt;的生命周期，前者比后者小的时候，编译通过。&lt;&#x2F;p&gt;
+&lt;p&gt;静态生命周期&lt;code&gt;&#x27;static&lt;&#x2F;code&gt;，其生命周期能够存活于整个程序期间。所有的字符串字面量值都是&lt;code&gt;&#x27;static&lt;&#x2F;code&gt;的。&lt;&#x2F;p&gt;
+&lt;p&gt;好了就这些。&lt;&#x2F;p&gt;
+&lt;p&gt;参考：
+https:&#x2F;&#x2F;doc.rust-lang.org&#x2F;book&#x2F;ch04-00-understanding-ownership.html&lt;&#x2F;p&gt;
+</description>
+            </item>
         
             <item>
                 <title>adsf-vm </title>
@@ -375,92 +784,6 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
 我们需要一个超简单的导航网站。&lt;&#x2F;p&gt;
 &lt;p&gt;如何最简单地实现一个静态的网站？不要任何多余的东西。&lt;&#x2F;p&gt;
 &lt;p&gt;最好几行代码实现服务，向外提供一个html文件访问服务。新增内容时候，只需要添加到html文件即可。&lt;&#x2F;p&gt;
-</description>
-            </item>
-        
-            <item>
-                <title>服务端架构演进</title>
-                <pubDate>Sun, 23 Dec 2018 00:00:00 +0000</pubDate>
-                <link>https%3A//blog.zongwu233.com/architecture-evolution/</link>
-                <guid>https%3A//blog.zongwu233.com/architecture-evolution/</guid>
-                <description>&lt;h2 id=&quot;fu-wu-duan-jia-gou-v1-0&quot;&gt;服务端架构v1.0&lt;&#x2F;h2&gt;
-&lt;p&gt;先来看一看服务端架构的1.0版本：&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2019&#x2F;04&#x2F;28&#x2F;5cc576ce0976d.png&quot;&gt;&lt;img src=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2019&#x2F;04&#x2F;28&#x2F;5cc576ce0976d.png&quot; alt=&quot;架构1_0.png&quot; &#x2F;&gt;&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
-&lt;h3 id=&quot;jia-gou-jie-shao&quot;&gt;架构介绍&lt;&#x2F;h3&gt;
-&lt;p&gt;客户端包括：PC站和m站的web站点，Android和iOS App客户端，管理后台和小程序。其中主要流量来自于Android和iOS。&lt;&#x2F;p&gt;
-&lt;p&gt;接入层：采用了阿里云的Service Load Balance。底层实现是通过LVS+keepalived。该层主要提供了负载均衡和双机热备功能，客户端通过域名访问API接口，当应用的其中一台机器出问题时，依然能保障正常服务。&lt;&#x2F;p&gt;
-&lt;p&gt;服务层：实际上是使用两台阿里云ECS部署Main Api server 和support server 两个应用。Main Api server 提供App需要的API接口。support server提供运营管理后台页面需要的API接口。&lt;&#x2F;p&gt;
-&lt;p&gt;缓存层：采用阿里云Redis服务8G主从版（标准版-双副本）。连接上限10000，QPS约80000。正常情况下完全满足我们的应用需求。不需要集群版本。&lt;&#x2F;p&gt;
-&lt;p&gt;数据层：采用阿里云RDS服务高可用版，4Core8G。最大IOPS:4000，最大连接数:4000。偶尔出现慢SQL导致数据库CPU跑满、接口响应慢。&lt;&#x2F;p&gt;
-&lt;h3 id=&quot;cun-zai-de-ji-ge-zhu-yao-wen-ti&quot;&gt;存在的几个主要问题&lt;&#x2F;h3&gt;
-&lt;ol&gt;
-&lt;li&gt;无法应用灵活的流量控制策略，当前所有流量最终会压到应用实例上，一旦出现流量过大现象，只能增加应用实例，或者改动应用响应逻辑并发布。&lt;&#x2F;li&gt;
-&lt;li&gt;无自动化的负载均衡，新增ECS就必须同时修改SLB的后端服务配置，扩容方案不够灵活、需要人为介入并且不易配置。&lt;&#x2F;li&gt;
-&lt;li&gt;管理后台应用与前台应用共用同一个数据库，后台耗时的读操作影响线上接口。&lt;&#x2F;li&gt;
-&lt;li&gt;Main Api server 是一个Monolith Application（巨石应用），任何业务的改动都需要发布该应用，打包发布时间较长。&lt;&#x2F;li&gt;
-&lt;li&gt;非核心业务和核心业务共用资源，比如web容器线程、数据库连接池、Redis连接池等等，一旦非核心业务占用较多资源，将导致其他业务响应变慢。&lt;&#x2F;li&gt;
-&lt;&#x2F;ol&gt;
-&lt;p&gt;考虑到后续业务发展、当前应用现状和服务端团队人员的实际情况，趁此机会我们决定向微服务架构方向演进。&lt;&#x2F;p&gt;
-&lt;p&gt;选取微服务端架构方案时的一些原则：&lt;&#x2F;p&gt;
-&lt;ul&gt;
-&lt;li&gt;高质量高可用的服务架构体系&lt;&#x2F;li&gt;
-&lt;li&gt;技术实现成熟稳定&lt;&#x2F;li&gt;
-&lt;li&gt;充分利用Docker容器优势&lt;&#x2F;li&gt;
-&lt;li&gt;团队学习门槛较低&lt;&#x2F;li&gt;
-&lt;li&gt;对当前应用系统入侵较小&lt;&#x2F;li&gt;
-&lt;li&gt;减少不必要的部署和维护代价&lt;&#x2F;li&gt;
-&lt;li&gt;方便支持非JVM的web服务&lt;&#x2F;li&gt;
-&lt;&#x2F;ul&gt;
-&lt;h2 id=&quot;wei-fu-wu-jia-gou-shi-xian&quot;&gt;微服务架构实现&lt;&#x2F;h2&gt;
-&lt;h4 id=&quot;cai-yong-consul-registrator-nginxfang-an-zuo-fu-wu-de-zhu-ce-yu-fa-xian-kuang-jia&quot;&gt;采用&lt;code&gt;Consul + Registrator + Nginx&lt;&#x2F;code&gt;方案做服务的注册与发现框架&lt;&#x2F;h4&gt;
-&lt;p&gt;简单介绍一下Consul 、Consul template 和Registrator：&lt;&#x2F;p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;Consul是一种 service mesh解决方案，提供具有服务发现和配置的工具，它提供了一些重要特性&lt;a href=&quot;https:&#x2F;&#x2F;www.consul.io&#x2F;intro&#x2F;index.html&quot;&gt;1&lt;&#x2F;a&gt;：&lt;&#x2F;p&gt;
-&lt;ol&gt;
-&lt;li&gt;服务发现&lt;&#x2F;li&gt;
-&lt;li&gt;健康检查&lt;&#x2F;li&gt;
-&lt;li&gt;KV存储&lt;&#x2F;li&gt;
-&lt;li&gt;多数据中心&lt;&#x2F;li&gt;
-&lt;&#x2F;ol&gt;
-&lt;p&gt;Consul集群间使用了GOSSIP协议通信和Raft一致性算法，Consul本身是一个分布式的高可用的系统。&lt;&#x2F;p&gt;
-&lt;&#x2F;blockquote&gt;
-&lt;blockquote&gt;
-&lt;p&gt;Consul template 通过解析模板，从Consul查询所需的配置数据，接下来后台进程监听&lt;a href=&quot;https:&#x2F;&#x2F;www.consul.io&#x2F;docs&#x2F;agent&#x2F;watches.html&quot;&gt;8&lt;&#x2F;a&gt;Consul中这些数据的变化，并将数据更新到配置的模版文件中。模板更新完成之后，可以配置后续执行命令。&lt;a href=&quot;https:&#x2F;&#x2F;learn.hashicorp.com&#x2F;consul&#x2F;developer-configuration&#x2F;consul-template&quot;&gt;7&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;Consul template的模板文件是采用&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;hashicorp&#x2F;hcl&quot;&gt;HashiCorp Configuration Language (HCL)&lt;&#x2F;a&gt;语法编写，同时提供了一些API函数。&lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;hashicorp&#x2F;consul-template&quot;&gt;4&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
-&lt;&#x2F;blockquote&gt;
-&lt;blockquote&gt;
-&lt;p&gt;Registrator是一种通过监控宿主机上所有的Docker容器的状态，自动地为Docker容器注册和反注册服务的组件。Registrator支持可拔插的服务注册，包括：Consul，etcd，SkyDNS2。&lt;a href=&quot;http:&#x2F;&#x2F;gliderlabs.github.io&#x2F;registrator&#x2F;latest&#x2F;&quot;&gt;5&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
-&lt;&#x2F;blockquote&gt;
-&lt;p&gt;各组件协调工作如图：&lt;&#x2F;p&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2019&#x2F;04&#x2F;28&#x2F;5cc599b66fe83.png&quot; alt=&quot;consul_registrator_ngnix.png&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
-&lt;p&gt;Registrator监听应用容器的变化，实时向consul注册&#x2F;反注册容器内的服务，而consul template也在监听consul server的变化，任何服务的变更或者KV 存储的变更，都触发consul template 的模板文件的变化，这里，consul template 配置的模板一般是生成nginx.conf文件，最后调用nginx的reload config 命令，即可全自动地完成服务的刷新。&lt;&#x2F;p&gt;
-&lt;p&gt;更详细的部署方案见&lt;a href=&quot;..&#x2F;consul-registrator-nginx&quot;&gt;Consul+Registrator+Nginx方案的部署&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
-&lt;h4 id=&quot;fu-wu-jian-de-diao-yong&quot;&gt;服务间的调用&lt;&#x2F;h4&gt;
-&lt;p&gt;通过上面的方案完成服务的注册和发现，但是服务之间如何调用？&lt;&#x2F;p&gt;
-&lt;p&gt;比如服务A要调用服务B的接口，服务A和服务B都已经注册到Consul server中，服务A要获取服务B的地址很方便，请求Consul Api 即可。可是服务B有多个实例，这时候调用策略有两种选择：&lt;&#x2F;p&gt;
-&lt;ol&gt;
-&lt;li&gt;服务端负载均衡，服务A通过nignx调用服务B，负载均衡策略由nginx支持。&lt;&#x2F;li&gt;
-&lt;li&gt;客户端负载均衡，服务A自行维护服务B的列表，自行选择一个负载均衡策略，然后调用服务B。&lt;&#x2F;li&gt;
-&lt;&#x2F;ol&gt;
-&lt;p&gt;出于性能考虑，我们选取第二种方式，即客户端负载均衡。&lt;&#x2F;p&gt;
-&lt;p&gt;通过封装Consul API 和Feign-ribbon，我们实现了客户端之间相互调用的中间件。&lt;&#x2F;p&gt;
-&lt;h4 id=&quot;openresty&quot;&gt;OpenResty&lt;&#x2F;h4&gt;
-&lt;p&gt;服务架构v1.0版本由于缺失统一网关，导致无法实现灵活的负载均衡、鉴权、流量控制等功能。为了方便实现网关的功能，采用 OpenResty &lt;a href=&quot;https:&#x2F;&#x2F;openresty.org&#x2F;cn&#x2F;&quot;&gt;6&lt;&#x2F;a&gt;而不是Nginx来作为网关的基础组件。&lt;&#x2F;p&gt;
-&lt;p&gt;通过 OpenResty 强大的lua脚本，可以对网络请求做各种复杂的控制和安全检测。&lt;&#x2F;p&gt;
-&lt;p&gt;负载均衡是 OpenResty 自带功能。&lt;&#x2F;p&gt;
-&lt;p&gt;请求鉴权，通过 lua 脚本调用用户中心接口完成各种场景的鉴权功能，如果鉴权失败，则阻断请求。&lt;&#x2F;p&gt;
-&lt;p&gt;流量控制，通过 lua 脚本对请求的header和uri 解析，灵活定制流量控制策略。&lt;&#x2F;p&gt;
-&lt;p&gt;蓝绿发布，结合consul、consul-template 和OpenResty，实现服务的蓝绿发布功能。&lt;&#x2F;p&gt;
-&lt;p&gt;通过在网关处向 request header 中写入 request Id，支持完整请求链追踪的日志分析。&lt;&#x2F;p&gt;
-&lt;p&gt;服务路由，v1.0版本的架构，受限于SLB的实现，必须为每一个业务应用单独配置一个端口和域名， 给客户端调用带来很大不便。新的架构可以采用统一的 API 域名，在网关处做服务路由即可（比如通过path区分业务服务），从而实现API 域名的收敛。&lt;&#x2F;p&gt;
-&lt;p&gt;对接SLB服务的是OpenResty，目前有三个实例，后续任意应用水平扩展的时候，会自动注册到consul server，无需变动SLB配置。&lt;&#x2F;p&gt;
-&lt;h4 id=&quot;ying-yong-zi-yuan-chai-fen&quot;&gt;应用资源拆分&lt;&#x2F;h4&gt;
-&lt;p&gt;新增的Finance应用是金币业务，使用独立数据库。&lt;&#x2F;p&gt;
-&lt;p&gt;新增的Data server应用是搜集数据埋点业务，该应用需要存储客户端上报的大量的埋点数据，使用PostgreSQL，并且采用PostgreSQL自带的分表功能。&lt;&#x2F;p&gt;
-&lt;p&gt;Support server是之前的管理后台服务，通过对Main Api server 的数据库配置主从架构，让Support server 的读操作走从库，写操作走主库，解决Support server 拖慢生产环境数据库的问题。&lt;&#x2F;p&gt;
-&lt;p&gt;Kafka消息队列主要用于应用间异步通信的场景。Main Api server 和 Finance server 都会产生金币计费消息，Finance server应用负责消费该消息。&lt;&#x2F;p&gt;
-&lt;h4 id=&quot;zui-zhong-de-fu-wu-duan-jia-gou&quot;&gt;最终的服务端架构&lt;&#x2F;h4&gt;
-&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2019&#x2F;04&#x2F;28&#x2F;5cc5abf8e0385.png&quot; alt=&quot;架构2_0.png&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
 </description>
             </item>
         

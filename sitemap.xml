@@ -201,6 +201,11 @@
         </url>
     
         <url>
+            <loc>https%3A//blog.zongwu233.com/tags/bian-cheng-yu-yan/</loc>
+            
+        </url>
+    
+        <url>
             <loc>https%3A//blog.zongwu233.com/tags/cli/</loc>
             
         </url>
@@ -261,6 +266,11 @@
         </url>
     
         <url>
+            <loc>https%3A//blog.zongwu233.com/tags/nei-cun-guan-li/</loc>
+            
+        </url>
+    
+        <url>
             <loc>https%3A//blog.zongwu233.com/tags/openstack/</loc>
             
         </url>
@@ -301,6 +311,11 @@
         </url>
     
         <url>
+            <loc>https%3A//blog.zongwu233.com/tags/suo-you-quan/</loc>
+            
+        </url>
+    
+        <url>
             <loc>https%3A//blog.zongwu233.com/tags/wei-fu-wu/</loc>
             
         </url>
@@ -317,6 +332,13 @@
     
         <url>
             <loc>https%3A//blog.zongwu233.com/tags/yuan-ma-fen-xi/</loc>
+            
+        </url>
+    
+        <url>
+            <loc>https%3A//blog.zongwu233.com/talk-about-rust-ownership/</loc>
+            
+                <lastmod>2020-11-24</lastmod>
             
         </url>
     
