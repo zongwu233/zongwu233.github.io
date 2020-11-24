@@ -163,7 +163,7 @@
                         </li>
                         
                         <li>
-                            <a href="https://blog.zongwu233.com/talk-about-rust-ownership/#slice" class="toc-link">[slice]</a>
+                            <a href="https://blog.zongwu233.com/talk-about-rust-ownership/#slice" class="toc-link">slice</a>
                         </li>
                         
                     </ul>
@@ -177,6 +177,10 @@
                         
                         <li>
                             <a href="https://blog.zongwu233.com/talk-about-rust-ownership/#zuo-yong-yu" class="toc-link">作用域</a>
+                        </li>
+                        
+                        <li>
+                            <a href="https://blog.zongwu233.com/talk-about-rust-ownership/#bi-bao-dai-lai-de-wen-ti" class="toc-link">闭包带来的问题</a>
                         </li>
                         
                         <li>
@@ -405,7 +409,7 @@ For more information about this error, try `rustc --explain </span><span style="
 }
 </span></pre>
 <p>编译器负责推断引用最后一次使用的代码位置。</p>
-<h3 id="slice">[slice]</h3>
+<h3 id="slice">slice</h3>
 <p>对集合一段连续元素的引用就是[slice类型]。
 例如：</p>
 <pre style="background-color:#2b303b;">
@@ -478,7 +482,60 @@ For more information about this error, try `rustc --explain </span><span style="
 </span></pre>
 <p><code>main</code>函数的作用域<code>scope 0</code>，在其中，<code>let s1 = &quot;hello&quot;; </code> 创建一个作用域<code>scope 1</code>，然后<code>let s2 =&quot;world&quot;;</code> 又在<code>scope 1</code>里面创建了<code>scope 2</code>。</p>
 <p>关于引用的特殊作用域问题，上一小节已经说明，这里不再重复。</p>
-<h3 id="yin-yong-de-sheng-ming-zhou-qi-lifetime-biao-ji">引用的生命周期(lifetime)标记</h3>
+<h3 id="bi-bao-dai-lai-de-wen-ti">闭包带来的问题</h3>
+<p>闭包（closures）可以从环境捕获变量，并在闭包体中使用。有三种使用变量的方式：获取所有权、可变引用、不可变引用。Rust 提供了3种<code>Fn trait</code> 以便编译器能够更清晰直接地处理不同场景下闭包对变量所有权的操作问题。</p>
+<ul>
+<li>FnOnce 获取变量所有权，Once表明闭包不能多次获取同一个变量的所有权，所以只能调用一次。</li>
+<li>FnMut 获取变量可变的借用值</li>
+<li>Fn 获取变量的不可变的借用值</li>
+</ul>
+<p>注意：<code>FnOnce</code>是<code>FnMut</code> <code>Fn</code>的<code>supertrait</code>；<code>FnMut</code>是<code>Fn</code>的<code>supertrait</code>。
+<code>FnOnce</code>的例子：</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">do_action</span><span style="color:#c0c5ce;">&lt;F&gt;(</span><span style="color:#bf616a;">func</span><span style="color:#c0c5ce;">:F)</span><span style="color:#b48ead;">where</span><span style="color:#c0c5ce;"> F:FnOnce()-&gt;</span><span style="color:#b48ead;">usize</span><span style="color:#c0c5ce;">{
+    println!(&quot;</span><span style="color:#a3be8c;">disappeared variable length : </span><span style="color:#d08770;">{}</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#96b5b4;">func</span><span style="color:#c0c5ce;">());
+}
+
+</span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">(){
+    </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> a = String::from(&quot;</span><span style="color:#a3be8c;">hello world</span><span style="color:#c0c5ce;">&quot;);
+    </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> useless_warpper = </span><span style="color:#b48ead;">move </span><span style="color:#c0c5ce;">||-&gt;</span><span style="color:#b48ead;">usize</span><span style="color:#c0c5ce;">{a.</span><span style="color:#96b5b4;">len</span><span style="color:#c0c5ce;">() } ;
+    </span><span style="color:#96b5b4;">do_action</span><span style="color:#c0c5ce;">(useless_warpper);
+    
+    </span><span style="color:#65737e;">//println!(&quot;{}&quot;,a);  //这里再使用a会报错
+</span><span style="color:#c0c5ce;">}
+
+</span></pre>
+<p>使用了一个关键字<code>move</code> 将闭包需要捕获的变量的所有权<code>move</code>到闭包内。
+<code>FnMut</code>的例子：</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">do_action</span><span style="color:#c0c5ce;">&lt;F&gt;(</span><span style="color:#b48ead;">mut </span><span style="color:#bf616a;">func</span><span style="color:#c0c5ce;">:F)</span><span style="color:#b48ead;">where</span><span style="color:#c0c5ce;"> F:FnMut()-&gt;</span><span style="color:#b48ead;">usize</span><span style="color:#c0c5ce;">{
+    println!(&quot;</span><span style="color:#a3be8c;">mutable result </span><span style="color:#d08770;">{}</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#96b5b4;">func</span><span style="color:#c0c5ce;">());
+}
+
+</span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">(){
+    </span><span style="color:#b48ead;">let mut</span><span style="color:#c0c5ce;"> a = </span><span style="color:#d08770;">12</span><span style="color:#c0c5ce;">;
+    </span><span style="color:#b48ead;">let mut </span><span style="color:#8fa1b3;">mutable_warpper </span><span style="color:#c0c5ce;">= ||-&gt;</span><span style="color:#b48ead;">usize</span><span style="color:#c0c5ce;">{ a+=</span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">;a } ;
+    </span><span style="color:#96b5b4;">do_action</span><span style="color:#c0c5ce;">(mutable_warpper);
+    
+    println!(&quot;</span><span style="color:#a3be8c;">now </span><span style="color:#d08770;">{}</span><span style="color:#c0c5ce;">&quot;,a);
+}
+
+</span></pre>
+<p><code>Fn</code>的例子（将闭包形式简化）：</p>
+<pre style="background-color:#2b303b;">
+<span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">do_action</span><span style="color:#c0c5ce;">&lt;F&gt;(</span><span style="color:#bf616a;">func</span><span style="color:#c0c5ce;">:F)</span><span style="color:#b48ead;">where</span><span style="color:#c0c5ce;"> F:Fn()-&gt;</span><span style="color:#b48ead;">usize</span><span style="color:#c0c5ce;">{
+    println!(&quot;</span><span style="color:#a3be8c;">result </span><span style="color:#d08770;">{}</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#96b5b4;">func</span><span style="color:#c0c5ce;">());
+}
+
+</span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">(){
+    </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> a = </span><span style="color:#d08770;">12</span><span style="color:#c0c5ce;">;
+    </span><span style="color:#b48ead;">let </span><span style="color:#8fa1b3;">square </span><span style="color:#c0c5ce;">= || a*a ;
+    </span><span style="color:#96b5b4;">do_action</span><span style="color:#c0c5ce;">(square);
+    
+    println!(&quot;</span><span style="color:#a3be8c;">now </span><span style="color:#d08770;">{}</span><span style="color:#c0c5ce;">&quot;,a);
+}
+
+</span></pre><h3 id="yin-yong-de-sheng-ming-zhou-qi-lifetime-biao-ji">引用的生命周期(lifetime)标记</h3>
 <p>大部分场景下，我们使用变量的时候，编译器能够自动推断变量的作用域并正常工作。但有时候不那么明显，特别是使用引用的很多场景下，需要手工标记变量的生命周期，帮助编译器检查引用的生命周期不会超过对象的生命周期。
 例如：</p>
 <pre style="background-color:#2b303b;">
