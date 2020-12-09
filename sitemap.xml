@@ -177,6 +177,11 @@
         </url>
     
         <url>
+            <loc>https%3A//blog.zongwu233.com/page/4/</loc>
+            
+        </url>
+    
+        <url>
             <loc>https%3A//blog.zongwu233.com/rust-mio-source-scenario-analysis/</loc>
             
                 <lastmod>2019-10-30</lastmod>
@@ -197,6 +202,11 @@
     
         <url>
             <loc>https%3A//blog.zongwu233.com/tags/ansible/</loc>
+            
+        </url>
+    
+        <url>
+            <loc>https%3A//blog.zongwu233.com/tags/api/</loc>
             
         </url>
     
@@ -232,6 +242,11 @@
     
         <url>
             <loc>https%3A//blog.zongwu233.com/tags/gong-ju/</loc>
+            
+        </url>
+    
+        <url>
+            <loc>https%3A//blog.zongwu233.com/tags/jia-gou-feng-ge/</loc>
             
         </url>
     
@@ -281,6 +296,16 @@
         </url>
     
         <url>
+            <loc>https%3A//blog.zongwu233.com/tags/rest/</loc>
+            
+        </url>
+    
+        <url>
+            <loc>https%3A//blog.zongwu233.com/tags/restful/</loc>
+            
+        </url>
+    
+        <url>
             <loc>https%3A//blog.zongwu233.com/tags/ruan-jian-gong-cheng/</loc>
             
         </url>
@@ -312,6 +337,11 @@
     
         <url>
             <loc>https%3A//blog.zongwu233.com/tags/suo-you-quan/</loc>
+            
+        </url>
+    
+        <url>
+            <loc>https%3A//blog.zongwu233.com/tags/webfu-wu-jia-gou/</loc>
             
         </url>
     
@@ -374,6 +404,13 @@
             <loc>https%3A//blog.zongwu233.com/update-config-automated-tool/</loc>
             
                 <lastmod>2018-11-03</lastmod>
+            
+        </url>
+    
+        <url>
+            <loc>https%3A//blog.zongwu233.com/what-exactly-is-rest-and-restful/</loc>
+            
+                <lastmod>2020-12-09</lastmod>
             
         </url>
     

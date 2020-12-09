@@ -7,7 +7,17 @@
         <generator>Zola</generator>
         <language>en</language>
         <atom:link href="https%3A//blog.zongwu233.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <lastBuildDate>Tue, 24 Nov 2020 00:00:00 +0000</lastBuildDate>
+        <lastBuildDate>Wed, 09 Dec 2020 00:00:00 +0000</lastBuildDate>
+        
+            <item>
+                <title>REST 以及 RESTful 辨析</title>
+                <pubDate>Wed, 09 Dec 2020 00:00:00 +0000</pubDate>
+                <link>https%3A//blog.zongwu233.com/what-exactly-is-rest-and-restful/</link>
+                <guid>https%3A//blog.zongwu233.com/what-exactly-is-rest-and-restful/</guid>
+                <description>&lt;p&gt;从REST概念提出到现在已经20年了，业界的主流实践采纳借鉴了其部分原则，但与其最核心的架构设计渐行渐远。&lt;&#x2F;p&gt;
+&lt;p&gt;实际上那个去中心化的、面向全世界开放的万维网时代正在落幕，构建在其基础之上的&lt;code&gt;REST&lt;&#x2F;code&gt;架构思想，也无可避免地被冷落或者被误解。&lt;&#x2F;p&gt;
+</description>
+            </item>
         
             <item>
                 <title>让我们聊一聊Rust的所有权系统</title>
@@ -372,18 +382,6 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
 &lt;&#x2F;script&gt;
 &lt;h2 id=&quot;wen-ti&quot;&gt;问题&lt;&#x2F;h2&gt;
 &lt;p&gt;一个普通人如何具有强大的能力，做到某些他原本无法做到的事情呢？&lt;&#x2F;p&gt;
-</description>
-            </item>
-        
-            <item>
-                <title>最简单的内网导航网站</title>
-                <pubDate>Sat, 26 Jan 2019 00:00:00 +0000</pubDate>
-                <link>https%3A//blog.zongwu233.com/the-simplest-navigation-website/</link>
-                <guid>https%3A//blog.zongwu233.com/the-simplest-navigation-website/</guid>
-                <description>&lt;p&gt;随着业务系统的增长，运维工具的增多，我们经常需要访问监控页面、ssh登录机器，需要记住很多常用信息，但是这些信息不值得占用宝贵的大脑资源，只需要存储下来用的时候访问即可。
-我们需要一个超简单的导航网站。&lt;&#x2F;p&gt;
-&lt;p&gt;如何最简单地实现一个静态的网站？不要任何多余的东西。&lt;&#x2F;p&gt;
-&lt;p&gt;最好几行代码实现服务，向外提供一个html文件访问服务。新增内容时候，只需要添加到html文件即可。&lt;&#x2F;p&gt;
 </description>
             </item>
         

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title></title>
+        <link>https%3A//blog.zongwu233.com</link>
+        <description></description>
+        <generator>Zola</generator>
+        <language>en</language>
+        <atom:link href="https%3A//blog.zongwu233.com/tags/api/rss.xml" rel="self" type="application/rss+xml"/>
+        <lastBuildDate>Wed, 09 Dec 2020 00:00:00 +0000</lastBuildDate>
+        
+            <item>
+                <title>REST 以及 RESTful 辨析</title>
+                <pubDate>Wed, 09 Dec 2020 00:00:00 +0000</pubDate>
+                <link>https%3A//blog.zongwu233.com/what-exactly-is-rest-and-restful/</link>
+                <guid>https%3A//blog.zongwu233.com/what-exactly-is-rest-and-restful/</guid>
+                <description>&lt;p&gt;从REST概念提出到现在已经20年了，业界的主流实践采纳借鉴了其部分原则，但与其最核心的架构设计渐行渐远。&lt;&#x2F;p&gt;
+&lt;p&gt;实际上那个去中心化的、面向全世界开放的万维网时代正在落幕，构建在其基础之上的&lt;code&gt;REST&lt;&#x2F;code&gt;架构思想，也无可避免地被冷落或者被误解。&lt;&#x2F;p&gt;
+</description>
+            </item>
+        
+    </channel>
+</rss>
