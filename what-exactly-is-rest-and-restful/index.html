@@ -159,27 +159,27 @@
                     <ul>
                         
                         <li>
-                            <a href="https://blog.zongwu233.com/what-exactly-is-rest-and-restful/#client-server-architecture" class="toc-link">Client-server architecture</a>
+                            <a href="https://blog.zongwu233.com/what-exactly-is-rest-and-restful/#1-client-server-architecture" class="toc-link">1. Client-server architecture</a>
                         </li>
                         
                         <li>
-                            <a href="https://blog.zongwu233.com/what-exactly-is-rest-and-restful/#stateless" class="toc-link">Stateless</a>
+                            <a href="https://blog.zongwu233.com/what-exactly-is-rest-and-restful/#2-stateless" class="toc-link">2. Stateless</a>
                         </li>
                         
                         <li>
-                            <a href="https://blog.zongwu233.com/what-exactly-is-rest-and-restful/#cacheability" class="toc-link">Cacheability</a>
+                            <a href="https://blog.zongwu233.com/what-exactly-is-rest-and-restful/#3-cacheability" class="toc-link">3. Cacheability</a>
                         </li>
                         
                         <li>
-                            <a href="https://blog.zongwu233.com/what-exactly-is-rest-and-restful/#layered-system" class="toc-link">Layered System</a>
+                            <a href="https://blog.zongwu233.com/what-exactly-is-rest-and-restful/#4-layered-system" class="toc-link">4. Layered System</a>
                         </li>
                         
                         <li>
-                            <a href="https://blog.zongwu233.com/what-exactly-is-rest-and-restful/#code-on-demand-optional" class="toc-link">Code-On-Demand（optional）</a>
+                            <a href="https://blog.zongwu233.com/what-exactly-is-rest-and-restful/#5-code-on-demand-optional" class="toc-link">5. Code-On-Demand（optional）</a>
                         </li>
                         
                         <li>
-                            <a href="https://blog.zongwu233.com/what-exactly-is-rest-and-restful/#uniform-interface" class="toc-link">Uniform Interface</a>
+                            <a href="https://blog.zongwu233.com/what-exactly-is-rest-and-restful/#6-uniform-interface" class="toc-link">6. Uniform Interface</a>
                         </li>
                         
                     </ul>
@@ -210,7 +210,7 @@
     </header>
 
     <div class="post-content">
-      <p>从REST概念提出到现在已经20年了，业界的主流实践采纳借鉴了其部分原则，但与其最核心的架构设计渐行渐远。</p>
+      <p>从<code>REST</code>概念提出到现在已经20年了，业界的主流实践采纳借鉴了其部分原则，但与其最核心的架构设计渐行渐远。</p>
 <p>实际上那个去中心化的、面向全世界开放的万维网时代正在落幕，构建在其基础之上的<code>REST</code>架构思想，也无可避免地被冷落或者被误解。</p>
 <p id="zola-continue-reading"><a name="continue-reading"></a></p>
 <h2 id="ding-yi">定义</h2>
@@ -229,30 +229,30 @@
 <p>用户在操作页面的时候，从他的角度看，他改变了应用程序的状态。使用表述的超媒体（HTML就是一种超媒体）来表示和管理应用程序状态的方式，称为：以超媒体作为应用程序状态引擎（ <code>hypermedia as the engine of application state</code> ）或者简称为超文本约束( <code>hypertet constraint</code> )。</p>
 <h2 id="restjia-gou-feng-ge-jia-gou-yue-shu">REST架构风格架构约束</h2>
 <p>REST架构风格最重要的架构约束有6个：</p>
-<h3 id="client-server-architecture">Client-server architecture</h3>
+<h3 id="1-client-server-architecture">1. Client-server architecture</h3>
 <p>C/S架构，该原则的主要目的是将服务端和客户端的关注点分离。</p>
-<h3 id="stateless">Stateless</h3>
+<h3 id="2-stateless">2. Stateless</h3>
 <p>无状态，服务端不保存客户端的上下文信息。每一次客户端发起请求，都要包含必须的所有状态信息。</p>
-<h3 id="cacheability">Cacheability</h3>
+<h3 id="3-cacheability">3. Cacheability</h3>
 <p>缓存。如同万维网一样, 客户端和中间通讯传递者可以将响应缓存起来。 </p>
-<h3 id="layered-system">Layered System</h3>
+<h3 id="4-layered-system">4. Layered System</h3>
 <p>分层系统。客户端通常无法确定它是直接连接到最终服务器还是中间连接。在客户端和服务器之间放置代理或负载平衡器，则不会影响它们之间的通信，也不需要更新客户端或服务器代码。</p>
-<h3 id="code-on-demand-optional">Code-On-Demand（optional）</h3>
+<h3 id="5-code-on-demand-optional">5. Code-On-Demand（optional）</h3>
 <p>按需代码(可选的)。服务器可以通过传输可执行代码来临时扩展或定制客户端的功能：例如，诸如Java applet之类的已编译组件，或诸如JavaScript之类的客户端脚本。</p>
-<h3 id="uniform-interface">Uniform Interface</h3>
+<h3 id="6-uniform-interface">6. Uniform Interface</h3>
 <p>统一接口。该约束原则是一切RESTful 系统设计的基础，它简化和分离了架构，使每个部分都可以独立发展。此统一接口的四个约束是：</p>
-<h5 id="resource-identification-in-requests-qing-qiu-zhong-de-zi-yuan-shi-bie">Resource identification in requests（请求中的资源识别）</h5>
+<h5 id="6-1-resource-identification-in-requests-qing-qiu-zhong-de-zi-yuan-shi-bie">6.1 Resource identification in requests（请求中的资源识别）</h5>
 <p>在请求中标识各个资源，例如使用RESTful Web服务中的URI。资源本身在概念上与返回给客户端的表示形式是分开的。例如，服务器可以从数据库中以HTML，XML或JSON格式发送数据，这些都不是服务器的内部表示形式。</p>
-<h5 id="resource-manipulation-through-representations-tong-guo-biao-shi-lai-cao-zong-zi-yuan">Resource manipulation through representations（通过表示来操纵资源）</h5>
+<h5 id="6-2-resource-manipulation-through-representations-tong-guo-biao-shi-lai-cao-zong-zi-yuan">6.2 Resource manipulation through representations（通过表示来操纵资源）</h5>
 <p>当客户端持有资源的表示形式（包括附加的任何元数据）时，它具有足够的信息来修改或删除资源的状态。</p>
-<h5 id="self-descriptive-messages-zi-wo-miao-shu-de-xiao-xi">Self-descriptive messages（自我描述的消息）</h5>
+<h5 id="6-3-self-descriptive-messages-zi-wo-miao-shu-de-xiao-xi">6.3 Self-descriptive messages（自我描述的消息）</h5>
 <p>每个消息都包含足够的信息来描述如何处理该消息。例如，可以通过媒体类型指定要调用的解析器。</p>
-<h5 id="hypermedia-as-the-engine-of-application-state-hateoas-chao-mei-ti-zuo-wei-ying-yong-cheng-xu-zhuang-tai-yin-qing">Hypermedia as the engine of application state（ HATEOAS，超媒体作为应用程序状态引擎）</h5>
+<h5 id="6-4-hypermedia-as-the-engine-of-application-state-hateoas-chao-mei-ti-zuo-wei-ying-yong-cheng-xu-zhuang-tai-yin-qing">6.4 Hypermedia as the engine of application state（ HATEOAS，超媒体作为应用程序状态引擎）</h5>
 <p>访问了REST应用程序的初始URI（类似于访问网站首页的人类Web用户），REST客户端随后应能够动态使用服务器提供的链接来发现其所需的所有可用资源。随着访问的进行，服务器将以文本作为响应，该文本包括指向当前可用其他资源的超链接。不需要使用有关应用程序的结构或动态的信息对客户端进行硬编码。</p>
 <h2 id="qi-ta">其他</h2>
 <p>遵循以上6个约束原则的架构设计都是<code>RESTful</code>架构。</p>
-<p>我们目前大多数人使用的<code>RESTful API</code>，都是一种混合了SOA架构的，或者直接就是以RPC思维定义出来的API风格。也难怪很多人会误以为<code>RESTful API</code>就是采用<code>JSON</code>格式、使用<code>HTTP</code>的<code>GET/POST/PUT/DELETE</code>方法对应查询/新增/修改/删除来操作数据。</p>
-<p>这里存在几个误区，第一点，比较初级的错误，很多<code>API</code>的<code>url</code>里面带有动词，比如 <code>/user/modify-avator</code>，<code>/user/comment/canel</code> 这种定义方式就是<code>RPC</code>，将<code>HTTP</code>退化成一种传输协议，那就不如直接基于<code>TCP</code>。</p>
+<p>我们目前大多数人使用的<code>RESTful API</code>，都是一种混合了<code>SOA</code>架构的，或者直接就是以RPC思维定义出来的API风格。也难怪很多人会误以为<code>RESTful API</code>就是采用<code>JSON</code>格式、使用<code>HTTP</code>的<code>GET/POST/PUT/DELETE</code>方法对应查询/新增/修改/删除来操作数据。</p>
+<p>这里存在几个误区，第一点，比较初级的错误，很多<code>API</code>的<code>url</code>里面带有动词，比如 <code>/user/modify-avator</code>，<code>/user/comment/canel</code> 这种定义方式实际上是想使用<code>RPC</code>，将<code>HTTP</code>退化成一种传输协议，那就不如直接基于<code>TCP</code>。</p>
 <p>第二点，以为<code>RESTful</code>就是赋予<code>HTTP</code>的<code>verb</code>更为清晰的动作含义。比如<code>POST</code>是新增数，<code>PUT</code>就是修改。对照上面的6点原则，完全没有提到对资源修改的动作标准。实际上，<code>REST</code>从没有提及在任何情况该使用哪种<code>HTTP method</code>的建议。约束原则只强调接口统一，即便使用<code>POST</code>来更新数据，而不是像大多数人推荐的使用<code>PUT</code>，这一点也不违反<code>REST</code>。使用真正的<code>RESTful API</code>，除了初始的<code>URI</code>和一组标准化媒体类型（比如<code>HTML</code>），不需要其他先验知识。因为所有的应用程序状态的转换，必须是由客户端选择服务器提供的选项来驱动。</p>
 <p>第三点，以为使用了<code>HTTP</code>不同的<code>verb</code>修改资源，就是在做资源的状态转移。这一点的迷惑性很大，只有理解了<code>HATEOAS</code>，才会明白<code>REST</code>中的状态转移是指应用的状态，而且是基于用户点击/操作了不同的超链接，使得应用展现不同的资源，从而进入了不同的状态。跟操作变更具体的资源完全不是同一个概念。</p>
 
