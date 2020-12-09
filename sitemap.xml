@@ -1,458 +1,269 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/about/</loc>
-            
-                <lastmod>2018-04-20</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/android-project-ci-jenkins/</loc>
-            
-                <lastmod>2017-06-11</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/android-project-from-gradle-2-buck/</loc>
-            
-                <lastmod>2016-08-19</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/architecture-evolution/</loc>
-            
-                <lastmod>2018-12-23</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/asdf-vm-intro/</loc>
-            
-                <lastmod>2020-11-10</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/categories/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/categories/blog/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/categories/mental/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/consistency-models/</loc>
-            
-                <lastmod>2020-09-22</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/consul-registrator-nginx/</loc>
-            
-                <lastmod>2018-12-20</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/data-abstract/</loc>
-            
-                <lastmod>2016-04-09</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/dexopt-process/</loc>
-            
-                <lastmod>2015-09-27</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/enlarge-your-personal-ability-1/</loc>
-            
-                <lastmod>2019-10-11</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/genymotion-with-xposed/</loc>
-            
-                <lastmod>2017-06-17</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/git-proxy-config/</loc>
-            
-                <lastmod>2020-10-17</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/gradle-build-springboot-dockerimage/</loc>
-            
-                <lastmod>2018-10-24</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/hanlp-vs-ltp/</loc>
-            
-                <lastmod>2018-03-28</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/high-performance-olap/</loc>
-            
-                <lastmod>2018-07-29</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/kolla-ansible-deploy-all-in-one-mode-openstack-stein-version/</loc>
-            
-                <lastmod>2020-08-15</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/module-protocol-design-think/</loc>
-            
-                <lastmod>2016-03-27</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/nonstandard-204-response/</loc>
-            
-                <lastmod>2015-09-30</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/oneplus3t-root/</loc>
-            
-                <lastmod>2017-07-03</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/openstack-management/</loc>
-            
-                <lastmod>2020-08-16</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/page/1/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/page/2/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/page/3/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/page/4/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/rust-mio-source-scenario-analysis/</loc>
-            
-                <lastmod>2019-10-30</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/severe-info-reading/</loc>
-            
-                <lastmod>2017-05-11</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/so-far-we-still-dont-know-if-the-mice-in-the-parallel-universe-understand-information-theory/</loc>
-            
-                <lastmod>2020-12-09</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/ansible/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/api/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/bian-cheng-yu-yan/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/cli/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/consul/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/duo-ban-ben-guan-li/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/fen-bu-shi-xi-tong/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/git/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/gong-ju/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/hei-xiang-xi-tong/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/jia-gou-feng-ge/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/jia-gou/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/ke-xue-fang-fa-lun/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/ke-xue-shang-wang/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/kolla-ansible/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/macos/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/mio/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/nei-cun-guan-li/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/openstack/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/proxy/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/rest/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/restful/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/ruan-jian-gong-cheng/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/ruan-jian/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/rust/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/shi-yong/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/ssh/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/stein/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/suo-you-quan/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/webfu-wu-jia-gou/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/wei-fu-wu/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/xin-xi-lun/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/xin-xi-shang/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/yi-zhi-xing/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/yuan-li/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/yuan-ma-fen-xi/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/tags/zhuan-hua-si-wei/</loc>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/talk-about-rust-ownership/</loc>
-            
-                <lastmod>2020-11-24</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/the-handicraft-software-age/</loc>
-            
-                <lastmod>2018-05-24</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/the-simplest-navigation-website/</loc>
-            
-                <lastmod>2019-01-26</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/the-starter/</loc>
-            
-                <lastmod>2020-01-01</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/the-touble-of-multidex/</loc>
-            
-                <lastmod>2015-09-26</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/update-config-automated-tool/</loc>
-            
-                <lastmod>2018-11-03</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/what-exactly-is-rest-and-restful/</loc>
-            
-                <lastmod>2020-12-09</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/whose-all-in/</loc>
-            
-                <lastmod>2018-06-14</lastmod>
-            
-        </url>
-    
-        <url>
-            <loc>https%3A//blog.zongwu233.com/zerotoone-reading-notes/</loc>
-            
-                <lastmod>2018-09-09</lastmod>
-            
-        </url>
-    
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://blog.zongwu233.com/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/about/</loc>
+        <lastmod>2018-04-20</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/android-project-ci-jenkins/</loc>
+        <lastmod>2017-06-11</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/android-project-from-gradle-2-buck/</loc>
+        <lastmod>2016-08-19</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/architecture-evolution/</loc>
+        <lastmod>2018-12-23</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/asdf-vm-intro/</loc>
+        <lastmod>2020-11-10</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/categories/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/categories/blog/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/categories/mental/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/consistency-models/</loc>
+        <lastmod>2020-09-22</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/consul-registrator-nginx/</loc>
+        <lastmod>2018-12-20</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/data-abstract/</loc>
+        <lastmod>2016-04-09</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/dexopt-process/</loc>
+        <lastmod>2015-09-27</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/enlarge-your-personal-ability-1/</loc>
+        <lastmod>2019-10-11</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/genymotion-with-xposed/</loc>
+        <lastmod>2017-06-17</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/git-proxy-config/</loc>
+        <lastmod>2020-10-17</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/gradle-build-springboot-dockerimage/</loc>
+        <lastmod>2018-10-24</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/hanlp-vs-ltp/</loc>
+        <lastmod>2018-03-28</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/high-performance-olap/</loc>
+        <lastmod>2018-07-29</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/kolla-ansible-deploy-all-in-one-mode-openstack-stein-version/</loc>
+        <lastmod>2020-08-15</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/module-protocol-design-think/</loc>
+        <lastmod>2016-03-27</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/nonstandard-204-response/</loc>
+        <lastmod>2015-09-30</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/oneplus3t-root/</loc>
+        <lastmod>2017-07-03</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/openstack-management/</loc>
+        <lastmod>2020-08-16</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/page/1/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/page/2/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/page/3/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/page/4/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/rust-mio-source-scenario-analysis/</loc>
+        <lastmod>2019-10-30</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/severe-info-reading/</loc>
+        <lastmod>2017-05-11</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/so-far-we-still-dont-know-if-the-mice-in-the-parallel-universe-understand-information-theory/</loc>
+        <lastmod>2020-12-09</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/ansible/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/api/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/bian-cheng-yu-yan/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/cli/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/consul/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/duo-ban-ben-guan-li/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/fen-bu-shi-xi-tong/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/git/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/gong-ju/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/hei-xiang-xi-tong/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/jia-gou-feng-ge/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/jia-gou/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/ke-xue-fang-fa-lun/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/ke-xue-shang-wang/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/kolla-ansible/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/macos/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/mio/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/nei-cun-guan-li/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/openstack/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/proxy/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/rest/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/restful/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/ruan-jian-gong-cheng/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/ruan-jian/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/rust/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/shi-yong/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/ssh/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/stein/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/suo-you-quan/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/webfu-wu-jia-gou/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/wei-fu-wu/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/xin-xi-lun/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/xin-xi-shang/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/yi-zhi-xing/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/yuan-li/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/yuan-ma-fen-xi/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/zhuan-hua-si-wei/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/talk-about-rust-ownership/</loc>
+        <lastmod>2020-11-24</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/the-handicraft-software-age/</loc>
+        <lastmod>2018-05-24</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/the-simplest-navigation-website/</loc>
+        <lastmod>2019-01-26</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/the-starter/</loc>
+        <lastmod>2020-01-01</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/the-touble-of-multidex/</loc>
+        <lastmod>2015-09-26</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/update-config-automated-tool/</loc>
+        <lastmod>2018-11-03</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/what-exactly-is-rest-and-restful/</loc>
+        <lastmod>2020-12-09</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/whose-all-in/</loc>
+        <lastmod>2018-06-14</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/zerotoone-reading-notes/</loc>
+        <lastmod>2018-09-09</lastmod>
+    </url>
 </urlset>

@@ -10,8 +10,6 @@
       <title> - 一致性模型</title>
 
       
-        <link rel="alternate" type="application/rss+xml" title="RSS" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">
-      
 
       
           <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
@@ -121,78 +119,6 @@
                     
 
 
-<div class="post-toc" id="post-toc">
-    <h2 class="post-toc-title">Contents</h2>
-    <div class="post-toc-content always-active">
-        <nav id="TableOfContents">
-            <ul>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/consistency-models/#ji-ben-gai-nian" class="toc-link">基本概念</a>
-                    
-                    <ul>
-                        
-                        <li>
-                            <a href="https://blog.zongwu233.com/consistency-models/#zheng-que-xing-correctness" class="toc-link">正确性（Correctness）</a>
-                        </li>
-                        
-                        <li>
-                            <a href="https://blog.zongwu233.com/consistency-models/#bing-fa-concurrency" class="toc-link">并发（Concurrency）</a>
-                        </li>
-                        
-                        <li>
-                            <a href="https://blog.zongwu233.com/consistency-models/#yan-shi-latency" class="toc-link">延时（Latency）</a>
-                        </li>
-                        
-                    </ul>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/consistency-models/#xian-xing-yi-zhi-xing-linearizability" class="toc-link">线性一致性（Linearizability）</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/consistency-models/#shun-xu-yi-zhi-xing-sequential-consistency" class="toc-link">顺序一致性（Sequential consistency）</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/consistency-models/#yin-guo-yi-zhi-xing-casual-consistency" class="toc-link">因果一致性（Casual consistency）</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/consistency-models/#ke-xu-lie-hua-de-yi-zhi-xing-serializable-consistency" class="toc-link">可序列化的一致性（Serializable consistency）</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/consistency-models/#linearizability-vs-serializability" class="toc-link">Linearizability VS. Serializability</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/consistency-models/#yi-zhi-xing-de-dai-jie-consistency-comes-with-costs" class="toc-link">一致性的代价（Consistency comes with costs）</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/consistency-models/#yi-chong-hun-he-fang-fa-a-hybrid-approach" class="toc-link">一种混合方法（A hybrid approach）</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/consistency-models/#qi-ta" class="toc-link">其他</a>
-                    
-                </li>
-                
-            </ul>
-        </nav>
-    </div>
-</div>
-
 
 <article class="post">
     
@@ -210,7 +136,7 @@
       <h2 id="ji-ben-gai-nian">基本概念</h2>
 <h3 id="zheng-que-xing-correctness">正确性（Correctness）</h3>
 <p><strong>一个系统是由一个状态和一些转换该状态的操作组成的</strong>。当系统运行时，它通过一些操作记录从一个状态转换到另一个状态。</p>
-<p id="zola-continue-reading"><a name="continue-reading"></a></p>
+<span id="continue-reading"></span>
 <p>例如，状态可以是变量，操作可以是对这个变量的读写。一旦我们将一个变量设置为某个值，比如a，读取它就应该返回a，直到我们再次改变这个值。读取一个变量会返回最近写入的值。我们把这种系统--一个只有一个值的变量--称为寄存器。</p>
 <p>这暗示了系统正确性的定义：给定一些规则，这些规则将操作和状态联系起来，系统中的操作记录应该总是遵循这些规则。我们称这些规则为一致性模型。</p>
 <p>更正式地说，我们说一个<strong>一致性模型是所有允许的操作记录的集合</strong>。如果我们运行一个程序，并且它经历了允许集中的操作序列，那么这个特定的执行就是一致的。如果程序偶尔出错，经历了一个不在一致性模型中的操作记录，我们说这个操作记录是不一致的。如果每一个可能的执行都落入了允许的集合中，那么系统就满足了模型。我们希望真实的系统能够满足 &quot;直观正确 &quot;的一致性模型，这样我们就可以写出可预测的程序。</p>

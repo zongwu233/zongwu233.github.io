@@ -10,8 +10,6 @@
       <title> - 一加3T Root</title>
 
       
-        <link rel="alternate" type="application/rss+xml" title="RSS" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">
-      
 
       
           <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
@@ -121,42 +119,6 @@
                     
 
 
-<div class="post-toc" id="post-toc">
-    <h2 class="post-toc-title">Contents</h2>
-    <div class="post-toc-content always-active">
-        <nav id="TableOfContents">
-            <ul>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/oneplus3t-root/#yu-bei" class="toc-link">预备</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/oneplus3t-root/#oemjie-suo" class="toc-link">OEM解锁</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/oneplus3t-root/#bootloaderjie-suo" class="toc-link">BootLoader解锁</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/oneplus3t-root/#shua-ru-recovery" class="toc-link">刷入Recovery</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/oneplus3t-root/#shua-ru-supersu" class="toc-link">刷入SuperSU</a>
-                    
-                </li>
-                
-            </ul>
-        </nav>
-    </div>
-</div>
-
 
 <article class="post">
     
@@ -176,15 +138,14 @@
 <p>下载TWRP的 recoveryhttps://dl.twrp.me/oneplus3t/twrp-3.1.1-2-oneplus3t.img.html 保存为 twrp-oneplus3.img</p>
 <p>下载SuperSU  https://download.chainfire.eu/1021/SuperSU/SR3-SuperSU-v2.79-SR3-20170114223742.zip 保存为 sr3-superSU.zip</p>
 <p>进入到 twrp-oneplus3.img    sr3-superSU.zip 所在目录，方便执行命令。</p>
-<p id="zola-continue-reading"><a name="continue-reading"></a></p>
-<h5 id="oemjie-suo">OEM解锁</h5>
+<span id="continue-reading"></span><h5 id="oemjie-suo">OEM解锁</h5>
 <p>进入开发者模式，进入其菜单，开启OEM解锁。关机。</p>
 <h5 id="bootloaderjie-suo">BootLoader解锁</h5>
 <p>按住电源键和音量增大键开机几秒，进入bootLoader模式。这时候出现bootLoader的菜单。</p>
 <p>输入：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">fastboot flashing unlock
-</span></pre>
+<code><span style="color:#c0c5ce;">fastboot flashing unlock
+</span></code></pre>
 <p>弹出确认对话框，这时候使用音量按键选择yes，用电源键选择confirm。</p>
 <p>(Lollipop及以下版本的命令是<code>fastboot oem unlock</code>)</p>
 <p>解锁了bootLoader就可以往手机刷入第三方recovery了。</p>
@@ -192,14 +153,14 @@
 <p>TWRP是个开源社区项目，做自定义boot recovery，涵盖了大部分机型。</p>
 <p>TWRP的recovery已经下载好。执行命令：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">fastboot flash recovery twrp-oneplus3.img
-</span></pre><h5 id="shua-ru-supersu">刷入SuperSU</h5>
+<code><span style="color:#c0c5ce;">fastboot flash recovery twrp-oneplus3.img
+</span></code></pre><h5 id="shua-ru-supersu">刷入SuperSU</h5>
 <p>使用音量按键选择  <code>Recovery mode</code>重启。</p>
 <p>重启过程中，按住电源＋音量向下按键，进入TWRP。然后选择<code>allow modifications</code>。</p>
 <p>选择 <code>Advanced</code> 再选择 <code>ADB Sideload</code>。执行命令：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">adb sideload sr3-superSU.zip
-</span></pre>
+<code><span style="color:#c0c5ce;">adb sideload sr3-superSU.zip
+</span></code></pre>
 <p>完成后选择重启手机。</p>
 <p>正常进入手机，打开superSU验证root是否成功。</p>
 

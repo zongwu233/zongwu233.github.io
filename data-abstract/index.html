@@ -10,8 +10,6 @@
       <title> - 数据抽象</title>
 
       
-        <link rel="alternate" type="application/rss+xml" title="RSS" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">
-      
 
       
           <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
@@ -140,69 +138,69 @@
 书中的答案是：<strong>数据是一组适当的选择函数和构造函数。</strong><br />
 (这里的<strong>适当的</strong>是指那些<strong>能够刻画数据本质特征的</strong>)<br />
 也即是：<strong>数据是函数</strong>。</p>
-<p id="zola-continue-reading"><a name="continue-reading"></a></p>
+<span id="continue-reading"></span>
 <p>书中接着举了例子，将序对用函数实现：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">(</span><span style="color:#96b5b4;">define </span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">cons </span><span style="color:#c0c5ce;">x y)
-  (</span><span style="color:#96b5b4;">define </span><span style="color:#c0c5ce;">(dispatch m)
-    (</span><span style="color:#b48ead;">cond </span><span style="color:#c0c5ce;">((= m </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">) x)
-          ((= m </span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">) y)
-          (else (error &quot;</span><span style="color:#a3be8c;">Argument not 0 or 1 --CONS</span><span style="color:#c0c5ce;">&quot; m))))
+<code><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">define </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">cons</span><span style="color:#c0c5ce;"> x y)
+  (</span><span style="color:#b48ead;">define </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">dispatch</span><span style="color:#c0c5ce;"> m)
+    (</span><span style="color:#bf616a;">cond </span><span style="color:#c0c5ce;">((</span><span style="color:#bf616a;">=</span><span style="color:#c0c5ce;"> m </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">) x)
+          ((</span><span style="color:#bf616a;">=</span><span style="color:#c0c5ce;"> m </span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">) y)
+          (</span><span style="color:#bf616a;">else </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">error </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">Argument not 0 or 1 --CONS</span><span style="color:#c0c5ce;">&quot; m))))
    dispatch)
-(</span><span style="color:#96b5b4;">define </span><span style="color:#c0c5ce;">(car z)(z </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">))
-(</span><span style="color:#96b5b4;">define </span><span style="color:#c0c5ce;">(cdr z)(z </span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">))   				              
-</span></pre>
+(</span><span style="color:#b48ead;">define </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">car</span><span style="color:#c0c5ce;"> z)(</span><span style="color:#bf616a;">z </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">))
+(</span><span style="color:#b48ead;">define </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">cdr</span><span style="color:#c0c5ce;"> z)(</span><span style="color:#bf616a;">z </span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">))   				              
+</span></code></pre>
 <p>(cons x y) 返回的dispatch是个函数。<br />
 看完这个感觉：哇哦，还可以这样玩。<br />
 还没结束，接着书中又给出了0、加1 的函数定义：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">(</span><span style="color:#96b5b4;">define </span><span style="color:#c0c5ce;">zero
-  (lambda (f)
-    (lambda (x) x)))		  
-(</span><span style="color:#96b5b4;">define </span><span style="color:#c0c5ce;">(add-1 n)
-  (lambda (f)
-    (lambda(x)
-      (f ((n f) x)))))
-</span></pre>
+<code><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">define </span><span style="color:#8fa1b3;">zero
+  </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">lambda </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">f</span><span style="color:#c0c5ce;">)
+    (</span><span style="color:#bf616a;">lambda </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">x</span><span style="color:#c0c5ce;">) x)))		  
+(</span><span style="color:#b48ead;">define </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">add-1</span><span style="color:#c0c5ce;"> n)
+  (</span><span style="color:#bf616a;">lambda </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">f</span><span style="color:#c0c5ce;">)
+    (</span><span style="color:#bf616a;">lambda</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">x</span><span style="color:#c0c5ce;">)
+      (</span><span style="color:#bf616a;">f </span><span style="color:#c0c5ce;">((</span><span style="color:#bf616a;">n</span><span style="color:#c0c5ce;"> f) x)))))
+</span></code></pre>
 <p>然后要求依据这两个定义，利用代换求值得到1和2的定义：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">(</span><span style="color:#96b5b4;">define </span><span style="color:#c0c5ce;">one
-  (lambda (f)
-    (lambda (x) (f x))))
-(</span><span style="color:#96b5b4;">define </span><span style="color:#c0c5ce;">two
-  (lambda (f)
-    (lambda (x) (f (f x)))))
-</span></pre>
+<code><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">define </span><span style="color:#8fa1b3;">one
+  </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">lambda </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">f</span><span style="color:#c0c5ce;">)
+    (</span><span style="color:#bf616a;">lambda </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">x</span><span style="color:#c0c5ce;">) (</span><span style="color:#bf616a;">f</span><span style="color:#c0c5ce;"> x))))
+(</span><span style="color:#b48ead;">define </span><span style="color:#8fa1b3;">two
+  </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">lambda </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">f</span><span style="color:#c0c5ce;">)
+    (</span><span style="color:#bf616a;">lambda </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">x</span><span style="color:#c0c5ce;">) (</span><span style="color:#bf616a;">f </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">f</span><span style="color:#c0c5ce;"> x)))))
+</span></code></pre>
 <p>这就是<strong>丘奇计数(Church numerals)</strong>。<br />
 初看add-1的定义比较难以理解，我们可以看看 three，four ，n 是如何定义的：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">(</span><span style="color:#96b5b4;">define </span><span style="color:#c0c5ce;">three
-  (lambda (f)
-    (lambda (x) (f (f (f x))))))
-(</span><span style="color:#96b5b4;">define </span><span style="color:#c0c5ce;">four
-  (lambda (f)
-    (lambda (x) (f (f (f (f x)))))))
-(</span><span style="color:#96b5b4;">define </span><span style="color:#c0c5ce;">n
-  (lambda (f)
-    (f (f (f ...(f x)...)))))	
-</span></pre>
+<code><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">define </span><span style="color:#8fa1b3;">three
+  </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">lambda </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">f</span><span style="color:#c0c5ce;">)
+    (</span><span style="color:#bf616a;">lambda </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">x</span><span style="color:#c0c5ce;">) (</span><span style="color:#bf616a;">f </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">f </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">f</span><span style="color:#c0c5ce;"> x))))))
+(</span><span style="color:#b48ead;">define </span><span style="color:#8fa1b3;">four
+  </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">lambda </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">f</span><span style="color:#c0c5ce;">)
+    (</span><span style="color:#bf616a;">lambda </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">x</span><span style="color:#c0c5ce;">) (</span><span style="color:#bf616a;">f </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">f </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">f </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">f</span><span style="color:#c0c5ce;"> x)))))))
+(</span><span style="color:#b48ead;">define </span><span style="color:#8fa1b3;">n
+  </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">lambda </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">f</span><span style="color:#c0c5ce;">)
+    (</span><span style="color:#bf616a;">f </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">f </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">f</span><span style="color:#c0c5ce;"> ...(</span><span style="color:#bf616a;">f</span><span style="color:#c0c5ce;"> x)...)))))	
+</span></code></pre>
 <p>哦，数字被定义成了f对x的作用次数。<br />
 但这个结论还有点问题，two其实是f对one作用了一次，n是f对n-1作用了一次，要想让上面结论正确就得要求(f x)的结果跟x属于同一个集合。这样f就能继续对结果进行作用，数学中对这样的特性有定义:若对某个集合的成员进行一种运算，生成的结果依然是这集合的成员，该集合被称为<strong>在这运算下闭合</strong>。而自然数集N在加法运算下确实是闭合的。<br />
 ps:其实这里的闭合数学上有时候称为闭包。但是跟我们说的函数闭包不是同一个概念。不要混淆。<br />
 现在<strong>数字被定义成了f对x的作用次数</strong>说的通了，那么我能积攒n次f然后再应用到x上吗？<br />
 就是(n f) 有意义吗？代入刚才的n的定义就知道了：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">(</span><span style="color:#96b5b4;">define </span><span style="color:#c0c5ce;">(n f)
-  (lambda (x)
-    (f (f (f ...( f x)...)))))
-</span></pre>
+<code><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">define </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">n</span><span style="color:#c0c5ce;"> f)
+  (</span><span style="color:#bf616a;">lambda </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">x</span><span style="color:#c0c5ce;">)
+    (</span><span style="color:#bf616a;">f </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">f </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">f</span><span style="color:#c0c5ce;"> ...( </span><span style="color:#bf616a;">f</span><span style="color:#c0c5ce;"> x)...)))))
+</span></code></pre>
 <p>好了，再也不用写n次f了。回头再看add-1，是不是很自然了。</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">(</span><span style="color:#96b5b4;">define </span><span style="color:#c0c5ce;">(add-1 n)
-  (lambda (f)
-    (lambda(x)
-      (f ((n f) x)))))
-</span></pre>
+<code><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">define </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">add-1</span><span style="color:#c0c5ce;"> n)
+  (</span><span style="color:#bf616a;">lambda </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">f</span><span style="color:#c0c5ce;">)
+    (</span><span style="color:#bf616a;">lambda</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">x</span><span style="color:#c0c5ce;">)
+      (</span><span style="color:#bf616a;">f </span><span style="color:#c0c5ce;">((</span><span style="color:#bf616a;">n</span><span style="color:#c0c5ce;"> f) x)))))
+</span></code></pre>
 <p>​</p>
 <p>​</p>
 <p>​</p>

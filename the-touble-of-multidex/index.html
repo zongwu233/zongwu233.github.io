@@ -10,8 +10,6 @@
       <title> - 其实你不知道MultiDex到底有多坑</title>
 
       
-        <link rel="alternate" type="application/rss+xml" title="RSS" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">
-      
 
       
           <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
@@ -121,42 +119,6 @@
                     
 
 
-<div class="post-toc" id="post-toc">
-    <h2 class="post-toc-title">Contents</h2>
-    <div class="post-toc-content always-active">
-        <nav id="TableOfContents">
-            <ul>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/the-touble-of-multidex/#di-yi-hui-he-tian-zhen-de-guan-fang-bu-ding-fang-an" class="toc-link">第一回合 天真的官方补丁方案</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/the-touble-of-multidex/#di-er-hui-he-sha-dexopt-failed" class="toc-link">第二回合 啥？dexopt failed？</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/the-touble-of-multidex/#di-san-hui-he-anrde-yi-si-jiu-shi-application-not-responding" class="toc-link">第三回合 ANR的意思就是Application Not Responding</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/the-touble-of-multidex/#di-si-hui-he-huan-yi-chong-si-lu" class="toc-link">第四回合 换一种思路</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/the-touble-of-multidex/#zui-zhong-zhang-sui-sui-nian" class="toc-link">最终章碎碎念</a>
-                    
-                </li>
-                
-            </ul>
-        </nav>
-    </div>
-</div>
-
 
 <article class="post">
     
@@ -172,10 +134,10 @@
 
     <div class="post-content">
       <p>愉快地写着Android代码的总悟君往工程里引入了一个默默无闻的jar然后Run了一下， 经过漫长的等待AndroidStudio构建失败了。</p>
-<p id="zola-continue-reading"><a name="continue-reading"></a></p>
+<span id="continue-reading"></span>
 <p>于是总悟君带着疑惑查看错误信息。</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#d08770;">UNEXPECTED TOP</span><span style="color:#c0c5ce;">-</span><span style="color:#d08770;">LEVEL EXCEPTION</span><span style="color:#c0c5ce;">: java.lang.</span><span style="color:#ebcb8b;">IllegalArgumentException</span><span style="color:#c0c5ce;">: method </span><span style="color:#d08770;">ID</span><span style="color:#c0c5ce;"> not in [</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">0xffff</span><span style="color:#c0c5ce;">]: </span><span style="color:#d08770;">65536</span><span style="color:#c0c5ce;"> 
+<code><span style="color:#d08770;">UNEXPECTED TOP</span><span style="color:#c0c5ce;">-</span><span style="color:#d08770;">LEVEL EXCEPTION</span><span style="color:#c0c5ce;">: java.lang.</span><span style="color:#ebcb8b;">IllegalArgumentException</span><span style="color:#c0c5ce;">: method </span><span style="color:#d08770;">ID</span><span style="color:#c0c5ce;"> not in [</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">0xffff</span><span style="color:#c0c5ce;">]: </span><span style="color:#d08770;">65536</span><span style="color:#c0c5ce;"> 
 	at com.android.dx.merge.</span><span style="color:#ebcb8b;">DexMerger$6</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">updateIndex</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">DexMerger</span><span style="color:#c0c5ce;">.java:</span><span style="color:#d08770;">501</span><span style="color:#c0c5ce;">) 
 	at com.android.dx.merge.</span><span style="color:#ebcb8b;">DexMerger$IdMerger</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">mergeSorted</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">DexMerger</span><span style="color:#c0c5ce;">.java:</span><span style="color:#d08770;">276</span><span style="color:#c0c5ce;">) 
 	at com.android.dx.merge.</span><span style="color:#ebcb8b;">DexMerger</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">mergeMethodIds</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">DexMerger</span><span style="color:#c0c5ce;">.java:</span><span style="color:#d08770;">490</span><span style="color:#c0c5ce;">) 
@@ -186,7 +148,7 @@
 	at com.android.dx.command.dexer.</span><span style="color:#ebcb8b;">Main</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">run</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">Main</span><span style="color:#c0c5ce;">.java:</span><span style="color:#d08770;">230</span><span style="color:#c0c5ce;">) 
 	at com.android.dx.command.dexer.</span><span style="color:#ebcb8b;">Main</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">main</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">Main</span><span style="color:#c0c5ce;">.java:</span><span style="color:#d08770;">199</span><span style="color:#c0c5ce;">) 
 	at com.android.dx.command.</span><span style="color:#ebcb8b;">Main</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">main</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">Main</span><span style="color:#c0c5ce;">.java:</span><span style="color:#d08770;">103</span><span style="color:#c0c5ce;">):</span><span style="color:#ebcb8b;">Derp</span><span style="color:#c0c5ce;">:dexDerpDebug </span><span style="color:#d08770;">FAILED
-</span></pre>
+</span></code></pre>
 <p>看起来是：在试图将 classes和jar塞进一个Dex文件的过程中产生了错误。</p>
 <p>早期的Dex文件保存所有classes的方法个数的范围在0~65535之间。业务一直在增长，总悟君写(copy)的代码越来越长引入的库越来越多，超过这个范围只是时间问题。</p>
 <p>怎么解？？太阳底下木有新鲜事，淡定先google一发，找找已经踩过坑的小伙伴。</p>
@@ -212,7 +174,7 @@
 </ol>
 <p>步骤1在gradle脚本里写上：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">android {
+<code><span style="color:#c0c5ce;">android {
 	compileSdkVersion </span><span style="color:#d08770;">21</span><span style="color:#c0c5ce;">
 	buildToolsVersion &quot;</span><span style="color:#a3be8c;">21.1.0</span><span style="color:#c0c5ce;">&quot;
 
@@ -231,10 +193,10 @@
 dependencies {
 compile &#39;</span><span style="color:#a3be8c;">com.android.support:multidex:1.0.0</span><span style="color:#c0c5ce;">&#39;
 }
-</span></pre>
+</span></code></pre>
 <p>步骤2manifest声明修改</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">&lt;?xml version=&quot;</span><span style="color:#a3be8c;">1.0</span><span style="color:#c0c5ce;">&quot; encoding=&quot;</span><span style="color:#a3be8c;">utf-8</span><span style="color:#c0c5ce;">&quot;?&gt;
+<code><span style="color:#c0c5ce;">&lt;?xml version=&quot;</span><span style="color:#a3be8c;">1.0</span><span style="color:#c0c5ce;">&quot; encoding=&quot;</span><span style="color:#a3be8c;">utf-8</span><span style="color:#c0c5ce;">&quot;?&gt;
 &lt;manifest </span><span style="color:#d08770;">xmlns</span><span style="color:#c0c5ce;">:android=&quot;</span><span style="color:#a3be8c;">http://schemas.android.com/apk/res/android</span><span style="color:#c0c5ce;">&quot;
 package=&quot;</span><span style="color:#a3be8c;">com.example.android.multidex.myapplication</span><span style="color:#c0c5ce;">&quot;&gt;
 &lt;application
@@ -243,23 +205,23 @@ package=&quot;</span><span style="color:#a3be8c;">com.example.android.multidex.m
 ...
 &lt;/</span><span style="color:#96b5b4;">application&gt;
 &lt;</span><span style="color:#c0c5ce;">/manifest&gt;
-</span></pre>
+</span></code></pre>
 <p>如果有自己的Application，继承MulitDexApplication。如果当前代码已经继承自其它Application没办法修改那也行，就重写 Application的attachBaseContext()这个方法。</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">@</span><span style="color:#bf616a;">Override
+<code><span style="color:#c0c5ce;">@</span><span style="color:#bf616a;">Override
 </span><span style="color:#b48ead;">protected</span><span style="color:#c0c5ce;"> void </span><span style="color:#bf616a;">attachBaseContext</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">Context</span><span style="color:#c0c5ce;"> base) {
 	</span><span style="color:#bf616a;">super</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">attachBaseContext</span><span style="color:#c0c5ce;">(base);
 	</span><span style="color:#ebcb8b;">MultiDex</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">install</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">this</span><span style="color:#c0c5ce;">);     
 
 } 
-</span></pre>
+</span></code></pre>
 <p>run一下，可以了！但是dex过程好像变慢了。。。</p>
 <p>文档还写明了multiDex support lib 的局限。瞄一下是什么：</p>
 <ol>
-<li>在应用安装到手机上的时候dex文件的安装是复杂的(complex)有可能会因为第二个dex文件太大导致ANR。请用proguard优化你的代码。~~呵呵~~</li>
-<li>使用了mulitDex的App有可能在4.0(api level 14)以前的机器上无法启动，因为Dalvik linearAlloc bug(Issue <a href="https://code.google.com/p/android/issues/detail?id=22586">22586</a>)  。请多多测试自祈多福。用proguard优化你的代码将减少该bug几率。~~呵呵~~</li>
+<li>在应用安装到手机上的时候dex文件的安装是复杂的(complex)有可能会因为第二个dex文件太大导致ANR。请用proguard优化你的代码。<del>呵呵</del></li>
+<li>使用了mulitDex的App有可能在4.0(api level 14)以前的机器上无法启动，因为Dalvik linearAlloc bug(Issue <a href="https://code.google.com/p/android/issues/detail?id=22586">22586</a>)  。请多多测试自祈多福。用proguard优化你的代码将减少该bug几率。<del>呵呵</del></li>
 <li>使用了mulitDex的App在runtime期间有可能因为Dalvik linearAlloc limit (Issue <a href="https://code.google.com/p/android/issues/detail?id=78035">78035</a>)  Crash。该内存分配限制在 4.0版本被增大，但是5.0以下的机器上的Apps依然会存在这个限制。</li>
-<li>主dex被dalvik虚拟机执行时候，哪些类必须在主dex文件里面这个问题比较复杂。build tools 可以搞定这个问题。但是如果你代码存在反射和native的调用也不保证100%正确。~~呵呵~~</li>
+<li>主dex被dalvik虚拟机执行时候，哪些类必须在主dex文件里面这个问题比较复杂。build tools 可以搞定这个问题。但是如果你代码存在反射和native的调用也不保证100%正确。<del>呵呵</del></li>
 </ol>
 <p>感觉这就是个坑啊。补丁方案又引入一些问题。但是插件化方案要求对现有代码有比较大的改动，代价太大，而且动态化加载框架意味着维护成本更高，会有更多潜在bug。所以先测试，遇到有问题的版本再解决。</p>
 <h2 id="di-er-hui-he-sha-dexopt-failed">第二回合 啥？dexopt failed？</h2>
@@ -268,7 +230,7 @@ package=&quot;</span><span style="color:#a3be8c;">com.example.android.multidex.m
 <p>那刚才那个bug是啥问题呢，原来dexopt程序的dalvik分配一块内存来统计你的app的dex里面的classes的信息，由于classes太多方法太多超过这个linearAlloc 的限制 。那减小dex的大小就可以咯。</p>
 <p>gradle脚本如下：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">android.applicationVariants.all {
+<code><span style="color:#c0c5ce;">android.applicationVariants.all {
     variant -&gt;
         dex.doFirst{
             dex-&gt;
@@ -279,9 +241,9 @@ package=&quot;</span><span style="color:#a3be8c;">com.example.android.multidex.m
 
        }
 }
-</span></pre>
+</span></code></pre>
 <p>--set-max-idx-number=<value> 用于控制每一个dex的最大方法个数，写小一点可以产生好几个dex。
-踩过更多坑的FB的工程师表示这个linearAlloc的限制不仅仅在安装时候的dexopt程序里<a href="https://www.facebook.com/notes/facebook-engineering/under-the-hood-dalvik-patch-for-facebook-for-android/10151345597798920">7</a>，还在你的app的dalvik rumtime里。（很显然啊dvk vm的宿主进程fork自于同一个母体啊）。为了表示对这个坑的不满以及对Google的产品表示遗憾，FB工程师Read The Fucking Source Code找到了一个hack方案。这个linearAlloc的size定义在c层而且是一个全局变量，他们通过对结构体的size的计算成功覆盖了该值的内容，这里要特别感谢C语言的指针和内存的设计。C的世界里，You Are The King of This World。当然实际情况是大部分用户用这把利刃割伤了自己。。。~~别问总悟君谁是世界上最好的语言。。。~~</p>
+踩过更多坑的FB的工程师表示这个linearAlloc的限制不仅仅在安装时候的dexopt程序里<a href="https://www.facebook.com/notes/facebook-engineering/under-the-hood-dalvik-patch-for-facebook-for-android/10151345597798920">7</a>，还在你的app的dalvik rumtime里。（很显然啊dvk vm的宿主进程fork自于同一个母体啊）。为了表示对这个坑的不满以及对Google的产品表示遗憾，FB工程师Read The Fucking Source Code找到了一个hack方案。这个linearAlloc的size定义在c层而且是一个全局变量，他们通过对结构体的size的计算成功覆盖了该值的内容，这里要特别感谢C语言的指针和内存的设计。C的世界里，You Are The King of This World。当然实际情况是大部分用户用这把利刃割伤了自己。。。<del>别问总悟君谁是世界上最好的语言。。。</del></p>
 <p>为FB的工程师的机智和务实精神点赞！然而总悟君不愿意花那么多精力实现FB的hack方法。（dvk虚拟机c层代码在2.x  4.x 版本里有变更，找到那个内存地址太难，未必搞得定啊）我们有偷懒的解决方案，为了避免2.3机型runtime 的linearAlloclimit ,最好保持每一个dex体积&lt;4M ,刚才的的value&lt;=48000</p>
 <p>好了 现在2.3的机器可以安装run起来了！</p>
 <h2 id="di-san-hui-he-anrde-yi-si-jiu-shi-application-not-responding">第三回合 ANR的意思就是Application Not Responding</h2>
@@ -320,7 +282,7 @@ package=&quot;</span><span style="color:#a3be8c;">com.example.android.multidex.m
 上最终解决问题版的代码！</p>
 <p>在Application里面(这里不要再继承自MultiApplication了，我们要手动加载Dex):</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">
+<code><span style="color:#c0c5ce;">
 </span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">java.util.</span><span style="color:#ebcb8b;">Map</span><span style="color:#c0c5ce;">;
 </span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">java.util.jar.</span><span style="color:#ebcb8b;">Attributes</span><span style="color:#c0c5ce;">;
 </span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">java.util.jar.</span><span style="color:#ebcb8b;">JarFile</span><span style="color:#c0c5ce;">;
@@ -378,7 +340,7 @@ package=&quot;</span><span style="color:#a3be8c;">com.example.android.multidex.m
         try {
             JarFile jar = new JarFile(source);
             Manifest mf = jar.getManifest();
-            Map&lt;</span><span style="color:#bf616a;">String</span><span style="color:#d08770;">, Attributes</span><span style="color:#65737e;">&gt; map = mf.getEntries();
+            Map&lt;</span><span style="color:#bf616a;">String, </span><span style="color:#d08770;">Attributes</span><span style="color:#65737e;">&gt; map = mf.getEntries();
             Attributes a = map.get(&quot;classes2.dex&quot;);
             return a.getValue(&quot;SHA1-Digest&quot;);
         } catch (Exception e) {
@@ -437,10 +399,10 @@ package=&quot;</span><span style="color:#a3be8c;">com.example.android.multidex.m
     }
 }
 
-</span></pre>
+</span></code></pre>
 <p>PackageUtil的方法</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;"> public static PackageInfo getPackageInfo(Context context){
+<code><span style="color:#c0c5ce;"> public static PackageInfo getPackageInfo(Context context){
         PackageManager pm = context.getPackageManager();
         try {
             return pm.getPackageInfo(context.getPackageName(), 0);
@@ -449,13 +411,13 @@ package=&quot;</span><span style="color:#a3be8c;">com.example.android.multidex.m
         }
         return  new PackageInfo();
     }
-</span></pre>
+</span></code></pre>
 <p>这里使用了classes(N).dex的方式保存了后面的dex而不是像微信目前的做法放到assest文件夹。前面有说到ART模式会将多个dex优化合并成oat文件。如果放置在asset里面就没有这个好处了。</p>
 <p>Launcher Activity 依然是原来的代码里的WelcomeActivity。</p>
 <p>在Application启动的时候会检测dexopt是否已经完成过，（检测方式是查看sp文件是否有dex文件的SHA1-Digest记录，这里要两个进程读取该sp,读取模式是MODE_MULTI_PROCESS）。如果没有就启动LoadDexActivity(属于：mini进程) 。否则就直接install dex ！对，直接install。通过日志发现，已经dexopt的dex文件再次install的时候 只耗费几十毫秒。</p>
 <p>LoadDexActivity 的逻辑比较简单，启动AsyncTask 来install dex 这时候会触发dexopt 。</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#eff1f5;">
+<code><span style="color:#c0c5ce;">
 </span><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">LoadResActivity </span><span style="color:#b48ead;">extends </span><span style="color:#a3be8c;">Activity </span><span style="color:#eff1f5;">{
     @</span><span style="color:#bf616a;">Override
     </span><span style="color:#b48ead;">public void </span><span style="color:#8fa1b3;">onCreate</span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">Bundle </span><span style="color:#bf616a;">savedInstanceState</span><span style="color:#eff1f5;">) {
@@ -490,10 +452,10 @@ package=&quot;</span><span style="color:#a3be8c;">com.example.android.multidex.m
         </span><span style="color:#65737e;">//cannot backpress
     </span><span style="color:#eff1f5;">}
 
-</span></pre>
+</span></code></pre>
 <p>Manifest.xml 里面 <br/></p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">&lt;activity
+<code><span style="color:#c0c5ce;">&lt;activity
     android:name= &quot;com.zongwu.LoadResActivity&quot;
     android:launchMode= &quot;singleTask&quot;
     android:process= &quot;:mini&quot;
@@ -510,16 +472,16 @@ package=&quot;</span><span style="color:#a3be8c;">com.example.android.multidex.m
         &lt;category android:name=&quot;android.intent.category.LAUNCHER&quot;/&gt;
     &lt;/intent-filter &gt;
 &lt;/activity&gt;
-</span></pre>
+</span></code></pre>
 <p>替换Activity默认的出现动画 R.anim.null_anim 文件的定义：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">&lt;set xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+<code><span style="color:#c0c5ce;">&lt;set xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
     &lt;alpha
         android:fromAlpha=&quot;1.0&quot;
         android:toAlpha=&quot;1.0&quot;
         android:duration=&quot;550&quot;/&gt;
 &lt;/set&gt;
-</span></pre>
+</span></code></pre>
 <p>如<a href="http://mp.weixin.qq.com/s?__biz=MzAwNDY1ODY2OQ==&amp;mid=207151651&amp;idx=1&amp;sn=9eab282711f4eb2b4daf2fbae5a5ca9a&amp;3rd=MzA3MDU4NTYzMw==&amp;scene=6#rd">微信开发团队的这篇文章</a>所说，application启动了LoadDexActivity之后，自身不再是前台进程所以怎么hold 线程都不会ANR。</p>
 <p>系统何时会对apk进行dexopt总悟君其实并没有十分明白。通过查看安装运行的日志发现，安装的时候packageManagerService会对classes.dex 进行dexopt 。在调用MultiDex.install（）加载 secondary.dex的时候，也会进行一次dexopt 。 这背后的流程到底是怎样的？dexopt是如何在另外一个进程执行的？如果是另外一个进程执行为何会阻塞主app的UI进程？ 官方文档并没有详细介绍这个，那就RTFSC一探究竟吧.</p>
 <p>源代码跟踪比较长，移步到<a href="/dexopt-process">这里</a>看吧。</p>

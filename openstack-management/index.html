@@ -10,8 +10,6 @@
       <title> - OpenStack 管理</title>
 
       
-        <link rel="alternate" type="application/rss+xml" title="RSS" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">
-      
 
       
           <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
@@ -121,47 +119,6 @@
                     
 
 
-<div class="post-toc" id="post-toc">
-    <h2 class="post-toc-title">Contents</h2>
-    <div class="post-toc-content always-active">
-        <nav id="TableOfContents">
-            <ul>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/openstack-management/#pei-zhi-wai-bu-wang-luo" class="toc-link">配置外部网络</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/openstack-management/#pei-zhi-nei-bu-wang-luo" class="toc-link">配置内部网络</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/openstack-management/#an-quan-zu-pei-zhi" class="toc-link">安全组配置</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/openstack-management/#jing-xiang-guan-li" class="toc-link">镜像管理</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/openstack-management/#chuang-jian-xu-ni-ji-shi-li" class="toc-link">创建虚拟机实例</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/openstack-management/#fen-pei-fu-dong-ip" class="toc-link">分配浮动IP</a>
-                    
-                </li>
-                
-            </ul>
-        </nav>
-    </div>
-</div>
-
 
 <article class="post">
     
@@ -185,14 +142,14 @@
 <p>对于物理网络名称，不能填错，具体名称可以通过以下步骤查看。</p>
 <p>在本机执行以下命令进入 neutron docker 容器</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">docker exec -it neutron_server  bash
+<code><span style="color:#c0c5ce;">docker exec -it neutron_server  bash
 
 #查看
 cat /etc/neutron/plugins/ml2/ml2_conf.ini 
 
 [ml2_type_flat]
 flat_networks = physnet1
-</span></pre>
+</span></code></pre>
 <p>点击下一项，创建子网。子网填写本机器所在的真实网络配置，本机ip地址 192.168.1.100。</p>
 <p><img src="https://i.loli.net/2020/08/13/iglDKoTBNtAXw43.png" alt="" /></p>
 <p>子网名称 ext_subnet，网络地址 192.168.1.0/24 网关IP 192.168.1.1</p>
@@ -220,26 +177,26 @@ flat_networks = physnet1
 <p>这里选择其中一个，wget http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2c</p>
 <p>在本机的控制台输入</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">. /etc/kolla/admin-openrc.sh
+<code><span style="color:#c0c5ce;">. /etc/kolla/admin-openrc.sh
 
 #上传镜像到glance
 openstack image create &quot;CentOS7-image&quot; \
   --file CentOS-7-x86_64-GenericCloud.qcow2c \
   --disk-format qcow2 --container-format bare \
   --public
-</span></pre>
+</span></code></pre>
 <p>创建虚拟机规格</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">    openstack flavor create --id 1 --ram 512 --disk 1 --vcpus 1 m1.tiny 
+<code><span style="color:#c0c5ce;">    openstack flavor create --id 1 --ram 512 --disk 1 --vcpus 1 m1.tiny 
     openstack flavor create --id 2 --ram 2048 --disk 20 --vcpus 1 m1.small
     openstack flavor create --id 3 --ram 4096 --disk 40 --vcpus 2 m1.medium
     openstack flavor create --id 4 --ram 8192 --disk 80 --vcpus 4 m1.large
-</span></pre><h2 id="chuang-jian-xu-ni-ji-shi-li">创建虚拟机实例</h2>
+</span></code></pre><h2 id="chuang-jian-xu-ni-ji-shi-li">创建虚拟机实例</h2>
 <p>进入 项目 -&gt; 计算 -&gt; 实例</p>
 <p><img src="https://i.loli.net/2020/08/13/TVs8PBNpudxEAH3.png" alt="" /></p>
 <p>点击创建实例，填写实例名称，镜像选择刚才创建的 CentOS7-image ，云主机类型选择 m1.medium ，网络选择normal，安全组默认是 default，不创建密钥对，在配置里面输入下面的shell</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">#!/bin/sh
+<code><span style="color:#c0c5ce;">#!/bin/sh
 passwd root &lt;&lt;EOF
 123456
 123456
@@ -247,7 +204,7 @@ EOF
 sed -i &#39;s/PasswordAuthentication no/PasswordAuthentication yes/g&#39; /etc/ssh/sshd_config
 sed -i &#39;s/#PubkeyAuthentication yes/PubkeyAuthentication yes/g&#39;  /etc/ssh/sshd_config
 service ssh restart
-</span></pre>
+</span></code></pre>
 <p>该脚本会修改虚拟机实例用户 root 的密码为123456</p>
 <p>点击创建实例。</p>
 <p>创建成功之后， 点击该实例名称，进入控制台界面，然后登陆即可。</p>

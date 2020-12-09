@@ -10,8 +10,6 @@
       <title> - 不规范的HTTP 204 响应格式</title>
 
       
-        <link rel="alternate" type="application/rss+xml" title="RSS" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">
-      
 
       
           <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
@@ -138,13 +136,13 @@
       <p>总悟君这次要说的是最近遇到的关于Http返回异常格式的问题。</p>
 <p>起因是这个:</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#ebcb8b;">SyncNetworkPerformer</span><span style="color:#c0c5ce;">.execute: 
+<code><span style="color:#ebcb8b;">SyncNetworkPerformer</span><span style="color:#c0c5ce;">.execute: 
 </span><span style="color:#ebcb8b;">Unhandled</span><span style="color:#c0c5ce;"> exception com.zongwu.common.http.volley.</span><span style="color:#ebcb8b;">NoConnectionError</span><span style="color:#c0c5ce;">: java.net.</span><span style="color:#ebcb8b;">ProtocolException</span><span style="color:#c0c5ce;">: 
 </span><span style="color:#ebcb8b;">Unexpected</span><span style="color:#c0c5ce;"> status line: nullHTTP/</span><span style="color:#d08770;">1.1 200 OK   
 </span><span style="color:#c0c5ce;">com.zongwu.common.http.volley.</span><span style="color:#ebcb8b;">NoConnectionError</span><span style="color:#c0c5ce;">: java.net.</span><span style="color:#ebcb8b;">ProtocolException</span><span style="color:#c0c5ce;">: </span><span style="color:#ebcb8b;">Unexpected</span><span style="color:#c0c5ce;"> status line: nullHTTP/</span><span style="color:#d08770;">1.1 200 OK</span><span style="color:#c0c5ce;">           
 at com.zongwu.common.http.volley.toolbox.</span><span style="color:#ebcb8b;">BasicNetwork</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">performRequest</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">BasicNetwork</span><span style="color:#c0c5ce;">.java:</span><span style="color:#d08770;">163</span><span style="color:#c0c5ce;">)  
 at com.zongwu.common.http.volley.</span><span style="color:#ebcb8b;">SyncNetworkPerformer</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">execute</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">SyncNetworkPerformer</span><span style="color:#c0c5ce;">.java:</span><span style="color:#d08770;">64</span><span style="color:#c0c5ce;">)
-</span></pre>
+</span></code></pre>
 <p>什么情况，服务端居然返回给我错误的http头部？？但是现在还不能找服务端的童鞋~~撕x~~理论，因为还有几个疑点我还回答不上来。</p>
 <ol>
 <li>该问题不是必现。</li>
@@ -153,10 +151,10 @@ at com.zongwu.common.http.volley.</span><span style="color:#ebcb8b;">SyncNetwork
 仔细查看线上版本的代码发现每一次Http请求完成后都调用了shutdown()方法。</li>
 </ol>
 <pre style="background-color:#2b303b;">
-<span style="color:#ebcb8b;">DefaultHttpClient</span><span style="color:#c0c5ce;"> client = </span><span style="color:#bf616a;">getHttpClient</span><span style="color:#c0c5ce;">(httpPost.</span><span style="color:#bf616a;">getURI</span><span style="color:#c0c5ce;">().</span><span style="color:#bf616a;">toString</span><span style="color:#c0c5ce;">());
+<code><span style="color:#ebcb8b;">DefaultHttpClient</span><span style="color:#c0c5ce;"> client = </span><span style="color:#bf616a;">getHttpClient</span><span style="color:#c0c5ce;">(httpPost.</span><span style="color:#bf616a;">getURI</span><span style="color:#c0c5ce;">().</span><span style="color:#bf616a;">toString</span><span style="color:#c0c5ce;">());
   ...
   client.</span><span style="color:#bf616a;">getConnectionManager</span><span style="color:#c0c5ce;">().</span><span style="color:#bf616a;">shutdown</span><span style="color:#c0c5ce;">();
-</span></pre>
+</span></code></pre>
 <p>这个当然是关闭了TCP通道的链接。
 两个疑点都搞定，但是这个null到底是什么时候塞进来的呢？总悟君祭出大杀器<strong>WireShark</strong> 。(幽默风趣的<a href="http://weibo.com/linpeiman">林沛满</a>为WireShark写了一本很有意思的入门<a href="https://book.douban.com/subject/26268767">书籍</a>推荐读一读)
 设置好wifi热点，手机连到该wifi上，开始抓包。

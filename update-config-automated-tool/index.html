@@ -10,8 +10,6 @@
       <title> - 更新配置自动化工具</title>
 
       
-        <link rel="alternate" type="application/rss+xml" title="RSS" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">
-      
 
       
           <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
@@ -121,32 +119,6 @@
                     
 
 
-<div class="post-toc" id="post-toc">
-    <h2 class="post-toc-title">Contents</h2>
-    <div class="post-toc-content always-active">
-        <nav id="TableOfContents">
-            <ul>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/update-config-automated-tool/#yuan-qi" class="toc-link">缘起</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/update-config-automated-tool/#dong-shou-shi-xian" class="toc-link">动手实现</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/update-config-automated-tool/#xiao-wen-ti" class="toc-link">小问题</a>
-                    
-                </li>
-                
-            </ul>
-        </nav>
-    </div>
-</div>
-
 
 <article class="post">
     
@@ -179,7 +151,7 @@
 <p>于是我创建了一个SpringBoot应用，为什么要创建一个java web应用？首先因为最熟悉java，其次是工程创建快速，使用简单，之前我实现了一个模版工程，可以快速创建SpringBoot应用，而且配置了常用的类库，非常方便。</p>
 <p>一些核心功能实现：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">@</span><span style="color:#bf616a;">Component
+<code><span style="color:#c0c5ce;">@</span><span style="color:#bf616a;">Component
 </span><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">ScheduleComp </span><span style="color:#eff1f5;">{
 
     </span><span style="color:#ebcb8b;">Logger </span><span style="color:#eff1f5;">logger </span><span style="color:#c0c5ce;">= </span><span style="color:#ebcb8b;">LoggerFactory</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">getLogger</span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">ScheduleComp</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">class</span><span style="color:#eff1f5;">);
@@ -196,10 +168,10 @@
         securityRulService.</span><span style="color:#bf616a;">refreshAll</span><span style="color:#eff1f5;">(</span><span style="color:#d08770;">false</span><span style="color:#eff1f5;">);
     }
 }
-</span></pre>
+</span></code></pre>
 <p><code>securityRulService 的refreshAll()方法</code></p>
 <pre style="background-color:#2b303b;">
-<span style="color:#b48ead;">public</span><span style="color:#c0c5ce;"> void </span><span style="color:#bf616a;">refreshAll</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">boolean</span><span style="color:#c0c5ce;"> force) {
+<code><span style="color:#b48ead;">public</span><span style="color:#c0c5ce;"> void </span><span style="color:#bf616a;">refreshAll</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">boolean</span><span style="color:#c0c5ce;"> force) {
         </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> nowIp = </span><span style="color:#bf616a;">getLocalIp</span><span style="color:#c0c5ce;">();
         </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">StringUtils</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">isEmpty</span><span style="color:#c0c5ce;">(nowIp)) {
             logger.</span><span style="color:#bf616a;">error</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">get current ip is empty! try next time...</span><span style="color:#c0c5ce;">&quot;);
@@ -217,10 +189,10 @@
 
         </span><span style="color:#bf616a;">updateCurrentIp</span><span style="color:#c0c5ce;">(nowIp);
     }
-</span></pre>
+</span></code></pre>
 <p><code>getLocalIp()</code>的实现：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#b48ead;">public static </span><span style="color:#ebcb8b;">String </span><span style="color:#bf616a;">getLocalIp</span><span style="color:#c0c5ce;">() {
+<code><span style="color:#b48ead;">public static </span><span style="color:#ebcb8b;">String </span><span style="color:#bf616a;">getLocalIp</span><span style="color:#c0c5ce;">() {
         </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> ip = </span><span style="color:#bf616a;">getIpCN</span><span style="color:#c0c5ce;">();
   			...
           
@@ -256,12 +228,12 @@
         }
         </span><span style="color:#b48ead;">return </span><span style="color:#c0c5ce;">&quot;&quot;;
     }
-</span></pre>
+</span></code></pre>
 <p>这里通过 ip.cn 获取本机的公网地址。</p>
 <p>还可以配置其他网站，防止ip.cn挂掉而导致服务失败。</p>
 <p><code>getCurrentIp</code> 的实现很简单，从本地文件读取上次记录的ip地址。</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#b48ead;">public </span><span style="color:#ebcb8b;">String </span><span style="color:#bf616a;">getCurrentIp</span><span style="color:#c0c5ce;">() {
+<code><span style="color:#b48ead;">public </span><span style="color:#ebcb8b;">String </span><span style="color:#bf616a;">getCurrentIp</span><span style="color:#c0c5ce;">() {
         </span><span style="color:#ebcb8b;">File</span><span style="color:#c0c5ce;"> file = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">File</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">ip.txt</span><span style="color:#c0c5ce;">&quot;);
         </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(!file.</span><span style="color:#bf616a;">exists</span><span style="color:#c0c5ce;">()) {
             </span><span style="color:#b48ead;">throw new </span><span style="color:#ebcb8b;">RuntimeException</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">cannot find ip data!</span><span style="color:#c0c5ce;">&quot;);
@@ -277,10 +249,10 @@
         }
         </span><span style="color:#b48ead;">return </span><span style="color:#c0c5ce;">&quot;&quot;;
     }
-</span></pre>
+</span></code></pre>
 <p>采用文件存储是最简单直接的方式。更新文件内容的代码：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#b48ead;">private</span><span style="color:#c0c5ce;"> void </span><span style="color:#bf616a;">updateCurrentIp</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> ip) {
+<code><span style="color:#b48ead;">private</span><span style="color:#c0c5ce;"> void </span><span style="color:#bf616a;">updateCurrentIp</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> ip) {
         </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">StringUtils</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">isEmpty</span><span style="color:#c0c5ce;">(ip))
             </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;">;
         </span><span style="color:#ebcb8b;">File</span><span style="color:#c0c5ce;"> file = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">File</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">ip.txt</span><span style="color:#c0c5ce;">&quot;);
@@ -295,10 +267,10 @@
             e.</span><span style="color:#bf616a;">printStackTrace</span><span style="color:#c0c5ce;">();
         }
     }
-</span></pre>
+</span></code></pre>
 <p>刷新阿里云安全组配置的逻辑：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#b48ead;">public</span><span style="color:#c0c5ce;"> void </span><span style="color:#bf616a;">refreshAll</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> nowIp, </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> oldIp) {
+<code><span style="color:#b48ead;">public</span><span style="color:#c0c5ce;"> void </span><span style="color:#bf616a;">refreshAll</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> nowIp, </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> oldIp) {
 
         </span><span style="color:#ebcb8b;">List</span><span style="color:#c0c5ce;">&lt;</span><span style="color:#ebcb8b;">SecurityRuleDO</span><span style="color:#c0c5ce;">&gt; newSecurityRuleDOList = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">ArrayList</span><span style="color:#c0c5ce;">&lt;&gt;(</span><span style="color:#bf616a;">testServer</span><span style="color:#c0c5ce;">(nowIp));
         </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">SecurityRuleDO</span><span style="color:#c0c5ce;"> securityRuleDO : newSecurityRuleDOList) {
@@ -370,16 +342,16 @@
         }
     }
 
-</span></pre>
+</span></code></pre>
 <p>其中client的初始化：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#ebcb8b;">DefaultProfile</span><span style="color:#c0c5ce;"> profile = </span><span style="color:#ebcb8b;">DefaultProfile</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">getProfile</span><span style="color:#c0c5ce;">(reginId, appkey, secret);
+<code><span style="color:#ebcb8b;">DefaultProfile</span><span style="color:#c0c5ce;"> profile = </span><span style="color:#ebcb8b;">DefaultProfile</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">getProfile</span><span style="color:#c0c5ce;">(reginId, appkey, secret);
                     client = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">DefaultAcsClient</span><span style="color:#c0c5ce;">(profile);
 
-</span></pre><h2 id="xiao-wen-ti">小问题</h2>
+</span></code></pre><h2 id="xiao-wen-ti">小问题</h2>
 <p>定时3分钟刷新有个小问题，就是有极小的概率，发生IP变更但是还没有及时刷新安全组的配置。怎么办，再加一个主动刷新的接口呗：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">@</span><span style="color:#bf616a;">RestController
+<code><span style="color:#c0c5ce;">@</span><span style="color:#bf616a;">RestController
 </span><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">RefreshSecurityRuleController </span><span style="color:#eff1f5;">{
     @</span><span style="color:#bf616a;">Autowired
     </span><span style="color:#ebcb8b;">RefreshSecurityRulService </span><span style="color:#eff1f5;">securityRulService;
@@ -396,7 +368,7 @@
     }
 
 }
-</span></pre>
+</span></code></pre>
 <p>其中的<code>/fresh</code>强制刷新IP。还附赠了一个接口，获取公司当前的IP。</p>
 <p>这个小应用部署在公司局域网内，一直工作的很好，再也不用烦心IP变动这些琐事。</p>
 <p>直到有一次，ip.cn 网站挂了。挂了很久，我们就增加了从<code>ip.tool.chinaz.com</code> 网站获取IP。</p>

@@ -10,8 +10,6 @@
       <title> - 业务模块无耦合通信协议的设计</title>
 
       
-        <link rel="alternate" type="application/rss+xml" title="RSS" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">
-      
 
       
           <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
@@ -121,80 +119,6 @@
                     
 
 
-<div class="post-toc" id="post-toc">
-    <h2 class="post-toc-title">Contents</h2>
-    <div class="post-toc-content always-active">
-        <nav id="TableOfContents">
-            <ul>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/module-protocol-design-think/#ding-yi" class="toc-link">定义</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/module-protocol-design-think/#wen-ti" class="toc-link">问题</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/module-protocol-design-think/#mo-kuai-hua" class="toc-link">模块化</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/module-protocol-design-think/#shi-xian-tong-xin-xie-yi" class="toc-link">实现通信协议				</a>
-                    
-                    <ul>
-                        
-                        <li>
-                            <a href="https://blog.zongwu233.com/module-protocol-design-think/#xie-yi-can-shu" class="toc-link">协议参数</a>
-                        </li>
-                        
-                        <li>
-                            <a href="https://blog.zongwu233.com/module-protocol-design-think/#xie-yi-de-lu-you" class="toc-link">协议的路由						</a>
-                        </li>
-                        
-                        <li>
-                            <a href="https://blog.zongwu233.com/module-protocol-design-think/#xie-yi-can-shu-de-chuan-shu" class="toc-link">协议参数的传输					</a>
-                        </li>
-                        
-                    </ul>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/module-protocol-design-think/#xiang-ying-dong-zuo" class="toc-link">响应动作</a>
-                    
-                    <ul>
-                        
-                        <li>
-                            <a href="https://blog.zongwu233.com/module-protocol-design-think/#yi-bu-diao-yong" class="toc-link">异步调用				</a>
-                        </li>
-                        
-                        <li>
-                            <a href="https://blog.zongwu233.com/module-protocol-design-think/#quan-ju-yan-bo" class="toc-link">全局广播				</a>
-                        </li>
-                        
-                    </ul>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/module-protocol-design-think/#zhu-ke-hu-duan-yu-mo-kuai" class="toc-link">主客户端与模块		</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/module-protocol-design-think/#hou-ji" class="toc-link">后记		</a>
-                    
-                </li>
-                
-            </ul>
-        </nav>
-    </div>
-</div>
-
 
 <article class="post">
     
@@ -215,7 +139,7 @@
 通信解释器：实现了本文定义的通信协议的组件</p>
 <h3 id="wen-ti">问题</h3>
 <p>虽然目前我们已经在代码组织形式上拆分了出了各个module，避免了代码级别的到处复制，在主客户端组合了每一个业务模块，但是目前的模块化依然存在诸多问题：</p>
-<p id="zola-continue-reading"><a name="continue-reading"></a></p>
+<span id="continue-reading"></span>
 <ol>
 <li>模块间存在直接的代码依赖	，严格意义上讲并没有完成模块化</li>
 <li>模块间通信协议比较混乱，各自为政，最终主客户端接入模块的时候做了很多重复性的对接动作</li>
@@ -239,9 +163,8 @@
 <strong>解决问题的思路依然是：增加一个中间层+面向接口编程</strong><br />
 但是这里的面向接口并不是指java的<strong>interface</strong>，否则必然还是产生依赖。这里的接口更多指代一个定义形式宽松、但是内容明确的契约。<br />
 要怎么定义这个接口？先看看模块A与外部环境通信必须的元素：<br />
-通信解释器、用于读写外部状态的这个<strong>动作的标识</strong>、<strong>此次的参数(包含入参，出参）</strong><br />
-<br />
-<strong>这里没有列出通信目标标识</strong>，模块A要不要知道此次通信的目标的标识？如果外部环境能够响应模块A要求的动作，是否还有必要要求模块A明确指出通信目标？如果从面向接口编程的角度出发，我只关心能应答这次请求就好，至于是哪个类哪个对象，真不关心。此外通信目标的标识可以作为入参传递，在通信协议的解释器那里再做转发也可以的。所以我们选择将通信目标标识视为一个参数而不是必须元素。<br />
+通信解释器、用于读写外部状态的这个<strong>动作的标识</strong>、<strong>此次的参数(包含入参，出参）</strong></p>
+<p><strong>这里没有列出通信目标标识</strong>，模块A要不要知道此次通信的目标的标识？如果外部环境能够响应模块A要求的动作，是否还有必要要求模块A明确指出通信目标？如果从面向接口编程的角度出发，我只关心能应答这次请求就好，至于是哪个类哪个对象，真不关心。此外通信目标的标识可以作为入参传递，在通信协议的解释器那里再做转发也可以的。所以我们选择将通信目标标识视为一个参数而不是必须元素。<br />
 那照这个逻辑，动作也可以定义为唯一标识从而视为参数了，模块A拿到应用内的通信解释器，传入动作标识+参数，通信解释器解析就返回相应的结果，这样也可以咯？到这里我们发现，这种思路跟HTTP的协议很相似，只不过，HTTP是发生在WWW上的通信协议，显式要求指名响应动作的目标标识，而我们在做的是应用内的模块间协议，想要接口的动态实现能力而不强制要求指名目标标识。(检查系统内是否存在实现响应该动作的模块的解决方案后面论述)<br />
 依据刚才的思考，通信解释器要具有解释参数能力，路由能力和传输能力。<br />
 解释参数：其实就是解析出动作标识，入参(或者含有调用目标标识)。
@@ -274,11 +197,10 @@ iOS则同样可以通过 NSClassFromString 拿到Class 进而构建相应对象�
 比较复杂的是业务参数。业务参数通常是因业务需求而组织成一定结构的复杂数据，这里将业务参数分成两类：</p>
 <ol>
 <li>模块间不需额外定义的,而且已经共同依赖的类型，比如语言基础类型，系统Api提供出来的各种类型，这里称为模块公共类型</li>
-<li>不属于类型1的所有类型，这里称为特定模块私有类型
-<br />
-模块公共类型放入map&lt;String,Object&gt;传输无问题，响应者直接取出value转型即可。
-特定模块私有类型要想办法替换成第一类。而不要额外定义新类型引入到模块中。这也是该方案的限制。但是这些类型本来就是靠第一种类型组建出来的，所以总能转换为模块公共类型.</li>
+<li>不属于类型1的所有类型，这里称为特定模块私有类型</li>
 </ol>
+<p>模块公共类型放入map&lt;String,Object&gt;传输无问题，响应者直接取出value转型即可。
+特定模块私有类型要想办法替换成第一类。而不要额外定义新类型引入到模块中。这也是该方案的限制。但是这些类型本来就是靠第一种类型组建出来的，所以总能转换为模块公共类型.</p>
 <h3 id="xiang-ying-dong-zuo">响应动作</h3>
 <p>之前在讲述响应动作的时候都是简单视为一次方法调用，但是实际情况有点复杂，方法调用又可以分类成同步调用、异步调用。或者分类成普通方法调用，全局广播等等。<br />
 同步调用、普通方法调用比较普通，不再论述。这里主要关注异步调用，全局广播。</p>

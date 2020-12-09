@@ -10,8 +10,6 @@
       <title> - Android项目持续集成环境</title>
 
       
-        <link rel="alternate" type="application/rss+xml" title="RSS" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">
-      
 
       
           <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
@@ -121,47 +119,6 @@
                     
 
 
-<div class="post-toc" id="post-toc">
-    <h2 class="post-toc-title">Contents</h2>
-    <div class="post-toc-content always-active">
-        <nav id="TableOfContents">
-            <ul>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/android-project-ci-jenkins/#xi-tong-huan-jing" class="toc-link">系统环境</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/android-project-ci-jenkins/#zhi-zuo-jenkinsde-dockerjing-xiang" class="toc-link">制作jenkins的Docker镜像</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/android-project-ci-jenkins/#gua-zai-volume-shu-ju-juan" class="toc-link">挂载Volume（数据卷）</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/android-project-ci-jenkins/#an-zhuang-git" class="toc-link">安装git</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/android-project-ci-jenkins/#an-zhuang-android-sdk" class="toc-link">安装Android SDK</a>
-                    
-                </li>
-                
-                <li>
-                    <a href="https://blog.zongwu233.com/android-project-ci-jenkins/#jenkinspei-zhi" class="toc-link">jenkins配置</a>
-                    
-                </li>
-                
-            </ul>
-        </nav>
-    </div>
-</div>
-
 
 <article class="post">
     
@@ -185,26 +142,26 @@
 <p>编写Dockerfile</p>
 <p>docker运行jenkins的命令：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">docker run -d -p 8080:8080 --name  jenkins-master jenkins
-</span></pre>
+<code><span style="color:#c0c5ce;">docker run -d -p 8080:8080 --name  jenkins-master jenkins
+</span></code></pre>
 <p>这里将docker的8080端口映射到本级的8080端口，该docker实例的name叫 <code>jenkins-master</code></p>
 <h5 id="gua-zai-volume-shu-ju-juan">挂载Volume（数据卷）</h5>
 <p>通过docker镜像运行实例的时候，docker会添加一个读写层用来记录文件的修改，一旦实例退出，该读写层消失。为了持久化数据，Docker引入Volume的概念。Volume是可以挂在到docker上的文件目录。</p>
 <p>通过命令<code>docker run -v</code> 来创建一个volume并挂在到docker容器。</p>
 <p>对<code>jenkins</code>需要的数据：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">cd ~ &amp;&amp; mkdir jenkins 
-</span></pre>
+<code><span style="color:#c0c5ce;">cd ~ &amp;&amp; mkdir jenkins 
+</span></code></pre>
 <p>挂载的命令：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">docker run  -v  ~/jenkins:/var/jenkins_home -d -p 8080:8080 --name  jenkins-master jenkins
-</span></pre>
+<code><span style="color:#c0c5ce;">docker run  -v  ~/jenkins:/var/jenkins_home -d -p 8080:8080 --name  jenkins-master jenkins
+</span></code></pre>
 <p>这样就将刚刚创建的jenkins目录挂载到docker的<code>/var/jenkins_home</code></p>
 <h5 id="an-zhuang-git">安装git</h5>
 <p>映射 ~/.gitconfig 到docker 容器内</p>
 <h5 id="an-zhuang-android-sdk">安装Android SDK</h5>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">cd ~
+<code><span style="color:#c0c5ce;">cd ~
 wget https://dl.google.com/android/android-sdk_r25.2.3-linux.tgz
 
 tar xvzf android-sdk_r25.2.3-linux.tgz
@@ -212,28 +169,28 @@ tar xvzf android-sdk_r25.2.3-linux.tgz
 mv android-sdk_r25.2.3-linux android-sdk
 
 cd android-sdk
-</span></pre>
+</span></code></pre>
 <p>安装缺失的support 包，这个根据自己Android项目依赖的具体情况选择。</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">
+<code><span style="color:#c0c5ce;">
 ./tools/bin/sdkmanager &quot;extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0-alpha8&quot;
 
 ./tools/bin/sdkmanager &quot;extras;m2repository;com;android;support;appcompat-v7;24.2.1&quot;
 	 
 ./tools/bin/sdkmanager &quot;extras;m2repository;com;android;support;design;23.3.0&quot;
-</span></pre>
+</span></code></pre>
 <p>centOS缺失Android SDK运行时必须的 lib</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">yum install -y libc6-i386 lib32stdc++6 lib32gcc1 lib32ncurses5 lib32z1
-</span></pre>
+<code><span style="color:#c0c5ce;">yum install -y libc6-i386 lib32stdc++6 lib32gcc1 lib32ncurses5 lib32z1
+</span></code></pre>
 <p>jenkins构建Android项目的时候注意添加：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">echo &quot;sdk.dir=/var/android-sdk&quot; &gt;&gt; local.properties
-</span></pre>
+<code><span style="color:#c0c5ce;">echo &quot;sdk.dir=/var/android-sdk&quot; &gt;&gt; local.properties
+</span></code></pre>
 <p>挂载AndroidSDK目录，之前docker命令变成</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">docker run  -v  ~/jenkins:/var/jenkins_home -v ~/android-sdk:/var/android-sdk -d -p 8080:8080 --name  jenkins-master jenkins
-</span></pre><h5 id="jenkinspei-zhi">jenkins配置</h5>
+<code><span style="color:#c0c5ce;">docker run  -v  ~/jenkins:/var/jenkins_home -v ~/android-sdk:/var/android-sdk -d -p 8080:8080 --name  jenkins-master jenkins
+</span></code></pre><h5 id="jenkinspei-zhi">jenkins配置</h5>
 <p>可以配置定时跑任务。</p>
 <p>安装gitlab插件（jenkins第一次启动的时候会提示安装插件，选择默认的标准安装即可）可以方便githook，比如代码push就触发构建。</p>
 <p>可以配置参数化构建，更具灵活性。</p>

@@ -10,8 +10,6 @@
       <title> - dexopt的源码跟踪</title>
 
       
-        <link rel="alternate" type="application/rss+xml" title="RSS" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">
-      
 
       
           <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
@@ -143,23 +141,23 @@ main函数调用了new Pm().run(args);<br />
 哦刚才的常用参数 &quot;-r&quot; 表示覆盖安装模式 INSTALL_REPLACE_EXISTING<br />
 runInstall（）方法最终会调用</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">mPm.</span><span style="color:#bf616a;">installPackageWithVerification</span><span style="color:#c0c5ce;">(apkURI, obs, installFlags, installerPackageName,</span><span style="color:#c0c5ce;">
+<code><span style="color:#c0c5ce;">mPm.</span><span style="color:#bf616a;">installPackageWithVerification</span><span style="color:#c0c5ce;">(apkURI, obs, installFlags, installerPackageName,</span><span style="color:#c0c5ce;">
  verificationURI, null, encryptionParams);</span><span style="color:#c0c5ce;">
-</span></pre>
+</span></code></pre>
 <p>而 mPm = IPackageManager.Stub.asInterface(ServiceManager.getService(&quot;package&quot;)); 就是PackageMangerService<br />
 PackageMangerService 的main方法：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">public </span><span style="color:#b48ead;">static</span><span style="color:#c0c5ce;"> final IPackageManager </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">(Context </span><span style="color:#bf616a;">context</span><span style="color:#c0c5ce;">, Installer </span><span style="color:#bf616a;">installer</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
+<code><span style="color:#c0c5ce;">public </span><span style="color:#b48ead;">static</span><span style="color:#c0c5ce;"> final IPackageManager </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">(Context </span><span style="color:#bf616a;">context</span><span style="color:#c0c5ce;">, Installer </span><span style="color:#bf616a;">installer</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
  boolean </span><span style="color:#bf616a;">factoryTest</span><span style="color:#c0c5ce;">, boolean </span><span style="color:#bf616a;">onlyCore</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
  PackageManagerService m = new </span><span style="color:#bf616a;">PackageManagerService</span><span style="color:#c0c5ce;">(context, installer,</span><span style="color:#c0c5ce;">
  factoryTest, onlyCore);</span><span style="color:#c0c5ce;">
  ServiceManager.</span><span style="color:#bf616a;">addService</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">package</span><span style="color:#c0c5ce;">&quot;, m);</span><span style="color:#c0c5ce;">
  </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> m;</span><span style="color:#c0c5ce;">
  }</span><span style="color:#c0c5ce;">
-</span></pre>
+</span></code></pre>
 <p>去看installPackageWithVerification()</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">@Override</span><span style="color:#c0c5ce;">
+<code><span style="color:#c0c5ce;">@Override</span><span style="color:#c0c5ce;">
  public </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">installPackageWithVerification</span><span style="color:#c0c5ce;">(Uri </span><span style="color:#bf616a;">packageURI</span><span style="color:#c0c5ce;">, IPackageInstallObserver </span><span style="color:#bf616a;">observer</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
  </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">flags</span><span style="color:#c0c5ce;">, String </span><span style="color:#bf616a;">installerPackageName</span><span style="color:#c0c5ce;">, Uri </span><span style="color:#bf616a;">verificationURI</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
  ManifestDigest </span><span style="color:#bf616a;">manifestDigest</span><span style="color:#c0c5ce;">, ContainerEncryptionParams </span><span style="color:#bf616a;">encryptionParams</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
@@ -168,33 +166,33 @@ PackageMangerService 的main方法：</p>
  </span><span style="color:#bf616a;">installPackageWithVerificationAndEncryption</span><span style="color:#c0c5ce;">(packageURI, observer, flags,</span><span style="color:#c0c5ce;">
  installerPackageName, verificationParams, encryptionParams);</span><span style="color:#c0c5ce;">
  }</span><span style="color:#c0c5ce;">
-</span></pre>
+</span></code></pre>
 <p>接着看 installPackageWithVerificationAndEncryption()方法</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">public </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">installPackageWithVerificationAndEncryption</span><span style="color:#c0c5ce;">(Uri </span><span style="color:#bf616a;">packageURI</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
+<code><span style="color:#c0c5ce;">public </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">installPackageWithVerificationAndEncryption</span><span style="color:#c0c5ce;">(Uri </span><span style="color:#bf616a;">packageURI</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
  IPackageInstallObserver </span><span style="color:#bf616a;">observer</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">flags</span><span style="color:#c0c5ce;">, String </span><span style="color:#bf616a;">installerPackageName</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
  VerificationParams </span><span style="color:#bf616a;">verificationParams</span><span style="color:#c0c5ce;">, ContainerEncryptionParams </span><span style="color:#bf616a;">encryptionParams</span><span style="color:#c0c5ce;">)</span><span style="color:#c0c5ce;">
-</span></pre>
+</span></code></pre>
 <p>在最后的时候：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">final Message msg = mHandler.</span><span style="color:#bf616a;">obtainMessage</span><span style="color:#c0c5ce;">(INIT_COPY);</span><span style="color:#c0c5ce;">
+<code><span style="color:#c0c5ce;">final Message msg = mHandler.</span><span style="color:#bf616a;">obtainMessage</span><span style="color:#c0c5ce;">(INIT_COPY);</span><span style="color:#c0c5ce;">
  msg.</span><span style="color:#bf616a;">obj </span><span style="color:#c0c5ce;">= new </span><span style="color:#bf616a;">InstallParams</span><span style="color:#c0c5ce;">(packageURI, observer, filteredFlags, installerPackageName,</span><span style="color:#c0c5ce;">
  verificationParams, encryptionParams, user);</span><span style="color:#c0c5ce;">
  mHandler.</span><span style="color:#bf616a;">sendMessage</span><span style="color:#c0c5ce;">(msg);</span><span style="color:#c0c5ce;">
-</span></pre>
+</span></code></pre>
 <p>发messge 给handler，找到这个handler的定义</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">mHandlerThread.</span><span style="color:#bf616a;">start</span><span style="color:#c0c5ce;">();</span><span style="color:#c0c5ce;">
+<code><span style="color:#c0c5ce;">mHandlerThread.</span><span style="color:#bf616a;">start</span><span style="color:#c0c5ce;">();</span><span style="color:#c0c5ce;">
  mHandler = new </span><span style="color:#bf616a;">PackageHandler</span><span style="color:#c0c5ce;">(mHandlerThread.</span><span style="color:#bf616a;">getLooper</span><span style="color:#c0c5ce;">());</span><span style="color:#c0c5ce;">
 final HandlerThread mHandlerThread = new </span><span style="color:#bf616a;">HandlerThread</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">PackageManager</span><span style="color:#c0c5ce;">&quot;,</span><span style="color:#c0c5ce;">
  Process.</span><span style="color:#bf616a;">THREAD_PRIORITY_BACKGROUND</span><span style="color:#c0c5ce;">);</span><span style="color:#c0c5ce;">
  final PackageHandler mHandler;</span><span style="color:#c0c5ce;">
-</span></pre>
+</span></code></pre>
 <p>看来 是个工作线程。<br />
 跟进handler的handlemsg()  消息类型会从 INIT_COPY 绕成 MCS_BOUND。总算调用了 params.startCopy()<br />
 先看handleStartCopy(). InstallParams 对该方法的实现。 略过各种检查和校验  找到了ret = args.copyApk(mContainerService, true);copy apk文件 到 /data/app 目录下 而且是以一种临时文件的格式。</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">final boolean </span><span style="color:#8fa1b3;">startCopy</span><span style="color:#c0c5ce;">() {</span><span style="color:#c0c5ce;">
+<code><span style="color:#c0c5ce;">final boolean </span><span style="color:#8fa1b3;">startCopy</span><span style="color:#c0c5ce;">() {</span><span style="color:#c0c5ce;">
  boolean res;</span><span style="color:#c0c5ce;">
  try {</span><span style="color:#c0c5ce;">
  </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(DEBUG_INSTALL) Slog.</span><span style="color:#bf616a;">i</span><span style="color:#c0c5ce;">(TAG, &quot;</span><span style="color:#a3be8c;">startCopy</span><span style="color:#c0c5ce;">&quot;);</span><span style="color:#c0c5ce;">
@@ -215,36 +213,36 @@ final HandlerThread mHandlerThread = new </span><span style="color:#bf616a;">Han
  </span><span style="color:#bf616a;">handleReturnCode</span><span style="color:#c0c5ce;">();</span><span style="color:#c0c5ce;">
  </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> res;</span><span style="color:#c0c5ce;">
  }</span><span style="color:#c0c5ce;">
-</span></pre>
+</span></code></pre>
 <p>然后是handleReturnCode()   主要是:</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;"> private </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">processPendingInstall</span><span style="color:#c0c5ce;">(final InstallArgs </span><span style="color:#bf616a;">args</span><span style="color:#c0c5ce;">, final </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">currentStatus</span><span style="color:#c0c5ce;">) </span><span style="color:#c0c5ce;">
-</span></pre>
+<code><span style="color:#c0c5ce;"> private </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">processPendingInstall</span><span style="color:#c0c5ce;">(final InstallArgs </span><span style="color:#bf616a;">args</span><span style="color:#c0c5ce;">, final </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">currentStatus</span><span style="color:#c0c5ce;">) </span><span style="color:#c0c5ce;">
+</span></code></pre>
 <p>该方法调用</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">private </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">installNewPackageLI</span><span style="color:#c0c5ce;">(PackageParser.</span><span style="color:#bf616a;">Package pkg</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
+<code><span style="color:#c0c5ce;">private </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">installNewPackageLI</span><span style="color:#c0c5ce;">(PackageParser.</span><span style="color:#bf616a;">Package pkg</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
  </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">parseFlags</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">scanMode</span><span style="color:#c0c5ce;">, UserHandle </span><span style="color:#bf616a;">user</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
  String </span><span style="color:#bf616a;">installerPackageName</span><span style="color:#c0c5ce;">, PackageInstalledInfo </span><span style="color:#bf616a;">res</span><span style="color:#c0c5ce;">)</span><span style="color:#c0c5ce;">
-</span></pre>
+</span></code></pre>
 <p>终于到了 installnewPackage 了</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">private </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">installNewPackageLI</span><span style="color:#c0c5ce;">(PackageParser.</span><span style="color:#bf616a;">Package pkg</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
+<code><span style="color:#c0c5ce;">private </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">installNewPackageLI</span><span style="color:#c0c5ce;">(PackageParser.</span><span style="color:#bf616a;">Package pkg</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
 </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">parseFlags</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">scanMode</span><span style="color:#c0c5ce;">, UserHandle </span><span style="color:#bf616a;">user</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
 String </span><span style="color:#bf616a;">installerPackageName</span><span style="color:#c0c5ce;">, PackageInstalledInfo </span><span style="color:#bf616a;">res</span><span style="color:#c0c5ce;">)</span><span style="color:#c0c5ce;">
 </span><span style="color:#c0c5ce;">
 </span><span style="color:#c0c5ce;">
 private PackageParser.</span><span style="color:#bf616a;">Package scanPackageLI</span><span style="color:#c0c5ce;">(File scanFile,</span><span style="color:#c0c5ce;">
  </span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;"> parseFlags, </span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;"> scanMode, </span><span style="color:#b48ead;">long</span><span style="color:#c0c5ce;"> currentTime, UserHandle user)</span><span style="color:#c0c5ce;">
-</span></pre>
+</span></code></pre>
 <p>然后调用了 </p>
 <pre style="background-color:#2b303b;">
-<span style="color:#65737e;">// Note that we invoke the following method only if we are about to unpack an application</span><span style="color:#65737e;">
+<code><span style="color:#65737e;">// Note that we invoke the following method only if we are about to unpack an application</span><span style="color:#65737e;">
 </span><span style="color:#c0c5ce;"> PackageParser.</span><span style="color:#bf616a;">Package</span><span style="color:#c0c5ce;"> scannedPkg = </span><span style="color:#bf616a;">scanPackageLI</span><span style="color:#c0c5ce;">(pkg, parseFlags, scanMode</span><span style="color:#c0c5ce;">
  | SCAN_UPDATE_SIGNATURE, currentTime, user);</span><span style="color:#c0c5ce;">
-</span></pre>
+</span></code></pre>
 <p>其中有</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#65737e;">//invoke installer to do the actual installation</span><span style="color:#65737e;">
+<code><span style="color:#65737e;">//invoke installer to do the actual installation</span><span style="color:#65737e;">
  </span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;"> ret = </span><span style="color:#bf616a;">createDataDirsLI</span><span style="color:#c0c5ce;">(pkgName, pkg.</span><span style="color:#bf616a;">applicationInfo</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">uid</span><span style="color:#c0c5ce;">);</span><span style="color:#c0c5ce;">
 </span><span style="color:#c0c5ce;">
 </span><span style="color:#c0c5ce;">
@@ -256,10 +254,10 @@ private PackageParser.</span><span style="color:#bf616a;">Package scanPackageLI<
  </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> null;</span><span style="color:#c0c5ce;">
  }</span><span style="color:#c0c5ce;">
  }</span><span style="color:#c0c5ce;">
-</span></pre>
+</span></code></pre>
 <p>先看scanPackageLI </p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">private </span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">createDataDirsLI</span><span style="color:#c0c5ce;">(String </span><span style="color:#bf616a;">packageName</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">uid</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
+<code><span style="color:#c0c5ce;">private </span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">createDataDirsLI</span><span style="color:#c0c5ce;">(String </span><span style="color:#bf616a;">packageName</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">uid</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
  </span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;">[] users = </span><span style="color:#bf616a;">sUserManager</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">getUserIds</span><span style="color:#c0c5ce;">();</span><span style="color:#c0c5ce;">
  </span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;"> res = mInstaller.</span><span style="color:#bf616a;">install</span><span style="color:#c0c5ce;">(packageName, uid, uid);</span><span style="color:#c0c5ce;">
  </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(res &lt; </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
@@ -276,11 +274,11 @@ private PackageParser.</span><span style="color:#bf616a;">Package scanPackageLI<
  }</span><span style="color:#c0c5ce;">
  </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> res;</span><span style="color:#c0c5ce;">
  }</span><span style="color:#c0c5ce;">
-</span></pre>
+</span></code></pre>
 <p>mInstaller.install()  出现了<br />
 再看performDexOptLI()</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">private </span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">performDexOptLI</span><span style="color:#c0c5ce;">(PackageParser.</span><span style="color:#bf616a;">Package pkg</span><span style="color:#c0c5ce;">, boolean </span><span style="color:#bf616a;">forceDex</span><span style="color:#c0c5ce;">, boolean </span><span style="color:#bf616a;">defer</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
+<code><span style="color:#c0c5ce;">private </span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">performDexOptLI</span><span style="color:#c0c5ce;">(PackageParser.</span><span style="color:#bf616a;">Package pkg</span><span style="color:#c0c5ce;">, boolean </span><span style="color:#bf616a;">forceDex</span><span style="color:#c0c5ce;">, boolean </span><span style="color:#bf616a;">defer</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
  boolean performed = </span><span style="color:#d08770;">false</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
  </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">((pkg.</span><span style="color:#bf616a;">applicationInfo</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">flags</span><span style="color:#c0c5ce;">&amp;ApplicationInfo.</span><span style="color:#bf616a;">FLAG_HAS_CODE</span><span style="color:#c0c5ce;">) != </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
  String path = pkg.</span><span style="color:#bf616a;">mScanPath</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
@@ -318,12 +316,12 @@ private PackageParser.</span><span style="color:#bf616a;">Package scanPackageLI<
  }</span><span style="color:#c0c5ce;">
  </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> performed ? DEX_OPT_PERFORMED : DEX_OPT_SKIPPED;</span><span style="color:#c0c5ce;">
  }</span><span style="color:#c0c5ce;">
-</span></pre>
+</span></code></pre>
 <p>mInstaller.dexopt() 终于也找出来了<br />
 PackageManagerService通过socket访问installd的服务进程，而installd的服务是在init进程里被启动的。继续看
 frameworks/base/cmds/installd/installd.c</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">const int </span><span style="color:#bf616a;">argc</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">const char </span><span style="color:#c0c5ce;">*</span><span style="color:#bf616a;">argv</span><span style="color:#c0c5ce;">[]) {</span><span style="color:#c0c5ce;">
+<code><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">const int </span><span style="color:#bf616a;">argc</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">const char </span><span style="color:#c0c5ce;">*</span><span style="color:#bf616a;">argv</span><span style="color:#c0c5ce;">[]) {</span><span style="color:#c0c5ce;">
  </span><span style="color:#b48ead;">char</span><span style="color:#c0c5ce;"> buf[BUFFER_MAX];</span><span style="color:#c0c5ce;">
  </span><span style="color:#b48ead;">struct</span><span style="color:#c0c5ce;"> sockaddr addr;</span><span style="color:#c0c5ce;">
  socklen_t alen;</span><span style="color:#c0c5ce;">
@@ -377,10 +375,10 @@ frameworks/base/cmds/installd/installd.c</p>
  }</span><span style="color:#c0c5ce;">
  </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
 }</span><span style="color:#c0c5ce;">
-</span></pre>
+</span></code></pre>
 <p>接收的命令: </p>
 <pre style="background-color:#2b303b;">
-<span style="color:#b48ead;">struct </span><span style="color:#c0c5ce;">cmdinfo {</span><span style="color:#c0c5ce;">
+<code><span style="color:#b48ead;">struct </span><span style="color:#c0c5ce;">cmdinfo {</span><span style="color:#c0c5ce;">
  </span><span style="color:#b48ead;">const char </span><span style="color:#c0c5ce;">*name;</span><span style="color:#c0c5ce;">
  </span><span style="color:#b48ead;">unsigned</span><span style="color:#c0c5ce;"> numargs;</span><span style="color:#c0c5ce;">
  </span><span style="color:#b48ead;">int </span><span style="color:#c0c5ce;">(*func)(</span><span style="color:#b48ead;">char </span><span style="color:#c0c5ce;">**arg, </span><span style="color:#b48ead;">char</span><span style="color:#c0c5ce;"> reply[REPLY_MAX]);</span><span style="color:#c0c5ce;">
@@ -405,10 +403,10 @@ frameworks/base/cmds/installd/installd.c</p>
  { &quot;</span><span style="color:#a3be8c;">rmuser</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">, do_rm_user },</span><span style="color:#c0c5ce;">
  { &quot;</span><span style="color:#a3be8c;">cloneuserdata</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#d08770;">3</span><span style="color:#c0c5ce;">, do_clone_user_data },</span><span style="color:#c0c5ce;">
 };</span><span style="color:#c0c5ce;">
-</span></pre>
+</span></code></pre>
 <p>比如</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#b48ead;">static int </span><span style="color:#8fa1b3;">do_install</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">char </span><span style="color:#c0c5ce;">**</span><span style="color:#bf616a;">arg</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">char </span><span style="color:#bf616a;">reply</span><span style="color:#c0c5ce;">[REPLY_MAX])</span><span style="color:#c0c5ce;">
+<code><span style="color:#b48ead;">static int </span><span style="color:#8fa1b3;">do_install</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">char </span><span style="color:#c0c5ce;">**</span><span style="color:#bf616a;">arg</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">char </span><span style="color:#bf616a;">reply</span><span style="color:#c0c5ce;">[REPLY_MAX])</span><span style="color:#c0c5ce;">
 {</span><span style="color:#c0c5ce;">
  </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">install</span><span style="color:#c0c5ce;">(arg[</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">], </span><span style="color:#96b5b4;">atoi</span><span style="color:#c0c5ce;">(arg[</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">]), </span><span style="color:#96b5b4;">atoi</span><span style="color:#c0c5ce;">(arg[</span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">])); </span><span style="color:#65737e;">/* pkgname, uid, gid */</span><span style="color:#c0c5ce;">
 }</span><span style="color:#c0c5ce;">
@@ -417,10 +415,10 @@ frameworks/base/cmds/installd/installd.c</p>
  </span><span style="color:#65737e;">/* apk_path, uid, is_public */</span><span style="color:#c0c5ce;">
  </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">dexopt</span><span style="color:#c0c5ce;">(arg[</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">], </span><span style="color:#96b5b4;">atoi</span><span style="color:#c0c5ce;">(arg[</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">]), </span><span style="color:#96b5b4;">atoi</span><span style="color:#c0c5ce;">(arg[</span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">]));</span><span style="color:#c0c5ce;">
 }</span><span style="color:#c0c5ce;">
-</span></pre>
+</span></code></pre>
 <p>frameworks/base/cmds/installd/commands.c</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">install</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">const char </span><span style="color:#c0c5ce;">*</span><span style="color:#bf616a;">pkgname</span><span style="color:#c0c5ce;">, uid_t </span><span style="color:#bf616a;">uid</span><span style="color:#c0c5ce;">, gid_t </span><span style="color:#bf616a;">gid</span><span style="color:#c0c5ce;">)</span><span style="color:#c0c5ce;">
+<code><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">install</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">const char </span><span style="color:#c0c5ce;">*</span><span style="color:#bf616a;">pkgname</span><span style="color:#c0c5ce;">, uid_t </span><span style="color:#bf616a;">uid</span><span style="color:#c0c5ce;">, gid_t </span><span style="color:#bf616a;">gid</span><span style="color:#c0c5ce;">)</span><span style="color:#c0c5ce;">
 {</span><span style="color:#c0c5ce;">
  </span><span style="color:#b48ead;">char</span><span style="color:#c0c5ce;"> pkgdir[PKG_PATH_MAX];</span><span style="color:#c0c5ce;">
  </span><span style="color:#b48ead;">char</span><span style="color:#c0c5ce;"> libdir[PKG_PATH_MAX];</span><span style="color:#c0c5ce;">
@@ -469,7 +467,7 @@ frameworks/base/cmds/installd/installd.c</p>
  }</span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">
  </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
 }</span><span style="color:#c0c5ce;">
-</span></pre>
+</span></code></pre>
 <p>adb pm -r install xxx.apk 的流程跟踪结束。</p>
 <p><strong>再来看看MultiDex.install（）的流程：</strong> </p>
 <p>android.support.multidex.MultiDex.V14#install()<br />
@@ -478,7 +476,7 @@ android.support.multidex.MultiDex.V14#makeDexElements();<br />
 该方法就是调用dex = loadDexFile(file, optimizedDirectory);<br />
 看看 loadDexFile </p>
 <pre style="background-color:#2b303b;">
-<span style="color:#65737e;">/**</span><span style="color:#65737e;">
+<code><span style="color:#65737e;">/**</span><span style="color:#65737e;">
 </span><span style="color:#65737e;">* Constructs a {@code DexFile} instance, as appropriate depending</span><span style="color:#65737e;">
 </span><span style="color:#65737e;">* on whether {@code optimizedDirectory} is {@code null}.</span><span style="color:#65737e;">
 </span><span style="color:#65737e;">*/</span><span style="color:#c0c5ce;">
@@ -491,25 +489,25 @@ android.support.multidex.MultiDex.V14#makeDexElements();<br />
 </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> DexFile.</span><span style="color:#bf616a;">loadDex</span><span style="color:#c0c5ce;">(file.</span><span style="color:#bf616a;">getPath</span><span style="color:#c0c5ce;">(), optimizedPath, </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">);</span><span style="color:#c0c5ce;">
 </span><span style="color:#c0c5ce;">}</span><span style="color:#c0c5ce;">
 </span><span style="color:#c0c5ce;">}</span><span style="color:#c0c5ce;">
-</span></pre>
+</span></code></pre>
 <p>第一次load dex文件的时候  是 optimizedDirectory 空的 。
 进入 return new DexFile(file); 的分支。</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#65737e;">/*</span><span style="color:#65737e;">
+<code><span style="color:#65737e;">/*</span><span style="color:#65737e;">
 * Open a DEX file. The value returned is a magic VM cookie. On</span><span style="color:#65737e;">
 * failure, an IOException is thrown.</span><span style="color:#65737e;">
 */</span><span style="color:#c0c5ce;">
 native private </span><span style="color:#b48ead;">static int </span><span style="color:#8fa1b3;">openDexFile</span><span style="color:#c0c5ce;">(String </span><span style="color:#bf616a;">sourceName</span><span style="color:#c0c5ce;">, String </span><span style="color:#bf616a;">outputName</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
 </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">flags</span><span style="color:#c0c5ce;">) throws IOException;</span><span style="color:#c0c5ce;">
-</span></pre>
+</span></code></pre>
 <p>进入native层代码openDexFile()</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#b48ead;">static void </span><span style="color:#8fa1b3;">Dalvik_dalvik_system_DexFile_openDexFile</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">const</span><span style="color:#c0c5ce;"> u4* </span><span style="color:#bf616a;">args</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
+<code><span style="color:#b48ead;">static void </span><span style="color:#8fa1b3;">Dalvik_dalvik_system_DexFile_openDexFile</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">const</span><span style="color:#c0c5ce;"> u4* </span><span style="color:#bf616a;">args</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
 JValue* </span><span style="color:#bf616a;">pResult</span><span style="color:#c0c5ce;">)</span><span style="color:#c0c5ce;">
-</span></pre>
+</span></code></pre>
 <p>该方法比较长 主要是调用了dvmJarFileOpen()方法，在 android/dalvik/vm/JarFile.cpp</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#65737e;">/*</span><span style="color:#65737e;">
+<code><span style="color:#65737e;">/*</span><span style="color:#65737e;">
  * Open a Jar file. It&#39;s okay if it&#39;s just a Zip archive without all of</span><span style="color:#65737e;">
  * the Jar trimmings, but we do insist on finding &quot;classes.dex&quot; inside</span><span style="color:#65737e;">
  * or an appropriately-named &quot;.odex&quot; file alongside.</span><span style="color:#65737e;">
@@ -678,19 +676,19 @@ bail:</span><span style="color:#c0c5ce;">
  }</span><span style="color:#c0c5ce;">
  </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> result;</span><span style="color:#c0c5ce;">
 }</span><span style="color:#c0c5ce;">
-</span></pre>
+</span></code></pre>
 <p>其中 , 执行了dvmOpenCachedDexFile（）后 newFile 为true 。 会执行</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">result = </span><span style="color:#bf616a;">dvmOptimizeDexFile</span><span style="color:#c0c5ce;">(fd, dexOffset,</span><span style="color:#c0c5ce;">
+<code><span style="color:#c0c5ce;">result = </span><span style="color:#bf616a;">dvmOptimizeDexFile</span><span style="color:#c0c5ce;">(fd, dexOffset,</span><span style="color:#c0c5ce;">
  </span><span style="color:#bf616a;">dexGetZipEntryUncompLen</span><span style="color:#c0c5ce;">(&amp;archive, entry),</span><span style="color:#c0c5ce;">
  fileName,</span><span style="color:#c0c5ce;">
  </span><span style="color:#bf616a;">dexGetZipEntryModTime</span><span style="color:#c0c5ce;">(&amp;archive, entry),</span><span style="color:#c0c5ce;">
  </span><span style="color:#bf616a;">dexGetZipEntryCrc32</span><span style="color:#c0c5ce;">(&amp;archive, entry),</span><span style="color:#c0c5ce;">
  isBootstrap);</span><span style="color:#c0c5ce;">
-</span></pre>
+</span></code></pre>
 <p>这里调用了 /dalvik/vm/RawDexFile.cpp  中的 dvmOptimizeDexFile()方法</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#65737e;">/*</span><span style="color:#65737e;">
+<code><span style="color:#65737e;">/*</span><span style="color:#65737e;">
  * Given a descriptor for a file with DEX data in it, produce an</span><span style="color:#65737e;">
  * optimized version.</span><span style="color:#65737e;">
  *</span><span style="color:#65737e;">
@@ -852,7 +850,7 @@ bail:</span><span style="color:#c0c5ce;">
  }</span><span style="color:#c0c5ce;">
  }</span><span style="color:#c0c5ce;">
 }</span><span style="color:#c0c5ce;">
-</span></pre>
+</span></code></pre>
 <p>终于找到 ALOGD(&quot;DexOpt: --- BEGIN '%s' (bootstrap=%d) ---&quot;, lastPart, isBootstrap); 这句日志的出处了！</p>
 <p>该方法的注释写的也比较详细了，其中pid=fork(); 表明dexopt确实开启了新的进程来完成，而且当前进程是使用while循环等待这个子进程返回结果的。</p>
 <p>那么之前关于dexopt的所有疑惑都解开了。</p>

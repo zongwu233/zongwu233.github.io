@@ -10,8 +10,6 @@
       <title> - 最简单的内网导航网站</title>
 
       
-        <link rel="alternate" type="application/rss+xml" title="RSS" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">
-      
 
       
           <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
@@ -139,18 +137,18 @@
 我们需要一个超简单的导航网站。</p>
 <p>如何最简单地实现一个静态的网站？不要任何多余的东西。</p>
 <p>最好几行代码实现服务，向外提供一个html文件访问服务。新增内容时候，只需要添加到html文件即可。</p>
-<p id="zola-continue-reading"><a name="continue-reading"></a></p>
+<span id="continue-reading"></span>
 <p>这时候就要介绍一下python3的HTTP server。</p>
 <p>在控制台执行：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">python -m http.server
-</span></pre>
+<code><span style="color:#c0c5ce;">python -m http.server
+</span></code></pre>
 <p>就可以看到<code>Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) …</code>  ，python启动了一个http server端口默认是8000。访问<code>loalhost:8000</code>可以看到当前目录的文件列表。</p>
 <p>我们就通过pyhton 的http server 来实现这个最简单的内网导航。</p>
 <p>小项目就叫my123吧，项目只有2个文件，server.py和index.html。</p>
 <p>服务代码<code>server.py</code>很简单：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#65737e;">#coding=utf-8
+<code><span style="color:#65737e;">#coding=utf-8
 
 </span><span style="color:#b48ead;">from </span><span style="color:#c0c5ce;">http.server </span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">HTTPServer, BaseHTTPRequestHandler
 </span><span style="color:#b48ead;">from </span><span style="color:#c0c5ce;">os </span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">curdir, sep
@@ -167,11 +165,11 @@
 
 server = </span><span style="color:#bf616a;">HTTPServer</span><span style="color:#c0c5ce;">((&#39;</span><span style="color:#a3be8c;">0.0.0.0</span><span style="color:#c0c5ce;">&#39;, </span><span style="color:#d08770;">8123</span><span style="color:#c0c5ce;">), MyRequestHandler)
 server.</span><span style="color:#bf616a;">serve_forever</span><span style="color:#c0c5ce;">()
-</span></pre>
+</span></code></pre>
 <p>主要逻辑就有访问<code>/index.html</code>或者<code>/</code>的时候，读取当前目录下的index.html文件，将内容返回。</p>
 <p>index.html文件的内容：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">&lt;</span><span style="color:#bf616a;">html</span><span style="color:#c0c5ce;">&gt;
+<code><span style="color:#c0c5ce;">&lt;</span><span style="color:#bf616a;">html</span><span style="color:#c0c5ce;">&gt;
 
 &lt;</span><span style="color:#bf616a;">head</span><span style="color:#c0c5ce;">&gt;
       &lt;</span><span style="color:#bf616a;">meta </span><span style="color:#d08770;">charset</span><span style="color:#c0c5ce;">=&quot;</span><span style="color:#a3be8c;">UTF-8</span><span style="color:#c0c5ce;">&quot;&gt;
@@ -194,12 +192,12 @@ server.</span><span style="color:#bf616a;">serve_forever</span><span style="colo
 
 &lt;/</span><span style="color:#bf616a;">body</span><span style="color:#c0c5ce;">&gt;
 &lt;/</span><span style="color:#bf616a;">html</span><span style="color:#c0c5ce;">&gt;
-</span></pre>
+</span></code></pre>
 <p>就是简单的html内容，连CSS都没有。简单粗暴。</p>
 <p>调用命令启动：</p>
 <pre style="background-color:#2b303b;">
-<span style="color:#c0c5ce;">python server.py
-</span></pre>
+<code><span style="color:#c0c5ce;">python server.py
+</span></code></pre>
 <p>搞定。</p>
 
     </div>
