@@ -30,7 +30,19 @@
         <loc>https://blog.zongwu233.com/categories/blog/</loc>
     </url>
     <url>
+        <loc>https://blog.zongwu233.com/categories/blog/page/1/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/categories/blog/page/2/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/categories/blog/page/3/</loc>
+    </url>
+    <url>
         <loc>https://blog.zongwu233.com/categories/mental/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/categories/mental/page/1/</loc>
     </url>
     <url>
         <loc>https://blog.zongwu233.com/consistency-models/</loc>
@@ -71,6 +83,10 @@
     <url>
         <loc>https://blog.zongwu233.com/high-performance-olap/</loc>
         <lastmod>2018-07-29</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/inventing-on-principle/</loc>
+        <lastmod>2020-12-20</lastmod>
     </url>
     <url>
         <loc>https://blog.zongwu233.com/kolla-ansible-deploy-all-in-one-mode-openstack-stein-version/</loc>
@@ -123,112 +139,259 @@
         <loc>https://blog.zongwu233.com/tags/ansible/</loc>
     </url>
     <url>
+        <loc>https://blog.zongwu233.com/tags/ansible/page/1/</loc>
+    </url>
+    <url>
         <loc>https://blog.zongwu233.com/tags/api/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/api/page/1/</loc>
     </url>
     <url>
         <loc>https://blog.zongwu233.com/tags/bian-cheng-yu-yan/</loc>
     </url>
     <url>
+        <loc>https://blog.zongwu233.com/tags/bian-cheng-yu-yan/page/1/</loc>
+    </url>
+    <url>
         <loc>https://blog.zongwu233.com/tags/cli/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/cli/page/1/</loc>
     </url>
     <url>
         <loc>https://blog.zongwu233.com/tags/consul/</loc>
     </url>
     <url>
+        <loc>https://blog.zongwu233.com/tags/consul/page/1/</loc>
+    </url>
+    <url>
         <loc>https://blog.zongwu233.com/tags/duo-ban-ben-guan-li/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/duo-ban-ben-guan-li/page/1/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/fan-yi/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/fan-yi/page/1/</loc>
     </url>
     <url>
         <loc>https://blog.zongwu233.com/tags/fen-bu-shi-xi-tong/</loc>
     </url>
     <url>
+        <loc>https://blog.zongwu233.com/tags/fen-bu-shi-xi-tong/page/1/</loc>
+    </url>
+    <url>
         <loc>https://blog.zongwu233.com/tags/git/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/git/page/1/</loc>
     </url>
     <url>
         <loc>https://blog.zongwu233.com/tags/gong-ju/</loc>
     </url>
     <url>
+        <loc>https://blog.zongwu233.com/tags/gong-ju/page/1/</loc>
+    </url>
+    <url>
         <loc>https://blog.zongwu233.com/tags/hei-xiang-xi-tong/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/hei-xiang-xi-tong/page/1/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/ji-shi-fan-kui/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/ji-shi-fan-kui/page/1/</loc>
     </url>
     <url>
         <loc>https://blog.zongwu233.com/tags/jia-gou-feng-ge/</loc>
     </url>
     <url>
+        <loc>https://blog.zongwu233.com/tags/jia-gou-feng-ge/page/1/</loc>
+    </url>
+    <url>
         <loc>https://blog.zongwu233.com/tags/jia-gou/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/jia-gou/page/1/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/ke-shi-hua/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/ke-shi-hua/page/1/</loc>
     </url>
     <url>
         <loc>https://blog.zongwu233.com/tags/ke-xue-fang-fa-lun/</loc>
     </url>
     <url>
+        <loc>https://blog.zongwu233.com/tags/ke-xue-fang-fa-lun/page/1/</loc>
+    </url>
+    <url>
         <loc>https://blog.zongwu233.com/tags/ke-xue-shang-wang/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/ke-xue-shang-wang/page/1/</loc>
     </url>
     <url>
         <loc>https://blog.zongwu233.com/tags/kolla-ansible/</loc>
     </url>
     <url>
+        <loc>https://blog.zongwu233.com/tags/kolla-ansible/page/1/</loc>
+    </url>
+    <url>
         <loc>https://blog.zongwu233.com/tags/macos/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/macos/page/1/</loc>
     </url>
     <url>
         <loc>https://blog.zongwu233.com/tags/mio/</loc>
     </url>
     <url>
+        <loc>https://blog.zongwu233.com/tags/mio/page/1/</loc>
+    </url>
+    <url>
         <loc>https://blog.zongwu233.com/tags/nei-cun-guan-li/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/nei-cun-guan-li/page/1/</loc>
     </url>
     <url>
         <loc>https://blog.zongwu233.com/tags/openstack/</loc>
     </url>
     <url>
+        <loc>https://blog.zongwu233.com/tags/openstack/page/1/</loc>
+    </url>
+    <url>
         <loc>https://blog.zongwu233.com/tags/proxy/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/proxy/page/1/</loc>
     </url>
     <url>
         <loc>https://blog.zongwu233.com/tags/rest/</loc>
     </url>
     <url>
+        <loc>https://blog.zongwu233.com/tags/rest/page/1/</loc>
+    </url>
+    <url>
         <loc>https://blog.zongwu233.com/tags/restful/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/restful/page/1/</loc>
     </url>
     <url>
         <loc>https://blog.zongwu233.com/tags/ruan-jian-gong-cheng/</loc>
     </url>
     <url>
+        <loc>https://blog.zongwu233.com/tags/ruan-jian-gong-cheng/page/1/</loc>
+    </url>
+    <url>
         <loc>https://blog.zongwu233.com/tags/ruan-jian/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/ruan-jian/page/1/</loc>
     </url>
     <url>
         <loc>https://blog.zongwu233.com/tags/rust/</loc>
     </url>
     <url>
+        <loc>https://blog.zongwu233.com/tags/rust/page/1/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/shi-jie-guan/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/shi-jie-guan/page/1/</loc>
+    </url>
+    <url>
         <loc>https://blog.zongwu233.com/tags/shi-yong/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/shi-yong/page/1/</loc>
     </url>
     <url>
         <loc>https://blog.zongwu233.com/tags/ssh/</loc>
     </url>
     <url>
+        <loc>https://blog.zongwu233.com/tags/ssh/page/1/</loc>
+    </url>
+    <url>
         <loc>https://blog.zongwu233.com/tags/stein/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/stein/page/1/</loc>
     </url>
     <url>
         <loc>https://blog.zongwu233.com/tags/suo-you-quan/</loc>
     </url>
     <url>
+        <loc>https://blog.zongwu233.com/tags/suo-you-quan/page/1/</loc>
+    </url>
+    <url>
         <loc>https://blog.zongwu233.com/tags/webfu-wu-jia-gou/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/webfu-wu-jia-gou/page/1/</loc>
     </url>
     <url>
         <loc>https://blog.zongwu233.com/tags/wei-fu-wu/</loc>
     </url>
     <url>
+        <loc>https://blog.zongwu233.com/tags/wei-fu-wu/page/1/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/xiang-fa/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/xiang-fa/page/1/</loc>
+    </url>
+    <url>
         <loc>https://blog.zongwu233.com/tags/xin-xi-lun/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/xin-xi-lun/page/1/</loc>
     </url>
     <url>
         <loc>https://blog.zongwu233.com/tags/xin-xi-shang/</loc>
     </url>
     <url>
+        <loc>https://blog.zongwu233.com/tags/xin-xi-shang/page/1/</loc>
+    </url>
+    <url>
         <loc>https://blog.zongwu233.com/tags/yi-zhi-xing/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/yi-zhi-xing/page/1/</loc>
     </url>
     <url>
         <loc>https://blog.zongwu233.com/tags/yuan-li/</loc>
     </url>
     <url>
+        <loc>https://blog.zongwu233.com/tags/yuan-li/page/1/</loc>
+    </url>
+    <url>
         <loc>https://blog.zongwu233.com/tags/yuan-ma-fen-xi/</loc>
     </url>
     <url>
+        <loc>https://blog.zongwu233.com/tags/yuan-ma-fen-xi/page/1/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/yuan-ze/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/yuan-ze/page/1/</loc>
+    </url>
+    <url>
         <loc>https://blog.zongwu233.com/tags/zhuan-hua-si-wei/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/zhuan-hua-si-wei/page/1/</loc>
     </url>
     <url>
         <loc>https://blog.zongwu233.com/talk-about-rust-ownership/</loc>

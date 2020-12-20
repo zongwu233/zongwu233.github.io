@@ -1,13 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title></title>
+        <title>zongwu&#x27;s blog</title>
         <link>https://blog.zongwu233.com</link>
         <description></description>
         <generator>Zola</generator>
         <language>en</language>
         <atom:link href="https://blog.zongwu233.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <lastBuildDate>Wed, 09 Dec 2020 00:00:00 +0000</lastBuildDate>
+        <lastBuildDate>Sun, 20 Dec 2020 00:00:00 +0000</lastBuildDate>
+        <item>
+            <title>[翻译]发明原则(inventing on principle)</title>
+            <pubDate>Sun, 20 Dec 2020 00:00:00 +0000</pubDate>
+            <link>https://blog.zongwu233.com/inventing-on-principle/</link>
+            <guid>https://blog.zongwu233.com/inventing-on-principle/</guid>
+            <description>&lt;blockquote&gt;
+&lt;p&gt;找到并遵循你自己的原则。&lt;&#x2F;p&gt;
+&lt;p&gt;持续地去解决工作生活中违背这些原则的事情，优秀的工具或者产品，不过是这个过程的副作用。&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h2 id=&quot;bei-jing&quot;&gt;背景&lt;&#x2F;h2&gt;
+&lt;p&gt;该演讲最初由Bret Victor在CUSEC(Canadian University Software Engineering Conference) 2012上发表&lt;sup class=&quot;footnote-reference&quot;&gt;&lt;a href=&quot;#1&quot;&gt;1&lt;&#x2F;a&gt;&lt;&#x2F;sup&gt;。&lt;&#x2F;p&gt;
+</description>
+        </item>
         <item>
             <title>至今我们仍未得知那些平行宇宙里的小白鼠们是否懂得信息论</title>
             <pubDate>Wed, 09 Dec 2020 00:00:00 +0000</pubDate>
