@@ -39,6 +39,9 @@
         <loc>https://blog.zongwu233.com/categories/blog/page/3/</loc>
     </url>
     <url>
+        <loc>https://blog.zongwu233.com/categories/blog/page/4/</loc>
+    </url>
+    <url>
         <loc>https://blog.zongwu233.com/categories/mental/</loc>
     </url>
     <url>
@@ -125,6 +128,10 @@
         <lastmod>2019-10-30</lastmod>
     </url>
     <url>
+        <loc>https://blog.zongwu233.com/rust-string-relations/</loc>
+        <lastmod>2020-12-26</lastmod>
+    </url>
+    <url>
         <loc>https://blog.zongwu233.com/severe-info-reading/</loc>
         <lastmod>2017-05-11</lastmod>
     </url>
@@ -152,6 +159,12 @@
     </url>
     <url>
         <loc>https://blog.zongwu233.com/tags/bian-cheng-yu-yan/page/1/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/chars/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/chars/page/1/</loc>
     </url>
     <url>
         <loc>https://blog.zongwu233.com/tags/cli/</loc>
@@ -268,6 +281,12 @@
         <loc>https://blog.zongwu233.com/tags/openstack/page/1/</loc>
     </url>
     <url>
+        <loc>https://blog.zongwu233.com/tags/program-language/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/program-language/page/1/</loc>
+    </url>
+    <url>
         <loc>https://blog.zongwu233.com/tags/proxy/</loc>
     </url>
     <url>
@@ -314,6 +333,12 @@
     </url>
     <url>
         <loc>https://blog.zongwu233.com/tags/shi-yong/page/1/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/slice/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/slice/page/1/</loc>
     </url>
     <url>
         <loc>https://blog.zongwu233.com/tags/ssh/</loc>
