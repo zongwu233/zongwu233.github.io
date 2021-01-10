@@ -16,7 +16,8 @@
             <description>&lt;h2 id=&quot;lian-xi-ti&quot;&gt;练习题&lt;&#x2F;h2&gt;
 &lt;p&gt;&lt;code&gt;codewars&lt;&#x2F;code&gt;上有一道题：&lt;&#x2F;p&gt;
 &lt;blockquote&gt;
-&lt;p&gt;This time no story, no theory. The examples below show you how to write function &lt;code&gt;accum&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;p&gt;This time no story, no theory. &lt;&#x2F;p&gt;
+&lt;p&gt;The examples below show you how to write function &lt;code&gt;accum&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;strong&gt;Examples:&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
 &lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
 &lt;code&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;accum&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;abcd&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;) -&amp;gt; &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;A-Bb-Ccc-Dddd&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;
@@ -25,7 +26,8 @@
 &lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
 &lt;p&gt;The parameter of accum is a string which includes only letters from &lt;code&gt;a..z&lt;&#x2F;code&gt; and &lt;code&gt;A..Z&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
 &lt;&#x2F;blockquote&gt;
-&lt;p&gt;题目本身很简单，大体思路是：对于入参，转变成字符列表，然后对每个字符进行&lt;code&gt;repeat&lt;&#x2F;code&gt; m 次，m就等于该字符在字符串的index，（&lt;code&gt;repeat &lt;&#x2F;code&gt;结果的首字母大写），最后使用&lt;code&gt;-&lt;&#x2F;code&gt;将这些结果&lt;code&gt;join&lt;&#x2F;code&gt;起来就完成了。&lt;&#x2F;p&gt;
+&lt;p&gt;要求实现&lt;code&gt;accum()&lt;&#x2F;code&gt;。&lt;&#x2F;p&gt;
+&lt;p&gt;题目本身不难，大体思路是：对于入参，转变成字符列表，然后对每个字符进行&lt;code&gt;repeat&lt;&#x2F;code&gt; m 次，m就等于该字符在字符串的index，（&lt;code&gt;repeat &lt;&#x2F;code&gt;结果的首字母大写），最后使用&lt;code&gt;-&lt;&#x2F;code&gt;将这些结果&lt;code&gt;join&lt;&#x2F;code&gt;起来就完成了。&lt;&#x2F;p&gt;
 &lt;p&gt;对于&lt;code&gt;str&lt;&#x2F;code&gt;有个&lt;code&gt;chars()&lt;&#x2F;code&gt;方法，文档说明：&lt;&#x2F;p&gt;
 &lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
 &lt;code&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;pub fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;chars&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;(&amp;amp;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;self&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;) -&amp;gt; Chars&amp;lt;&amp;#39;_&amp;gt;

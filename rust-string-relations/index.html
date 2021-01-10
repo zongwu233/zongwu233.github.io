@@ -57,7 +57,8 @@
         <h2 id="lian-xi-ti">练习题</h2>
 <p><code>codewars</code>上有一道题：</p>
 <blockquote>
-<p>This time no story, no theory. The examples below show you how to write function <code>accum</code>:</p>
+<p>This time no story, no theory. </p>
+<p>The examples below show you how to write function <code>accum</code>:</p>
 <p><strong>Examples:</strong></p>
 <pre style="background-color:#2b303b;">
 <code><span style="color:#96b5b4;">accum</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">abcd</span><span style="color:#c0c5ce;">&quot;) -&gt; &quot;</span><span style="color:#a3be8c;">A-Bb-Ccc-Dddd</span><span style="color:#c0c5ce;">&quot;
@@ -66,7 +67,8 @@
 </span></code></pre>
 <p>The parameter of accum is a string which includes only letters from <code>a..z</code> and <code>A..Z</code>.</p>
 </blockquote>
-<p>题目本身很简单，大体思路是：对于入参，转变成字符列表，然后对每个字符进行<code>repeat</code> m 次，m就等于该字符在字符串的index，（<code>repeat </code>结果的首字母大写），最后使用<code>-</code>将这些结果<code>join</code>起来就完成了。</p>
+<p>要求实现<code>accum()</code>。</p>
+<p>题目本身不难，大体思路是：对于入参，转变成字符列表，然后对每个字符进行<code>repeat</code> m 次，m就等于该字符在字符串的index，（<code>repeat </code>结果的首字母大写），最后使用<code>-</code>将这些结果<code>join</code>起来就完成了。</p>
 <p>对于<code>str</code>有个<code>chars()</code>方法，文档说明：</p>
 <pre style="background-color:#2b303b;">
 <code><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">chars</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; Chars&lt;&#39;_&gt;
