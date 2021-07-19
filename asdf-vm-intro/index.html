@@ -1,53 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="referrer" content="no-referrer-when-downgrade">
+    <head>
+        <meta charset="utf-8">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="referrer" content="no-referrer-when-downgrade">
 
-    <title>adsf-vm </title>
-    <meta name="description" content="">
+        <title>adsf-vm </title>
+        <meta name="description" content="">
 
-    <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
+        <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
 
-    
+        
         <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
-    
+        
 
-    
-    
-</head>
-<body>
-    <a class="skip-main" href="#main">Skip to content</a>
-    <div class="container">
-        <header> 
-            <h1 class="site-header">
-                <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
-            </h1>
-            <nav>
+        
+        
+
+    </head>
+    <body>
+        <a class="skip-main" href="#main">Skip to content</a>
+        <div class="container">
+            <header> 
+                <h1 class="site-header">
+                    <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
+                </h1>
+                <nav>
+                    
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
+                    
+                    
+                </nav>
+            </header>
+            <main id="main" tabindex="-1">
                 
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
-                
-                
-            </nav>
-        </header>
-        <main id="main" tabindex="-1">
-            
 
 <article class="post">
     <header>
@@ -69,64 +70,64 @@
 <p>参考官方文档即可。https://asdf-vm.com/#/core-manage-asdf-vm
 对于<code>macOS</code> 我是通过<code>brew</code>安装，比较简单：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">brew install coreutils curl git
+<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">brew install coreutils curl git
 brew install asdf
 </span></code></pre>
 <p>添加到<code>zsh</code>环境：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">echo -e &quot;\n. $(brew --prefix asdf)/asdf.sh&quot; &gt;&gt; ~/.zshrc
+<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">echo -e &quot;\n. $(brew --prefix asdf)/asdf.sh&quot; &gt;&gt; ~/.zshrc
 </span></code></pre>
 <p>搞定。</p>
 <h2 id="cha-jian-guan-li">插件管理</h2>
 <p>主要流程是：先添加插件，然后安装，设置当前使用的版本。就可以使用了。
 添加插件：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">asdf plugin add &lt;name&gt;
+<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">asdf plugin add &lt;name&gt;
 # asdf plugin add gradle
 </span></code></pre>
 <p>如果需要安装的插件不在当前插件库，也可以指定插件的仓库url:</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">asdf plugin add &lt;name&gt; &lt;git-url&gt;
+<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">asdf plugin add &lt;name&gt; &lt;git-url&gt;
 </span></code></pre>
 <p>查看当前添加的插件列表：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">asdf plugin list
+<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">asdf plugin list
 # asdf plugin list
 # java
 # nodejs
 </span></code></pre><pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">asdf plugin list --urls
+<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">asdf plugin list --urls
 # asdf plugin list
 # java            https://github.com/halcyon/asdf-java.git
 # nodejs          https://github.com/asdf-vm/asdf-nodejs.git
 </span></code></pre>
 <p>更新插件：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">asdf plugin update --all
+<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">asdf plugin update --all
 
 asdf plugin update &lt;name&gt;
 </span></code></pre>
 <p>移除一个插件：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">asdf plugin remove &lt;name&gt;
+<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">asdf plugin remove &lt;name&gt;
 </span></code></pre><h2 id="cha-jian-de-ban-ben-guan-li">插件的版本管理</h2>
 <p>查看插件库里所有可用的版本</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">asdf list all &lt;name&gt;
+<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">asdf list all &lt;name&gt;
 
 asdf list all &lt;name&gt; &lt;version&gt;
 </span></code></pre>
 <p>指定插件的版本安装：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">asdf install &lt;name&gt; &lt;version&gt;
+<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">asdf install &lt;name&gt; &lt;version&gt;
 </span></code></pre>
 <p>查看已经安装的插件版本：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">asdf list &lt;name&gt;
+<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">asdf list &lt;name&gt;
 </span></code></pre>
 <p>设置插件的当前版本：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">asdf global &lt;name&gt; &lt;version&gt; [&lt;version&gt;...]
+<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">asdf global &lt;name&gt; &lt;version&gt; [&lt;version&gt;...]
 asdf shell &lt;name&gt; &lt;version&gt; [&lt;version&gt;...]
 asdf local &lt;name&gt; &lt;version&gt; [&lt;version&gt;...]
 </span></code></pre>
@@ -135,13 +136,13 @@ asdf local &lt;name&gt; &lt;version&gt; [&lt;version&gt;...]
 <code>local</code> 会写入<code>$PWD/.tool-versions</code></p>
 <p>查看插件的当前版本</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">asdf current
+<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">asdf current
 
 asdf current &lt;name&gt;
 </span></code></pre>
 <p>卸载当前版本</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">asdf uninstall &lt;name&gt; &lt;version&gt;
+<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">asdf uninstall &lt;name&gt; &lt;version&gt;
 </span></code></pre><h2 id="shen-ru-cha-jian">深入插件</h2>
 <p>插件非常简单，就是一个git库。包含3个脚本，用于响应<code>list-all</code>, <code>install</code> 或者 <code>uninstall</code> 命令。</p>
 <ol>
@@ -185,16 +186,20 @@ asdf current &lt;name&gt;
 </article>
 
 
-        </main>
-        <footer>
-            <p>
+            </main>
+            <footer>
+                <p>
                 © zongwu&#x27;s blog 2015 - 2021<br>
-            </p>
-            <p>
+                </p>
+                <p>
                 
                 
-            </p>
-        </footer>
-    </div>
+                </p>
+            </footer>
+        </div>
+        <!--  add cnzz trace code  -->
+        
+                <script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1279242175'%3E
+        
 </body>
 </html>

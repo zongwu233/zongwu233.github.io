@@ -1,53 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="referrer" content="no-referrer-when-downgrade">
+    <head>
+        <meta charset="utf-8">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="referrer" content="no-referrer-when-downgrade">
 
-    <title>Consul+Registrator+Nginx方案的部署</title>
-    <meta name="description" content="">
+        <title>Consul+Registrator+Nginx方案的部署</title>
+        <meta name="description" content="">
 
-    <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
+        <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
 
-    
+        
         <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
-    
+        
 
-    
-    
-</head>
-<body>
-    <a class="skip-main" href="#main">Skip to content</a>
-    <div class="container">
-        <header> 
-            <h1 class="site-header">
-                <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
-            </h1>
-            <nav>
+        
+        
+
+    </head>
+    <body>
+        <a class="skip-main" href="#main">Skip to content</a>
+        <div class="container">
+            <header> 
+                <h1 class="site-header">
+                    <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
+                </h1>
+                <nav>
+                    
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
+                    
+                    
+                </nav>
+            </header>
+            <main id="main" tabindex="-1">
                 
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
-                
-                
-            </nav>
-        </header>
-        <main id="main" tabindex="-1">
-            
 
 <article class="post">
     <header>
@@ -74,7 +75,7 @@
 <p>阿里云的docker compose 不支持从文件中读取变量信息，无法一次性部署3个节点，只能一个个部署。</p>
 <p>对于192.168.0.223节点的docker-compose.yml ：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#bf616a;">version</span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">2</span><span style="color:#c0c5ce;">&#39;
+<code class="language-yaml" data-lang="yaml"><span style="color:#bf616a;">version</span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">2</span><span style="color:#c0c5ce;">&#39;
 </span><span style="color:#bf616a;">services</span><span style="color:#c0c5ce;">:
   </span><span style="color:#bf616a;">consul_server</span><span style="color:#c0c5ce;">:
     </span><span style="color:#bf616a;">image</span><span style="color:#c0c5ce;">:  </span><span style="color:#bf616a;">consul:latest
@@ -102,7 +103,7 @@ networks</span><span style="color:#c0c5ce;">:
 <p>可以启动该consul节点。</p>
 <p>对于 192.168.0.226 节点的docker-compose.yml ：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#bf616a;">version</span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">2</span><span style="color:#c0c5ce;">&#39; 
+<code class="language-yaml" data-lang="yaml"><span style="color:#bf616a;">version</span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">2</span><span style="color:#c0c5ce;">&#39; 
 </span><span style="color:#bf616a;">services</span><span style="color:#c0c5ce;">: 
   </span><span style="color:#bf616a;">consul_server</span><span style="color:#c0c5ce;">:
     </span><span style="color:#bf616a;">image</span><span style="color:#c0c5ce;">:  </span><span style="color:#bf616a;">consul:latest
@@ -127,7 +128,7 @@ networks</span><span style="color:#c0c5ce;">:
 <p><code>-retry-join=192.168.0.223</code>  表明该节点启动后（或者异常退出重启后）尝试加入<code>192.168.0.223 </code>的集群中。</p>
 <p>同样的对于 192.168.0.245 节点的docker-compose.yml ：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#bf616a;">version</span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">2</span><span style="color:#c0c5ce;">&#39;
+<code class="language-yaml" data-lang="yaml"><span style="color:#bf616a;">version</span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">2</span><span style="color:#c0c5ce;">&#39;
 </span><span style="color:#bf616a;">services</span><span style="color:#c0c5ce;">:
   </span><span style="color:#bf616a;">consul_server</span><span style="color:#c0c5ce;">:
     </span><span style="color:#bf616a;">image</span><span style="color:#c0c5ce;">:  </span><span style="color:#bf616a;">consul:latest
@@ -156,7 +157,7 @@ networks</span><span style="color:#c0c5ce;">:
 <p>并没有跟consul集群的docker compose 文件合并成一个文件， 因为consul集群一旦启动，基本上不需要重新部署。而``consul-template+Ngnix`可能后续会修改。</p>
 <p>对于192.168.0.223节点的docker-compose.yml ：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#bf616a;">version</span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">2</span><span style="color:#c0c5ce;">&#39;
+<code class="language-yaml" data-lang="yaml"><span style="color:#bf616a;">version</span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">2</span><span style="color:#c0c5ce;">&#39;
 </span><span style="color:#bf616a;">services</span><span style="color:#c0c5ce;">:
   </span><span style="color:#bf616a;">load_balancer</span><span style="color:#c0c5ce;">:
     </span><span style="color:#bf616a;">image</span><span style="color:#c0c5ce;">:  </span><span style="color:#bf616a;">registry.cn-hangzhou.aliyuncs.com/zongwu233/nginx-consul-template:v1.1
@@ -188,7 +189,7 @@ networks</span><span style="color:#c0c5ce;">:
 <p>对于<code>registrator</code>同样通过<code>external_links</code>链接到<code>consul_server</code>。</p>
 <p>对于192.168.0.226节点的docker-compose.yml ：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#bf616a;">version</span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">2</span><span style="color:#c0c5ce;">&#39; 
+<code class="language-yaml" data-lang="yaml"><span style="color:#bf616a;">version</span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">2</span><span style="color:#c0c5ce;">&#39; 
 </span><span style="color:#bf616a;">services</span><span style="color:#c0c5ce;">: 
   </span><span style="color:#bf616a;">load_balancer</span><span style="color:#c0c5ce;">: 
     </span><span style="color:#bf616a;">image</span><span style="color:#c0c5ce;">:  </span><span style="color:#bf616a;">registry.cn-hangzhou.aliyuncs.com/zongwu233/nginx-consul-template:v1.1
@@ -215,7 +216,7 @@ networks</span><span style="color:#c0c5ce;">:
 </span></code></pre>
 <p>对于192.168.0.245节点的docker-compose.yml ：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#bf616a;">version</span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">2</span><span style="color:#c0c5ce;">&#39;
+<code class="language-yaml" data-lang="yaml"><span style="color:#bf616a;">version</span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">2</span><span style="color:#c0c5ce;">&#39;
 </span><span style="color:#bf616a;">services</span><span style="color:#c0c5ce;">:
   </span><span style="color:#bf616a;">load_balancer</span><span style="color:#c0c5ce;">:
     </span><span style="color:#bf616a;">image</span><span style="color:#c0c5ce;">: </span><span style="color:#bf616a;">registry.cn-hangzhou.aliyuncs.com/zongwu233/nginx-consul-template:v1.1
@@ -247,7 +248,7 @@ networks</span><span style="color:#c0c5ce;">:
 <p>部署一个testHello 应用来测试。先构建一个简单的SpringBoot应用，端口是9123。并实现简单的<code>/health</code> 接口，直接返回200，供<code>consul</code> 调用。</p>
 <p><code>docker-compose</code>文件内容：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#bf616a;">version</span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">2</span><span style="color:#c0c5ce;">&#39;
+<code class="language-yaml" data-lang="yaml"><span style="color:#bf616a;">version</span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">2</span><span style="color:#c0c5ce;">&#39;
 </span><span style="color:#bf616a;">services</span><span style="color:#c0c5ce;">:
   </span><span style="color:#bf616a;">test_hello</span><span style="color:#c0c5ce;">:
     </span><span style="color:#bf616a;">image</span><span style="color:#c0c5ce;">: </span><span style="color:#bf616a;">registry.cn-hangzhou.aliyuncs.com/zongwu233/testhello:latest
@@ -266,7 +267,7 @@ networks</span><span style="color:#c0c5ce;">:
 <p>外部还不能直接访问<code>testHello</code>服务，该服务虽然注册到了<code>consul</code>，但是<code>Ngnix</code>并没有设置相应的代理。</p>
 <p>调整<code>nginx-consul-template</code> 的<code>nginx.conf.ctmpl</code>文件添加：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">
+<code class="language-nginx" data-lang="nginx"><span style="color:#c0c5ce;">
 upstream my-web-server{
   {{range service &quot;my-web-server&quot;}}server {{.Address}}:{{.Port}} max_fails=3 fail_timeout=60 weight=1;
   {{else}}server 127.0.0.1:65535; # force a 502{{end}}
@@ -286,24 +287,24 @@ server{
 </span></code></pre>
 <p>这里配置了一个<code>upstream</code> server。其中 </p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">{{range service &quot;my-web-server&quot;}}server {{.Address}}:{{.Port}} max_fails=3 fail_timeout=60 weight=1;
+<code class="language-nginx" data-lang="nginx"><span style="color:#c0c5ce;">{{range service &quot;my-web-server&quot;}}server {{.Address}}:{{.Port}} max_fails=3 fail_timeout=60 weight=1;
 </span></code></pre>
 <p>是获取 consul中所有的<code>my-web-server</code> ，生成多个 server配置 ，由于我们只启动了一个实例，最终生成：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">server 172.17.0.2 9123 max_fails=3 fail_timeout=60 weight=1;
+<code class="language-nginx" data-lang="nginx"><span style="color:#c0c5ce;">server 172.17.0.2 9123 max_fails=3 fail_timeout=60 weight=1;
 </span></code></pre>
 <p><code>172.17.0.2</code>是 testHello 实例的容器ip。</p>
 <p>这里的<code>8788</code>端口用于Ngnix对接我们使用的SLB。如果没有SLB需要依据实际情况修改（比如写成80）。</p>
 <h2 id="openresty">OpenResty</h2>
 <p>将Nginx替换为OpenResty，不能直接使用 <code>nginx-consul-template</code> 了，自己定义Dockerfile。</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">FROM</span><span style="color:#c0c5ce;"> openresty/openresty:1.13.6.2-2-alpine
+<code class="language-dockerfile" data-lang="dockerfile"><span style="color:#b48ead;">FROM</span><span style="color:#c0c5ce;"> openresty/openresty:1.13.6.2-2-alpine
 </span><span style="color:#b48ead;">MAINTAINER </span><span style="color:#c0c5ce;">zongwu233
-</span><span style="color:#b48ead;">
-RUN </span><span style="color:#c0c5ce;">wget -P /usr/local/openresty/lualib/resty/ https://raw.githubusercontent.com/ledgetech/lua-resty-http/master/lib/resty/http.lua \
+
+</span><span style="color:#b48ead;">RUN </span><span style="color:#c0c5ce;">wget -P /usr/local/openresty/lualib/resty/ https://raw.githubusercontent.com/ledgetech/lua-resty-http/master/lib/resty/http.lua \
  &amp;&amp; wget -P /usr/local/openresty/lualib/resty/ https://raw.githubusercontent.com/ledgetech/lua-resty-http/master/lib/resty/http_headers.lua
-</span><span style="color:#b48ead;">
-RUN </span><span style="color:#c0c5ce;">ln -s /usr/local/openresty/nginx/sbin/nginx /usr/sbin/nginx
+
+</span><span style="color:#b48ead;">RUN </span><span style="color:#c0c5ce;">ln -s /usr/local/openresty/nginx/sbin/nginx /usr/sbin/nginx
 
 </span><span style="color:#65737e;"># install runit curl
 </span><span style="color:#b48ead;">RUN </span><span style="color:#c0c5ce;">apk --update --no-cache add curl runit
@@ -311,17 +312,17 @@ RUN </span><span style="color:#c0c5ce;">ln -s /usr/local/openresty/nginx/sbin/ng
 </span><span style="color:#65737e;">#ENV CT_URL http://releases.hashicorp.com/consul-template/0.19.0/consul-template_0.19.0_linux_amd64.tgz
 #RUN curl -L $CT_URL | tar -C /usr/local/bin/ --strip-components 1 -zxf -
 </span><span style="color:#b48ead;">ADD </span><span style="color:#c0c5ce;">consul-template_0.19.0_linux_amd64.tgz /usr/local/bin/
-</span><span style="color:#b48ead;">
-ADD </span><span style="color:#c0c5ce;">nginx.service /etc/service/nginx/run
+
+</span><span style="color:#b48ead;">ADD </span><span style="color:#c0c5ce;">nginx.service /etc/service/nginx/run
 </span><span style="color:#b48ead;">RUN </span><span style="color:#c0c5ce;">chmod a+x /etc/service/nginx/run
 </span><span style="color:#b48ead;">ADD </span><span style="color:#c0c5ce;">consul-template.service /etc/service/consul-template/run
 </span><span style="color:#b48ead;">RUN </span><span style="color:#c0c5ce;">chmod a+x /etc/service/consul-template/run
-</span><span style="color:#b48ead;">
-RUN </span><span style="color:#c0c5ce;">rm -v /etc/nginx/conf.d/*
+
+</span><span style="color:#b48ead;">RUN </span><span style="color:#c0c5ce;">rm -v /etc/nginx/conf.d/*
 </span><span style="color:#b48ead;">RUN </span><span style="color:#c0c5ce;">mkdir -p /run/nginx/
 </span><span style="color:#b48ead;">ADD </span><span style="color:#c0c5ce;">nginx.conf.ctmpl /etc/consul-templates/nginx.conf.ctmpl
-</span><span style="color:#b48ead;">
-ADD </span><span style="color:#c0c5ce;">lualib/access-auth.lua /usr/local/openresty/site/lualib/access-auth.lua
+
+</span><span style="color:#b48ead;">ADD </span><span style="color:#c0c5ce;">lualib/access-auth.lua /usr/local/openresty/site/lualib/access-auth.lua
 </span><span style="color:#b48ead;">ADD </span><span style="color:#c0c5ce;">lualib/limit-invite.lua /usr/local/openresty/site/lualib/limit-invite.lua
 
 CMD [&quot;</span><span style="color:#a3be8c;">runsvdir</span><span style="color:#c0c5ce;">&quot;, &quot;</span><span style="color:#a3be8c;">/etc/service</span><span style="color:#c0c5ce;">&quot;]
@@ -353,16 +354,20 @@ CMD [&quot;</span><span style="color:#a3be8c;">runsvdir</span><span style="color
 </article>
 
 
-        </main>
-        <footer>
-            <p>
+            </main>
+            <footer>
+                <p>
                 © zongwu&#x27;s blog 2015 - 2021<br>
-            </p>
-            <p>
+                </p>
+                <p>
                 
                 
-            </p>
-        </footer>
-    </div>
+                </p>
+            </footer>
+        </div>
+        <!--  add cnzz trace code  -->
+        
+                <script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1279242175'%3E
+        
 </body>
 </html>

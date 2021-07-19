@@ -1,53 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="referrer" content="no-referrer-when-downgrade">
+    <head>
+        <meta charset="utf-8">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="referrer" content="no-referrer-when-downgrade">
 
-    <title>Rust Chars</title>
-    <meta name="description" content="">
+        <title>Rust Chars</title>
+        <meta name="description" content="">
 
-    <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
+        <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
 
-    
+        
         <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
-    
+        
 
-    
-    
-</head>
-<body>
-    <a class="skip-main" href="#main">Skip to content</a>
-    <div class="container">
-        <header> 
-            <h1 class="site-header">
-                <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
-            </h1>
-            <nav>
+        
+        
+
+    </head>
+    <body>
+        <a class="skip-main" href="#main">Skip to content</a>
+        <div class="container">
+            <header> 
+                <h1 class="site-header">
+                    <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
+                </h1>
+                <nav>
+                    
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
+                    
+                    
+                </nav>
+            </header>
+            <main id="main" tabindex="-1">
                 
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
-                
-                
-            </nav>
-        </header>
-        <main id="main" tabindex="-1">
-            
 
 <article class="post">
     <header>
@@ -61,7 +62,7 @@
 <p>The examples below show you how to write function <code>accum</code>:</p>
 <p><strong>Examples:</strong></p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#96b5b4;">accum</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">abcd</span><span style="color:#c0c5ce;">&quot;) -&gt; &quot;</span><span style="color:#a3be8c;">A-Bb-Ccc-Dddd</span><span style="color:#c0c5ce;">&quot;
+<code class="language-rust" data-lang="rust"><span style="color:#96b5b4;">accum</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">abcd</span><span style="color:#c0c5ce;">&quot;) -&gt; &quot;</span><span style="color:#a3be8c;">A-Bb-Ccc-Dddd</span><span style="color:#c0c5ce;">&quot;
 </span><span style="color:#96b5b4;">accum</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">RqaEzty</span><span style="color:#c0c5ce;">&quot;) -&gt; &quot;</span><span style="color:#a3be8c;">R-Qq-Aaa-Eeee-Zzzzz-Tttttt-Yyyyyyy</span><span style="color:#c0c5ce;">&quot;
 </span><span style="color:#96b5b4;">accum</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">cwAt</span><span style="color:#c0c5ce;">&quot;) -&gt; &quot;</span><span style="color:#a3be8c;">C-Ww-Aaa-Tttt</span><span style="color:#c0c5ce;">&quot;
 </span></code></pre>
@@ -71,11 +72,11 @@
 <p>题目本身不难，大体思路是：对于入参，转变成字符列表，然后对每个字符进行<code>repeat</code> m 次，m就等于该字符在字符串的index，（<code>repeat </code>结果的首字母大写），最后使用<code>-</code>将这些结果<code>join</code>起来就完成了。</p>
 <p>对于<code>str</code>有个<code>chars()</code>方法，文档说明：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">chars</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; Chars&lt;&#39;_&gt;
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">chars</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; Chars&lt;&#39;_&gt;
 </span></code></pre>
 <p>例如：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> word = &quot;</span><span style="color:#a3be8c;">goodbye</span><span style="color:#c0c5ce;">&quot;;
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> word = &quot;</span><span style="color:#a3be8c;">goodbye</span><span style="color:#c0c5ce;">&quot;;
 </span><span style="color:#b48ead;">let mut</span><span style="color:#c0c5ce;"> chars = word.</span><span style="color:#96b5b4;">chars</span><span style="color:#c0c5ce;">();
 assert_eq!(Some(&#39;</span><span style="color:#a3be8c;">g</span><span style="color:#c0c5ce;">&#39;), chars.</span><span style="color:#96b5b4;">next</span><span style="color:#c0c5ce;">());
 assert_eq!(Some(&#39;</span><span style="color:#a3be8c;">o</span><span style="color:#c0c5ce;">&#39;), chars.</span><span style="color:#96b5b4;">next</span><span style="color:#c0c5ce;">());
@@ -90,11 +91,11 @@ assert_eq!(None, chars.</span><span style="color:#96b5b4;">next</span><span styl
 <p>返回的<code>Chars</code>类型，是<code>str</code>的在其<code>chars</code>的迭代器。</p>
 <p>接下来我们会对每个字符做<code>map</code>操作，但是我们同时需要每个字符在字符串的index位置。这时候就要介绍一下<code>enumerate()</code>方法。在迭代数据的时候，同时给出当前的索引值。</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">enumerate</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; Enumerate&lt;</span><span style="color:#b48ead;">Self</span><span style="color:#c0c5ce;">&gt;
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">enumerate</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; Enumerate&lt;</span><span style="color:#b48ead;">Self</span><span style="color:#c0c5ce;">&gt;
 </span></code></pre>
 <p>例如：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> a = [&#39;</span><span style="color:#a3be8c;">a</span><span style="color:#c0c5ce;">&#39;, &#39;</span><span style="color:#a3be8c;">b</span><span style="color:#c0c5ce;">&#39;, &#39;</span><span style="color:#a3be8c;">c</span><span style="color:#c0c5ce;">&#39;];
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> a = [&#39;</span><span style="color:#a3be8c;">a</span><span style="color:#c0c5ce;">&#39;, &#39;</span><span style="color:#a3be8c;">b</span><span style="color:#c0c5ce;">&#39;, &#39;</span><span style="color:#a3be8c;">c</span><span style="color:#c0c5ce;">&#39;];
 
 </span><span style="color:#b48ead;">let mut</span><span style="color:#c0c5ce;"> iter = a.</span><span style="color:#96b5b4;">iter</span><span style="color:#c0c5ce;">().</span><span style="color:#96b5b4;">enumerate</span><span style="color:#c0c5ce;">();
 
@@ -103,66 +104,66 @@ assert_eq!(iter.</span><span style="color:#96b5b4;">next</span><span style="colo
 </span></code></pre>
 <p>如何重复某个字符m次？标准库里有个<code>repeat()</code>方法：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> a= &quot;</span><span style="color:#a3be8c;">a</span><span style="color:#c0c5ce;">&quot;;
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> a= &quot;</span><span style="color:#a3be8c;">a</span><span style="color:#c0c5ce;">&quot;;
 </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> b= std::iter::repeat(a).</span><span style="color:#96b5b4;">take</span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">3</span><span style="color:#c0c5ce;">).collect::&lt;String&gt;();
 println!(&quot;</span><span style="color:#a3be8c;">result </span><span style="color:#d08770;">{}</span><span style="color:#c0c5ce;">&quot;,b);
 </span></code></pre>
 <p>关于<code>join()</code>方法，先看看其在<code>slice</code>的定义：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">join</span><span style="color:#c0c5ce;">&lt;Separator&gt;(
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">join</span><span style="color:#c0c5ce;">&lt;Separator&gt;(
     &amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">,
     </span><span style="color:#bf616a;">sep</span><span style="color:#c0c5ce;">: Separator
 ) -&gt; &lt;[T] as Join&lt;Separator&gt;&gt;::Output
-</span><span style="color:#b48ead;">where</span><span style="color:#c0c5ce;">
-    [T]: Join&lt;Separator&gt;, 
+</span><span style="color:#b48ead;">where
+</span><span style="color:#c0c5ce;">    [T]: Join&lt;Separator&gt;, 
 </span></code></pre>
 <p>将<code>slice</code> T 转变成使用<code>Separator</code>连接的<code>Output</code>类型的值。</p>
 <p><code>Join</code>是个<code>trait</code> 它的定义是</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">pub trait </span><span style="color:#c0c5ce;">Join&lt;Separator&gt; {
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub trait </span><span style="color:#c0c5ce;">Join&lt;Separator&gt; {
     </span><span style="color:#b48ead;">type </span><span style="color:#c0c5ce;">Output;
     </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">join</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">slice</span><span style="color:#c0c5ce;">: &amp;</span><span style="color:#b48ead;">Self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">sep</span><span style="color:#c0c5ce;">: Separator) -&gt; </span><span style="color:#b48ead;">Self::</span><span style="color:#c0c5ce;">Output;
 }
 </span></code></pre>
 <p>其中定义了一个 <code>Associated Type</code>  <code>Output</code>。<code>Join trait</code>自带了几个实现：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#65737e;">//使用 &amp;str join [S],这个最常用
+<code class="language-rust" data-lang="rust"><span style="color:#65737e;">//使用 &amp;str join [S],这个最常用
 </span><span style="color:#b48ead;">impl</span><span style="color:#c0c5ce;">&lt;&#39;_, S&gt; Join&lt;&amp;&#39;_ </span><span style="color:#b48ead;">str</span><span style="color:#c0c5ce;">&gt; </span><span style="color:#b48ead;">for</span><span style="color:#c0c5ce;"> [S]
-</span><span style="color:#b48ead;">where</span><span style="color:#c0c5ce;">
-    S: Borrow&lt;</span><span style="color:#b48ead;">str</span><span style="color:#c0c5ce;">&gt;,
+</span><span style="color:#b48ead;">where
+</span><span style="color:#c0c5ce;">    S: Borrow&lt;</span><span style="color:#b48ead;">str</span><span style="color:#c0c5ce;">&gt;,
 </span></code></pre>
 <p>例如：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">assert_eq!([&quot;</span><span style="color:#a3be8c;">hello</span><span style="color:#c0c5ce;">&quot;, &quot;</span><span style="color:#a3be8c;">world</span><span style="color:#c0c5ce;">&quot;].</span><span style="color:#96b5b4;">join</span><span style="color:#c0c5ce;">(&quot; &quot;), &quot;</span><span style="color:#a3be8c;">hello world</span><span style="color:#c0c5ce;">&quot;);
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">assert_eq!([&quot;</span><span style="color:#a3be8c;">hello</span><span style="color:#c0c5ce;">&quot;, &quot;</span><span style="color:#a3be8c;">world</span><span style="color:#c0c5ce;">&quot;].</span><span style="color:#96b5b4;">join</span><span style="color:#c0c5ce;">(&quot; &quot;), &quot;</span><span style="color:#a3be8c;">hello world</span><span style="color:#c0c5ce;">&quot;);
 </span></code></pre><pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">
 </span><span style="color:#65737e;">//使用 &amp;T join [V]
 </span><span style="color:#b48ead;">impl</span><span style="color:#c0c5ce;">&lt;&#39;_, T, V&gt; Join&lt;&amp;&#39;_ T&gt; </span><span style="color:#b48ead;">for</span><span style="color:#c0c5ce;"> [V]
-</span><span style="color:#b48ead;">where</span><span style="color:#c0c5ce;">
-    T: Clone,
+</span><span style="color:#b48ead;">where
+</span><span style="color:#c0c5ce;">    T: Clone,
     V: Borrow&lt;[T]&gt;, 
 </span></code></pre>
 <p>例如：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#65737e;">//这里 T 与 V 是同一个type了
+<code class="language-rust" data-lang="rust"><span style="color:#65737e;">//这里 T 与 V 是同一个type了
 </span><span style="color:#c0c5ce;">assert_eq!([[</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">], [</span><span style="color:#d08770;">3</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">4</span><span style="color:#c0c5ce;">]].</span><span style="color:#96b5b4;">join</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">), [</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">3</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">4</span><span style="color:#c0c5ce;">]);
 </span></code></pre><pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">
 </span><span style="color:#65737e;">//使用 &amp;[T] join [V]
 </span><span style="color:#b48ead;">impl</span><span style="color:#c0c5ce;">&lt;&#39;_, T, V&gt; Join&lt;&amp;&#39;_ [T]&gt; </span><span style="color:#b48ead;">for</span><span style="color:#c0c5ce;"> [V]
-</span><span style="color:#b48ead;">where</span><span style="color:#c0c5ce;">
-    T: Clone,
+</span><span style="color:#b48ead;">where
+</span><span style="color:#c0c5ce;">    T: Clone,
     V: Borrow&lt;[T]&gt;, 
 </span></code></pre>
 <p>例如：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">assert_eq!([[</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">], [</span><span style="color:#d08770;">3</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">4</span><span style="color:#c0c5ce;">]].</span><span style="color:#96b5b4;">join</span><span style="color:#c0c5ce;">(&amp;[</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">][..]), [</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">3</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">4</span><span style="color:#c0c5ce;">]);
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">assert_eq!([[</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">], [</span><span style="color:#d08770;">3</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">4</span><span style="color:#c0c5ce;">]].</span><span style="color:#96b5b4;">join</span><span style="color:#c0c5ce;">(&amp;[</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">][..]), [</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">3</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">4</span><span style="color:#c0c5ce;">]);
 </span></code></pre>
 <p>讲完<code>slice</code>再讲讲<code>std::vev::Vec</code>的<code>join()</code>方法。</p>
 <p>嗯，就比较简单了，<code>std::vev::Vec</code>凭借着 <strong>Methods from Deref&lt;Target = [T]&gt;</strong> <code>Vec</code>直接就具备了<code>slice</code>的能力。</p>
 <p>好了吧上面的步骤组合起来的到解决方案：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">accum</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">s</span><span style="color:#c0c5ce;">:&amp;</span><span style="color:#b48ead;">str</span><span style="color:#c0c5ce;">)-&gt;String {
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">accum</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">s</span><span style="color:#c0c5ce;">:&amp;</span><span style="color:#b48ead;">str</span><span style="color:#c0c5ce;">)-&gt;String {
     s
     .</span><span style="color:#96b5b4;">to_lowercase</span><span style="color:#c0c5ce;">()
     .</span><span style="color:#96b5b4;">chars</span><span style="color:#c0c5ce;">()
@@ -212,16 +213,20 @@ println!(&quot;</span><span style="color:#a3be8c;">result </span><span style="co
 </article>
 
 
-        </main>
-        <footer>
-            <p>
+            </main>
+            <footer>
+                <p>
                 © zongwu&#x27;s blog 2015 - 2021<br>
-            </p>
-            <p>
+                </p>
+                <p>
                 
                 
-            </p>
-        </footer>
-    </div>
+                </p>
+            </footer>
+        </div>
+        <!--  add cnzz trace code  -->
+        
+                <script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1279242175'%3E
+        
 </body>
 </html>

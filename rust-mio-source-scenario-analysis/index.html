@@ -1,53 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="referrer" content="no-referrer-when-downgrade">
+    <head>
+        <meta charset="utf-8">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="referrer" content="no-referrer-when-downgrade">
 
-    <title>Rust mio库源码情景分析</title>
-    <meta name="description" content="">
+        <title>Rust mio库源码情景分析</title>
+        <meta name="description" content="">
 
-    <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
+        <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
 
-    
+        
         <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
-    
+        
 
-    
-    
-</head>
-<body>
-    <a class="skip-main" href="#main">Skip to content</a>
-    <div class="container">
-        <header> 
-            <h1 class="site-header">
-                <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
-            </h1>
-            <nav>
+        
+        
+
+    </head>
+    <body>
+        <a class="skip-main" href="#main">Skip to content</a>
+        <div class="container">
+            <header> 
+                <h1 class="site-header">
+                    <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
+                </h1>
+                <nav>
+                    
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
+                    
+                    
+                </nav>
+            </header>
+            <main id="main" tabindex="-1">
                 
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
-                
-                
-            </nav>
-        </header>
-        <main id="main" tabindex="-1">
-            
 
 <article class="post">
     <header>
@@ -61,7 +62,7 @@
 <p>mio目前已经发布了v0.6.19版本，这次分析代码版本选择 <code>master</code>分支，<code>commit id  </code> <code>14f37f283576040c8763f45de6c2b2bbcb82436d</code></p>
 <p>我们从官方自带的example进行源码跟踪分析。</p>
 <span id="continue-reading"></span><pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">use </span><span style="color:#c0c5ce;">std::collections::HashMap;
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">use </span><span style="color:#c0c5ce;">std::collections::HashMap;
 </span><span style="color:#b48ead;">use </span><span style="color:#c0c5ce;">std::io::{</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, Read, Write};
 </span><span style="color:#b48ead;">use </span><span style="color:#c0c5ce;">std::str::from_utf8;
 
@@ -224,7 +225,7 @@
 <p>从<code>main()</code>方法体开始看：</p>
 <h2 id="poll-new">Poll::new()</h2>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">new</span><span style="color:#c0c5ce;">() -&gt; io::Result&lt;Poll&gt; {
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">new</span><span style="color:#c0c5ce;">() -&gt; io::Result&lt;Poll&gt; {
         sys::Selector::new().</span><span style="color:#96b5b4;">map</span><span style="color:#c0c5ce;">(|</span><span style="color:#bf616a;">selector</span><span style="color:#c0c5ce;">| Poll {
             registry: Registry { selector },
         })
@@ -233,7 +234,7 @@
 </span></code></pre>
 <p>看一下Poll的结构体</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">pub struct </span><span style="color:#c0c5ce;">Poll {
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub struct </span><span style="color:#c0c5ce;">Poll {
     </span><span style="color:#bf616a;">registry</span><span style="color:#c0c5ce;">: Registry,
 }
 
@@ -244,7 +245,7 @@
 </span></code></pre>
 <p><code>sys::Selector</code> 在不同的操作系统上有不同的实现：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#65737e;">/// `Poll` is backed by the selector provided by the operating system.
+<code class="language-rust" data-lang="rust"><span style="color:#65737e;">/// `Poll` is backed by the selector provided by the operating system.
 ///
 /// |      OS       |  Selector |
 /// |---------------|-----------|
@@ -263,7 +264,7 @@
 </span></code></pre>
 <p>我们挑选Linux的epoll跟踪。源文件在<code>/src/sys/unix/epoll.rs</code></p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">Selector {
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">Selector {
     </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">new</span><span style="color:#c0c5ce;">() -&gt; io::Result&lt;Selector&gt; {
         </span><span style="color:#65737e;">// According to libuv `EPOLL_CLOEXEC` is not defined on Android API &lt;
         // 21. But `EPOLL_CLOEXEC` is an alias for `O_CLOEXEC` on all platforms,
@@ -280,13 +281,13 @@
 </span></code></pre>
 <p>这段代码调用了linux的api <code>epoll_create1()</code>  该接口返回一个int值，表示指向epoll实例的文件描述符。就是代码中的<code>ep</code>。还涉及到<code>id</code> 自增。 <code>NEXT_ID</code> 的定义：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#65737e;">/// Unique id for use as `SelectorId`.
+<code class="language-rust" data-lang="rust"><span style="color:#65737e;">/// Unique id for use as `SelectorId`.
 </span><span style="color:#c0c5ce;">#[</span><span style="color:#bf616a;">cfg</span><span style="color:#c0c5ce;">(debug_assertions)]
 </span><span style="color:#b48ead;">static </span><span style="color:#d08770;">NEXT_ID</span><span style="color:#c0c5ce;">: AtomicUsize = AtomicUsize::new(</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">);
 </span></code></pre>
 <p>看一下<code>syscall!</code>宏。定义的文件在`/src/sys/unix/mod.rs</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#65737e;">// Macro must be defined before any modules that uses them.
+<code class="language-rust" data-lang="rust"><span style="color:#65737e;">// Macro must be defined before any modules that uses them.
 </span><span style="color:#96b5b4;">macro_rules! </span><span style="color:#c0c5ce;">syscall {
     ($fn: ident ( $($arg: expr),* $(,)* ) ) =&gt; {{
         let res = unsafe { libc::</span><span style="color:#bf616a;">$fn</span><span style="color:#c0c5ce;">($($arg, )*) };
@@ -302,7 +303,7 @@
 <h2 id="tcplistener">TcpListener</h2>
 <p>接着是<code>    let server = TcpListener::bind(addr)?;</code>看一看这个<code>bind</code>方法 </p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">    </span><span style="color:#65737e;">/// 1. Create a new TCP socket.
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">    </span><span style="color:#65737e;">/// 1. Create a new TCP socket.
     /// 2. Set the `SO_REUSEADDR` option on the socket on Unix.
     /// 3. Bind the socket to the specified address.
     /// 4. Calls `listen` on the socket to prepare it to receive new connections.
@@ -316,7 +317,7 @@
 </span></code></pre>
 <p>注释说明该方法完成了socket编程的4个步骤。由于是调用<code>sys::TcpListener::bind()</code>,跟进去看</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">bind</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">addr</span><span style="color:#c0c5ce;">: SocketAddr) -&gt; io::Result&lt;TcpListener&gt; {
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">bind</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">addr</span><span style="color:#c0c5ce;">: SocketAddr) -&gt; io::Result&lt;TcpListener&gt; {
         </span><span style="color:#96b5b4;">new_ip_socket</span><span style="color:#c0c5ce;">(addr, libc::</span><span style="color:#d08770;">SOCK_STREAM</span><span style="color:#c0c5ce;">).</span><span style="color:#96b5b4;">and_then</span><span style="color:#c0c5ce;">(|</span><span style="color:#bf616a;">socket</span><span style="color:#c0c5ce;">| {
             </span><span style="color:#65737e;">// Set SO_REUSEADDR (mirrors what libstd does).
             </span><span style="color:#c0c5ce;">syscall!(</span><span style="color:#96b5b4;">setsockopt</span><span style="color:#c0c5ce;">(
@@ -346,15 +347,15 @@
 <p>回到主方法继续看</p>
 <h2 id="poll-registry-register">poll.registry().register()</h2>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">registry</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; &amp;Registry {
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">registry</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; &amp;Registry {
         &amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.registry
     }
 </span></code></pre>
 <p>真正完成register动作的是<code>&amp;self.registry</code></p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">register</span><span style="color:#c0c5ce;">&lt;S&gt;(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">source</span><span style="color:#c0c5ce;">: &amp;S, </span><span style="color:#bf616a;">token</span><span style="color:#c0c5ce;">: Token, </span><span style="color:#bf616a;">interests</span><span style="color:#c0c5ce;">: Interests) -&gt; io::Result&lt;()&gt;
-    </span><span style="color:#b48ead;">where</span><span style="color:#c0c5ce;">
-        S: event::Source + ?Sized,
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">register</span><span style="color:#c0c5ce;">&lt;S&gt;(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">source</span><span style="color:#c0c5ce;">: &amp;S, </span><span style="color:#bf616a;">token</span><span style="color:#c0c5ce;">: Token, </span><span style="color:#bf616a;">interests</span><span style="color:#c0c5ce;">: Interests) -&gt; io::Result&lt;()&gt;
+    </span><span style="color:#b48ead;">where
+</span><span style="color:#c0c5ce;">        S: event::Source + ?Sized,
     {
         trace!(
             &quot;</span><span style="color:#a3be8c;">registering event source with poller: token={:?}, interests={:?}</span><span style="color:#c0c5ce;">&quot;,
@@ -367,7 +368,7 @@
 </span></code></pre>
 <p>又调用了<code>source.register()</code>，看一看<code>source trait</code> 的定义：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">pub trait </span><span style="color:#c0c5ce;">Source {   
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub trait </span><span style="color:#c0c5ce;">Source {   
 		</span><span style="color:#65737e;">/// Register `self` with the given `Registry` instance.
     ///
     /// This function should not be called directly. Use [`Registry::register`]
@@ -400,7 +401,7 @@
 <p>三个方法，注册、再次注册、反注册。</p>
 <p>example里传入的 <code>source</code>是 <code>&amp;server:TcpListener</code>。</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">event::Source </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">TcpListener {
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">event::Source </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">TcpListener {
     </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">register</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">registry</span><span style="color:#c0c5ce;">: &amp;Registry, </span><span style="color:#bf616a;">token</span><span style="color:#c0c5ce;">: Token, </span><span style="color:#bf616a;">interests</span><span style="color:#c0c5ce;">: Interests) -&gt; io::Result&lt;()&gt; {
         #[</span><span style="color:#bf616a;">cfg</span><span style="color:#c0c5ce;">(debug_assertions)]
         </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.selector_id.</span><span style="color:#96b5b4;">associate_selector</span><span style="color:#c0c5ce;">(registry)?;
@@ -424,13 +425,13 @@
 </span></code></pre>
 <p>其中<code>register()</code>主要涉及到：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.selector_id.</span><span style="color:#96b5b4;">associate_selector</span><span style="color:#c0c5ce;">(registry)?;
+<code class="language-rust" data-lang="rust"><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.selector_id.</span><span style="color:#96b5b4;">associate_selector</span><span style="color:#c0c5ce;">(registry)?;
 </span></code></pre><pre style="background-color:#2b303b;">
-<code><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.sys.</span><span style="color:#96b5b4;">register</span><span style="color:#c0c5ce;">(registry, token, interests)
+<code class="language-rust" data-lang="rust"><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.sys.</span><span style="color:#96b5b4;">register</span><span style="color:#c0c5ce;">(registry, token, interests)
 </span></code></pre>
 <p>先看第一个。</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">SelectorId {
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">SelectorId {
     </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">new</span><span style="color:#c0c5ce;">() -&gt; SelectorId {
         SelectorId {
             id: AtomicUsize::new(</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">),
@@ -455,7 +456,7 @@
 <p>这里就是把<code>registry.selector.id()</code> 赋值给<code>SelectorId.id</code>。注意后者是<code>AtomicUsize</code>。</p>
 <p>看第二个。看看<code>sys</code>的类型：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">pub struct </span><span style="color:#c0c5ce;">TcpListener {
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub struct </span><span style="color:#c0c5ce;">TcpListener {
     </span><span style="color:#bf616a;">sys</span><span style="color:#c0c5ce;">: sys::TcpListener,
     #[</span><span style="color:#bf616a;">cfg</span><span style="color:#c0c5ce;">(debug_assertions)]
     </span><span style="color:#bf616a;">selector_id</span><span style="color:#c0c5ce;">: SelectorId,
@@ -463,14 +464,14 @@
 </span></code></pre>
 <p><code>sys::TcpListener</code>的<code>register</code>方法：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">register</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">registry</span><span style="color:#c0c5ce;">: &amp;Registry, </span><span style="color:#bf616a;">token</span><span style="color:#c0c5ce;">: Token, </span><span style="color:#bf616a;">interests</span><span style="color:#c0c5ce;">: Interests) -&gt; io::Result&lt;()&gt; {
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">register</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">registry</span><span style="color:#c0c5ce;">: &amp;Registry, </span><span style="color:#bf616a;">token</span><span style="color:#c0c5ce;">: Token, </span><span style="color:#bf616a;">interests</span><span style="color:#c0c5ce;">: Interests) -&gt; io::Result&lt;()&gt; {
         SourceFd(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.</span><span style="color:#96b5b4;">as_raw_fd</span><span style="color:#c0c5ce;">()).</span><span style="color:#96b5b4;">register</span><span style="color:#c0c5ce;">(registry, token, interests)
     }
 
 </span></code></pre><h2 id="sourcefd">SourceFd()</h2>
 <p>先看<code>SourceFd()</code> 的第一个入参<code>&amp;self.as_raw_fd()</code></p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">AsRawFd </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">TcpListener {
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">AsRawFd </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">TcpListener {
     </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">as_raw_fd</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; RawFd {
         </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.inner.</span><span style="color:#96b5b4;">as_raw_fd</span><span style="color:#c0c5ce;">()
     }
@@ -479,12 +480,12 @@
 </span></code></pre>
 <p>这里的<code>inner</code>是<code>net::TcpListener</code>类型。跟踪到<code>std::net::TcpListner</code>的实现：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">#[</span><span style="color:#bf616a;">stable</span><span style="color:#c0c5ce;">(feature = &quot;</span><span style="color:#a3be8c;">rust1</span><span style="color:#c0c5ce;">&quot;, since = &quot;</span><span style="color:#a3be8c;">1.0.0</span><span style="color:#c0c5ce;">&quot;)]
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">#[</span><span style="color:#bf616a;">stable</span><span style="color:#c0c5ce;">(feature = &quot;</span><span style="color:#a3be8c;">rust1</span><span style="color:#c0c5ce;">&quot;, since = &quot;</span><span style="color:#a3be8c;">1.0.0</span><span style="color:#c0c5ce;">&quot;)]
 </span><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">AsRawFd </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">net::TcpListener {
     </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">as_raw_fd</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; RawFd { *</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.</span><span style="color:#96b5b4;">as_inner</span><span style="color:#c0c5ce;">().</span><span style="color:#96b5b4;">socket</span><span style="color:#c0c5ce;">().</span><span style="color:#96b5b4;">as_inner</span><span style="color:#c0c5ce;">() }
 }
 </span></code></pre><pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">AsInner&lt;net_imp::TcpListener&gt; </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">TcpListener {
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">AsInner&lt;net_imp::TcpListener&gt; </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">TcpListener {
     </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">as_inner</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; &amp;net_imp::TcpListener { &amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.</span><span style="color:#d08770;">0 </span><span style="color:#c0c5ce;">}
 }
 </span></code></pre>
@@ -492,28 +493,28 @@
 <p>这里稍微梳理一下<code>TcpListener</code>的依赖关系 。 mio提供的<code>TcpListener</code> --&gt;<code>sys::TcpListener</code> --&gt; <code>net::TcpListener </code>--&gt;<code>sys_common::net::TcpListener</code></p>
 <p><code>sys_common::net::TcpListener</code>的<code>socket()</code> 方法</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">socket</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; &amp;Socket { &amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.inner }
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">socket</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; &amp;Socket { &amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.inner }
 
 </span></code></pre>
 <p>std库的<code>/src/libstd/sys/unix/net.rs</code>找到<code>socket</code>的定义：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">pub struct </span><span style="color:#c0c5ce;">Socket(FileDesc);
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub struct </span><span style="color:#c0c5ce;">Socket(FileDesc);
 </span></code></pre><pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">AsInner&lt;c_int&gt; </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">Socket {
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">AsInner&lt;c_int&gt; </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">Socket {
     </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">as_inner</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; &amp;c_int { </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.</span><span style="color:#d08770;">0.</span><span style="color:#96b5b4;">as_inner</span><span style="color:#c0c5ce;">() }
 }
 </span></code></pre><pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">pub struct </span><span style="color:#c0c5ce;">FileDesc {
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub struct </span><span style="color:#c0c5ce;">FileDesc {
     </span><span style="color:#bf616a;">fd</span><span style="color:#c0c5ce;">: c_int,
 }
 </span></code></pre><pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">AsInner&lt;c_int&gt; </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">FileDesc {
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">AsInner&lt;c_int&gt; </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">FileDesc {
     </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">as_inner</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; &amp;c_int { &amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.fd }
 }
 </span></code></pre>
 <p>回到<code>SourceFd(&amp;self.as_raw_fd()).register(registry, token, interests)</code></p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#65737e;">/// Adapter for [`RawFd`] providing an [`event::Source`] implementation.
+<code class="language-rust" data-lang="rust"><span style="color:#65737e;">/// Adapter for [`RawFd`] providing an [`event::Source`] implementation.
 ///
 /// `SourceFd` enables registering any type with an FD with [`Poll`].
 ///
@@ -547,7 +548,7 @@
 <p>为什么要这么绕？因为<code>sys::selector</code> 需要一个文件描述符参数。</p>
 <p><code>poll::selector()</code>方法的定义：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#65737e;">// ===== Accessors for internal usage =====
+<code class="language-rust" data-lang="rust"><span style="color:#65737e;">// ===== Accessors for internal usage =====
 
 </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">selector</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">registry</span><span style="color:#c0c5ce;">: &amp;Registry) -&gt; &amp;sys::Selector {
     &amp;registry.selector
@@ -555,7 +556,7 @@
 </span></code></pre>
 <p>通过前面的代码我们知道<code>&amp;registry.selector</code>  是<code>sys::Selector</code>。跟进去看看</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">register</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">fd</span><span style="color:#c0c5ce;">: RawFd, </span><span style="color:#bf616a;">token</span><span style="color:#c0c5ce;">: Token, </span><span style="color:#bf616a;">interests</span><span style="color:#c0c5ce;">: Interests) -&gt; io::Result&lt;()&gt; {
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">register</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">fd</span><span style="color:#c0c5ce;">: RawFd, </span><span style="color:#bf616a;">token</span><span style="color:#c0c5ce;">: Token, </span><span style="color:#bf616a;">interests</span><span style="color:#c0c5ce;">: Interests) -&gt; io::Result&lt;()&gt; {
         </span><span style="color:#b48ead;">let mut</span><span style="color:#c0c5ce;"> event = libc::epoll_event {
             events: </span><span style="color:#96b5b4;">interests_to_epoll</span><span style="color:#c0c5ce;">(interests),
             </span><span style="color:#b48ead;">u64</span><span style="color:#c0c5ce;">: </span><span style="color:#b48ead;">usize</span><span style="color:#c0c5ce;">::from(token) as </span><span style="color:#b48ead;">u64</span><span style="color:#c0c5ce;">,
@@ -567,7 +568,7 @@
 </span></code></pre>
 <p>最终是调用linux系统的</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">       </span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">epoll_ctl</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">epfd</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">op</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">fd</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">struct</span><span style="color:#c0c5ce;"> epoll_event *</span><span style="color:#bf616a;">event</span><span style="color:#c0c5ce;">);
+<code class="language-c" data-lang="c"><span style="color:#c0c5ce;">       </span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">epoll_ctl</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">epfd</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">op</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">fd</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">struct</span><span style="color:#c0c5ce;"> epoll_event *</span><span style="color:#bf616a;">event</span><span style="color:#c0c5ce;">);
 </span></code></pre>
 <p>其中的参数</p>
 <p><code>self.ep</code> 是<code>sys::Selector::new()</code>方法里调用<code>int epoll_create1(int flags);</code>返回的int值，是表示<code>epoll</code>实例的文件描述符。</p>
@@ -575,14 +576,14 @@
 <p><code>fd</code> 就是刚才分析的<code>SourceFd</code>持有的<code>RawFd</code></p>
 <p><code>epoll_event *</code> 参数传入了<code>&amp;mut event</code> 是<code>libc::epoll_event </code>结构体。</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">pub struct </span><span style="color:#c0c5ce;">epoll_event {
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub struct </span><span style="color:#c0c5ce;">epoll_event {
     </span><span style="color:#b48ead;">pub </span><span style="color:#bf616a;">events</span><span style="color:#c0c5ce;">: uint32_t,
     </span><span style="color:#b48ead;">pub </span><span style="color:#bf616a;">u64</span><span style="color:#c0c5ce;">: uint64_t,
 }
 </span></code></pre>
 <p>Linux 结构体相关定义：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">          typedef </span><span style="color:#b48ead;">union</span><span style="color:#c0c5ce;"> epoll_data {
+<code class="language-c" data-lang="c"><span style="color:#c0c5ce;">          typedef </span><span style="color:#b48ead;">union</span><span style="color:#c0c5ce;"> epoll_data {
                </span><span style="color:#b48ead;">void        </span><span style="color:#c0c5ce;">*ptr;
                </span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;">          fd;
                uint32_t     u32;
@@ -590,14 +591,14 @@
            } epoll_data_t;
 
            </span><span style="color:#b48ead;">struct </span><span style="color:#c0c5ce;">epoll_event {
-               uint32_t     events;      </span><span style="color:#65737e;">/* Epoll events */</span><span style="color:#c0c5ce;">
-               epoll_data_t data;        </span><span style="color:#65737e;">/* User data variable */
+               uint32_t     events;      </span><span style="color:#65737e;">/* Epoll events */
+</span><span style="color:#c0c5ce;">               epoll_data_t data;        </span><span style="color:#65737e;">/* User data variable */
            </span><span style="color:#c0c5ce;">};
 </span></code></pre>
 <p><code>uint32_t</code>的bit位表示事件类型，和<code>epoll_data_t</code> 存放用户的自定义参数，这里是<code>Token</code>。</p>
 <p>看一下向系统注册了什么<code>interests</code></p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">interests_to_epoll</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">interests</span><span style="color:#c0c5ce;">: Interests) -&gt; </span><span style="color:#b48ead;">u32 </span><span style="color:#c0c5ce;">{
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">interests_to_epoll</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">interests</span><span style="color:#c0c5ce;">: Interests) -&gt; </span><span style="color:#b48ead;">u32 </span><span style="color:#c0c5ce;">{
     </span><span style="color:#b48ead;">let mut</span><span style="color:#c0c5ce;"> kind = </span><span style="color:#d08770;">EPOLLET</span><span style="color:#c0c5ce;">;
 
     </span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> interests.</span><span style="color:#96b5b4;">is_readable</span><span style="color:#c0c5ce;">() {
@@ -615,7 +616,7 @@
 <p><code>epoll</code> 默认采用<strong>Level Triggered</strong>水平触发模式。关于两种模式更详细的介绍，可以参考 http://man7.org/linux/man-pages/man7/epoll.7.html</p>
 <p>最开始的example里，<code>interests</code>的实际参数是<code>Interests::READABLE</code>所以会走到：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">   </span><span style="color:#c0c5ce;">	</span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> interests.</span><span style="color:#96b5b4;">is_readable</span><span style="color:#c0c5ce;">() {
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">   </span><span style="color:#c0c5ce;">	</span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> interests.</span><span style="color:#96b5b4;">is_readable</span><span style="color:#c0c5ce;">() {
 </span><span style="color:#c0c5ce;">       kind = kind | </span><span style="color:#d08770;">EPOLLIN </span><span style="color:#c0c5ce;">| </span><span style="color:#d08770;">EPOLLRDHUP</span><span style="color:#c0c5ce;">;
 </span><span style="color:#c0c5ce;">   }
 </span></code></pre>
@@ -626,9 +627,9 @@
 <h2 id="poll-poll">poll.poll()</h2>
 <p>总算进入了核心方法</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">poll.</span><span style="color:#96b5b4;">poll</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> events, None)?;
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">poll.</span><span style="color:#96b5b4;">poll</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> events, None)?;
 </span></code></pre><pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;"> 		</span><span style="color:#65737e;">/// Wait for readiness events
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;"> 		</span><span style="color:#65737e;">/// Wait for readiness events
     ///
     /// Blocks the current thread and waits for readiness events for any of the
     /// [`event::Source`]s that have been registered with this `Poll` instance.
@@ -643,7 +644,7 @@
 <p>注释里说明，如果没有就绪事件的话，该方法阻塞当前线程。<code>timeout</code>的实参是<code>None</code>，表示该方法会一直阻塞直到有事件到达。所以外面用一个<code>loop{}</code>循环包裹该方法。</p>
 <p>跟进去真正干活的的<code>select()</code>方法</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">select</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">events</span><span style="color:#c0c5ce;">: &amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> Events, </span><span style="color:#bf616a;">timeout</span><span style="color:#c0c5ce;">: Option&lt;Duration&gt;) -&gt; io::Result&lt;()&gt; {
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">select</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">events</span><span style="color:#c0c5ce;">: &amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> Events, </span><span style="color:#bf616a;">timeout</span><span style="color:#c0c5ce;">: Option&lt;Duration&gt;) -&gt; io::Result&lt;()&gt; {
         </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> timeout = timeout
             .</span><span style="color:#96b5b4;">map</span><span style="color:#c0c5ce;">(|</span><span style="color:#bf616a;">to</span><span style="color:#c0c5ce;">| cmp::min(to.</span><span style="color:#96b5b4;">as_millis</span><span style="color:#c0c5ce;">(), libc::</span><span style="color:#b48ead;">c_int</span><span style="color:#c0c5ce;">::max_value() as </span><span style="color:#b48ead;">u128</span><span style="color:#c0c5ce;">) as libc::</span><span style="color:#b48ead;">c_int</span><span style="color:#c0c5ce;">)
             .</span><span style="color:#96b5b4;">unwrap_or</span><span style="color:#c0c5ce;">(-</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">);
@@ -665,12 +666,12 @@
 </span></code></pre>
 <p><code>events.clear()</code>然后调用系统的<code>epoll_wait</code>。如果有就绪事件，返回事件个数，并且将事件设置在<code>events</code>里。系统的<code>epoll_wait</code></p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">epoll_wait</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">epfd</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">struct</span><span style="color:#c0c5ce;"> epoll_event *</span><span style="color:#bf616a;">events</span><span style="color:#c0c5ce;">,
+<code class="language-c" data-lang="c"><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">epoll_wait</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">epfd</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">struct</span><span style="color:#c0c5ce;"> epoll_event *</span><span style="color:#bf616a;">events</span><span style="color:#c0c5ce;">,
                       </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">maxevents</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">timeout</span><span style="color:#c0c5ce;">);
 </span></code></pre><h2 id="event-consume">event consume</h2>
 <p>回到example的代码，如果有客户端连接到<code>server</code>，代码中的<code> events</code> 被赋值，</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">for</span><span style="color:#c0c5ce;"> event in events.</span><span style="color:#96b5b4;">iter</span><span style="color:#c0c5ce;">() {
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">for</span><span style="color:#c0c5ce;"> event in events.</span><span style="color:#96b5b4;">iter</span><span style="color:#c0c5ce;">() {
             </span><span style="color:#b48ead;">match</span><span style="color:#c0c5ce;"> event.</span><span style="color:#96b5b4;">token</span><span style="color:#c0c5ce;">() {
                 </span><span style="color:#d08770;">SERVER </span><span style="color:#c0c5ce;">=&gt; {
                   ...
@@ -682,7 +683,7 @@
 </span></code></pre>
 <p>通过匹配<code>event.token()</code>进入<code>SERVER</code> 的代码块（一开始注册的token就是<code>SERVER</code> ）。看里面的逻辑：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">                   </span><span style="color:#b48ead;">let </span><span style="color:#c0c5ce;">(connection, address) = server.</span><span style="color:#96b5b4;">accept</span><span style="color:#c0c5ce;">()?;
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">                   </span><span style="color:#b48ead;">let </span><span style="color:#c0c5ce;">(connection, address) = server.</span><span style="color:#96b5b4;">accept</span><span style="color:#c0c5ce;">()?;
                     println!(&quot;</span><span style="color:#a3be8c;">Accepted connection from: </span><span style="color:#d08770;">{}</span><span style="color:#c0c5ce;">&quot;, address);
 
                     </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> token = </span><span style="color:#96b5b4;">next</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> unique_token);
@@ -701,7 +702,7 @@
 </ol>
 <p>一个一个看。 先看<code>TcpListener</code>的<code>accept()</code>:</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">accept</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; io::Result&lt;(TcpStream, SocketAddr)&gt; {
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">accept</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; io::Result&lt;(TcpStream, SocketAddr)&gt; {
         </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.inner.</span><span style="color:#96b5b4;">accept</span><span style="color:#c0c5ce;">().</span><span style="color:#96b5b4;">and_then</span><span style="color:#c0c5ce;">(|(</span><span style="color:#bf616a;">inner</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">addr</span><span style="color:#c0c5ce;">)| {
             inner
                 .</span><span style="color:#96b5b4;">set_nonblocking</span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">true</span><span style="color:#c0c5ce;">)
@@ -711,7 +712,7 @@
 </span></code></pre>
 <p>跟进去看它的<code>inner</code>(net::TcpListener)的<code>accept()</code> 方法:</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">		#[</span><span style="color:#bf616a;">stable</span><span style="color:#c0c5ce;">(feature = &quot;</span><span style="color:#a3be8c;">rust1</span><span style="color:#c0c5ce;">&quot;, since = &quot;</span><span style="color:#a3be8c;">1.0.0</span><span style="color:#c0c5ce;">&quot;)]
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">		#[</span><span style="color:#bf616a;">stable</span><span style="color:#c0c5ce;">(feature = &quot;</span><span style="color:#a3be8c;">rust1</span><span style="color:#c0c5ce;">&quot;, since = &quot;</span><span style="color:#a3be8c;">1.0.0</span><span style="color:#c0c5ce;">&quot;)]
     </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">accept</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; io::Result&lt;(TcpStream, SocketAddr)&gt; {
         </span><span style="color:#65737e;">// On WASM, `TcpStream` is uninhabited (as it&#39;s unsupported) and so
         // the `a` variable here is technically unused.
@@ -723,7 +724,7 @@
 <p>创建一个新的<code>token</code>，然后注册到<code>Poll</code>。注意<code>register()</code> 方法的参数，<code>event::Source</code>是<code>&amp;connection:TcpStream</code>，</p>
 <p><code>Interests</code>是<code>Interests::READABLE.add(Interests::WRITABLE)</code>可读就绪与可写就绪。看一看<code>TcpStream</code>对<code>event::Source</code>的实现：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">event::Source </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">TcpStream {
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">event::Source </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">TcpStream {
     </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">register</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">registry</span><span style="color:#c0c5ce;">: &amp;Registry, </span><span style="color:#bf616a;">token</span><span style="color:#c0c5ce;">: Token, </span><span style="color:#bf616a;">interests</span><span style="color:#c0c5ce;">: Interests) -&gt; io::Result&lt;()&gt; {
         #[</span><span style="color:#bf616a;">cfg</span><span style="color:#c0c5ce;">(debug_assertions)]
         </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.selector_id.</span><span style="color:#96b5b4;">associate_selector</span><span style="color:#c0c5ce;">(registry)?;
@@ -746,7 +747,7 @@
 </span></code></pre>
 <p>在<code>register()</code>方法里，设置了<code>self.selector_id</code>。通过<code>self.sys.register()</code>注册到<code>selector</code>。</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">pub struct </span><span style="color:#c0c5ce;">TcpStream {
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub struct </span><span style="color:#c0c5ce;">TcpStream {
     </span><span style="color:#bf616a;">sys</span><span style="color:#c0c5ce;">: sys::TcpStream,
     #[</span><span style="color:#bf616a;">cfg</span><span style="color:#c0c5ce;">(debug_assertions)]
     </span><span style="color:#bf616a;">selector_id</span><span style="color:#c0c5ce;">: SelectorId,
@@ -754,7 +755,7 @@
 </span></code></pre>
 <p>跟进去<code>sys::TcpStream::register()</code></p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">event::Source </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">TcpStream {
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">event::Source </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">TcpStream {
     </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">register</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">registry</span><span style="color:#c0c5ce;">: &amp;Registry, </span><span style="color:#bf616a;">token</span><span style="color:#c0c5ce;">: Token, </span><span style="color:#bf616a;">interests</span><span style="color:#c0c5ce;">: Interests) -&gt; io::Result&lt;()&gt; {
         SourceFd(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.</span><span style="color:#96b5b4;">as_raw_fd</span><span style="color:#c0c5ce;">()).</span><span style="color:#96b5b4;">register</span><span style="color:#c0c5ce;">(registry, token, interests)
     }
@@ -777,7 +778,7 @@
 <p>将<code>connection</code>插入<code>HashMap</code>方便后面使用，不需要解释。</p>
 <p>通过将<code>TcpStream</code>注册到<code>Poll</code>，一旦连接建立稳定，将触发读就绪和写就绪事件。通过<code>event.token() </code>分流到下面的代码：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">                token =&gt; {
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">                token =&gt; {
                     </span><span style="color:#65737e;">// (maybe) received an event for a TCP connection.
                     </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> done = </span><span style="color:#b48ead;">if let </span><span style="color:#c0c5ce;">Some(connection) = connections.</span><span style="color:#96b5b4;">get_mut</span><span style="color:#c0c5ce;">(&amp;token) {
                         </span><span style="color:#96b5b4;">handle_connection_event</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> poll, connection, event)?
@@ -792,7 +793,7 @@
 </span></code></pre>
 <p><code>if let Some(connection) = connections.get_mut(&amp;token)</code>通过<code>&amp;token</code>从<code>HashMap</code>获取保存的<code>connection</code>然后进入<code>handle_connection_event()</code>，该方法判断<code>event.is_writable()</code> 和<code>event.is_readable()</code>然后分别处理。对一个<code>TcpStream</code>哪一个事件会先到达？不确定。代码中的两个<code>if</code>没有先后的依赖关系。</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#65737e;">/// Returns `true` if the connection is done.
+<code class="language-rust" data-lang="rust"><span style="color:#65737e;">/// Returns `true` if the connection is done.
 </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">handle_connection_event</span><span style="color:#c0c5ce;">(
     </span><span style="color:#bf616a;">poll</span><span style="color:#c0c5ce;">: &amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> Poll,
     </span><span style="color:#bf616a;">connection</span><span style="color:#c0c5ce;">: &amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> TcpStream,
@@ -811,7 +812,7 @@
 </span></code></pre>
 <p>我们从<code>if event.is_writable() </code>看</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">		</span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> event.</span><span style="color:#96b5b4;">is_writable</span><span style="color:#c0c5ce;">() {
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">		</span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> event.</span><span style="color:#96b5b4;">is_writable</span><span style="color:#c0c5ce;">() {
         </span><span style="color:#65737e;">// We can (maybe) write to the connection.
         </span><span style="color:#b48ead;">match</span><span style="color:#c0c5ce;"> connection.</span><span style="color:#96b5b4;">write</span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">DATA</span><span style="color:#c0c5ce;">) {
             </span><span style="color:#65737e;">// We want to write the entire `DATA` buffer in a single go. If we
@@ -838,12 +839,12 @@
 </span></code></pre>
 <p>如果可写就绪，就立即<code>connection.write(DATA)</code>。客户端会收到<code>&quot;Hello world!\n&quot;</code>字符，该方法的签名</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">write</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#b48ead;">mut </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">buf</span><span style="color:#c0c5ce;">: &amp;[</span><span style="color:#b48ead;">u8</span><span style="color:#c0c5ce;">]) -&gt; io::Result&lt;</span><span style="color:#b48ead;">usize</span><span style="color:#c0c5ce;">&gt;;
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">write</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#b48ead;">mut </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">buf</span><span style="color:#c0c5ce;">: &amp;[</span><span style="color:#b48ead;">u8</span><span style="color:#c0c5ce;">]) -&gt; io::Result&lt;</span><span style="color:#b48ead;">usize</span><span style="color:#c0c5ce;">&gt;;
 </span></code></pre>
 <p>如果写入字节长度小于<code>DATA.len()</code>就返回Err。</p>
 <p>如果写入成功，重新注册该<code>connection</code>，只关心<code>Interests::READABLE</code>可读就绪事件。</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">                </span><span style="color:#65737e;">// After we&#39;ve written something we&#39;ll reregister the connection
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">                </span><span style="color:#65737e;">// After we&#39;ve written something we&#39;ll reregister the connection
                 // to only respond to readable events.
 </span><span style="color:#c0c5ce;">                poll.</span><span style="color:#96b5b4;">registry</span><span style="color:#c0c5ce;">()
                     .</span><span style="color:#96b5b4;">reregister</span><span style="color:#c0c5ce;">(&amp;connection, event.</span><span style="color:#96b5b4;">token</span><span style="color:#c0c5ce;">(), Interests::</span><span style="color:#d08770;">READABLE</span><span style="color:#c0c5ce;">)?
@@ -852,7 +853,7 @@
 <p>如果返回的是被打断，则递归调用<code>handle_connection_event()</code></p>
 <p>接着看<code>if event.is_readable()</code></p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> event.</span><span style="color:#96b5b4;">is_readable</span><span style="color:#c0c5ce;">() {
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> event.</span><span style="color:#96b5b4;">is_readable</span><span style="color:#c0c5ce;">() {
         </span><span style="color:#b48ead;">let mut</span><span style="color:#c0c5ce;"> connection_closed = </span><span style="color:#d08770;">false</span><span style="color:#c0c5ce;">;
         </span><span style="color:#b48ead;">let mut</span><span style="color:#c0c5ce;"> received_data = Vec::with_capacity(</span><span style="color:#d08770;">4096</span><span style="color:#c0c5ce;">);
         </span><span style="color:#65737e;">// We can (maybe) read from the connection.
@@ -889,7 +890,7 @@
 </span></code></pre>
 <p>有一个<code>loop {}</code>，其中 <code>connection.read(&amp;mut buf) </code>方法的签名：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">read</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#b48ead;">mut </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">buf</span><span style="color:#c0c5ce;">: &amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> [</span><span style="color:#b48ead;">u8</span><span style="color:#c0c5ce;">]) -&gt; io::Result&lt;</span><span style="color:#b48ead;">usize</span><span style="color:#c0c5ce;">&gt; {
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">read</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#b48ead;">mut </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">buf</span><span style="color:#c0c5ce;">: &amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> [</span><span style="color:#b48ead;">u8</span><span style="color:#c0c5ce;">]) -&gt; io::Result&lt;</span><span style="color:#b48ead;">usize</span><span style="color:#c0c5ce;">&gt; {
         (&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.sys).</span><span style="color:#96b5b4;">read</span><span style="color:#c0c5ce;">(buf)
     }
 </span></code></pre>
@@ -901,7 +902,7 @@
 <p>大部分情况下，可读就绪，但是客户端没有任何数据输入会走阻塞，跳出<code>loop</code>那个分支。</p>
 <p>回到外层的方法：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">                    
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">                    
                     </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> done = ... {
                         </span><span style="color:#96b5b4;">handle_connection_event</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> poll, connection, event)?
                     } </span><span style="color:#b48ead;">else </span><span style="color:#c0c5ce;">{
@@ -916,7 +917,7 @@
 <h2 id="waker">Waker</h2>
 <p>上面的分析没涉及到的，有一个<code>/src/waker.rs</code>需要提一下。<code>Waker</code>允许跨线程唤醒<code>Poll</code>。</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">#[</span><span style="color:#bf616a;">derive</span><span style="color:#c0c5ce;">(Debug)]
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">#[</span><span style="color:#bf616a;">derive</span><span style="color:#c0c5ce;">(Debug)]
 </span><span style="color:#b48ead;">pub struct </span><span style="color:#c0c5ce;">Waker {
     </span><span style="color:#bf616a;">inner</span><span style="color:#c0c5ce;">: sys::Waker,
 }
@@ -937,7 +938,7 @@
 </span></code></pre>
 <p>定义比较简单，也就两个方法。我们看看Linux下的实现:</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">#[</span><span style="color:#bf616a;">cfg</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">any</span><span style="color:#c0c5ce;">(target_os = &quot;</span><span style="color:#a3be8c;">linux</span><span style="color:#c0c5ce;">&quot;, target_os = &quot;</span><span style="color:#a3be8c;">android</span><span style="color:#c0c5ce;">&quot;))]
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">#[</span><span style="color:#bf616a;">cfg</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">any</span><span style="color:#c0c5ce;">(target_os = &quot;</span><span style="color:#a3be8c;">linux</span><span style="color:#c0c5ce;">&quot;, target_os = &quot;</span><span style="color:#a3be8c;">android</span><span style="color:#c0c5ce;">&quot;))]
 </span><span style="color:#b48ead;">mod </span><span style="color:#c0c5ce;">eventfd {
 </span><span style="color:#c0c5ce;">   </span><span style="color:#b48ead;">use crate</span><span style="color:#c0c5ce;">::sys::Selector;
 </span><span style="color:#c0c5ce;">   </span><span style="color:#b48ead;">use crate</span><span style="color:#c0c5ce;">::{Interests, Token};
@@ -1002,7 +1003,7 @@
 </span></code></pre>
 <p>可以看到，<code>Waker</code>的<code>new()</code>是调用了系统的<code>eventfd()</code>方法。</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;"> </span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">eventfd</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">unsigned int </span><span style="color:#bf616a;">initval</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">flags</span><span style="color:#c0c5ce;">);
+<code class="language-c" data-lang="c"><span style="color:#c0c5ce;"> </span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">eventfd</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">unsigned int </span><span style="color:#bf616a;">initval</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">flags</span><span style="color:#c0c5ce;">);
 </span></code></pre>
 <p><code>eventfd()</code>方法创建一个文件描述符用于事件(event)通知。既可以用于用户空间的应用间通知，还可以用于内核空间事件通知用户空间的应用。实际上是内核空间维护的一个64位的int counter，表示“eventfd object”。</p>
 <p><code>initval</code>参数是初始化的值，<code>flags</code> 包括：</p>
@@ -1012,13 +1013,13 @@
 <p>这个&quot;eventfd object&quot;的相关操作很简单，<code>write()</code>会修改<code>counter</code>的值(累加)，<code>read()</code>读取<code>counter</code>的值，然后清零（如果是semophore模式，就减1）。</p>
 <p>上面的源码中，通过<code>eventfd()</code>创建了<code>fd</code>，然后将该<code>fd</code>注册到了<code>sys::selector</code>(实际上就是<code>epoll</code>)，<code>Interests</code>是可读就绪。</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">                selector
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">                selector
                     .</span><span style="color:#96b5b4;">register</span><span style="color:#c0c5ce;">(fd, token, Interests::</span><span style="color:#d08770;">READABLE</span><span style="color:#c0c5ce;">)
                     .</span><span style="color:#96b5b4;">map</span><span style="color:#c0c5ce;">(|()| Waker { fd: file })
 </span></code></pre>
 <p>接着看它的<code>wake()</code></p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">        </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">wake</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; io::Result&lt;()&gt; {
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">        </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">wake</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; io::Result&lt;()&gt; {
             </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> buf: [</span><span style="color:#b48ead;">u8</span><span style="color:#c0c5ce;">; </span><span style="color:#d08770;">8</span><span style="color:#c0c5ce;">] = </span><span style="color:#d08770;">1</span><span style="color:#b48ead;">u64</span><span style="color:#c0c5ce;">.</span><span style="color:#96b5b4;">to_ne_bytes</span><span style="color:#c0c5ce;">();
             </span><span style="color:#b48ead;">match </span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.fd).</span><span style="color:#96b5b4;">write</span><span style="color:#c0c5ce;">(&amp;buf) {
                 Ok(_) =&gt; Ok(()),
@@ -1088,16 +1089,20 @@
 </article>
 
 
-        </main>
-        <footer>
-            <p>
+            </main>
+            <footer>
+                <p>
                 © zongwu&#x27;s blog 2015 - 2021<br>
-            </p>
-            <p>
+                </p>
+                <p>
                 
                 
-            </p>
-        </footer>
-    </div>
+                </p>
+            </footer>
+        </div>
+        <!--  add cnzz trace code  -->
+        
+                <script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1279242175'%3E
+        
 </body>
 </html>

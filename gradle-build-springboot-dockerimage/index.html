@@ -1,53 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="referrer" content="no-referrer-when-downgrade">
+    <head>
+        <meta charset="utf-8">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="referrer" content="no-referrer-when-downgrade">
 
-    <title>使用Gradle 构建SpringBoot应用的Docker镜像</title>
-    <meta name="description" content="">
+        <title>使用Gradle 构建SpringBoot应用的Docker镜像</title>
+        <meta name="description" content="">
 
-    <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
+        <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
 
-    
+        
         <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
-    
+        
 
-    
-    
-</head>
-<body>
-    <a class="skip-main" href="#main">Skip to content</a>
-    <div class="container">
-        <header> 
-            <h1 class="site-header">
-                <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
-            </h1>
-            <nav>
+        
+        
+
+    </head>
+    <body>
+        <a class="skip-main" href="#main">Skip to content</a>
+        <div class="container">
+            <header> 
+                <h1 class="site-header">
+                    <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
+                </h1>
+                <nav>
+                    
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
+                    
+                    
+                </nav>
+            </header>
+            <main id="main" tabindex="-1">
                 
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
-                
-                
-            </nav>
-        </header>
-        <main id="main" tabindex="-1">
-            
 
 <article class="post">
     <header>
@@ -73,12 +74,12 @@
 <p>我们最终选用了 <a href="https://github.com/bmuschko/gradle-docker-plugin">https://github.com/bmuschko/gradle-docker-plugin</a> 的gradle-docker-plugin来实现构建docker镜像。该插件支持<code>java-application</code>  和 <code>spring-boot-application</code> 两种方式，很明显我们选取spring-boot-applicaiton插件。</p>
 <p>在原工程的build.gradle 最后加上：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">apply </span><span style="color:#d08770;">from</span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">docker.gradle</span><span style="color:#c0c5ce;">&#39;
+<code class="language-groovy" data-lang="groovy"><span style="color:#c0c5ce;">apply </span><span style="color:#d08770;">from</span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">docker.gradle</span><span style="color:#c0c5ce;">&#39;
 </span></code></pre>
 <p>在build.gradle的同一级目录下新建文件docker.gradle。</p>
 <p>添加：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">buildscript {
+<code class="language-groovy" data-lang="groovy"><span style="color:#c0c5ce;">buildscript {
     repositories {
 
         mavenCentral()
@@ -91,13 +92,13 @@
 
 apply </span><span style="color:#d08770;">plugin</span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">java</span><span style="color:#c0c5ce;">&#39;
 apply </span><span style="color:#d08770;">plugin</span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">org.springframework.boot</span><span style="color:#c0c5ce;">&#39;
-apply </span><span style="color:#d08770;">plugin</span><span style="color:#c0c5ce;">: </span><span style="color:#b48ead;">DockerRemoteApiPlugin</span><span style="color:#c0c5ce;">
-apply </span><span style="color:#d08770;">plugin</span><span style="color:#c0c5ce;">: </span><span style="color:#b48ead;">com.bmuschko.gradle.docker.DockerSpringBootApplicationPlugin
+apply </span><span style="color:#d08770;">plugin</span><span style="color:#c0c5ce;">: </span><span style="color:#b48ead;">DockerRemoteApiPlugin
+</span><span style="color:#c0c5ce;">apply </span><span style="color:#d08770;">plugin</span><span style="color:#c0c5ce;">: </span><span style="color:#b48ead;">com.bmuschko.gradle.docker.DockerSpringBootApplicationPlugin
 
 </span></code></pre>
 <p>都是一些基础配置。</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">
+<code class="language-groovy" data-lang="groovy"><span style="color:#c0c5ce;">
 </span><span style="color:#b48ead;">def</span><span style="color:#c0c5ce;"> projectname = &quot;</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">project.getName()</span><span style="color:#ab7967;">}</span><span style="color:#c0c5ce;">&quot;
 </span><span style="color:#b48ead;">def</span><span style="color:#c0c5ce;"> dockerVer = getGitVersion()
 </span><span style="color:#b48ead;">def</span><span style="color:#c0c5ce;"> port = </span><span style="color:#d08770;">8990
@@ -105,7 +106,7 @@ apply </span><span style="color:#d08770;">plugin</span><span style="color:#c0c5c
 </span></code></pre>
 <p>这里定义一些全局变量使用。port可以根据实际情况定义。其中<code>getGitVersion()</code>的定义：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">import java.text.SimpleDateFormat
+<code class="language-groovy" data-lang="groovy"><span style="color:#b48ead;">import java.text.SimpleDateFormat
 def </span><span style="color:#c0c5ce;">getGitVersion() {
     </span><span style="color:#b48ead;">def</span><span style="color:#c0c5ce;"> logTime = &#39;</span><span style="color:#a3be8c;">git log</span><span style="color:#c0c5ce;">&#39;.execute() | &#39;</span><span style="color:#a3be8c;">grep Date:</span><span style="color:#c0c5ce;">&#39;.execute() | &#39;</span><span style="color:#a3be8c;">head -n 1</span><span style="color:#c0c5ce;">&#39;.execute()
     logTime.waitFor()
@@ -118,7 +119,7 @@ def </span><span style="color:#c0c5ce;">getGitVersion() {
 <p>可以看到拼接了git仓库的最后一个commit 的提交时间和hash值。</p>
 <p>gradle-docker-plugin 预定义了一些task，我们只需要简单配置：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">docker { 
+<code class="language-groovy" data-lang="groovy"><span style="color:#c0c5ce;">docker { 
     url = getDefaultDockerUrl()
     registryCredentials {
         url = &quot;</span><span style="color:#a3be8c;">registry.cn-hangzhou.aliyuncs.com</span><span style="color:#c0c5ce;">&quot;
@@ -143,7 +144,7 @@ def </span><span style="color:#c0c5ce;">getGitVersion() {
 <p>接下来我们需要重写其中的 createDockerFile，buildImage，PushImage Task 来解决这两个问题。</p>
 <p>其中 createDockerFile：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">
+<code class="language-groovy" data-lang="groovy"><span style="color:#c0c5ce;">
 task createDockerfile(</span><span style="color:#d08770;">type</span><span style="color:#c0c5ce;">: </span><span style="color:#b48ead;">Dockerfile</span><span style="color:#c0c5ce;">) {
     dependsOn dockerSyncArchive
     from(docker.springBootApplication.baseImage.get())
@@ -167,7 +168,7 @@ task createDockerfile(</span><span style="color:#d08770;">type</span><span style
 </span></code></pre>
 <p>上面主要是创建Dockerfile，编写指令来配置合适的<code>timezone</code>。使用中科大的apk安装源（mirrors.ustc.edu.cn）更快。。。</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">task buildImage(</span><span style="color:#d08770;">type</span><span style="color:#c0c5ce;">: </span><span style="color:#b48ead;">DockerBuildImage</span><span style="color:#c0c5ce;">) {
+<code class="language-groovy" data-lang="groovy"><span style="color:#c0c5ce;">task buildImage(</span><span style="color:#d08770;">type</span><span style="color:#c0c5ce;">: </span><span style="color:#b48ead;">DockerBuildImage</span><span style="color:#c0c5ce;">) {
     dependsOn createDockerfile
     inputDir = createDockerfile.destFile.get().asFile.parentFile
     tag = &quot;</span><span style="color:#a3be8c;">zongwu233/</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">projectname</span><span style="color:#ab7967;">}</span><span style="color:#a3be8c;">:</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">dockerVer</span><span style="color:#ab7967;">}</span><span style="color:#c0c5ce;">&quot;.toLowerCase()
@@ -185,21 +186,21 @@ task createDockerfile(</span><span style="color:#d08770;">type</span><span style
 <p>其中<code>zongwu233</code> 是在阿里云DockerHub中的命名空间，<code>${projectname}</code> 是仓库名称。</p>
 <p>最后是push task：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">task pushImage(</span><span style="color:#d08770;">type</span><span style="color:#c0c5ce;">: </span><span style="color:#b48ead;">DockerPushImage</span><span style="color:#c0c5ce;">) {
+<code class="language-groovy" data-lang="groovy"><span style="color:#c0c5ce;">task pushImage(</span><span style="color:#d08770;">type</span><span style="color:#c0c5ce;">: </span><span style="color:#b48ead;">DockerPushImage</span><span style="color:#c0c5ce;">) {
     dependsOn dockerTag
     imageName = &quot;</span><span style="color:#a3be8c;">registry.cn-hangzhou.aliyuncs.com/zongwu233/</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">projectname</span><span style="color:#ab7967;">}</span><span style="color:#c0c5ce;">&quot;.toLowerCase()
 }
 </span></code></pre>
 <p>另外要在createDockerFile，buildImage 等task之前 加上import 声明：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">import com.bmuschko.gradle.docker.DockerRemoteApiPlugin
+<code class="language-groovy" data-lang="groovy"><span style="color:#b48ead;">import com.bmuschko.gradle.docker.DockerRemoteApiPlugin
 import</span><span style="color:#c0c5ce;"> com.bmuschko.gradle.docker.tasks.image.*
 </span><span style="color:#b48ead;">import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
 </span></code></pre>
 <p>这样，在控制台输入命令:</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#bf616a;">gradle</span><span style="color:#c0c5ce;"> pushImage
+<code class="language-bash" data-lang="bash"><span style="color:#bf616a;">gradle</span><span style="color:#c0c5ce;"> pushImage
 </span></code></pre>
 <p>即可完成应用的docker镜像构建并且push到阿里云仓库。</p>
 
@@ -225,16 +226,20 @@ import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
 </article>
 
 
-        </main>
-        <footer>
-            <p>
+            </main>
+            <footer>
+                <p>
                 © zongwu&#x27;s blog 2015 - 2021<br>
-            </p>
-            <p>
+                </p>
+                <p>
                 
                 
-            </p>
-        </footer>
-    </div>
+                </p>
+            </footer>
+        </div>
+        <!--  add cnzz trace code  -->
+        
+                <script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1279242175'%3E
+        
 </body>
 </html>

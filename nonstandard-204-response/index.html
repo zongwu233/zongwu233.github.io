@@ -1,53 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="referrer" content="no-referrer-when-downgrade">
+    <head>
+        <meta charset="utf-8">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="referrer" content="no-referrer-when-downgrade">
 
-    <title>不规范的HTTP 204 响应格式</title>
-    <meta name="description" content="">
+        <title>不规范的HTTP 204 响应格式</title>
+        <meta name="description" content="">
 
-    <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
+        <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
 
-    
+        
         <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
-    
+        
 
-    
-    
-</head>
-<body>
-    <a class="skip-main" href="#main">Skip to content</a>
-    <div class="container">
-        <header> 
-            <h1 class="site-header">
-                <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
-            </h1>
-            <nav>
+        
+        
+
+    </head>
+    <body>
+        <a class="skip-main" href="#main">Skip to content</a>
+        <div class="container">
+            <header> 
+                <h1 class="site-header">
+                    <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
+                </h1>
+                <nav>
+                    
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
+                    
+                    
+                </nav>
+            </header>
+            <main id="main" tabindex="-1">
                 
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
-                
-                
-            </nav>
-        </header>
-        <main id="main" tabindex="-1">
-            
 
 <article class="post">
     <header>
@@ -57,11 +58,11 @@
         <p>总悟君这次要说的是最近遇到的关于Http返回异常格式的问题。</p>
 <p>起因是这个:</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#ebcb8b;">SyncNetworkPerformer</span><span style="color:#c0c5ce;">.execute: 
+<code class="language-java" data-lang="java"><span style="color:#ebcb8b;">SyncNetworkPerformer</span><span style="color:#c0c5ce;">.execute: 
 </span><span style="color:#ebcb8b;">Unhandled</span><span style="color:#c0c5ce;"> exception com.zongwu.common.http.volley.</span><span style="color:#ebcb8b;">NoConnectionError</span><span style="color:#c0c5ce;">: java.net.</span><span style="color:#ebcb8b;">ProtocolException</span><span style="color:#c0c5ce;">: 
 </span><span style="color:#ebcb8b;">Unexpected</span><span style="color:#c0c5ce;"> status line: nullHTTP/</span><span style="color:#d08770;">1.1 200 OK   
-</span><span style="color:#c0c5ce;">com.zongwu.common.http.volley.</span><span style="color:#ebcb8b;">NoConnectionError</span><span style="color:#c0c5ce;">: java.net.</span><span style="color:#ebcb8b;">ProtocolException</span><span style="color:#c0c5ce;">: </span><span style="color:#ebcb8b;">Unexpected</span><span style="color:#c0c5ce;"> status line: nullHTTP/</span><span style="color:#d08770;">1.1 200 OK</span><span style="color:#c0c5ce;">           
-at com.zongwu.common.http.volley.toolbox.</span><span style="color:#ebcb8b;">BasicNetwork</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">performRequest</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">BasicNetwork</span><span style="color:#c0c5ce;">.java:</span><span style="color:#d08770;">163</span><span style="color:#c0c5ce;">)  
+</span><span style="color:#c0c5ce;">com.zongwu.common.http.volley.</span><span style="color:#ebcb8b;">NoConnectionError</span><span style="color:#c0c5ce;">: java.net.</span><span style="color:#ebcb8b;">ProtocolException</span><span style="color:#c0c5ce;">: </span><span style="color:#ebcb8b;">Unexpected</span><span style="color:#c0c5ce;"> status line: nullHTTP/</span><span style="color:#d08770;">1.1 200 OK           
+</span><span style="color:#c0c5ce;">at com.zongwu.common.http.volley.toolbox.</span><span style="color:#ebcb8b;">BasicNetwork</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">performRequest</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">BasicNetwork</span><span style="color:#c0c5ce;">.java:</span><span style="color:#d08770;">163</span><span style="color:#c0c5ce;">)  
 at com.zongwu.common.http.volley.</span><span style="color:#ebcb8b;">SyncNetworkPerformer</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">execute</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">SyncNetworkPerformer</span><span style="color:#c0c5ce;">.java:</span><span style="color:#d08770;">64</span><span style="color:#c0c5ce;">)
 </span></code></pre>
 <p>什么情况，服务端居然返回给我错误的http头部？？但是现在还不能找服务端的童鞋~~撕x~~理论，因为还有几个疑点我还回答不上来。</p>
@@ -72,7 +73,7 @@ at com.zongwu.common.http.volley.</span><span style="color:#ebcb8b;">SyncNetwork
 仔细查看线上版本的代码发现每一次Http请求完成后都调用了shutdown()方法。</li>
 </ol>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#ebcb8b;">DefaultHttpClient</span><span style="color:#c0c5ce;"> client = </span><span style="color:#bf616a;">getHttpClient</span><span style="color:#c0c5ce;">(httpPost.</span><span style="color:#bf616a;">getURI</span><span style="color:#c0c5ce;">().</span><span style="color:#bf616a;">toString</span><span style="color:#c0c5ce;">());
+<code class="language-java" data-lang="java"><span style="color:#ebcb8b;">DefaultHttpClient</span><span style="color:#c0c5ce;"> client = </span><span style="color:#bf616a;">getHttpClient</span><span style="color:#c0c5ce;">(httpPost.</span><span style="color:#bf616a;">getURI</span><span style="color:#c0c5ce;">().</span><span style="color:#bf616a;">toString</span><span style="color:#c0c5ce;">());
   ...
   client.</span><span style="color:#bf616a;">getConnectionManager</span><span style="color:#c0c5ce;">().</span><span style="color:#bf616a;">shutdown</span><span style="color:#c0c5ce;">();
 </span></code></pre>
@@ -137,16 +138,20 @@ at com.zongwu.common.http.volley.</span><span style="color:#ebcb8b;">SyncNetwork
 </article>
 
 
-        </main>
-        <footer>
-            <p>
+            </main>
+            <footer>
+                <p>
                 © zongwu&#x27;s blog 2015 - 2021<br>
-            </p>
-            <p>
+                </p>
+                <p>
                 
                 
-            </p>
-        </footer>
-    </div>
+                </p>
+            </footer>
+        </div>
+        <!--  add cnzz trace code  -->
+        
+                <script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1279242175'%3E
+        
 </body>
 </html>

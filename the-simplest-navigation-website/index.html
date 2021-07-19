@@ -1,53 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="referrer" content="no-referrer-when-downgrade">
+    <head>
+        <meta charset="utf-8">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="referrer" content="no-referrer-when-downgrade">
 
-    <title>最简单的内网导航网站</title>
-    <meta name="description" content="">
+        <title>最简单的内网导航网站</title>
+        <meta name="description" content="">
 
-    <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
+        <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
 
-    
+        
         <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
-    
+        
 
-    
-    
-</head>
-<body>
-    <a class="skip-main" href="#main">Skip to content</a>
-    <div class="container">
-        <header> 
-            <h1 class="site-header">
-                <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
-            </h1>
-            <nav>
+        
+        
+
+    </head>
+    <body>
+        <a class="skip-main" href="#main">Skip to content</a>
+        <div class="container">
+            <header> 
+                <h1 class="site-header">
+                    <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
+                </h1>
+                <nav>
+                    
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
+                    
+                    
+                </nav>
+            </header>
+            <main id="main" tabindex="-1">
                 
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
-                
-                
-            </nav>
-        </header>
-        <main id="main" tabindex="-1">
-            
 
 <article class="post">
     <header>
@@ -62,14 +63,14 @@
 <p>这时候就要介绍一下python3的HTTP server。</p>
 <p>在控制台执行：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">python -m http.server
+<code class="language-python" data-lang="python"><span style="color:#c0c5ce;">python -m http.server
 </span></code></pre>
 <p>就可以看到<code>Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) …</code>  ，python启动了一个http server端口默认是8000。访问<code>loalhost:8000</code>可以看到当前目录的文件列表。</p>
 <p>我们就通过pyhton 的http server 来实现这个最简单的内网导航。</p>
 <p>小项目就叫my123吧，项目只有2个文件，server.py和index.html。</p>
 <p>服务代码<code>server.py</code>很简单：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#65737e;">#coding=utf-8
+<code class="language-python" data-lang="python"><span style="color:#65737e;">#coding=utf-8
 
 </span><span style="color:#b48ead;">from </span><span style="color:#c0c5ce;">http.server </span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">HTTPServer, BaseHTTPRequestHandler
 </span><span style="color:#b48ead;">from </span><span style="color:#c0c5ce;">os </span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">curdir, sep
@@ -90,7 +91,7 @@ server.</span><span style="color:#bf616a;">serve_forever</span><span style="colo
 <p>主要逻辑就有访问<code>/index.html</code>或者<code>/</code>的时候，读取当前目录下的index.html文件，将内容返回。</p>
 <p>index.html文件的内容：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">&lt;</span><span style="color:#bf616a;">html</span><span style="color:#c0c5ce;">&gt;
+<code class="language-html" data-lang="html"><span style="color:#c0c5ce;">&lt;</span><span style="color:#bf616a;">html</span><span style="color:#c0c5ce;">&gt;
 
 &lt;</span><span style="color:#bf616a;">head</span><span style="color:#c0c5ce;">&gt;
       &lt;</span><span style="color:#bf616a;">meta </span><span style="color:#d08770;">charset</span><span style="color:#c0c5ce;">=&quot;</span><span style="color:#a3be8c;">UTF-8</span><span style="color:#c0c5ce;">&quot;&gt;
@@ -117,7 +118,7 @@ server.</span><span style="color:#bf616a;">serve_forever</span><span style="colo
 <p>就是简单的html内容，连CSS都没有。简单粗暴。</p>
 <p>调用命令启动：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">python server.py
+<code class="language-python" data-lang="python"><span style="color:#c0c5ce;">python server.py
 </span></code></pre>
 <p>搞定。</p>
 
@@ -143,16 +144,20 @@ server.</span><span style="color:#bf616a;">serve_forever</span><span style="colo
 </article>
 
 
-        </main>
-        <footer>
-            <p>
+            </main>
+            <footer>
+                <p>
                 © zongwu&#x27;s blog 2015 - 2021<br>
-            </p>
-            <p>
+                </p>
+                <p>
                 
                 
-            </p>
-        </footer>
-    </div>
+                </p>
+            </footer>
+        </div>
+        <!--  add cnzz trace code  -->
+        
+                <script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1279242175'%3E
+        
 </body>
 </html>

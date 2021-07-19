@@ -1,53 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="referrer" content="no-referrer-when-downgrade">
+    <head>
+        <meta charset="utf-8">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="referrer" content="no-referrer-when-downgrade">
 
-    <title>让我们聊一聊Rust的所有权系统</title>
-    <meta name="description" content="">
+        <title>让我们聊一聊Rust的所有权系统</title>
+        <meta name="description" content="">
 
-    <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
+        <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
 
-    
+        
         <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
-    
+        
 
-    
-    
-</head>
-<body>
-    <a class="skip-main" href="#main">Skip to content</a>
-    <div class="container">
-        <header> 
-            <h1 class="site-header">
-                <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
-            </h1>
-            <nav>
+        
+        
+
+    </head>
+    <body>
+        <a class="skip-main" href="#main">Skip to content</a>
+        <div class="container">
+            <header> 
+                <h1 class="site-header">
+                    <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
+                </h1>
+                <nav>
+                    
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
+                    
+                    
+                </nav>
+            </header>
+            <main id="main" tabindex="-1">
                 
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
-                
-                
-            </nav>
-        </header>
-        <main id="main" tabindex="-1">
-            
 
 <article class="post">
     <header>
@@ -81,7 +82,7 @@
 <h2 id="gui-ze-1yu-gui-ze-2">规则1与规则2</h2>
 <p>规则1 理解起来比较简单直观，在 Rust 中通过 <code>let</code> 关键字将一个值绑定到一个变量上。</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main </span><span style="color:#c0c5ce;">(){
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main </span><span style="color:#c0c5ce;">(){
     </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> a = </span><span style="color:#d08770;">12</span><span style="color:#c0c5ce;">;
     </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> b = &quot;</span><span style="color:#a3be8c;">hello</span><span style="color:#c0c5ce;">&quot;;
     
@@ -92,7 +93,7 @@
 </span></code></pre><h3 id="moveyu-yi">move语义</h3>
 <p>如果将一个变量赋值给另外一个变量会如何？考虑下面这种情况：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main </span><span style="color:#c0c5ce;">(){
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main </span><span style="color:#c0c5ce;">(){
    </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> a = String::from(&quot;</span><span style="color:#a3be8c;">hello world</span><span style="color:#c0c5ce;">&quot;);
    </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> b = a;
    
@@ -103,7 +104,7 @@
 </span></code></pre>
 <p>编译会报错：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">error[</span><span style="color:#d08770;">E0382</span><span style="color:#c0c5ce;">]: borrow of moved value: `a`
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">error[</span><span style="color:#d08770;">E0382</span><span style="color:#c0c5ce;">]: borrow of moved value: `a`
  --&gt; src/main.rs:</span><span style="color:#d08770;">5</span><span style="color:#c0c5ce;">:</span><span style="color:#d08770;">18
   </span><span style="color:#c0c5ce;">|
 </span><span style="color:#d08770;">2 </span><span style="color:#c0c5ce;">|    </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> a = String::from(&quot;</span><span style="color:#a3be8c;">hello world</span><span style="color:#c0c5ce;">&quot;);
@@ -125,7 +126,7 @@ For more information about this error, try `rustc --explain </span><span style="
 <h3 id="copy-trait">Copy trait</h3>
 <p>新的问题出现，下面这段代码没有遵循<code>move</code>语义，但编译成功：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main </span><span style="color:#c0c5ce;">(){
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main </span><span style="color:#c0c5ce;">(){
 
    </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> a = </span><span style="color:#d08770;">128</span><span style="color:#c0c5ce;">;
    </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> b = a;</span><span style="color:#65737e;">// move ?
@@ -148,7 +149,7 @@ For more information about this error, try `rustc --explain </span><span style="
 <p>保留原来的变量，并且将值内容拷贝给新的变量，对简单的数字类型很容易理解接受，那如果是复杂类型或者说是自定义类型呢？
 如果不希望发生所有权转移，可以使用<code>clone</code>。如下：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main </span><span style="color:#c0c5ce;">(){
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main </span><span style="color:#c0c5ce;">(){
 
    </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> a = String::from(&quot;</span><span style="color:#a3be8c;">hello world</span><span style="color:#c0c5ce;">&quot;);
    </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> b = a.</span><span style="color:#96b5b4;">clone</span><span style="color:#c0c5ce;">();
@@ -161,7 +162,7 @@ For more information about this error, try `rustc --explain </span><span style="
 <p><code>String</code>实现了std::clone::Clone <code>trait</code>。使用<code>clone</code>操作后两个变量持有不同的值（这两个值是不同的内存空间）。
 能不能像使用基础数据类型那样方便地应用<code>copy</code>语义呢？可以的，如下：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">#[</span><span style="color:#bf616a;">derive</span><span style="color:#c0c5ce;">(Debug,Copy,Clone)] </span><span style="color:#65737e;">// here！
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">#[</span><span style="color:#bf616a;">derive</span><span style="color:#c0c5ce;">(Debug,Copy,Clone)] </span><span style="color:#65737e;">// here！
 </span><span style="color:#b48ead;">struct </span><span style="color:#c0c5ce;">Foo {
     </span><span style="color:#bf616a;">x</span><span style="color:#c0c5ce;">: </span><span style="color:#b48ead;">i32</span><span style="color:#c0c5ce;">,
     </span><span style="color:#bf616a;">y</span><span style="color:#c0c5ce;">: </span><span style="color:#b48ead;">i64</span><span style="color:#c0c5ce;">,
@@ -181,7 +182,7 @@ For more information about this error, try `rustc --explain </span><span style="
 <h3 id="suo-you-quan-yu-han-shu">所有权与函数</h3>
 <p>调用函数的时候，会将实际参传递给形式参数，这个操作在语义上与给变量赋值相似。可能会移动或者复制，遵循与赋值语句一样的规则。例如：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">() {
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">() {
     </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> s = String::from(&quot;</span><span style="color:#a3be8c;">hello</span><span style="color:#c0c5ce;">&quot;);  </span><span style="color:#65737e;">// s 进入作用域
 
     </span><span style="color:#96b5b4;">takes_ownership</span><span style="color:#c0c5ce;">(s);             </span><span style="color:#65737e;">// s 的值移动到函数里 ...
@@ -207,7 +208,7 @@ For more information about this error, try `rustc --explain </span><span style="
 <h3 id="yin-yong-yu-jie-yong">引用与借用</h3>
 <p>再看如下的代码：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">() {
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">() {
     </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> s1 = String::from(&quot;</span><span style="color:#a3be8c;">hello</span><span style="color:#c0c5ce;">&quot;);
 
     </span><span style="color:#b48ead;">let </span><span style="color:#c0c5ce;">(s2, len) = </span><span style="color:#96b5b4;">calculate_length</span><span style="color:#c0c5ce;">(s1);
@@ -224,7 +225,7 @@ For more information about this error, try `rustc --explain </span><span style="
 <p>在每一次函数调用的时候，都获取所有权，然后在函数调用完成的时候，再返回所有权，这种方式略显繁琐。而这种调用在实际场景中极其常见，Rust提供了引用（references）功能来解决这个问题。</p>
 <p>利用引用，上面的代码可以改写成：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">() {
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">() {
     </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> s1 = String::from(&quot;</span><span style="color:#a3be8c;">hello</span><span style="color:#c0c5ce;">&quot;);
 
     </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> len = </span><span style="color:#96b5b4;">calculate_length</span><span style="color:#c0c5ce;">(&amp;s1);
@@ -242,7 +243,7 @@ For more information about this error, try `rustc --explain </span><span style="
 <p>这里并不想展开讨论不可变引用和可变引用的相关规则，那是并发编程场景下需要关注的点。</p>
 <p>关于引用还需要特别注意的一个点是作用域。一个<strong>引用的作用域</strong>从声明的地方开始一直持续到<strong>最后一次使用为止</strong>。如下代码是可以编译的：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">(){
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">(){
     </span><span style="color:#b48ead;">let mut</span><span style="color:#c0c5ce;"> s = String::from(&quot;</span><span style="color:#a3be8c;">hello</span><span style="color:#c0c5ce;">&quot;);
 
     </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> r1 = &amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> s; </span><span style="color:#65737e;">// 没问题
@@ -257,7 +258,7 @@ For more information about this error, try `rustc --explain </span><span style="
 <p>对集合一段连续元素的引用就是[slice类型]。
 例如：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">(){
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">(){
     </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> s = String::from(&quot;</span><span style="color:#a3be8c;">hello world</span><span style="color:#c0c5ce;">&quot;);
 
     </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> hello = &amp;s[</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">..</span><span style="color:#d08770;">5</span><span style="color:#c0c5ce;">];
@@ -278,7 +279,7 @@ For more information about this error, try `rustc --explain </span><span style="
 <h3 id="zuo-yong-yu">作用域</h3>
 <p>作用域是一个项（item）在程序中有效的范围。最常见的就是<strong>函数作用域</strong>，比如</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">(){</span><span style="color:#65737e;">// s无效
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">(){</span><span style="color:#65737e;">// s无效
 
     </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> s = &quot;</span><span style="color:#a3be8c;">hello world</span><span style="color:#c0c5ce;">&quot;;</span><span style="color:#65737e;">// s进入作用域
     </span><span style="color:#c0c5ce;">println!(&quot;</span><span style="color:#d08770;">{}</span><span style="color:#c0c5ce;">&quot;,s);
@@ -287,7 +288,7 @@ For more information about this error, try `rustc --explain </span><span style="
 </span></code></pre>
 <p>还有块作用域，例如：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">(){</span><span style="color:#65737e;">// s无效
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">(){</span><span style="color:#65737e;">// s无效
 
     </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> s = &quot;</span><span style="color:#a3be8c;">hello world</span><span style="color:#c0c5ce;">&quot;;</span><span style="color:#65737e;">// s进入作用域
     </span><span style="color:#c0c5ce;">println!(&quot;</span><span style="color:#d08770;">{}</span><span style="color:#c0c5ce;">&quot;,s);
@@ -302,7 +303,7 @@ For more information about this error, try `rustc --explain </span><span style="
 </span></code></pre>
 <p>实际上，<code>let</code>关键字会隐式地开启一个作用域，对于以下代码：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">(){ 
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">(){ 
 
     </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> s1 = &quot;</span><span style="color:#a3be8c;">hello</span><span style="color:#c0c5ce;">&quot;; 
     </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> s2 =&quot;</span><span style="color:#a3be8c;">world</span><span style="color:#c0c5ce;">&quot;;
@@ -311,7 +312,7 @@ For more information about this error, try `rustc --explain </span><span style="
 </span></code></pre>
 <p>利用 https://play.rust-lang.org/  的 SHOW MIR 功能可以看到：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">() -&gt; () {
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">() -&gt; () {
     </span><span style="color:#b48ead;">let mut </span><span style="color:#d08770;">_0</span><span style="color:#c0c5ce;">: ();                      </span><span style="color:#65737e;">// return place in scope 0 at src/main.rs:1:10: 1:10
     </span><span style="color:#b48ead;">let </span><span style="color:#d08770;">_1</span><span style="color:#c0c5ce;">: &amp;</span><span style="color:#b48ead;">str</span><span style="color:#c0c5ce;">;                        </span><span style="color:#65737e;">// in scope 0 at src/main.rs:3:9: 3:11
 </span><span style="color:#c0c5ce;">    scope </span><span style="color:#d08770;">1 </span><span style="color:#c0c5ce;">{
@@ -336,7 +337,7 @@ For more information about this error, try `rustc --explain </span><span style="
 <p>注意：<code>FnOnce</code>是<code>FnMut</code> <code>Fn</code>的<code>supertrait</code>；<code>FnMut</code>是<code>Fn</code>的<code>supertrait</code>。
 <code>FnOnce</code>的例子：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">do_action</span><span style="color:#c0c5ce;">&lt;F&gt;(</span><span style="color:#bf616a;">func</span><span style="color:#c0c5ce;">:F)</span><span style="color:#b48ead;">where</span><span style="color:#c0c5ce;"> F:FnOnce()-&gt;</span><span style="color:#b48ead;">usize</span><span style="color:#c0c5ce;">{
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">do_action</span><span style="color:#c0c5ce;">&lt;F&gt;(</span><span style="color:#bf616a;">func</span><span style="color:#c0c5ce;">:F)</span><span style="color:#b48ead;">where</span><span style="color:#c0c5ce;"> F:FnOnce()-&gt;</span><span style="color:#b48ead;">usize</span><span style="color:#c0c5ce;">{
     println!(&quot;</span><span style="color:#a3be8c;">disappeared variable length : </span><span style="color:#d08770;">{}</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#96b5b4;">func</span><span style="color:#c0c5ce;">());
 }
 
@@ -352,7 +353,7 @@ For more information about this error, try `rustc --explain </span><span style="
 <p>使用了一个关键字<code>move</code> 将闭包需要捕获的变量的所有权<code>move</code>到闭包内。
 <code>FnMut</code>的例子：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">do_action</span><span style="color:#c0c5ce;">&lt;F&gt;(</span><span style="color:#b48ead;">mut </span><span style="color:#bf616a;">func</span><span style="color:#c0c5ce;">:F)</span><span style="color:#b48ead;">where</span><span style="color:#c0c5ce;"> F:FnMut()-&gt;</span><span style="color:#b48ead;">usize</span><span style="color:#c0c5ce;">{
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">do_action</span><span style="color:#c0c5ce;">&lt;F&gt;(</span><span style="color:#b48ead;">mut </span><span style="color:#bf616a;">func</span><span style="color:#c0c5ce;">:F)</span><span style="color:#b48ead;">where</span><span style="color:#c0c5ce;"> F:FnMut()-&gt;</span><span style="color:#b48ead;">usize</span><span style="color:#c0c5ce;">{
     println!(&quot;</span><span style="color:#a3be8c;">mutable result </span><span style="color:#d08770;">{}</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#96b5b4;">func</span><span style="color:#c0c5ce;">());
 }
 
@@ -367,7 +368,7 @@ For more information about this error, try `rustc --explain </span><span style="
 </span></code></pre>
 <p><code>Fn</code>的例子（将闭包形式简化）：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">do_action</span><span style="color:#c0c5ce;">&lt;F&gt;(</span><span style="color:#bf616a;">func</span><span style="color:#c0c5ce;">:F)</span><span style="color:#b48ead;">where</span><span style="color:#c0c5ce;"> F:Fn()-&gt;</span><span style="color:#b48ead;">usize</span><span style="color:#c0c5ce;">{
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">do_action</span><span style="color:#c0c5ce;">&lt;F&gt;(</span><span style="color:#bf616a;">func</span><span style="color:#c0c5ce;">:F)</span><span style="color:#b48ead;">where</span><span style="color:#c0c5ce;"> F:Fn()-&gt;</span><span style="color:#b48ead;">usize</span><span style="color:#c0c5ce;">{
     println!(&quot;</span><span style="color:#a3be8c;">result </span><span style="color:#d08770;">{}</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#96b5b4;">func</span><span style="color:#c0c5ce;">());
 }
 
@@ -383,7 +384,7 @@ For more information about this error, try `rustc --explain </span><span style="
 <p>大部分场景下，我们使用变量的时候，编译器能够自动推断变量的作用域并正常工作。但有时候不那么明显，特别是使用引用的很多场景下，需要手工标记变量的生命周期，帮助编译器检查引用的生命周期不会超过对象的生命周期。
 例如：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">() {
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">() {
     </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> r;
     {
         </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> x = </span><span style="color:#d08770;">5</span><span style="color:#c0c5ce;">;
@@ -394,7 +395,7 @@ For more information about this error, try `rustc --explain </span><span style="
 </span></code></pre>
 <p>编译失败：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">error[</span><span style="color:#d08770;">E0597</span><span style="color:#c0c5ce;">]: `x` does not live long enough
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">error[</span><span style="color:#d08770;">E0597</span><span style="color:#c0c5ce;">]: `x` does not live long enough
  --&gt; src/main.rs:</span><span style="color:#d08770;">5</span><span style="color:#c0c5ce;">:</span><span style="color:#d08770;">13
   </span><span style="color:#c0c5ce;">|
 </span><span style="color:#d08770;">5 </span><span style="color:#c0c5ce;">|         r = &amp;x;
@@ -412,7 +413,7 @@ For more information about this error, try `rustc --explain </span><span style="
 <p>Rust 通过借用检查器（borrow checker）比较作用域来确保所有的引用都是有效的。</p>
 <p>继续看下面的代码：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">() {
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">() {
     </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> string1 = String::from(&quot;</span><span style="color:#a3be8c;">abcd</span><span style="color:#c0c5ce;">&quot;);
     </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> string2 = &quot;</span><span style="color:#a3be8c;">xyz</span><span style="color:#c0c5ce;">&quot;;
 
@@ -430,7 +431,7 @@ For more information about this error, try `rustc --explain </span><span style="
 </span></code></pre>
 <p>编译错误：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">error[</span><span style="color:#d08770;">E0106</span><span style="color:#c0c5ce;">]: missing lifetime specifier
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">error[</span><span style="color:#d08770;">E0106</span><span style="color:#c0c5ce;">]: missing lifetime specifier
  --&gt; src/main.rs:</span><span style="color:#d08770;">9</span><span style="color:#c0c5ce;">:</span><span style="color:#d08770;">33
   </span><span style="color:#c0c5ce;">|
 </span><span style="color:#d08770;">9 </span><span style="color:#c0c5ce;">| </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">longest</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">x</span><span style="color:#c0c5ce;">: &amp;</span><span style="color:#b48ead;">str</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">y</span><span style="color:#c0c5ce;">: &amp;</span><span style="color:#b48ead;">str</span><span style="color:#c0c5ce;">) -&gt; &amp;</span><span style="color:#b48ead;">str </span><span style="color:#c0c5ce;">{
@@ -450,7 +451,7 @@ For more information about this error, try `rustc --explain </span><span style="
 <p><code>fn longest&lt;'a&gt;(x: &amp;'a str, y: &amp;'a str) -&gt; &amp;'a str</code></p>
 <p>实际上我们无法在编译期确定该函数到底返回<code>x</code>还是<code>y</code>，也无法知道传入参数（引用）的生命周期，这就导致编译器无法判定返回的引用是否有效。这就需要按照提示改写函数签名。</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">longest</span><span style="color:#c0c5ce;">&lt;</span><span style="color:#b48ead;">&#39;a</span><span style="color:#c0c5ce;">&gt;(</span><span style="color:#bf616a;">x</span><span style="color:#c0c5ce;">: &amp;</span><span style="color:#b48ead;">&#39;a str</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">y</span><span style="color:#c0c5ce;">: &amp;</span><span style="color:#b48ead;">&#39;a str</span><span style="color:#c0c5ce;">) -&gt; &amp;</span><span style="color:#b48ead;">&#39;a str </span><span style="color:#c0c5ce;">{
+<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">longest</span><span style="color:#c0c5ce;">&lt;</span><span style="color:#b48ead;">&#39;a</span><span style="color:#c0c5ce;">&gt;(</span><span style="color:#bf616a;">x</span><span style="color:#c0c5ce;">: &amp;</span><span style="color:#b48ead;">&#39;a str</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">y</span><span style="color:#c0c5ce;">: &amp;</span><span style="color:#b48ead;">&#39;a str</span><span style="color:#c0c5ce;">) -&gt; &amp;</span><span style="color:#b48ead;">&#39;a str </span><span style="color:#c0c5ce;">{
     </span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> x.</span><span style="color:#96b5b4;">len</span><span style="color:#c0c5ce;">() &gt; y.</span><span style="color:#96b5b4;">len</span><span style="color:#c0c5ce;">() {
         x
     } </span><span style="color:#b48ead;">else </span><span style="color:#c0c5ce;">{
@@ -462,7 +463,7 @@ For more information about this error, try `rustc --explain </span><span style="
 <p>当具体的引用被传递给 longest 时，被 'a 所替代的具体生命周期是 x 的作用域与 y 的作用域相重叠的那一部分。换一种说法就是泛型生命周期 'a 的具体生命周期等同于 x 和 y 的生命周期中较小的那一个。因为我们用相同的生命周期参数 'a 标注了返回的引用值，所以返回的引用值就能保证在 x 和 y 中较短的那个生命周期结束之前保持有效。</p>
 <p>如果结构体中使用引用，同样也需要手工标注生命周期。如下代码：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">#[</span><span style="color:#bf616a;">derive</span><span style="color:#c0c5ce;">(Debug)]
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">#[</span><span style="color:#bf616a;">derive</span><span style="color:#c0c5ce;">(Debug)]
 </span><span style="color:#b48ead;">struct </span><span style="color:#c0c5ce;">Foo{
     </span><span style="color:#bf616a;">str</span><span style="color:#c0c5ce;">: &amp;</span><span style="color:#b48ead;">str</span><span style="color:#c0c5ce;">,
     </span><span style="color:#bf616a;">a </span><span style="color:#c0c5ce;">: </span><span style="color:#b48ead;">i32</span><span style="color:#c0c5ce;">,
@@ -475,7 +476,7 @@ For more information about this error, try `rustc --explain </span><span style="
 </span></code></pre>
 <p>同样会编译错误：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">error[</span><span style="color:#d08770;">E0106</span><span style="color:#c0c5ce;">]: missing lifetime specifier
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">error[</span><span style="color:#d08770;">E0106</span><span style="color:#c0c5ce;">]: missing lifetime specifier
  --&gt; src/main.rs:</span><span style="color:#d08770;">3</span><span style="color:#c0c5ce;">:</span><span style="color:#d08770;">10
   </span><span style="color:#c0c5ce;">|
 </span><span style="color:#d08770;">3 </span><span style="color:#c0c5ce;">|     </span><span style="color:#b48ead;">str</span><span style="color:#c0c5ce;">: &amp;</span><span style="color:#b48ead;">str</span><span style="color:#c0c5ce;">,
@@ -493,7 +494,7 @@ For more information about this error, try `rustc --explain E0106`.
 </span></code></pre>
 <p>改写成带标记生命周期的形式：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">#[</span><span style="color:#bf616a;">derive</span><span style="color:#c0c5ce;">(Debug)]
+<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">#[</span><span style="color:#bf616a;">derive</span><span style="color:#c0c5ce;">(Debug)]
 </span><span style="color:#b48ead;">struct </span><span style="color:#c0c5ce;">Foo&lt;</span><span style="color:#b48ead;">&#39;a</span><span style="color:#c0c5ce;">&gt;{
     </span><span style="color:#bf616a;">str</span><span style="color:#c0c5ce;">: &amp;</span><span style="color:#b48ead;">&#39;a str</span><span style="color:#c0c5ce;">,
     </span><span style="color:#bf616a;">a </span><span style="color:#c0c5ce;">: </span><span style="color:#b48ead;">i32</span><span style="color:#c0c5ce;">,
@@ -544,16 +545,20 @@ https://doc.rust-lang.org/book/ch04-00-understanding-ownership.html</p>
 </article>
 
 
-        </main>
-        <footer>
-            <p>
+            </main>
+            <footer>
+                <p>
                 © zongwu&#x27;s blog 2015 - 2021<br>
-            </p>
-            <p>
+                </p>
+                <p>
                 
                 
-            </p>
-        </footer>
-    </div>
+                </p>
+            </footer>
+        </div>
+        <!--  add cnzz trace code  -->
+        
+                <script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1279242175'%3E
+        
 </body>
 </html>

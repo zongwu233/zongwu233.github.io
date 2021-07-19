@@ -1,53 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="referrer" content="no-referrer-when-downgrade">
+    <head>
+        <meta charset="utf-8">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="referrer" content="no-referrer-when-downgrade">
 
-    <title>Android项目持续集成环境</title>
-    <meta name="description" content="">
+        <title>Android项目持续集成环境</title>
+        <meta name="description" content="">
 
-    <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
+        <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
 
-    
+        
         <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
-    
+        
 
-    
-    
-</head>
-<body>
-    <a class="skip-main" href="#main">Skip to content</a>
-    <div class="container">
-        <header> 
-            <h1 class="site-header">
-                <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
-            </h1>
-            <nav>
+        
+        
+
+    </head>
+    <body>
+        <a class="skip-main" href="#main">Skip to content</a>
+        <div class="container">
+            <header> 
+                <h1 class="site-header">
+                    <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
+                </h1>
+                <nav>
+                    
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
+                    
+                    
+                </nav>
+            </header>
+            <main id="main" tabindex="-1">
                 
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
-                
-                
-            </nav>
-        </header>
-        <main id="main" tabindex="-1">
-            
 
 <article class="post">
     <header>
@@ -63,7 +64,7 @@
 <p>编写Dockerfile</p>
 <p>docker运行jenkins的命令：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">docker run -d -p 8080:8080 --name  jenkins-master jenkins
+<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">docker run -d -p 8080:8080 --name  jenkins-master jenkins
 </span></code></pre>
 <p>这里将docker的8080端口映射到本级的8080端口，该docker实例的name叫 <code>jenkins-master</code></p>
 <h5 id="gua-zai-volume-shu-ju-juan">挂载Volume（数据卷）</h5>
@@ -71,18 +72,18 @@
 <p>通过命令<code>docker run -v</code> 来创建一个volume并挂在到docker容器。</p>
 <p>对<code>jenkins</code>需要的数据：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">cd ~ &amp;&amp; mkdir jenkins 
+<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">cd ~ &amp;&amp; mkdir jenkins 
 </span></code></pre>
 <p>挂载的命令：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">docker run  -v  ~/jenkins:/var/jenkins_home -d -p 8080:8080 --name  jenkins-master jenkins
+<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">docker run  -v  ~/jenkins:/var/jenkins_home -d -p 8080:8080 --name  jenkins-master jenkins
 </span></code></pre>
 <p>这样就将刚刚创建的jenkins目录挂载到docker的<code>/var/jenkins_home</code></p>
 <h5 id="an-zhuang-git">安装git</h5>
 <p>映射 ~/.gitconfig 到docker 容器内</p>
 <h5 id="an-zhuang-android-sdk">安装Android SDK</h5>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">cd ~
+<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">cd ~
 wget https://dl.google.com/android/android-sdk_r25.2.3-linux.tgz
 
 tar xvzf android-sdk_r25.2.3-linux.tgz
@@ -93,7 +94,7 @@ cd android-sdk
 </span></code></pre>
 <p>安装缺失的support 包，这个根据自己Android项目依赖的具体情况选择。</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">
+<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">
 ./tools/bin/sdkmanager &quot;extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0-alpha8&quot;
 
 ./tools/bin/sdkmanager &quot;extras;m2repository;com;android;support;appcompat-v7;24.2.1&quot;
@@ -102,15 +103,15 @@ cd android-sdk
 </span></code></pre>
 <p>centOS缺失Android SDK运行时必须的 lib</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">yum install -y libc6-i386 lib32stdc++6 lib32gcc1 lib32ncurses5 lib32z1
+<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">yum install -y libc6-i386 lib32stdc++6 lib32gcc1 lib32ncurses5 lib32z1
 </span></code></pre>
 <p>jenkins构建Android项目的时候注意添加：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">echo &quot;sdk.dir=/var/android-sdk&quot; &gt;&gt; local.properties
+<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">echo &quot;sdk.dir=/var/android-sdk&quot; &gt;&gt; local.properties
 </span></code></pre>
 <p>挂载AndroidSDK目录，之前docker命令变成</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">docker run  -v  ~/jenkins:/var/jenkins_home -v ~/android-sdk:/var/android-sdk -d -p 8080:8080 --name  jenkins-master jenkins
+<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">docker run  -v  ~/jenkins:/var/jenkins_home -v ~/android-sdk:/var/android-sdk -d -p 8080:8080 --name  jenkins-master jenkins
 </span></code></pre><h5 id="jenkinspei-zhi">jenkins配置</h5>
 <p>可以配置定时跑任务。</p>
 <p>安装gitlab插件（jenkins第一次启动的时候会提示安装插件，选择默认的标准安装即可）可以方便githook，比如代码push就触发构建。</p>
@@ -138,16 +139,20 @@ cd android-sdk
 </article>
 
 
-        </main>
-        <footer>
-            <p>
+            </main>
+            <footer>
+                <p>
                 © zongwu&#x27;s blog 2015 - 2021<br>
-            </p>
-            <p>
+                </p>
+                <p>
                 
                 
-            </p>
-        </footer>
-    </div>
+                </p>
+            </footer>
+        </div>
+        <!--  add cnzz trace code  -->
+        
+                <script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1279242175'%3E
+        
 </body>
 </html>

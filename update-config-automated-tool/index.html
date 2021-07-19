@@ -1,53 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="referrer" content="no-referrer-when-downgrade">
+    <head>
+        <meta charset="utf-8">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="referrer" content="no-referrer-when-downgrade">
 
-    <title>更新配置自动化工具</title>
-    <meta name="description" content="">
+        <title>更新配置自动化工具</title>
+        <meta name="description" content="">
 
-    <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
+        <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
 
-    
+        
         <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
-    
+        
 
-    
-    
-</head>
-<body>
-    <a class="skip-main" href="#main">Skip to content</a>
-    <div class="container">
-        <header> 
-            <h1 class="site-header">
-                <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
-            </h1>
-            <nav>
+        
+        
+
+    </head>
+    <body>
+        <a class="skip-main" href="#main">Skip to content</a>
+        <div class="container">
+            <header> 
+                <h1 class="site-header">
+                    <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
+                </h1>
+                <nav>
+                    
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
+                    
+                    
+                </nav>
+            </header>
+            <main id="main" tabindex="-1">
                 
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
-                
-                
-            </nav>
-        </header>
-        <main id="main" tabindex="-1">
-            
 
 <article class="post">
     <header>
@@ -72,7 +73,7 @@
 <p>于是我创建了一个SpringBoot应用，为什么要创建一个java web应用？首先因为最熟悉java，其次是工程创建快速，使用简单，之前我实现了一个模版工程，可以快速创建SpringBoot应用，而且配置了常用的类库，非常方便。</p>
 <p>一些核心功能实现：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">@</span><span style="color:#bf616a;">Component
+<code class="language-java" data-lang="java"><span style="color:#c0c5ce;">@</span><span style="color:#bf616a;">Component
 </span><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">ScheduleComp </span><span style="color:#eff1f5;">{
 
     </span><span style="color:#ebcb8b;">Logger </span><span style="color:#eff1f5;">logger </span><span style="color:#c0c5ce;">= </span><span style="color:#ebcb8b;">LoggerFactory</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">getLogger</span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">ScheduleComp</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">class</span><span style="color:#eff1f5;">);
@@ -92,7 +93,7 @@
 </span></code></pre>
 <p><code>securityRulService 的refreshAll()方法</code></p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">public</span><span style="color:#c0c5ce;"> void </span><span style="color:#bf616a;">refreshAll</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">boolean</span><span style="color:#c0c5ce;"> force) {
+<code class="language-java" data-lang="java"><span style="color:#b48ead;">public</span><span style="color:#c0c5ce;"> void </span><span style="color:#bf616a;">refreshAll</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">boolean</span><span style="color:#c0c5ce;"> force) {
         </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> nowIp = </span><span style="color:#bf616a;">getLocalIp</span><span style="color:#c0c5ce;">();
         </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">StringUtils</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">isEmpty</span><span style="color:#c0c5ce;">(nowIp)) {
             logger.</span><span style="color:#bf616a;">error</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">get current ip is empty! try next time...</span><span style="color:#c0c5ce;">&quot;);
@@ -113,7 +114,7 @@
 </span></code></pre>
 <p><code>getLocalIp()</code>的实现：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">public static </span><span style="color:#ebcb8b;">String </span><span style="color:#bf616a;">getLocalIp</span><span style="color:#c0c5ce;">() {
+<code class="language-java" data-lang="java"><span style="color:#b48ead;">public static </span><span style="color:#ebcb8b;">String </span><span style="color:#bf616a;">getLocalIp</span><span style="color:#c0c5ce;">() {
         </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> ip = </span><span style="color:#bf616a;">getIpCN</span><span style="color:#c0c5ce;">();
   			...
           
@@ -154,7 +155,7 @@
 <p>还可以配置其他网站，防止ip.cn挂掉而导致服务失败。</p>
 <p><code>getCurrentIp</code> 的实现很简单，从本地文件读取上次记录的ip地址。</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">public </span><span style="color:#ebcb8b;">String </span><span style="color:#bf616a;">getCurrentIp</span><span style="color:#c0c5ce;">() {
+<code class="language-java" data-lang="java"><span style="color:#b48ead;">public </span><span style="color:#ebcb8b;">String </span><span style="color:#bf616a;">getCurrentIp</span><span style="color:#c0c5ce;">() {
         </span><span style="color:#ebcb8b;">File</span><span style="color:#c0c5ce;"> file = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">File</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">ip.txt</span><span style="color:#c0c5ce;">&quot;);
         </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(!file.</span><span style="color:#bf616a;">exists</span><span style="color:#c0c5ce;">()) {
             </span><span style="color:#b48ead;">throw new </span><span style="color:#ebcb8b;">RuntimeException</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">cannot find ip data!</span><span style="color:#c0c5ce;">&quot;);
@@ -173,7 +174,7 @@
 </span></code></pre>
 <p>采用文件存储是最简单直接的方式。更新文件内容的代码：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">private</span><span style="color:#c0c5ce;"> void </span><span style="color:#bf616a;">updateCurrentIp</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> ip) {
+<code class="language-java" data-lang="java"><span style="color:#b48ead;">private</span><span style="color:#c0c5ce;"> void </span><span style="color:#bf616a;">updateCurrentIp</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> ip) {
         </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">StringUtils</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">isEmpty</span><span style="color:#c0c5ce;">(ip))
             </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;">;
         </span><span style="color:#ebcb8b;">File</span><span style="color:#c0c5ce;"> file = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">File</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">ip.txt</span><span style="color:#c0c5ce;">&quot;);
@@ -191,7 +192,7 @@
 </span></code></pre>
 <p>刷新阿里云安全组配置的逻辑：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#b48ead;">public</span><span style="color:#c0c5ce;"> void </span><span style="color:#bf616a;">refreshAll</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> nowIp, </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> oldIp) {
+<code class="language-java" data-lang="java"><span style="color:#b48ead;">public</span><span style="color:#c0c5ce;"> void </span><span style="color:#bf616a;">refreshAll</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> nowIp, </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> oldIp) {
 
         </span><span style="color:#ebcb8b;">List</span><span style="color:#c0c5ce;">&lt;</span><span style="color:#ebcb8b;">SecurityRuleDO</span><span style="color:#c0c5ce;">&gt; newSecurityRuleDOList = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">ArrayList</span><span style="color:#c0c5ce;">&lt;&gt;(</span><span style="color:#bf616a;">testServer</span><span style="color:#c0c5ce;">(nowIp));
         </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">SecurityRuleDO</span><span style="color:#c0c5ce;"> securityRuleDO : newSecurityRuleDOList) {
@@ -266,13 +267,13 @@
 </span></code></pre>
 <p>其中client的初始化：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#ebcb8b;">DefaultProfile</span><span style="color:#c0c5ce;"> profile = </span><span style="color:#ebcb8b;">DefaultProfile</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">getProfile</span><span style="color:#c0c5ce;">(reginId, appkey, secret);
+<code class="language-java" data-lang="java"><span style="color:#ebcb8b;">DefaultProfile</span><span style="color:#c0c5ce;"> profile = </span><span style="color:#ebcb8b;">DefaultProfile</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">getProfile</span><span style="color:#c0c5ce;">(reginId, appkey, secret);
                     client = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">DefaultAcsClient</span><span style="color:#c0c5ce;">(profile);
 
 </span></code></pre><h2 id="xiao-wen-ti">小问题</h2>
 <p>定时3分钟刷新有个小问题，就是有极小的概率，发生IP变更但是还没有及时刷新安全组的配置。怎么办，再加一个主动刷新的接口呗：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">@</span><span style="color:#bf616a;">RestController
+<code class="language-java" data-lang="java"><span style="color:#c0c5ce;">@</span><span style="color:#bf616a;">RestController
 </span><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">RefreshSecurityRuleController </span><span style="color:#eff1f5;">{
     @</span><span style="color:#bf616a;">Autowired
     </span><span style="color:#ebcb8b;">RefreshSecurityRulService </span><span style="color:#eff1f5;">securityRulService;
@@ -317,16 +318,20 @@
 </article>
 
 
-        </main>
-        <footer>
-            <p>
+            </main>
+            <footer>
+                <p>
                 © zongwu&#x27;s blog 2015 - 2021<br>
-            </p>
-            <p>
+                </p>
+                <p>
                 
                 
-            </p>
-        </footer>
-    </div>
+                </p>
+            </footer>
+        </div>
+        <!--  add cnzz trace code  -->
+        
+                <script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1279242175'%3E
+        
 </body>
 </html>

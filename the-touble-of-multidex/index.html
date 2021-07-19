@@ -1,53 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="referrer" content="no-referrer-when-downgrade">
+    <head>
+        <meta charset="utf-8">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="referrer" content="no-referrer-when-downgrade">
 
-    <title>其实你不知道MultiDex到底有多坑</title>
-    <meta name="description" content="">
+        <title>其实你不知道MultiDex到底有多坑</title>
+        <meta name="description" content="">
 
-    <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
+        <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
 
-    
+        
         <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
-    
+        
 
-    
-    
-</head>
-<body>
-    <a class="skip-main" href="#main">Skip to content</a>
-    <div class="container">
-        <header> 
-            <h1 class="site-header">
-                <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
-            </h1>
-            <nav>
+        
+        
+
+    </head>
+    <body>
+        <a class="skip-main" href="#main">Skip to content</a>
+        <div class="container">
+            <header> 
+                <h1 class="site-header">
+                    <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
+                </h1>
+                <nav>
+                    
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
+                    
+                    
+                </nav>
+            </header>
+            <main id="main" tabindex="-1">
                 
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
-                
-                
-                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
-                
-                
-            </nav>
-        </header>
-        <main id="main" tabindex="-1">
-            
 
 <article class="post">
     <header>
@@ -58,8 +59,8 @@
 <span id="continue-reading"></span>
 <p>于是总悟君带着疑惑查看错误信息。</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#d08770;">UNEXPECTED TOP</span><span style="color:#c0c5ce;">-</span><span style="color:#d08770;">LEVEL EXCEPTION</span><span style="color:#c0c5ce;">: java.lang.</span><span style="color:#ebcb8b;">IllegalArgumentException</span><span style="color:#c0c5ce;">: method </span><span style="color:#d08770;">ID</span><span style="color:#c0c5ce;"> not in [</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">0xffff</span><span style="color:#c0c5ce;">]: </span><span style="color:#d08770;">65536</span><span style="color:#c0c5ce;"> 
-	at com.android.dx.merge.</span><span style="color:#ebcb8b;">DexMerger$6</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">updateIndex</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">DexMerger</span><span style="color:#c0c5ce;">.java:</span><span style="color:#d08770;">501</span><span style="color:#c0c5ce;">) 
+<code class="language-java" data-lang="java"><span style="color:#d08770;">UNEXPECTED TOP</span><span style="color:#c0c5ce;">-</span><span style="color:#d08770;">LEVEL EXCEPTION</span><span style="color:#c0c5ce;">: java.lang.</span><span style="color:#ebcb8b;">IllegalArgumentException</span><span style="color:#c0c5ce;">: method </span><span style="color:#d08770;">ID</span><span style="color:#c0c5ce;"> not in [</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">0xffff</span><span style="color:#c0c5ce;">]: </span><span style="color:#d08770;">65536 
+</span><span style="color:#c0c5ce;">	at com.android.dx.merge.</span><span style="color:#ebcb8b;">DexMerger$6</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">updateIndex</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">DexMerger</span><span style="color:#c0c5ce;">.java:</span><span style="color:#d08770;">501</span><span style="color:#c0c5ce;">) 
 	at com.android.dx.merge.</span><span style="color:#ebcb8b;">DexMerger$IdMerger</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">mergeSorted</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">DexMerger</span><span style="color:#c0c5ce;">.java:</span><span style="color:#d08770;">276</span><span style="color:#c0c5ce;">) 
 	at com.android.dx.merge.</span><span style="color:#ebcb8b;">DexMerger</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">mergeMethodIds</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">DexMerger</span><span style="color:#c0c5ce;">.java:</span><span style="color:#d08770;">490</span><span style="color:#c0c5ce;">) 
 	at com.android.dx.merge.</span><span style="color:#ebcb8b;">DexMerger</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">mergeDexes</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">DexMerger</span><span style="color:#c0c5ce;">.java:</span><span style="color:#d08770;">167</span><span style="color:#c0c5ce;">) 
@@ -95,14 +96,14 @@
 </ol>
 <p>步骤1在gradle脚本里写上：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">android {
-	compileSdkVersion </span><span style="color:#d08770;">21</span><span style="color:#c0c5ce;">
-	buildToolsVersion &quot;</span><span style="color:#a3be8c;">21.1.0</span><span style="color:#c0c5ce;">&quot;
+<code class="language-groovy" data-lang="groovy"><span style="color:#c0c5ce;">android {
+	compileSdkVersion </span><span style="color:#d08770;">21
+</span><span style="color:#c0c5ce;">	buildToolsVersion &quot;</span><span style="color:#a3be8c;">21.1.0</span><span style="color:#c0c5ce;">&quot;
 
 	defaultConfig {
 		...
-		minSdkVersion </span><span style="color:#d08770;">14</span><span style="color:#c0c5ce;">
-		targetSdkVersion </span><span style="color:#d08770;">21
+		minSdkVersion </span><span style="color:#d08770;">14
+</span><span style="color:#c0c5ce;">		targetSdkVersion </span><span style="color:#d08770;">21
 		</span><span style="color:#c0c5ce;">...
 
 		</span><span style="color:#65737e;">// Enabling multidex support.
@@ -117,7 +118,7 @@ compile &#39;</span><span style="color:#a3be8c;">com.android.support:multidex:1.
 </span></code></pre>
 <p>步骤2manifest声明修改</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">&lt;?xml version=&quot;</span><span style="color:#a3be8c;">1.0</span><span style="color:#c0c5ce;">&quot; encoding=&quot;</span><span style="color:#a3be8c;">utf-8</span><span style="color:#c0c5ce;">&quot;?&gt;
+<code class="language-gradle" data-lang="gradle"><span style="color:#c0c5ce;">&lt;?xml version=&quot;</span><span style="color:#a3be8c;">1.0</span><span style="color:#c0c5ce;">&quot; encoding=&quot;</span><span style="color:#a3be8c;">utf-8</span><span style="color:#c0c5ce;">&quot;?&gt;
 &lt;manifest </span><span style="color:#d08770;">xmlns</span><span style="color:#c0c5ce;">:android=&quot;</span><span style="color:#a3be8c;">http://schemas.android.com/apk/res/android</span><span style="color:#c0c5ce;">&quot;
 package=&quot;</span><span style="color:#a3be8c;">com.example.android.multidex.myapplication</span><span style="color:#c0c5ce;">&quot;&gt;
 &lt;application
@@ -129,7 +130,7 @@ package=&quot;</span><span style="color:#a3be8c;">com.example.android.multidex.m
 </span></code></pre>
 <p>如果有自己的Application，继承MulitDexApplication。如果当前代码已经继承自其它Application没办法修改那也行，就重写 Application的attachBaseContext()这个方法。</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">@</span><span style="color:#bf616a;">Override
+<code class="language-java" data-lang="java"><span style="color:#c0c5ce;">@</span><span style="color:#bf616a;">Override
 </span><span style="color:#b48ead;">protected</span><span style="color:#c0c5ce;"> void </span><span style="color:#bf616a;">attachBaseContext</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">Context</span><span style="color:#c0c5ce;"> base) {
 	</span><span style="color:#bf616a;">super</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">attachBaseContext</span><span style="color:#c0c5ce;">(base);
 	</span><span style="color:#ebcb8b;">MultiDex</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">install</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">this</span><span style="color:#c0c5ce;">);     
@@ -151,7 +152,7 @@ package=&quot;</span><span style="color:#a3be8c;">com.example.android.multidex.m
 <p>那刚才那个bug是啥问题呢，原来dexopt程序的dalvik分配一块内存来统计你的app的dex里面的classes的信息，由于classes太多方法太多超过这个linearAlloc 的限制 。那减小dex的大小就可以咯。</p>
 <p>gradle脚本如下：</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">android.applicationVariants.all {
+<code class="language-gradle" data-lang="gradle"><span style="color:#c0c5ce;">android.applicationVariants.all {
     variant -&gt;
         dex.doFirst{
             dex-&gt;
@@ -203,7 +204,7 @@ package=&quot;</span><span style="color:#a3be8c;">com.example.android.multidex.m
 上最终解决问题版的代码！</p>
 <p>在Application里面(这里不要再继承自MultiApplication了，我们要手动加载Dex):</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">
+<code class="language-java" data-lang="java"><span style="color:#c0c5ce;">
 </span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">java.util.</span><span style="color:#ebcb8b;">Map</span><span style="color:#c0c5ce;">;
 </span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">java.util.jar.</span><span style="color:#ebcb8b;">Attributes</span><span style="color:#c0c5ce;">;
 </span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">java.util.jar.</span><span style="color:#ebcb8b;">JarFile</span><span style="color:#c0c5ce;">;
@@ -338,7 +339,7 @@ package=&quot;</span><span style="color:#a3be8c;">com.example.android.multidex.m
 <p>在Application启动的时候会检测dexopt是否已经完成过，（检测方式是查看sp文件是否有dex文件的SHA1-Digest记录，这里要两个进程读取该sp,读取模式是MODE_MULTI_PROCESS）。如果没有就启动LoadDexActivity(属于：mini进程) 。否则就直接install dex ！对，直接install。通过日志发现，已经dexopt的dex文件再次install的时候 只耗费几十毫秒。</p>
 <p>LoadDexActivity 的逻辑比较简单，启动AsyncTask 来install dex 这时候会触发dexopt 。</p>
 <pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">
+<code class="language-java" data-lang="java"><span style="color:#c0c5ce;">
 </span><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">LoadResActivity </span><span style="color:#b48ead;">extends </span><span style="color:#a3be8c;">Activity </span><span style="color:#eff1f5;">{
     @</span><span style="color:#bf616a;">Override
     </span><span style="color:#b48ead;">public void </span><span style="color:#8fa1b3;">onCreate</span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">Bundle </span><span style="color:#bf616a;">savedInstanceState</span><span style="color:#eff1f5;">) {
@@ -439,16 +440,20 @@ package=&quot;</span><span style="color:#a3be8c;">com.example.android.multidex.m
 </article>
 
 
-        </main>
-        <footer>
-            <p>
+            </main>
+            <footer>
+                <p>
                 © zongwu&#x27;s blog 2015 - 2021<br>
-            </p>
-            <p>
+                </p>
+                <p>
                 
                 
-            </p>
-        </footer>
-    </div>
+                </p>
+            </footer>
+        </div>
+        <!--  add cnzz trace code  -->
+        
+                <script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1279242175'%3E
+        
 </body>
 </html>
