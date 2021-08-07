@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="referrer" content="no-referrer-when-downgrade">
+
+        <title>Linux USB3.0 接移动硬盘频繁卡死问题解决方法 </title>
+        <meta name="description" content="">
+
+        <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
+
+        
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
+        
+
+        
+        
+
+    </head>
+    <body>
+        <a class="skip-main" href="#main">Skip to content</a>
+        <div class="container">
+            <header> 
+                <h1 class="site-header">
+                    <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
+                </h1>
+                <nav>
+                    
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
+                    
+                    
+                </nav>
+            </header>
+            <main id="main" tabindex="-1">
+                
+
+<article class="post">
+    <header>
+        <h1>Linux USB3.0 接移动硬盘频繁卡死问题解决方法 </h1>
+    </header>
+    <div class="content">
+        <h2 id="wen-ti">问题</h2>
+<p>在 <code>rockpi</code> (系统 <code>ubuntu 20.4</code>)上通过USB3.0连接大容量硬盘，读取数据的时候，会频繁导致系统卡死，只能重启机器。</p>
+<span id="continue-reading"></span>
+<p>查看到的一些日志信息：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-bash" data-lang="bash"><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  529.728684] xhci-hcd xhci-hcd.9.auto: ERROR Transfer event for disabled endpoint or incorrect stream ring
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  529.729554] xhci-hcd xhci-hcd.9.auto: @00000000db5ca2b0 00000000 00000000 1b000000 1a078001
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  533.658284] xhci-hcd xhci-hcd.9.auto: ERROR Transfer event for disabled endpoint or incorrect stream ring
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  533.659159] xhci-hcd xhci-hcd.9.auto: @00000000db5ca700 00000000 00000000 1b000000 18078001
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  536.888700] xhci-hcd xhci-hcd.9.auto: ERROR Transfer event for disabled endpoint or incorrect stream ring
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  536.889570] xhci-hcd xhci-hcd.9.auto: @00000000db5ca340 00000000 00000000 1b000000 1a078001
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  547.392564] xhci-hcd xhci-hcd.9.auto: ERROR Transfer event for disabled endpoint or incorrect stream ring
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  547.393418] xhci-hcd xhci-hcd.9.auto: @00000000db5ca990 00000000 00000000 1b000000 18078000
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  551.313637] xhci-hcd xhci-hcd.9.auto: ERROR Transfer event for disabled endpoint or incorrect stream ring
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  551.314494] xhci-hcd xhci-hcd.9.auto: @00000000db5caf50 00000000 00000000 1b000000 18078000
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  567.382210] xhci-hcd xhci-hcd.9.auto: ERROR Transfer event for disabled endpoint or incorrect stream ring
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  567.383086] xhci-hcd xhci-hcd.9.auto: @00000000db5cab30 00000000 00000000 1b000000 18078000
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  581.136868] xhci-hcd xhci-hcd.9.auto: ERROR Transfer event for disabled endpoint or incorrect stream ring
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  581.137739] xhci-hcd xhci-hcd.9.auto: @00000000db5cae50 00000000 00000000 1b000000 18078000
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  585.063728] xhci-hcd xhci-hcd.9.auto: ERROR Transfer event for disabled endpoint or incorrect stream ring
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  585.064582] xhci-hcd xhci-hcd.9.auto: @00000000db5ca410 00000000 00000000 1b000000 18078001
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  598.768816] xhci-hcd xhci-hcd.9.auto: ERROR Transfer event for disabled endpoint or incorrect stream ring
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  598.769687] xhci-hcd xhci-hcd.9.auto: @00000000db5caa20 00000000 00000000 1b000000 18078001
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  602.693613] xhci-hcd xhci-hcd.9.auto: ERROR Transfer event for disabled endpoint or incorrect stream ring
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  602.694491] xhci-hcd xhci-hcd.9.auto: @00000000db5cafc0 00000000 00000000 1b000000 18078001
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  616.468609] xhci-hcd xhci-hcd.9.auto: ERROR Transfer event for disabled endpoint or incorrect stream ring
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  616.469481] xhci-hcd xhci-hcd.9.auto: @00000000db5caf50 00000000 00000000 1b000000 18078001
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  620.399073] xhci-hcd xhci-hcd.9.auto: ERROR Transfer event for disabled endpoint or incorrect stream ring
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  620.399952] xhci-hcd xhci-hcd.9.auto: @00000000db5ca510 00000000 00000000 1b000000 18078000
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  634.432399] xhci-hcd xhci-hcd.9.auto: ERROR Transfer event for disabled endpoint or incorrect stream ring
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  634.433254] xhci-hcd xhci-hcd.9.auto: @00000000db5cab20 00000000 00000000 1b000000 18078000
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  638.353145] xhci-hcd xhci-hcd.9.auto: ERROR Transfer event for disabled endpoint or incorrect stream ring
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  638.353998] xhci-hcd xhci-hcd.9.auto: @00000000db5ca0e0 00000000 00000000 1b000000 18078001
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  654.242082] xhci-hcd xhci-hcd.9.auto: ERROR Transfer event for disabled endpoint or incorrect stream ring
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  654.242945] xhci-hcd xhci-hcd.9.auto: @00000000db5ca140 00000000 00000000 1b000000 18078000
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  684.977605] xhci-hcd xhci-hcd.9.auto: ERROR Transfer event for disabled endpoint or incorrect stream ring
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  684.978471] xhci-hcd xhci-hcd.9.auto: @00000000db5cad50 00000000 00000000 1b000000 18078000
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  684.979676] xhci-hcd xhci-hcd.9.auto: ERROR Transfer event for disabled endpoint or incorrect stream ring
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  684.980530] xhci-hcd xhci-hcd.9.auto: @00000000db5cad70 00000000 00000000 1b000000 18058000
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  690.469456] usb 6-1.1.1: device not accepting address 59, error -71
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  762.191000] xhci-hcd xhci-hcd.8.auto: ERROR Transfer event for disabled endpoint or incorrect stream ring
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  762.191858] xhci-hcd xhci-hcd.8.auto: @00000000eeb957d0 00000000 00000000 1b000000 11078001
+</span></code></pre>
+<p>然后会导致 <code>Kernel panic</code> 的严重错误：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-bash" data-lang="bash"><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  762.907283] blk_update_request: I/O error, dev sdl, sector 6511155816
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  840.425331] INFO: task kworker/0:0:4 blocked for more than 120 seconds.
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  840.425933]       Not tainted 4.4.154-112-rockchip-gfdb18c8bab17 </span><span style="color:#65737e;">#1
+</span><span style="color:#b48ead;">[</span><span style="color:#c0c5ce;">  840.426499</span><span style="color:#b48ead;">] </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">echo 0 &gt; /proc/sys/kernel/hung_task_timeout_secs</span><span style="color:#c0c5ce;">&quot; disables this message.
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  840.427479] Kernel panic - not syncing: hung_task: blocked tasks
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  840.428026] CPU: 4 PID: 39 Comm: khungtaskd Not tainted 4.4.154-112-rockchip-gfdb18c8bab17 </span><span style="color:#65737e;">#1
+</span><span style="color:#b48ead;">[</span><span style="color:#c0c5ce;">  840.428782</span><span style="color:#b48ead;">]</span><span style="color:#c0c5ce;"> Hardware name: ROCK PI 4B (DT)
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  840.429153] Call trace:
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  840.429387] </span><span style="color:#b48ead;">[</span><span style="color:#c0c5ce;">&lt;ffffff80080888d8&gt;</span><span style="color:#b48ead;">]</span><span style="color:#c0c5ce;"> dump_backtrace+0x0/0x220
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  840.429872] </span><span style="color:#b48ead;">[</span><span style="color:#c0c5ce;">&lt;ffffff8008088b1c&gt;</span><span style="color:#b48ead;">]</span><span style="color:#c0c5ce;"> show_stack+0x24/0x30
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  840.430334] </span><span style="color:#b48ead;">[</span><span style="color:#c0c5ce;">&lt;ffffff800856ebec&gt;</span><span style="color:#b48ead;">]</span><span style="color:#c0c5ce;"> dump_stack+0x98/0xc0
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  840.430798] </span><span style="color:#b48ead;">[</span><span style="color:#c0c5ce;">&lt;ffffff80081724bc&gt;</span><span style="color:#b48ead;">]</span><span style="color:#c0c5ce;"> panic+0xe8/0x23c
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  840.431226] </span><span style="color:#b48ead;">[</span><span style="color:#c0c5ce;">&lt;ffffff8008139e90&gt;</span><span style="color:#b48ead;">]</span><span style="color:#c0c5ce;"> proc_dohung_task_timeout_secs+0x0/0x7c
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  840.431817] </span><span style="color:#b48ead;">[</span><span style="color:#c0c5ce;">&lt;ffffff80080ba310&gt;</span><span style="color:#b48ead;">]</span><span style="color:#c0c5ce;"> kthread+0xe0/0xf0
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  840.432252] </span><span style="color:#b48ead;">[</span><span style="color:#c0c5ce;">&lt;ffffff8008082ef0&gt;</span><span style="color:#b48ead;">]</span><span style="color:#c0c5ce;"> ret_from_fork+0x10/0x20
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  840.432748] CPU0: stopping
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  840.433037] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 4.4.154-112-rockchip-gfdb18c8bab17 </span><span style="color:#65737e;">#1
+</span><span style="color:#b48ead;">[</span><span style="color:#c0c5ce;">  840.433784</span><span style="color:#b48ead;">]</span><span style="color:#c0c5ce;"> Hardware name: ROCK PI 4B (DT)
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  840.434157] Call trace:
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  840.434413] </span><span style="color:#b48ead;">[</span><span style="color:#c0c5ce;">&lt;ffffff80080888d8&gt;</span><span style="color:#b48ead;">]</span><span style="color:#c0c5ce;"> dump_backtrace+0x0/0x220
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  840.434913] </span><span style="color:#b48ead;">[</span><span style="color:#c0c5ce;">&lt;ffffff8008088b1c&gt;</span><span style="color:#b48ead;">]</span><span style="color:#c0c5ce;"> show_stack+0x24/0x30
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  840.435377] </span><span style="color:#b48ead;">[</span><span style="color:#c0c5ce;">&lt;ffffff800856ebec&gt;</span><span style="color:#b48ead;">]</span><span style="color:#c0c5ce;"> dump_stack+0x98/0xc0
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  840.435841] </span><span style="color:#b48ead;">[</span><span style="color:#c0c5ce;">&lt;ffffff800808db74&gt;</span><span style="color:#b48ead;">]</span><span style="color:#c0c5ce;"> handle_IPI+0x1d0/0x248
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  840.436313] </span><span style="color:#b48ead;">[</span><span style="color:#c0c5ce;">&lt;ffffff8008080f24&gt;</span><span style="color:#b48ead;">]</span><span style="color:#c0c5ce;"> gic_handle_irq+0x17c/0x180
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">  840.436818] Exception stack(0xffffff8009243d70 to 0xffffff8009243ea0)
+</span></code></pre>
+<p>有网友也遇到类似的问题：</p>
+<p>这里<a href="https://forum.pine64.org/showthread.php?tid=5832">^1</a>，还有这里<a href="https://forum.pine64.org/showthread.php?tid=5137">^2</a> 。在第二个链接里作者推测是系统上的USB相关驱动的问题。 </p>
+<p>暂时的 workaround 是禁用 UAS 内核驱动。代价是读写速度的下降。</p>
+<h2 id="uas">UAS</h2>
+<p><code>uas</code> 是<code>USB Attached Storage </code> ，使用的协议是 <code>USB MSC USB Attached SCSI Protocol</code></p>
+<p>关于<code>usb</code> 协议相关可以看<a href="https://www.crifan.com/files/doc/docbook/usb_disk_driver/release/html/usb_disk_driver.html?spm=a2c6h.12873639.0.0.4f412263nKhXtS#ch02_msc_basic">^3</a></p>
+<p>查看系统内核当前加载的模块：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-bash" data-lang="bash"><span style="color:#bf616a;">$</span><span style="color:#c0c5ce;"> lsmod
+</span></code></pre><pre style="background-color:#2b303b;">
+<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">Module                  Size  Used by
+xt_conntrack           16384  1
+ipt_MASQUERADE         16384  1
+nf_nat_masquerade_ipv4    16384  1 ipt_MASQUERADE
+nf_conntrack_netlink    36864  0
+xt_addrtype            16384  2
+iptable_filter         16384  1
+iptable_nat            16384  1
+nf_conntrack_ipv4      24576  2
+nf_defrag_ipv4         16384  1 nf_conntrack_ipv4
+nf_nat_ipv4            16384  1 iptable_nat
+nf_nat                 20480  2 nf_nat_ipv4,nf_nat_masquerade_ipv4
+nf_conntrack          126976  6 nf_nat,nf_nat_ipv4,xt_conntrack,nf_nat_masquerade_ipv4,nf_conntrack_netlink,nf_conntrack_ipv4
+overlay                45056  1
+binfmt_misc            20480  1
+uas                    20480  0
+usb_storage            61440  15 uas
+bcmdhd               1183744  0
+autofs4                40960  3
+</span></code></pre>
+<p>可以看到 <code>uas module</code></p>
+<p>查看系统的 <code>usb</code> 设备:</p>
+<pre style="background-color:#2b303b;">
+<code class="language-bash" data-lang="bash"><span style="color:#bf616a;">$</span><span style="color:#c0c5ce;"> lsusb</span><span style="color:#bf616a;"> -t
+</span></code></pre><pre style="background-color:#2b303b;">
+<code class="language-bash" data-lang="bash"><span style="color:#bf616a;">/:</span><span style="color:#c0c5ce;">  Bus 08.Port 1: Dev 1, Class=root_hub, Driver=xhci-hcd/1p, 5000M
+</span><span style="color:#bf616a;">/:</span><span style="color:#c0c5ce;">  Bus 07.Port 1: Dev 1, Class=root_hub, Driver=xhci-hcd/1p, 480M
+</span><span style="color:#bf616a;">/:</span><span style="color:#c0c5ce;">  Bus 06.Port 1: Dev 1, Class=root_hub, Driver=xhci-hcd/1p, 5000M
+    |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 1: Dev 2, If 0, Class=Hub, Driver=hub/4p, 5000M
+        |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 1: Dev 3, If 0, Class=Hub, Driver=hub/4p, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 1: Dev 5, If 0, Class=Mass Storage, Driver=uas, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 2: Dev 7, If 0, Class=Mass Storage, Driver=uas, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 3: Dev 10, If 0, Class=Mass Storage, Driver=uas, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 4: Dev 13, If 0, Class=Mass Storage, Driver=uas, 5000M
+        |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 2: Dev 4, If 0, Class=Hub, Driver=hub/4p, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 1: Dev 8, If 0, Class=Mass Storage, Driver=uas, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 2: Dev 11, If 0, Class=Mass Storage, Driver=uas, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 3: Dev 14, If 0, Class=Mass Storage, Driver=uas, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 4: Dev 17, If 0, Class=Mass Storage, Driver=uas, 5000M
+        |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 3: Dev 6, If 0, Class=Hub, Driver=hub/4p, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 1: Dev 22, If 0, Class=Mass Storage, Driver=uas, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 2: Dev 12, If 0, Class=Mass Storage, Driver=uas, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 3: Dev 16, If 0, Class=Mass Storage, Driver=uas, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 4: Dev 23, If 0, Class=Mass Storage, Driver=uas, 5000M
+        |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 4: Dev 9, If 0, Class=Hub, Driver=hub/4p, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 1: Dev 15, If 0, Class=Mass Storage, Driver=uas, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 2: Dev 18, If 0, Class=Mass Storage, Driver=uas, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 3: Dev 19, If 0, Class=Mass Storage, Driver=uas, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 4: Dev 20, If 0, Class=Mass Storage, Driver=uas, 5000M
+</span><span style="color:#bf616a;">/:</span><span style="color:#c0c5ce;">  Bus 05.Port 1: Dev 1, Class=root_hub, Driver=xhci-hcd/1p, 480M
+    |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 1: Dev 2, If 0, Class=Hub, Driver=hub/4p, 480M
+        |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 1: Dev 3, If 0, Class=Hub, Driver=hub/4p, 480M
+        |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 2: Dev 4, If 0, Class=Hub, Driver=hub/4p, 480M
+        |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 3: Dev 5, If 0, Class=Hub, Driver=hub/4p, 480M
+        |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 4: Dev 6, If 0, Class=Hub, Driver=hub/4p, 480M
+</span><span style="color:#bf616a;">/:</span><span style="color:#c0c5ce;">  Bus 04.Port 1: Dev 1, Class=root_hub, Driver=ohci-platform/1p, 12M
+</span><span style="color:#bf616a;">/:</span><span style="color:#c0c5ce;">  Bus 03.Port 1: Dev 1, Class=root_hub, Driver=ohci-platform/1p, 12M
+</span><span style="color:#bf616a;">/:</span><span style="color:#c0c5ce;">  Bus 02.Port 1: Dev 1, Class=root_hub, Driver=ehci-platform/1p, 480M
+</span><span style="color:#bf616a;">/:</span><span style="color:#c0c5ce;">  Bus 01.Port 1: Dev 1, Class=root_hub, Driver=ehci-platform/1p, 480M
+</span></code></pre>
+<p>其中有很多 <code>Class=Mass Storage, Driver=uas, 5000M</code> 就是使用了 <code>uas</code> 作为驱动。</p>
+<p><strong>可以选择</strong>在系统中完全禁用掉<code>uas</code> </p>
+<pre style="background-color:#2b303b;">
+<code class="language-bash" data-lang="bash"><span style="color:#bf616a;">$</span><span style="color:#c0c5ce;"> sudo vim  /etc/modprobe.d/blacklist.conf
+</span></code></pre>
+<p>在最后添加</p>
+<pre style="background-color:#2b303b;">
+<code class="language-bash" data-lang="bash"><span style="color:#bf616a;">blacklist</span><span style="color:#c0c5ce;"> uas
+</span></code></pre>
+<p>保存然后重启机器。</p>
+<p>但是，测试发现这么操作会导致上面使用了<code>uas</code>的设备直接找不到驱动无法正常工作。</p>
+<p>我们需要为这些设备直接指定使用更基础的 <code>usb-storage</code>  模块作为驱动，同时禁用掉<code>uas</code> 。</p>
+<p>先获取设备的 idVendor:idProduct </p>
+<pre style="background-color:#2b303b;">
+<code class="language-bash" data-lang="bash"><span style="color:#bf616a;">$</span><span style="color:#c0c5ce;"> lsusb  | </span><span style="color:#bf616a;">awk </span><span style="color:#c0c5ce;">&#39;</span><span style="color:#a3be8c;">{print $6}</span><span style="color:#c0c5ce;">&#39; | </span><span style="color:#bf616a;">sort -u
+05e3:0610
+05e3:0626
+152d:0578
+152d:9561
+1d6b:0001
+1d6b:0002
+1d6b:0003
+</span></code></pre>
+<p>在 <code>/etc/modprobe.d/</code> 目录下添加一个文件<code>disable-uas.conf</code> (名字可以任意定)</p>
+<pre style="background-color:#2b303b;">
+<code class="language-bash" data-lang="bash"><span style="color:#bf616a;">$</span><span style="color:#c0c5ce;"> sudo vim /etc/modprobe.d/disable-uas.conf
+</span></code></pre>
+<p>添加：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-bash" data-lang="bash"><span style="color:#bf616a;">options</span><span style="color:#c0c5ce;"> usb-storage quirks=05e3:0610:u,05e3:0626:u,152d:0578:u,1d6b:0001:u,1d6b:0002:u,1d6b:0003:u
+</span></code></pre>
+<p>然后输入</p>
+<pre style="background-color:#2b303b;">
+<code class="language-bash" data-lang="bash"><span style="color:#bf616a;">sudo</span><span style="color:#c0c5ce;"> update-initramfs</span><span style="color:#bf616a;"> -u
+sudo</span><span style="color:#c0c5ce;"> reboot
+</span></code></pre>
+<p>重启机器。</p>
+<p>再通过 <code>lsusb -t</code> 查看设备：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-bash" data-lang="bash"><span style="color:#bf616a;">/:</span><span style="color:#c0c5ce;">  Bus 08.Port 1: Dev 1, Class=root_hub, Driver=xhci-hcd/1p, 5000M
+</span><span style="color:#bf616a;">/:</span><span style="color:#c0c5ce;">  Bus 07.Port 1: Dev 1, Class=root_hub, Driver=xhci-hcd/1p, 480M
+</span><span style="color:#bf616a;">/:</span><span style="color:#c0c5ce;">  Bus 06.Port 1: Dev 1, Class=root_hub, Driver=xhci-hcd/1p, 5000M
+    |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 1: Dev 2, If 0, Class=Hub, Driver=hub/4p, 5000M
+        |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 1: Dev 3, If 0, Class=Hub, Driver=hub/4p, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 1: Dev 5, If 0, Class=Mass Storage, Driver=usb-storage, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 2: Dev 7, If 0, Class=Mass Storage, Driver=usb-storage, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 3: Dev 10, If 0, Class=Mass Storage, Driver=usb-storage, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 4: Dev 13, If 0, Class=Mass Storage, Driver=usb-storage, 5000M
+        |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 2: Dev 4, If 0, Class=Hub, Driver=hub/4p, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 1: Dev 8, If 0, Class=Mass Storage, Driver=usb-storage, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 2: Dev 11, If 0, Class=Mass Storage, Driver=usb-storage, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 3: Dev 14, If 0, Class=Mass Storage, Driver=usb-storage, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 4: Dev 17, If 0, Class=Mass Storage, Driver=usb-storage, 5000M
+        |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 3: Dev 6, If 0, Class=Hub, Driver=hub/4p, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 1: Dev 22, If 0, Class=Mass Storage, Driver=usb-storage, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 2: Dev 12, If 0, Class=Mass Storage, Driver=usb-storage, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 3: Dev 16, If 0, Class=Mass Storage, Driver=usb-storage, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 4: Dev 23, If 0, Class=Mass Storage, Driver=usb-storage, 5000M
+        |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 4: Dev 9, If 0, Class=Hub, Driver=hub/4p, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 1: Dev 15, If 0, Class=Mass Storage, Driver=usb-storage, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 2: Dev 18, If 0, Class=Mass Storage, Driver=usb-storage, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 3: Dev 19, If 0, Class=Mass Storage, Driver=usb-storage, 5000M
+            |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 4: Dev 20, If 0, Class=Mass Storage, Driver=usb-storage, 5000M
+</span><span style="color:#bf616a;">/:</span><span style="color:#c0c5ce;">  Bus 05.Port 1: Dev 1, Class=root_hub, Driver=xhci-hcd/1p, 480M
+    |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 1: Dev 2, If 0, Class=Hub, Driver=hub/4p, 480M
+        |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 1: Dev 3, If 0, Class=Hub, Driver=hub/4p, 480M
+        |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 2: Dev 4, If 0, Class=Hub, Driver=hub/4p, 480M
+        |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 3: Dev 5, If 0, Class=Hub, Driver=hub/4p, 480M
+        |</span><span style="color:#bf616a;">__</span><span style="color:#c0c5ce;"> Port 4: Dev 6, If 0, Class=Hub, Driver=hub/4p, 480M
+</span><span style="color:#bf616a;">/:</span><span style="color:#c0c5ce;">  Bus 04.Port 1: Dev 1, Class=root_hub, Driver=ohci-platform/1p, 12M
+</span><span style="color:#bf616a;">/:</span><span style="color:#c0c5ce;">  Bus 03.Port 1: Dev 1, Class=root_hub, Driver=ohci-platform/1p, 12M
+</span><span style="color:#bf616a;">/:</span><span style="color:#c0c5ce;">  Bus 02.Port 1: Dev 1, Class=root_hub, Driver=ehci-platform/1p, 480M
+</span><span style="color:#bf616a;">/:</span><span style="color:#c0c5ce;">  Bus 01.Port 1: Dev 1, Class=root_hub, Driver=ehci-platform/1p, 480M
+</span></code></pre>
+<p>之前使用 <code>uas</code> 驱动设备都使用了<code>usb-storage</code> 。</p>
+<p>通过<code>dmesg  | grep 'scsi host' -A5 -B5</code> 查看系统日志也可以看出：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-bash" data-lang="bash"><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">    5.434458] usb 6-1.1.3: Manufacturer: BIAZE
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">    5.434464] usb 6-1.1.3: SerialNumber: 000000000799
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">    5.463418] usb 6-1.1.1: UAS is blacklisted for this device, using usb-storage instead
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">    5.463436] usb-storage 6-1.1.1:1.0: USB Mass Storage device detected
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">    5.465385] usb-storage 6-1.1.1:1.0: Quirks match for vid 152d pid 9561: 800000
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">    5.469635] scsi host0: usb-storage 6-1.1.1:1.0
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">    5.470394] usb 6-1.1.2: UAS is blacklisted for this device, using usb-storage instead
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">    5.470410] usb-storage 6-1.1.2:1.0: USB Mass Storage device detected
+</span><span style="color:#96b5b4;">[</span><span style="color:#c0c5ce;">    5.473329] usb-storage 6-1.1.2:1.0: Quirks match for vid 152d pid 9561: 800000
+</span><span style="color:#bf616a;">...
+...
+</span></code></pre>
+<p>该设备禁用了<code>uas</code> ，使用<code>usb-storage</code> 。</p>
+<p>到此已经解决问题。对于其他不同的操作系统比如 Linux on a Raspberry Pi，如果上述方法不生效，可以试一试下面的配置：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-bash" data-lang="bash"><span style="color:#bf616a;">$</span><span style="color:#c0c5ce;"> sudo vim /boot/cmdline.txt
+</span></code></pre>
+<p>添加：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-bash" data-lang="bash"><span style="color:#bf616a;">usb-storage</span><span style="color:#c0c5ce;"> quirks=05e3:0610:u,05e3:0626:u,152d:0578:u,152d:9561:u,1d6b:0001:u,1d6b:0002:u,1d6b:0003:u
+</span></code></pre>
+<p>然后重启机器。</p>
+<h2 id="can-kao">参考</h2>
+<p><sup class="footnote-reference"><a href="#1">1</a></sup> <a href="https://forum.pine64.org/showthread.php?tid=5832">https://forum.pine64.org/showthread.php?tid=5832</a></p>
+<p><sup class="footnote-reference"><a href="#2">2</a></sup> <a href="https://forum.pine64.org/showthread.php?tid=5137">https://forum.pine64.org/showthread.php?tid=5137</a></p>
+<p><sup class="footnote-reference"><a href="#3">3</a></sup> <a href="https://www.crifan.com/files/doc/docbook/usb_disk_driver/release/html/usb_disk_driver.html?spm=a2c6h.12873639.0.0.4f412263nKhXtS#ch02_msc_basic">https://www.crifan.com/files/doc/docbook/usb_disk_driver/release/html/usb_disk_driver.html?spm=a2c6h.12873639.0.0.4f412263nKhXtS#ch02_msc_basic</a></p>
+<p><sup class="footnote-reference"><a href="#4">4</a></sup>  <a href="https://leo.leung.xyz/wiki/Disable_UAS">https://leo.leung.xyz/wiki/Disable_UAS</a></p>
+<p><sup class="footnote-reference"><a href="#5">5</a></sup>  <a href="https://askubuntu.com/questions/1266804/blacklist-uas-drivers-in-kernel">https://askubuntu.com/questions/1266804/blacklist-uas-drivers-in-kernel</a></p>
+<p><sup class="footnote-reference"><a href="#6">6</a></sup>  <a href="https://iitii.github.io/2019/08/05/1/">https://iitii.github.io/2019/08/05/1/</a></p>
+<p><sup class="footnote-reference"><a href="#7">7</a></sup>  <a href="https://www.smartmontools.org/wiki/SAT-with-UAS-Linux">https://www.smartmontools.org/wiki/SAT-with-UAS-Linux</a></p>
+
+    </div>
+
+    
+    <div class="article-info">
+        
+        <div class="article-date">2021-08-07</div>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/linux/">#linux</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/gong-ju/">#工具</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/yi-nan-wen-ti/">#疑难问题</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/linuxqu-dong/">#linux驱动</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/rockpi/">#rockpi</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+</article>
+
+
+            </main>
+            <footer>
+                <p>
+                © zongwu&#x27;s blog 2015 - 2021<br>
+                </p>
+                <p>
+                
+                
+                </p>
+            </footer>
+        </div>
+        <!--  add cnzz trace code  -->
+        
+                <script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1279242175'%3E%3C/span%3E%3Cscript src='https://s9.cnzz.com/z_stat.php%3Fid%3D1279242175' type='text/javascript'%3E%3C/script%3E"));</script>
+        
+</body>
+</html>

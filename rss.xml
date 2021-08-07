@@ -7,7 +7,16 @@
         <generator>Zola</generator>
         <language>en</language>
         <atom:link href="https://blog.zongwu233.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <lastBuildDate>Sat, 26 Dec 2020 00:00:00 +0000</lastBuildDate>
+        <lastBuildDate>Sat, 07 Aug 2021 00:00:00 +0000</lastBuildDate>
+        <item>
+            <title>Linux USB3.0 接移动硬盘频繁卡死问题解决方法 </title>
+            <pubDate>Sat, 07 Aug 2021 00:00:00 +0000</pubDate>
+            <link>https://blog.zongwu233.com/linux-usb3-driver/</link>
+            <guid>https://blog.zongwu233.com/linux-usb3-driver/</guid>
+            <description>&lt;h2 id=&quot;wen-ti&quot;&gt;问题&lt;&#x2F;h2&gt;
+&lt;p&gt;在 &lt;code&gt;rockpi&lt;&#x2F;code&gt; (系统 &lt;code&gt;ubuntu 20.4&lt;&#x2F;code&gt;)上通过USB3.0连接大容量硬盘，读取数据的时候，会频繁导致系统卡死，只能重启机器。&lt;&#x2F;p&gt;
+</description>
+        </item>
         <item>
             <title>Rust Chars</title>
             <pubDate>Sat, 26 Dec 2020 00:00:00 +0000</pubDate>
