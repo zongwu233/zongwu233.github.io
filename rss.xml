@@ -7,7 +7,28 @@
         <generator>Zola</generator>
         <language>en</language>
         <atom:link href="https://blog.zongwu233.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <lastBuildDate>Sat, 07 Aug 2021 00:00:00 +0000</lastBuildDate>
+        <lastBuildDate>Sun, 15 Aug 2021 00:00:00 +0000</lastBuildDate>
+        <item>
+            <title>ReaderT 相关源码分析 </title>
+            <pubDate>Sun, 15 Aug 2021 00:00:00 +0000</pubDate>
+            <link>https://blog.zongwu233.com/readert-source-code-analysing/</link>
+            <guid>https://blog.zongwu233.com/readert-source-code-analysing/</guid>
+            <description>&lt;p&gt;&lt;code&gt;ReaderT&lt;&#x2F;code&gt;是&lt;code&gt;Haskell&lt;&#x2F;code&gt;里很常见的一种模式。比如读取环境配置：&lt;&#x2F;p&gt;
+</description>
+        </item>
+        <item>
+            <title>[翻译]ReaderT 设计模式 </title>
+            <pubDate>Sat, 14 Aug 2021 00:00:00 +0000</pubDate>
+            <link>https://blog.zongwu233.com/readert-design-pattern/</link>
+            <guid>https://blog.zongwu233.com/readert-design-pattern/</guid>
+            <description>&lt;blockquote&gt;
+&lt;p&gt;讲解工程实践中为什么需要 ReaderT 模式比较清晰的文章，就翻译了一下。原文见&lt;a href=&quot;https:&#x2F;&#x2F;www.fpcomplete.com&#x2F;blog&#x2F;2017&#x2F;06&#x2F;readert-design-pattern&#x2F;&quot;&gt;这里&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;在工程实践中，一些语言比如 Java 通过设计模式用来解决某些常见的场景问题。&lt;code&gt;Haskell&lt;&#x2F;code&gt; 语言没有这类设计模式，它通过语言层面的特性解决这些问题。
+然而，我相信仍然有一些关于程序结构的高级指导的空间，我将其松散地称为 &lt;code&gt;Haskell&lt;&#x2F;code&gt; 设计模式。
+这次描述的模式被称为 &lt;code&gt;ReaderT 模式&lt;&#x2F;code&gt; 。我将其用作 &lt;code&gt;Yesod&lt;&#x2F;code&gt; 框架 &lt;code&gt;Handler&lt;&#x2F;code&gt; 类型设计的基础。&lt;&#x2F;p&gt;
+</description>
+        </item>
         <item>
             <title>Linux USB3.0 接移动硬盘频繁卡死问题解决方法 </title>
             <pubDate>Sat, 07 Aug 2021 00:00:00 +0000</pubDate>

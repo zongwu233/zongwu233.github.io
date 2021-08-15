@@ -128,6 +128,14 @@
         <loc>https://blog.zongwu233.com/page/4/</loc>
     </url>
     <url>
+        <loc>https://blog.zongwu233.com/readert-design-pattern/</loc>
+        <lastmod>2021-08-14</lastmod>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/readert-source-code-analysing/</loc>
+        <lastmod>2021-08-15</lastmod>
+    </url>
+    <url>
         <loc>https://blog.zongwu233.com/rust-mio-source-scenario-analysis/</loc>
         <lastmod>2019-10-30</lastmod>
     </url>
@@ -213,10 +221,22 @@
         <loc>https://blog.zongwu233.com/tags/gong-ju/page/1/</loc>
     </url>
     <url>
+        <loc>https://blog.zongwu233.com/tags/haskell/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/haskell/page/1/</loc>
+    </url>
+    <url>
         <loc>https://blog.zongwu233.com/tags/hei-xiang-xi-tong/</loc>
     </url>
     <url>
         <loc>https://blog.zongwu233.com/tags/hei-xiang-xi-tong/page/1/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/ji-chu-ku/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/ji-chu-ku/page/1/</loc>
     </url>
     <url>
         <loc>https://blog.zongwu233.com/tags/ji-shi-fan-kui/</loc>
@@ -297,12 +317,6 @@
         <loc>https://blog.zongwu233.com/tags/openstack/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/program-language/</loc>
-    </url>
-    <url>
-        <loc>https://blog.zongwu233.com/tags/program-language/page/1/</loc>
-    </url>
-    <url>
         <loc>https://blog.zongwu233.com/tags/proxy/</loc>
     </url>
     <url>
@@ -333,6 +347,12 @@
         <loc>https://blog.zongwu233.com/tags/ruan-jian-gong-cheng/page/1/</loc>
     </url>
     <url>
+        <loc>https://blog.zongwu233.com/tags/ruan-jian-she-ji/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/ruan-jian-she-ji/page/1/</loc>
+    </url>
+    <url>
         <loc>https://blog.zongwu233.com/tags/ruan-jian/</loc>
     </url>
     <url>
@@ -343,6 +363,12 @@
     </url>
     <url>
         <loc>https://blog.zongwu233.com/tags/rust/page/1/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/she-ji-mo-shi/</loc>
+    </url>
+    <url>
+        <loc>https://blog.zongwu233.com/tags/she-ji-mo-shi/page/1/</loc>
     </url>
     <url>
         <loc>https://blog.zongwu233.com/tags/shi-jie-guan/</loc>
@@ -429,10 +455,10 @@
         <loc>https://blog.zongwu233.com/tags/yuan-li/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/yuan-ma-fen-xi/</loc>
+        <loc>https://blog.zongwu233.com/tags/yuan-ma/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/yuan-ma-fen-xi/page/1/</loc>
+        <loc>https://blog.zongwu233.com/tags/yuan-ma/page/1/</loc>
     </url>
     <url>
         <loc>https://blog.zongwu233.com/tags/yuan-ze/</loc>

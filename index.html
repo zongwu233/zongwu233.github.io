@@ -55,6 +55,103 @@
     <article class="post-list">
         <header> 
             <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;readert-source-code-analysing&#x2F;">ReaderT 相关源码分析 </a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <p><code>ReaderT</code>是<code>Haskell</code>里很常见的一种模式。比如读取环境配置：</p>
+
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <div class="article-date">2021-08-15</div>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/haskell/">#Haskell</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/ruan-jian-she-ji/">#软件设计</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/bian-cheng-yu-yan/">#编程语言</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/yuan-ma/">#源码</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+    </article>
+
+                
+                
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;readert-design-pattern&#x2F;">[翻译]ReaderT 设计模式 </a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <blockquote>
+<p>讲解工程实践中为什么需要 ReaderT 模式比较清晰的文章，就翻译了一下。原文见<a href="https://www.fpcomplete.com/blog/2017/06/readert-design-pattern/">这里</a></p>
+</blockquote>
+<p>在工程实践中，一些语言比如 Java 通过设计模式用来解决某些常见的场景问题。<code>Haskell</code> 语言没有这类设计模式，它通过语言层面的特性解决这些问题。
+然而，我相信仍然有一些关于程序结构的高级指导的空间，我将其松散地称为 <code>Haskell</code> 设计模式。
+这次描述的模式被称为 <code>ReaderT 模式</code> 。我将其用作 <code>Yesod</code> 框架 <code>Handler</code> 类型设计的基础。</p>
+
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <div class="article-date">2021-08-14</div>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/haskell/">#Haskell</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/she-ji-mo-shi/">#设计模式</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/fan-yi/">#翻译</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+    </article>
+
+                
+                
+    <article class="post-list">
+        <header> 
+            <h1>
                 <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;linux-usb3-driver&#x2F;">Linux USB3.0 接移动硬盘频繁卡死问题解决方法 </a>
             </h1>
         </header>
@@ -129,7 +226,7 @@
                     
                     <li><a href="https://blog.zongwu233.com/tags/rust/">#Rust</a></li>
                     
-                    <li><a href="https://blog.zongwu233.com/tags/program-language/">#Program Language</a></li>
+                    <li><a href="https://blog.zongwu233.com/tags/bian-cheng-yu-yan/">#编程语言</a></li>
                     
                     <li><a href="https://blog.zongwu233.com/tags/slice/">#slice</a></li>
                     
@@ -446,93 +543,6 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
                     <li><a href="https://blog.zongwu233.com/tags/proxy/">#proxy</a></li>
                     
                     <li><a href="https://blog.zongwu233.com/tags/macos/">#macOS</a></li>
-                    
-                </ul>
-            
-        </div>
-    </div>
-
-    </article>
-
-                
-                
-    <article class="post-list">
-        <header> 
-            <h1>
-                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;consistency-models&#x2F;">一致性模型</a>
-            </h1>
-        </header>
-
-        
-        <div class="content post-summary">
-            <h2 id="ji-ben-gai-nian">基本概念</h2>
-<h3 id="zheng-que-xing-correctness">正确性（Correctness）</h3>
-<p><strong>一个系统是由一个状态和一些转换该状态的操作组成的</strong>。当系统运行时，它通过一些操作记录从一个状态转换到另一个状态。</p>
-
-        </div>
-        
-        
-        
-    <div class="article-info">
-        
-        <div class="article-date">2020-09-22</div>
-        
-        <div class="article-taxonomies">
-            
-                <ul class="article-categories">
-                    
-                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
-                    
-                </ul>
-            
-            
-                <ul class="article-tags">
-                    
-                    <li><a href="https://blog.zongwu233.com/tags/fen-bu-shi-xi-tong/">#分布式系统</a></li>
-                    
-                    <li><a href="https://blog.zongwu233.com/tags/yi-zhi-xing/">#一致性</a></li>
-                    
-                    <li><a href="https://blog.zongwu233.com/tags/yuan-li/">#原理</a></li>
-                    
-                </ul>
-            
-        </div>
-    </div>
-
-    </article>
-
-                
-                
-    <article class="post-list">
-        <header> 
-            <h1>
-                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;openstack-management&#x2F;">OpenStack 管理</a>
-            </h1>
-        </header>
-
-        
-        
-        
-    <div class="article-info">
-        
-        <div class="article-date">2020-08-16</div>
-        
-        <div class="article-taxonomies">
-            
-                <ul class="article-categories">
-                    
-                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
-                    
-                </ul>
-            
-            
-                <ul class="article-tags">
-                    
-                    <li><a href="https://blog.zongwu233.com/tags/openstack/">#OpenStack</a></li>
-                    
-                    <li><a href="https://blog.zongwu233.com/tags/shi-yong/">#使用</a></li>
-                    
-                    <li><a href="https://blog.zongwu233.com/tags/stein/">#stein</a></li>
                     
                 </ul>
             

@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="referrer" content="no-referrer-when-downgrade">
+
+        <title>[翻译]ReaderT 设计模式 </title>
+        <meta name="description" content="">
+
+        <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
+
+        
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
+        
+
+        
+        
+
+    </head>
+    <body>
+        <a class="skip-main" href="#main">Skip to content</a>
+        <div class="container">
+            <header> 
+                <h1 class="site-header">
+                    <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
+                </h1>
+                <nav>
+                    
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
+                    
+                    
+                </nav>
+            </header>
+            <main id="main" tabindex="-1">
+                
+
+<article class="post">
+    <header>
+        <h1>[翻译]ReaderT 设计模式 </h1>
+    </header>
+    <div class="content">
+        <blockquote>
+<p>讲解工程实践中为什么需要 ReaderT 模式比较清晰的文章，就翻译了一下。原文见<a href="https://www.fpcomplete.com/blog/2017/06/readert-design-pattern/">这里</a></p>
+</blockquote>
+<p>在工程实践中，一些语言比如 Java 通过设计模式用来解决某些常见的场景问题。<code>Haskell</code> 语言没有这类设计模式，它通过语言层面的特性解决这些问题。
+然而，我相信仍然有一些关于程序结构的高级指导的空间，我将其松散地称为 <code>Haskell</code> 设计模式。
+这次描述的模式被称为 <code>ReaderT 模式</code> 。我将其用作 <code>Yesod</code> 框架 <code>Handler</code> 类型设计的基础。</p>
+<span id="continue-reading"></span>
+<p>先整体介绍一下模式，然后再深入细节和例外场景：</p>
+<ul>
+<li>你的 <code>application</code> 定义一个核心数据类型（一般叫 <code>Env</code>）</li>
+<li>这个数据类型包含所有的运行时配置和全局函数（可以被mock），例如日志记录函数或者数据库访问。</li>
+<li>如果你必须存在一些可变的状态，把它放在 <code>Env</code> 中作为可变引用(<code>IORef</code>, <code>TVar</code>，等等)。</li>
+<li>通常这个数据类型代码应该包装成 <code>ReaderT Env IO</code> ，也可以定义为：<code>type App = ReaderT Env IO</code> ，或者直接用<code>newtype</code> 包装器而不是直接使用 <code>ReaderT</code></li>
+<li>你可以偶尔使用额外的 <code>monad transformers</code> ，但只适用于你的应用程序的一小部分，最好这些子集是纯的（<code>pure code</code>）。</li>
+<li>可选的：除了直接使用上面提到的 <code>App</code> 数据类型，还可以采用 <code>mtl-style typeclass</code>es （例如 <code>MonadReader</code> 和 <code>MonadIO</code>）写你的函数。这使得你恢复一些纯净度（<code>purity</code>），你认为我刚才让你丢弃纯净度，而使用 <code>IO</code> 和可变引用（ <code>mutable references</code>）。</li>
+</ul>
+<h2 id="quan-ju-bian-liang-yu-zi-yuan-chu-shi-hua">全局变量与资源初始化</h2>
+<p>全局变量是糟糕的，可变的全局变量更糟糕。
+一般处理全局变量的方式是，在 main 函数中读取配置文件，然后将这些变量值传递给其他代码。</p>
+<p>初始化资源
+对于应用程序中需要初始化资源的场景，假如你需要初始化一个随机数生成器，或者打开一个 <code>handler</code> 向其发送日志信息，或者创建一个数据库连接池，或者创建一个临时目录存储文件，把这些操作放在 main 函数里，远比从某个全局位置进行操作更有条理性。</p>
+<p>对于这些初始化操作，全局变量的方法的另一个优点是延迟初始化。大部分情况下都不需要立刻全部初始化这些资源。如果需要的话，也可以使用 <code>runOnce</code> 来完成。</p>
+<h2 id="bi-mian-shi-yong-writert-he-statet">避免使用 WriterT 和 StateT</h2>
+<p>可变引用是我最后推荐的一种手段。我们都知道，在 Haskell 中，<code>purity</code> 至关重要，可变性是魔鬼。此外，我们还有 <code>WriterT</code> 和 <code>StateT</code> 这些很棒的东西。如果我们的应用中有一些值需要随时间改变，为什么不使用它们呢?
+实际上，<code>Yesod</code> 的早期版本就是这样做的：他们使用 <code>StateT</code> 状态方法，通过 <code>Handler</code> 允许你修改用户会话值和设置响应标头。但是，很久以前，我切换到了可变引用，下面是原因：</p>
+<ul>
+<li><code>Exception-survival</code> 如果运行中出现异常，在 <code>WriterT</code> 和 <code>StateT</code> 中你将丢失状态（<code>state</code>），使用可变引用则不会出现这个问题，你可以在引发运行时异常之前读取最后一个可用状态。我们在 Yesod 中使用此功能有很大的好处，即使响应失败例如 <code>notFound</code> 也可以设置 <code>response headers</code>。</li>
+<li><code>False purity</code> 我们说 <code>WriterT</code> 和 <code>StateT</code> 是纯的，技术上讲它们是。但说实话：如果你的应用程序完全位于 <code>StateT</code> 内，您将无法从纯代码中获得想要的约束可变性的好处。还不如直接承认你有一个可变变量。</li>
+<li><code>Concurrency</code> 下面的代码结果是多少？</li>
+</ul>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#c0c5ce;">put </span><span style="color:#d08770;">4 </span><span style="color:#c0c5ce;">&gt;&gt; concurrently (modify (+ </span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">)) (modify (+ </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">)) &gt;&gt; get
+</span></code></pre>
+<p>你可能会说是7么？但它肯定不是。根据与 <code>StateT</code> 提供的状态相关的并发实现方式，结果可能是4、5或6。不相信我吗?试一下下面的代码：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#c0c5ce;">#!/usr/bin/env stack
+</span><span style="color:#65737e;">-- stack --resolver lts-8.12 script
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Control.Concurrent.Async.Lifted
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Control.Monad.State.Strict
+
+</span><span style="color:#8fa1b3;">main </span><span style="color:#b48ead;">:: IO </span><span style="color:#c0c5ce;">()
+main = execStateT
+    (concurrently (modify (+ </span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">)) (modify (+ </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">)))
+    </span><span style="color:#d08770;">4 </span><span style="color:#c0c5ce;">&gt;&gt;= print
+</span></code></pre>
+<p>假如我们需要将父线程的状态克隆到两个子线程中，然后任意选择哪个子状态将继续存在。或者我们可以只丢弃两个子状态，然后继续原始的父状态。
+处理不同线程之间的可变状态是一个难题，但是 <code>StateT</code> 并不能解决问题，而是将问题隐藏起来。
+如果使用可变变量，将不得不考虑这一点。我们想要什么语义？我们应该使用 <code>IORef</code> 和坚持 <code>atomicModifyIORef</code> 吗？我们应该使用 <code>TVar</code> 吗？这些是合理的问题，我们不得不对其检验。对于类似 <code>TVar</code> 的方法：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#c0c5ce;">#!/usr/bin/env stack
+</span><span style="color:#65737e;">-- stack --resolver lts-8.12 script
+</span><span style="color:#c0c5ce;">{-# </span><span style="color:#b48ead;">LANGUAGE</span><span style="color:#c0c5ce;"> FlexibleContexts #-}
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Control.Concurrent.Async.Lifted.Safe
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Control.Monad.Reader
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Control.Concurrent.STM
+
+</span><span style="color:#8fa1b3;">modify </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">MonadReader</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">TVar Int</span><span style="color:#c0c5ce;">) </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">MonadIO </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">)
+       =&gt; (</span><span style="color:#d08770;">Int </span><span style="color:#c0c5ce;">-&gt; </span><span style="color:#d08770;">Int</span><span style="color:#c0c5ce;">)
+       -&gt; m </span><span style="color:#d08770;">()
+</span><span style="color:#c0c5ce;">modify f = </span><span style="color:#b48ead;">do
+</span><span style="color:#c0c5ce;">  ref &lt;- ask
+  liftIO $ atomically $ modifyTVar&#39; ref f
+
+</span><span style="color:#8fa1b3;">main </span><span style="color:#b48ead;">:: IO </span><span style="color:#c0c5ce;">()
+main = </span><span style="color:#b48ead;">do
+</span><span style="color:#c0c5ce;">  ref &lt;- newTVarIO </span><span style="color:#d08770;">4
+</span><span style="color:#c0c5ce;">  runReaderT (concurrently (modify (+ </span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">)) (modify (+ </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">))) ref
+  readTVarIO ref &gt;&gt;= print
+</span></code></pre>
+<ul>
+<li><code>WriterT is broken</code>。正如 Gabriel Gonzalez 所展示的， 即使 strict <code>WriterT</code> 也存在空间泄漏问题。</li>
+<li><code>Caveats</code> 。我依然经常使用 <code>StateT</code> 和 <code>WriterT</code> 。一个例子是 Yesod's <code>WidgetT</code>，它实际上是一个在 <code>HandlerT</code> 之上的 <code>WriterT</code> 。在这种情况下它是有道理的：</li>
+</ul>
+<ol>
+<li>可变状态预计被应用的一小部分代码修改。</li>
+<li>尽管我们在构建 widget 时可以产生副作用，但是窗口小部件构造本身是一种 <code>pure</code> 的活动</li>
+<li>我们不需要让状态在异常中生存：如果出现问题，我们将发回错误页面</li>
+<li>构造 widget 时，没有充分的理由使用并发</li>
+<li>尽管存在空间泄漏的问题，但我还是对 WriterT 以及其他替代方案进行了基准测试 ，发现它是该用例中最快的</li>
+</ol>
+<p>此规则的另一个重大例外是纯代码。如果您的应用程序的某些子集不执行IO，但是需要某种可变状态，请使用 StateT 。</p>
+<h2 id="bi-mian-exceptt">避免 ExceptT</h2>
+<p>我已经有强烈的记录表明，<code>ExceptT over IO</code> 是一个坏主意。简单重复一下我那篇文章的内容：<code>IO</code> 的约定是任何异常在任何时候都可以抛出来。所以 <code>ExceptT</code> 实际上并不记录可能的异常，它会误导人，你可以阅读那篇博客获取更详细的信息。
+我在这里重复这一点是因为，<code>StateT WriterT</code> 的某些缺点同样适用于 <code>ExceptT</code>。例如如何在 <code>ExceptT</code> 中处理并发性？对于运行时异常，其行为是明确的:当并发使用时，如果任何子线程抛出异常，则杀死另一个线程，并在父线程中重新抛出异常。对于 <code>ExceptT</code> 你想要什么行为?
+同样，您可以在运行时异常不是契约的一部分的纯代码中使用 <code>ExceptT</code>，就像您应该在纯代码中使用 <code>StateT</code> 一样。但是，一旦我们从我们的主要应用 <code>transformers</code> 中消除了 <code>StateT</code>、<code>WriterT</code> 和 <code>ExceptT</code>，我们就剩下了……</p>
+<h2 id="zhi-you-readert">只有 ReaderT</h2>
+<p>现在你知道我为什么叫它“ReaderT设计模式”了。<code>ReaderT</code> 与其他三个<code>transformers</code> 相比有一个巨大的优势:它没有可变状态。它只是一种向所有函数传递额外参数的方便方式。即使该参数包含可变的引用，该参数本身也是完全不可变的。考虑到:
+我们可以忽略我提到的关于并发性的所有状态覆盖问题。这是因为使用 <code>ReaderT</code> 进行并发实际上是安全的。
+类似地，你可以使用 <code>monad-unlift library package</code>，深层 <code>monad transformer stack</code> 很容易让人困惑。把所有这些都减少到一个 <code>transformer</code> 可大大降低复杂度，这不仅对你更简单，对GHC也更简单，它往往有更好的时间优化一层 <code>ReaderT</code> 代码，而不是有5层深度的 <code>transformer</code> 代码。
+顺便说一下，你引入了 <code>ReaderT</code>，但你可以把它完全扔掉，然后手动传递你的 <code>Env</code> 。大多数人都不这样做，因为这让人觉得受虐(想象一下，必须告诉每一个调用<code>logDebug</code> 的地方到哪里去获取日志函数)。但是，如果你试图编写一个不需要理解 <code>transformer</code> 的更简单的代码库，现在您就可以掌握它了。</p>
+<h2 id="has-typeclass-fang-fa">has typeclass 方法</h2>
+<p>假设我们扩展上面可变变量示例，以包括一个日志记录功能。它可能看起来像这样：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#c0c5ce;">#!/usr/bin/env stack
+</span><span style="color:#65737e;">-- stack --resolver lts-8.12 script
+</span><span style="color:#c0c5ce;">{-# </span><span style="color:#b48ead;">LANGUAGE</span><span style="color:#c0c5ce;"> FlexibleContexts #-}
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Control.Concurrent.Async.Lifted.Safe
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Control.Monad.Reader
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Control.Concurrent.STM
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Say
+
+</span><span style="color:#b48ead;">data </span><span style="color:#d08770;">Env </span><span style="color:#c0c5ce;">= </span><span style="color:#d08770;">Env
+</span><span style="color:#c0c5ce;">  { envLog :: !(</span><span style="color:#d08770;">String </span><span style="color:#c0c5ce;">-&gt; </span><span style="color:#d08770;">IO ()</span><span style="color:#c0c5ce;">)
+  , envBalance :: !(</span><span style="color:#d08770;">TVar Int</span><span style="color:#c0c5ce;">)
+  }
+
+</span><span style="color:#8fa1b3;">modify </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">MonadReader Env </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">MonadIO </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">)
+       =&gt; (</span><span style="color:#d08770;">Int </span><span style="color:#c0c5ce;">-&gt; </span><span style="color:#d08770;">Int</span><span style="color:#c0c5ce;">)
+       -&gt; m </span><span style="color:#d08770;">()
+</span><span style="color:#c0c5ce;">modify f = </span><span style="color:#b48ead;">do
+</span><span style="color:#c0c5ce;">  env &lt;- ask
+  liftIO $ atomically $ modifyTVar&#39; (envBalance env) f
+
+</span><span style="color:#8fa1b3;">logSomething </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">MonadReader Env </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">MonadIO </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">)
+             =&gt; </span><span style="color:#d08770;">String
+             </span><span style="color:#c0c5ce;">-&gt; m </span><span style="color:#d08770;">()
+</span><span style="color:#c0c5ce;">logSomething msg = </span><span style="color:#b48ead;">do
+</span><span style="color:#c0c5ce;">  env &lt;- ask
+  liftIO $ envLog env msg
+
+</span><span style="color:#8fa1b3;">main </span><span style="color:#b48ead;">:: IO </span><span style="color:#c0c5ce;">()
+main = </span><span style="color:#b48ead;">do
+</span><span style="color:#c0c5ce;">  ref &lt;- newTVarIO </span><span style="color:#d08770;">4
+  </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> env = </span><span style="color:#d08770;">Env
+</span><span style="color:#c0c5ce;">        { envLog = sayString
+        , envBalance = ref
+        }
+  runReaderT
+    (concurrently
+      (modify (+ </span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">))
+      (logSomething &quot;</span><span style="color:#a3be8c;">Increasing account balance</span><span style="color:#c0c5ce;">&quot;))
+    env
+  balance &lt;- readTVarIO ref
+  sayString $ &quot;</span><span style="color:#a3be8c;">Final balance: </span><span style="color:#c0c5ce;">&quot; ++ show balance
+</span></code></pre>
+<p>对于你的应用来讲， <code>Env</code> 数据类型看起来是一种开销 （overhead）和样板代码。是这样，正如我上面说的，最好一开始先忍受一些痛苦，以便于更好地长期进行应用开发实践。
+这段代码有个更大的问题：太耦合了。即使从未使用 logging 函数，我们的 modify 函数也还是获得整个 Env 值。同样的， logSomething 也从不使用它（env）提供的那个可变变量。向函数提供太多的状态是不好的：</p>
+<ul>
+<li>我们无法从类型签名中知道代码是做什么的</li>
+<li>测试变得困难。为了检查 modify 是否正确，我们需要给它提供一些垃圾 logging 函数。
+我们使用 has typeclass 方法改造一下上面的样板代码，这与MonadReader和其他mtl类如MonadThrow和MonadIO组合得很好，使得我们能准确地表明我们的函数需要什么，代价是需要定义很多类型类。让我们看看这看起来是怎样的:</li>
+</ul>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#c0c5ce;">#!/usr/bin/env stack
+</span><span style="color:#65737e;">-- stack --resolver lts-8.12 script
+</span><span style="color:#c0c5ce;">{-# </span><span style="color:#b48ead;">LANGUAGE</span><span style="color:#c0c5ce;"> FlexibleContexts #-}
+{-# </span><span style="color:#b48ead;">LANGUAGE</span><span style="color:#c0c5ce;"> FlexibleInstances #-}
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Control.Concurrent.Async.Lifted.Safe
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Control.Monad.Reader
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Control.Concurrent.STM
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Say
+
+</span><span style="color:#b48ead;">data </span><span style="color:#d08770;">Env </span><span style="color:#c0c5ce;">= </span><span style="color:#d08770;">Env
+</span><span style="color:#c0c5ce;">  { envLog :: !(</span><span style="color:#d08770;">String </span><span style="color:#c0c5ce;">-&gt; </span><span style="color:#d08770;">IO ()</span><span style="color:#c0c5ce;">)
+  , envBalance :: !(</span><span style="color:#d08770;">TVar Int</span><span style="color:#c0c5ce;">)
+  }
+
+</span><span style="color:#b48ead;">class </span><span style="color:#a3be8c;">HasLog </span><span style="color:#bf616a;">a </span><span style="color:#b48ead;">where
+  </span><span style="color:#8fa1b3;">getLog </span><span style="color:#b48ead;">:: </span><span style="color:#bf616a;">a </span><span style="color:#b48ead;">-&gt;</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">String -&gt; IO </span><span style="color:#c0c5ce;">())
+</span><span style="color:#b48ead;">instance HasLog</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">String -&gt; IO </span><span style="color:#c0c5ce;">()) </span><span style="color:#b48ead;">where
+</span><span style="color:#c0c5ce;">  getLog = id
+</span><span style="color:#b48ead;">instance HasLog Env where
+</span><span style="color:#c0c5ce;">  getLog = envLog
+
+</span><span style="color:#b48ead;">class </span><span style="color:#a3be8c;">HasBalance </span><span style="color:#bf616a;">a </span><span style="color:#b48ead;">where
+  </span><span style="color:#8fa1b3;">getBalance </span><span style="color:#b48ead;">:: </span><span style="color:#bf616a;">a </span><span style="color:#b48ead;">-&gt; TVar Int
+instance HasBalance</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">TVar Int</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">where
+</span><span style="color:#c0c5ce;">  getBalance = id
+</span><span style="color:#b48ead;">instance HasBalance Env where
+</span><span style="color:#c0c5ce;">  getBalance = envBalance
+
+</span><span style="color:#8fa1b3;">modify </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">MonadReader </span><span style="color:#bf616a;">env m</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">HasBalance </span><span style="color:#bf616a;">env</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">MonadIO </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">)
+       =&gt; (</span><span style="color:#d08770;">Int </span><span style="color:#c0c5ce;">-&gt; </span><span style="color:#d08770;">Int</span><span style="color:#c0c5ce;">)
+       -&gt; m </span><span style="color:#d08770;">()
+</span><span style="color:#c0c5ce;">modify f = </span><span style="color:#b48ead;">do
+</span><span style="color:#c0c5ce;">  env &lt;- ask
+  liftIO $ atomically $ modifyTVar&#39; (getBalance env) f
+
+</span><span style="color:#8fa1b3;">logSomething </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">MonadReader </span><span style="color:#bf616a;">env m</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">HasLog </span><span style="color:#bf616a;">env</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">MonadIO </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">)
+             =&gt; </span><span style="color:#d08770;">String
+             </span><span style="color:#c0c5ce;">-&gt; m </span><span style="color:#d08770;">()
+</span><span style="color:#c0c5ce;">logSomething msg = </span><span style="color:#b48ead;">do
+</span><span style="color:#c0c5ce;">  env &lt;- ask
+  liftIO $ getLog env msg
+
+</span><span style="color:#8fa1b3;">main </span><span style="color:#b48ead;">:: IO </span><span style="color:#c0c5ce;">()
+main = </span><span style="color:#b48ead;">do
+</span><span style="color:#c0c5ce;">  ref &lt;- newTVarIO </span><span style="color:#d08770;">4
+  </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> env = </span><span style="color:#d08770;">Env
+</span><span style="color:#c0c5ce;">        { envLog = sayString
+        , envBalance = ref
+        }
+  runReaderT
+    (concurrently
+      (modify (+ </span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">))
+      (logSomething &quot;</span><span style="color:#a3be8c;">Increasing account balance</span><span style="color:#c0c5ce;">&quot;))
+    env
+  balance &lt;- readTVarIO ref
+  sayString $ &quot;</span><span style="color:#a3be8c;">Final balance: </span><span style="color:#c0c5ce;">&quot; ++ show balance
+</span></code></pre>
+<p>天哪，更多的样板代码！是呀，类型签名更长了，呆板的 instance 写法。但是我们的类型签名现在可以提供丰富的信息，并且可以轻松地测试我们的功能，例如：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#8fa1b3;">main </span><span style="color:#b48ead;">:: IO </span><span style="color:#c0c5ce;">()
+main = hspec $ </span><span style="color:#b48ead;">do
+</span><span style="color:#c0c5ce;">  describe &quot;</span><span style="color:#a3be8c;">modify</span><span style="color:#c0c5ce;">&quot; $ </span><span style="color:#b48ead;">do
+</span><span style="color:#c0c5ce;">    it &quot;</span><span style="color:#a3be8c;">works</span><span style="color:#c0c5ce;">&quot; $ </span><span style="color:#b48ead;">do
+</span><span style="color:#c0c5ce;">      var &lt;- newTVarIO (</span><span style="color:#d08770;">1 </span><span style="color:#c0c5ce;">:: </span><span style="color:#d08770;">Int</span><span style="color:#c0c5ce;">)
+      runReaderT (modify (+ </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">)) var
+      res &lt;- readTVarIO var
+      res </span><span style="color:#8fa1b3;">`</span><span style="color:#c0c5ce;">shouldBe</span><span style="color:#8fa1b3;">` </span><span style="color:#d08770;">3
+</span><span style="color:#c0c5ce;">  describe &quot;</span><span style="color:#a3be8c;">logSomething</span><span style="color:#c0c5ce;">&quot; $ </span><span style="color:#b48ead;">do
+</span><span style="color:#c0c5ce;">    it &quot;</span><span style="color:#a3be8c;">works</span><span style="color:#c0c5ce;">&quot; $ </span><span style="color:#b48ead;">do
+</span><span style="color:#c0c5ce;">      var &lt;- newTVarIO &quot;&quot;
+      </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> logFunc msg = atomically $ modifyTVar var (++ msg)
+          msg1 = &quot;</span><span style="color:#a3be8c;">Hello </span><span style="color:#c0c5ce;">&quot;
+          msg2 = &quot;</span><span style="color:#a3be8c;">World</span><span style="color:#96b5b4;">\n</span><span style="color:#c0c5ce;">&quot;
+      runReaderT (logSomething msg1 &gt;&gt; logSomething msg2) logFunc
+      res &lt;- readTVarIO var
+      res </span><span style="color:#8fa1b3;">`</span><span style="color:#c0c5ce;">shouldBe</span><span style="color:#8fa1b3;">`</span><span style="color:#c0c5ce;"> (msg1 ++ msg2)
+</span></code></pre>
+<p>如果手动定义所有这些类会让您感到困扰，如果你是<code>lens</code>库的忠实粉丝的话：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#c0c5ce;">#!/usr/bin/env stack
+</span><span style="color:#65737e;">-- stack --resolver lts-8.12 script
+</span><span style="color:#c0c5ce;">{-# </span><span style="color:#b48ead;">LANGUAGE</span><span style="color:#c0c5ce;"> FlexibleContexts #-}
+{-# </span><span style="color:#b48ead;">LANGUAGE</span><span style="color:#c0c5ce;"> FlexibleInstances #-}
+{-# </span><span style="color:#b48ead;">LANGUAGE</span><span style="color:#c0c5ce;"> TemplateHaskell #-}
+{-# </span><span style="color:#b48ead;">LANGUAGE</span><span style="color:#c0c5ce;"> MultiParamTypeClasses #-}
+{-# </span><span style="color:#b48ead;">LANGUAGE</span><span style="color:#c0c5ce;"> FunctionalDependencies #-}
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Control.Concurrent.Async.Lifted.Safe
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Control.Monad.Reader
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Control.Concurrent.STM
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Say
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Control.Lens
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Prelude </span><span style="color:#b48ead;">hiding </span><span style="color:#c0c5ce;">(</span><span style="color:#8fa1b3;">log</span><span style="color:#c0c5ce;">)
+
+</span><span style="color:#b48ead;">data </span><span style="color:#d08770;">Env </span><span style="color:#c0c5ce;">= </span><span style="color:#d08770;">Env
+</span><span style="color:#c0c5ce;">  { envLog :: !(</span><span style="color:#d08770;">String </span><span style="color:#c0c5ce;">-&gt; </span><span style="color:#d08770;">IO ()</span><span style="color:#c0c5ce;">)
+  , envBalance :: !(</span><span style="color:#d08770;">TVar Int</span><span style="color:#c0c5ce;">)
+  }
+
+makeLensesWith camelCaseFields &#39;&#39;</span><span style="color:#d08770;">Env
+
+</span><span style="color:#8fa1b3;">modify </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">MonadReader </span><span style="color:#bf616a;">env m</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">HasBalance </span><span style="color:#bf616a;">env</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">TVar Int</span><span style="color:#c0c5ce;">), </span><span style="color:#b48ead;">MonadIO </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">)
+       =&gt; (</span><span style="color:#d08770;">Int </span><span style="color:#c0c5ce;">-&gt; </span><span style="color:#d08770;">Int</span><span style="color:#c0c5ce;">)
+       -&gt; m </span><span style="color:#d08770;">()
+</span><span style="color:#c0c5ce;">modify f = </span><span style="color:#b48ead;">do
+</span><span style="color:#c0c5ce;">  env &lt;- ask
+  liftIO $ atomically $ modifyTVar&#39; (env^.balance) f
+
+</span><span style="color:#8fa1b3;">logSomething </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">MonadReader </span><span style="color:#bf616a;">env m</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">HasLog </span><span style="color:#bf616a;">env</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">String -&gt; IO </span><span style="color:#c0c5ce;">()), </span><span style="color:#b48ead;">MonadIO </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">)
+             =&gt; </span><span style="color:#d08770;">String
+             </span><span style="color:#c0c5ce;">-&gt; m </span><span style="color:#d08770;">()
+</span><span style="color:#c0c5ce;">logSomething msg = </span><span style="color:#b48ead;">do
+</span><span style="color:#c0c5ce;">  env &lt;- ask
+  liftIO $ (env^.log) msg
+
+</span><span style="color:#8fa1b3;">main </span><span style="color:#b48ead;">:: IO </span><span style="color:#c0c5ce;">()
+main = </span><span style="color:#b48ead;">do
+</span><span style="color:#c0c5ce;">  ref &lt;- newTVarIO </span><span style="color:#d08770;">4
+  </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> env = </span><span style="color:#d08770;">Env
+</span><span style="color:#c0c5ce;">        { envLog = sayString
+        , envBalance = ref
+        }
+  runReaderT
+    (concurrently
+      (modify (+ </span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">))
+      (logSomething &quot;</span><span style="color:#a3be8c;">Increasing account balance</span><span style="color:#c0c5ce;">&quot;))
+    env
+  balance &lt;- readTVarIO ref
+  sayString $ &quot;</span><span style="color:#a3be8c;">Final balance: </span><span style="color:#c0c5ce;">&quot; ++ show balance
+</span></code></pre>
+<p>上面的例子中，<code>Env</code> 不再有<code>immutable config-style</code>的数据。因此 <code>lens</code> 方法的优势就没那么明显了。但是如果你有深层嵌套的配置值，并且特别想在整个应用中使用 <code>local</code> 调整其中的一些值，那么 <code>lens</code> 方法的好处就能体现出来了。
+所以总结一下:这个方法就是咬紧牙关，接受一些开始阶段的痛苦和样板代码。在应用开发过程中你能从这种方法获得的无数好处。记住:只需要预先支付一次性费用，你便能够每天都获得回报。</p>
+<h2 id="hui-fu-purity">恢复 purity</h2>
+<p>不幸的是，我们的 modify 函数具有 MonadIO 约束。尽管我们的实际实现需要 IO 操作执行副作用（具体来说，就是读取、写入 TVar），但我们感染了所有的对该函数的调用者。我们说&quot;我们有权执行任何副作用，包括发射导弹，或者更糟糕的是，抛出运行时异常。&quot;
+我们能恢复某种程度的纯度（purity）吗?答案是肯定的，只是需要更多的样板文件:</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#c0c5ce;">#!/usr/bin/env stack
+</span><span style="color:#65737e;">-- stack --resolver lts-8.12 script
+</span><span style="color:#c0c5ce;">{-# </span><span style="color:#b48ead;">LANGUAGE</span><span style="color:#c0c5ce;"> FlexibleContexts #-}
+{-# </span><span style="color:#b48ead;">LANGUAGE</span><span style="color:#c0c5ce;"> FlexibleInstances #-}
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Control.Concurrent.Async.Lifted.Safe
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Control.Monad.Reader
+</span><span style="color:#b48ead;">import qualified </span><span style="color:#c0c5ce;">Control.Monad.State.Strict </span><span style="color:#b48ead;">as </span><span style="color:#c0c5ce;">State
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Control.Concurrent.STM
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Say
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Test.Hspec
+
+</span><span style="color:#b48ead;">data </span><span style="color:#d08770;">Env </span><span style="color:#c0c5ce;">= </span><span style="color:#d08770;">Env
+</span><span style="color:#c0c5ce;">  { envLog :: !(</span><span style="color:#d08770;">String </span><span style="color:#c0c5ce;">-&gt; </span><span style="color:#d08770;">IO ()</span><span style="color:#c0c5ce;">)
+  , envBalance :: !(</span><span style="color:#d08770;">TVar Int</span><span style="color:#c0c5ce;">)
+  }
+
+</span><span style="color:#b48ead;">class </span><span style="color:#a3be8c;">HasLog </span><span style="color:#bf616a;">a </span><span style="color:#b48ead;">where
+  </span><span style="color:#8fa1b3;">getLog </span><span style="color:#b48ead;">:: </span><span style="color:#bf616a;">a </span><span style="color:#b48ead;">-&gt;</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">String -&gt; IO </span><span style="color:#c0c5ce;">())
+</span><span style="color:#b48ead;">instance HasLog</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">String -&gt; IO </span><span style="color:#c0c5ce;">()) </span><span style="color:#b48ead;">where
+</span><span style="color:#c0c5ce;">  getLog = id
+</span><span style="color:#b48ead;">instance HasLog Env where
+</span><span style="color:#c0c5ce;">  getLog = envLog
+
+</span><span style="color:#b48ead;">class </span><span style="color:#a3be8c;">HasBalance </span><span style="color:#bf616a;">a </span><span style="color:#b48ead;">where
+  </span><span style="color:#8fa1b3;">getBalance </span><span style="color:#b48ead;">:: </span><span style="color:#bf616a;">a </span><span style="color:#b48ead;">-&gt; TVar Int
+instance HasBalance</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">TVar Int</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">where
+</span><span style="color:#c0c5ce;">  getBalance = id
+</span><span style="color:#b48ead;">instance HasBalance Env where
+</span><span style="color:#c0c5ce;">  getBalance = envBalance
+
+</span><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">Monad </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;"> =&gt; </span><span style="color:#a3be8c;">MonadBalance </span><span style="color:#bf616a;">m </span><span style="color:#b48ead;">where
+  </span><span style="color:#8fa1b3;">modifyBalance </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Int -&gt; Int</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m </span><span style="color:#c0c5ce;">()
+</span><span style="color:#b48ead;">instance</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">HasBalance </span><span style="color:#bf616a;">env</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">MonadIO </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">=&gt; MonadBalance</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">ReaderT </span><span style="color:#bf616a;">env m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">where
+</span><span style="color:#c0c5ce;">  modifyBalance f = </span><span style="color:#b48ead;">do
+</span><span style="color:#c0c5ce;">    env &lt;- ask
+    liftIO $ atomically $ modifyTVar&#39; (getBalance env) f
+</span><span style="color:#b48ead;">instance Monad </span><span style="color:#bf616a;">m </span><span style="color:#b48ead;">=&gt; MonadBalance</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">State</span><span style="color:#c0c5ce;">.</span><span style="color:#b48ead;">StateT Int </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">where
+</span><span style="color:#c0c5ce;">  modifyBalance = </span><span style="color:#d08770;">State</span><span style="color:#c0c5ce;">.modify
+
+</span><span style="color:#8fa1b3;">modify </span><span style="color:#b48ead;">:: MonadBalance </span><span style="color:#bf616a;">m </span><span style="color:#b48ead;">=&gt;</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Int -&gt; Int</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m </span><span style="color:#c0c5ce;">()
+modify f = </span><span style="color:#b48ead;">do
+  </span><span style="color:#65737e;">-- Now I know there&#39;s no way I&#39;m performing IO here
+</span><span style="color:#c0c5ce;">  modifyBalance f
+
+</span><span style="color:#8fa1b3;">logSomething </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">MonadReader </span><span style="color:#bf616a;">env m</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">HasLog </span><span style="color:#bf616a;">env</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">MonadIO </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">)
+             =&gt; </span><span style="color:#d08770;">String
+             </span><span style="color:#c0c5ce;">-&gt; m </span><span style="color:#d08770;">()
+</span><span style="color:#c0c5ce;">logSomething msg = </span><span style="color:#b48ead;">do
+</span><span style="color:#c0c5ce;">  env &lt;- ask
+  liftIO $ getLog env msg
+
+</span><span style="color:#8fa1b3;">main </span><span style="color:#b48ead;">:: IO </span><span style="color:#c0c5ce;">()
+main = hspec $ </span><span style="color:#b48ead;">do
+</span><span style="color:#c0c5ce;">  describe &quot;</span><span style="color:#a3be8c;">modify</span><span style="color:#c0c5ce;">&quot; $ </span><span style="color:#b48ead;">do
+</span><span style="color:#c0c5ce;">    it &quot;</span><span style="color:#a3be8c;">works, IO</span><span style="color:#c0c5ce;">&quot; $ </span><span style="color:#b48ead;">do
+</span><span style="color:#c0c5ce;">      var &lt;- newTVarIO (</span><span style="color:#d08770;">1 </span><span style="color:#c0c5ce;">:: </span><span style="color:#d08770;">Int</span><span style="color:#c0c5ce;">)
+      runReaderT (modify (+ </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">)) var
+      res &lt;- readTVarIO var
+      res </span><span style="color:#8fa1b3;">`</span><span style="color:#c0c5ce;">shouldBe</span><span style="color:#8fa1b3;">` </span><span style="color:#d08770;">3
+</span><span style="color:#c0c5ce;">  it &quot;</span><span style="color:#a3be8c;">works, pure</span><span style="color:#c0c5ce;">&quot; $ </span><span style="color:#b48ead;">do
+      let</span><span style="color:#c0c5ce;"> res = </span><span style="color:#d08770;">State</span><span style="color:#c0c5ce;">.execState (modify (+ </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">)) (</span><span style="color:#d08770;">1 </span><span style="color:#c0c5ce;">:: </span><span style="color:#d08770;">Int</span><span style="color:#c0c5ce;">)
+      res </span><span style="color:#8fa1b3;">`</span><span style="color:#c0c5ce;">shouldBe</span><span style="color:#8fa1b3;">` </span><span style="color:#d08770;">3
+</span><span style="color:#c0c5ce;">  describe &quot;</span><span style="color:#a3be8c;">logSomething</span><span style="color:#c0c5ce;">&quot; $ </span><span style="color:#b48ead;">do
+</span><span style="color:#c0c5ce;">    it &quot;</span><span style="color:#a3be8c;">works</span><span style="color:#c0c5ce;">&quot; $ </span><span style="color:#b48ead;">do
+</span><span style="color:#c0c5ce;">      var &lt;- newTVarIO &quot;&quot;
+      </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> logFunc msg = atomically $ modifyTVar var (++ msg)
+          msg1 = &quot;</span><span style="color:#a3be8c;">Hello </span><span style="color:#c0c5ce;">&quot;
+          msg2 = &quot;</span><span style="color:#a3be8c;">World</span><span style="color:#96b5b4;">\n</span><span style="color:#c0c5ce;">&quot;
+      runReaderT (logSomething msg1 &gt;&gt; logSomething msg2) logFunc
+      res &lt;- readTVarIO var
+      res </span><span style="color:#8fa1b3;">`</span><span style="color:#c0c5ce;">shouldBe</span><span style="color:#8fa1b3;">`</span><span style="color:#c0c5ce;"> (msg1 ++ msg2)
+</span></code></pre>
+<p>上面这个例子中整个modify函数都实现在一个类型类中，这有点傻。但是在更大的示例中，你可以看到我们如何能够指导我们的整个逻辑部分不执行任何副作用，同时仍然充分使用 ReaderT 模式。
+换一种说法，函数 <code>foo :: Monad m =&gt; Int -&gt; m Double</code> 可能看起来不纯，因为它存在于一个 monad 中。事实并非如此：通过给他一个“ Monad 的任意一个实例”的约束，我们可以说，这里没有任何副作用。
+毕竟，上面（函数）那个 type 跟 <code>Identity</code> 函数是 <code>unify</code> 的。而 <code>Identity</code> 显然是纯的。
+这个例子看起来可能有点搞笑，那么这个呢？<code>parseInt :: MonadThrow m =&gt; Text -&gt; m Int</code> 你可能认为这个是不纯的，因为它可能会抛出一个运行时异常。但是该类型与 <code>parseInt :: Text -&gt; Maybe Int</code> 是<code>unify</code> 的，而后者明显是纯的。
+对于我们的函数我们已经获取了很多知识，现在可以放心地调用它们。
+我们的结论是：如果你可以推广你的函数为 <code>mtl-style</code> 单子约束，那就做。你将会获得纯度，从而获得很多好处。</p>
+<h2 id="fen-xi">分析</h2>
+<p>虽然这里讲解的技术确实有点笨拙，但对于任何大规模的应用程序或库开发，成本都是摊销的。我发现在许多实际项目中，以这种方式工作的好处远远超过成本。</p>
+<p>它还会导致其他问题，比如更令人困惑的错误消息，对新加入项目的人增加更多的认知开销。但根据我的经验，一旦人们熟悉了这种方法，它就会产生良好的效果。</p>
+<p>除了上面我列出的具体好处，使用这个方法自然引导着你查看周围许多常见的 <code>monad transformer stack</code> 痛点，你会看到人们在现实世界中经历。我鼓励其他人分享他们在现实生活中的例子。我个人已经很久没有遇到这些问题了，因为我一直坚持这种方法。</p>
+<p>翻译自： https://www.fpcomplete.com/blog/2017/06/readert-design-pattern/</p>
+
+    </div>
+
+    
+    <div class="article-info">
+        
+        <div class="article-date">2021-08-14</div>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/haskell/">#Haskell</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/she-ji-mo-shi/">#设计模式</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/fan-yi/">#翻译</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+</article>
+
+
+            </main>
+            <footer>
+                <p>
+                © zongwu&#x27;s blog 2015 - 2021<br>
+                </p>
+                <p>
+                
+                
+                </p>
+            </footer>
+        </div>
+        <!--  add cnzz trace code  -->
+        
+                <script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1279242175'%3E%3C/span%3E%3Cscript src='https://s9.cnzz.com/z_stat.php%3Fid%3D1279242175' type='text/javascript'%3E%3C/script%3E"));</script>
+        
+</body>
+</html>
