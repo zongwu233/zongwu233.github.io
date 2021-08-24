@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="referrer" content="no-referrer-when-downgrade">
+
+        <title>WriterT 相关源码分析 </title>
+        <meta name="description" content="">
+
+        <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
+
+        
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
+        
+
+        
+        
+
+    </head>
+    <body>
+        <a class="skip-main" href="#main">Skip to content</a>
+        <div class="container">
+            <header> 
+                <h1 class="site-header">
+                    <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
+                </h1>
+                <nav>
+                    
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
+                    
+                    
+                </nav>
+            </header>
+            <main id="main" tabindex="-1">
+                
+
+<article class="post">
+    <header>
+        <h1>WriterT 相关源码分析 </h1>
+    </header>
+    <div class="content">
+        <p>看完<code>ReaderT</code>的<a href="/readert-source-code-analysis">源码</a>，接着来分析<code>WriterT</code>的源码。</p>
+<h2 id="shi-li">示例</h2>
+<p>先看一个超级简单的例子：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Control.Monad
+</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Control.Monad.Trans.Writer
+
+</span><span style="color:#b48ead;">data </span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">= </span><span style="color:#d08770;">LogEntry</span><span style="color:#c0c5ce;"> { msg :: </span><span style="color:#d08770;">String</span><span style="color:#c0c5ce;"> } </span><span style="color:#b48ead;">deriving</span><span style="color:#c0c5ce;"> (</span><span style="color:#a3be8c;">Eq</span><span style="color:#c0c5ce;">, </span><span style="color:#a3be8c;">Show</span><span style="color:#c0c5ce;">)
+
+</span><span style="color:#8fa1b3;">calc </span><span style="color:#b48ead;">:: Writer</span><span style="color:#c0c5ce;"> [</span><span style="color:#b48ead;">LogEntry</span><span style="color:#c0c5ce;">] </span><span style="color:#b48ead;">Integer
+</span><span style="color:#c0c5ce;">calc = </span><span style="color:#b48ead;">do
+</span><span style="color:#c0c5ce;">    tell [</span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">Start</span><span style="color:#c0c5ce;">&quot;]
+    </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> x = sum [</span><span style="color:#d08770;">1 </span><span style="color:#c0c5ce;">.. </span><span style="color:#d08770;">10000000</span><span style="color:#c0c5ce;">]
+    tell [</span><span style="color:#d08770;">LogEntry</span><span style="color:#c0c5ce;"> (show x)]
+    tell [</span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">done</span><span style="color:#c0c5ce;">&quot;]
+    return x
+    
+test = execWriter calc
+test2 = runWriter calc
+</span></code></pre>
+<p><code>test</code>执行结果：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#c0c5ce;">[</span><span style="color:#d08770;">LogEntry</span><span style="color:#c0c5ce;"> {msg = &quot;</span><span style="color:#a3be8c;">Start</span><span style="color:#c0c5ce;">&quot;},</span><span style="color:#d08770;">LogEntry</span><span style="color:#c0c5ce;"> {msg = &quot;</span><span style="color:#a3be8c;">50000005000000</span><span style="color:#c0c5ce;">&quot;},</span><span style="color:#d08770;">LogEntry</span><span style="color:#c0c5ce;"> {msg = &quot;</span><span style="color:#a3be8c;">done</span><span style="color:#c0c5ce;">&quot;}]
+</span></code></pre><span id="continue-reading"></span>
+<p><code>test2</code>执行结果：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">50000005000000</span><span style="color:#c0c5ce;">,[</span><span style="color:#d08770;">LogEntry</span><span style="color:#c0c5ce;"> {msg = &quot;</span><span style="color:#a3be8c;">Start</span><span style="color:#c0c5ce;">&quot;},</span><span style="color:#d08770;">LogEntry</span><span style="color:#c0c5ce;"> {msg = &quot;</span><span style="color:#a3be8c;">50000005000000</span><span style="color:#c0c5ce;">&quot;},</span><span style="color:#d08770;">LogEntry</span><span style="color:#c0c5ce;"> {msg = &quot;</span><span style="color:#a3be8c;">done</span><span style="color:#c0c5ce;">&quot;}])
+</span></code></pre>
+<p>我们定义了一个<code>LogEntry</code>类型用来简单模拟日志功能，在<code>calc</code>方法里，多次调用<code>tell</code>操作，就可以不断地增加<code>LogEntry</code>数据 。调用<code>test</code>,<code>test2</code>就可以得到累积的结果。<code>test2</code>得到一个<code>(a,w)</code>类型的值，<code>test</code>丢弃了<code>a</code>，只保留<code>w</code>。</p>
+<p><code>Writer</code>是如何实现<code>tell</code>这种操作的？我们从源码层面深入了解一下。</p>
+<p>先从<code>Writer</code>开始。</p>
+<h2 id="writer">Writer</h2>
+<p>在<code>Control.Monad.Trans.Writer.Strict</code> 模块<code>Control.Monad.Trans.Writer.Lazy </code> 模块分别定义了<code>WriterT</code>，两者绝大部分的代码都是相同的。主要区别在于，如果其中使用模式匹配的求值模式。例如：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#c0c5ce;">(a,b) =  ...
+</span></code></pre>
+<p><code>(a,b)</code>是否立即求值（Strict 模式），还是等<code>a,b</code>真正使用的那一刻再求值（如果不使用就永远不求值，Lazy模式）。这可能会影响程序的性能，而且如果<code>b</code>是一个无限队列，<code>Strict</code> 模块就不能正确处理了。</p>
+<p><code>Control.Monad.Trans.Writer</code>模块使用的是<code>Lazy</code>模型，所以我们只看<code>Control.Monad.Trans.Writer.Lazy </code> 模块下的相关定义。</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- ---------------------------------------------------------------------------
+-- | A writer monad parameterized by the type @w@ of output to accumulate.
+--
+-- The &#39;return&#39; function produces the output &#39;mempty&#39;, while @&gt;&gt;=@
+-- combines the outputs of the subcomputations using &#39;mappend&#39;.
+</span><span style="color:#b48ead;">type </span><span style="color:#d08770;">Writer</span><span style="color:#c0c5ce;"> w = </span><span style="color:#d08770;">WriterT</span><span style="color:#c0c5ce;"> w </span><span style="color:#d08770;">Identity
+</span></code></pre>
+<p><code>Writer</code>只是一个别名，重点看<code>WriterT</code>，在同一个源文件里。</p>
+<h2 id="writert">WriterT</h2>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- | A writer monad parameterized by:
+--
+--   * @w@ - the output to accumulate.
+--
+--   * @m@ - The inner monad.
+--
+-- The &#39;return&#39; function produces the output &#39;mempty&#39;, while @&gt;&gt;=@
+-- combines the outputs of the subcomputations using &#39;mappend&#39;.
+</span><span style="color:#b48ead;">newtype </span><span style="color:#d08770;">WriterT</span><span style="color:#c0c5ce;"> w m a = </span><span style="color:#d08770;">WriterT</span><span style="color:#c0c5ce;"> { runWriterT :: m (a, w) }
+    </span><span style="color:#b48ead;">deriving</span><span style="color:#c0c5ce;"> (</span><span style="color:#a3be8c;">Generic</span><span style="color:#c0c5ce;">)
+    
+</span><span style="color:#b48ead;">instance</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Functor </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">=&gt; Functor</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">WriterT </span><span style="color:#bf616a;">w m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">where
+</span><span style="color:#c0c5ce;">    fmap f = mapWriterT $ fmap $ \ ~(a, w) -&gt; (f a, w)
+
+</span><span style="color:#b48ead;">instance</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Foldable </span><span style="color:#bf616a;">f</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">=&gt; Foldable</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">WriterT </span><span style="color:#bf616a;">w f</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">where
+    </span><span style="color:#c0c5ce;">...
+
+</span><span style="color:#b48ead;">instance</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Traversable </span><span style="color:#bf616a;">f</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">=&gt; Traversable</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">WriterT </span><span style="color:#bf616a;">w f</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">where
+		</span><span style="color:#c0c5ce;">...
+
+</span><span style="color:#b48ead;">instance</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Monoid </span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">Applicative </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">=&gt; Applicative</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">WriterT </span><span style="color:#bf616a;">w m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">where
+</span><span style="color:#c0c5ce;">    pure a  = </span><span style="color:#d08770;">WriterT </span><span style="color:#c0c5ce;">$ pure (a, mempty)
+    f &lt;*&gt; v = </span><span style="color:#d08770;">WriterT </span><span style="color:#c0c5ce;">$ liftA2 k (runWriterT f) (runWriterT v)
+      </span><span style="color:#b48ead;">where</span><span style="color:#c0c5ce;"> k ~(a, w) ~(b, w&#39;) = (a b, w </span><span style="color:#8fa1b3;">`</span><span style="color:#c0c5ce;">mappend</span><span style="color:#8fa1b3;">`</span><span style="color:#c0c5ce;"> w&#39;)
+  
+</span><span style="color:#b48ead;">instance</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Monoid </span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">Alternative </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">=&gt; Alternative</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">WriterT </span><span style="color:#bf616a;">w m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">where
+</span><span style="color:#c0c5ce;">    empty   = </span><span style="color:#d08770;">WriterT</span><span style="color:#c0c5ce;"> empty
+    m &lt;|&gt; n = </span><span style="color:#d08770;">WriterT </span><span style="color:#c0c5ce;">$ runWriterT m &lt;|&gt; runWriterT n
+
+</span><span style="color:#b48ead;">instance</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Monoid </span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">Monad </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">=&gt; Monad</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">WriterT </span><span style="color:#bf616a;">w m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">where
+    
+</span><span style="color:#c0c5ce;">    return a = writer (a, mempty)
+
+    m &gt;&gt;= k  = </span><span style="color:#d08770;">WriterT </span><span style="color:#c0c5ce;">$ </span><span style="color:#b48ead;">do
+        </span><span style="color:#c0c5ce;">~(a, w)  &lt;- runWriterT m
+        ~(b, w&#39;) &lt;- runWriterT (k a)
+        return (b, w </span><span style="color:#8fa1b3;">`</span><span style="color:#c0c5ce;">mappend</span><span style="color:#8fa1b3;">`</span><span style="color:#c0c5ce;"> w&#39;)
+     
+#if !(</span><span style="color:#d08770;">MIN_VERSION_base</span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">4</span><span style="color:#c0c5ce;">,</span><span style="color:#d08770;">13</span><span style="color:#c0c5ce;">,</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">))
+    fail msg = </span><span style="color:#d08770;">WriterT </span><span style="color:#c0c5ce;">$ fail msg
+#endif
+</span></code></pre>
+<p><code>WriterT</code>的定义只是包装了一下<code>m (a,w)</code>。</p>
+<p>定义前面的注释讲 <code>m</code>是一个<code>monad</code>，<code>w</code>是用于累积的输出。</p>
+<p><code>WriterT</code>实现了很多<code>typeclass</code> 比如<code>Functor</code>,<code>Foldable</code>,<code>Traversable</code>,<code>Applicative</code>,<code>Alternative</code>,<code>Monad</code>。</p>
+<p>我们重点看<code>Monad (WriterT w m)</code>的实现。自然就是<code>return</code>以及<code>&gt;&gt;=</code>操作的实现了。</p>
+<h3 id="return-fang-fa">return 方法</h3>
+<p><code>return</code> 方法调用了<code>writer</code>：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- | Construct a writer computation from a (result, output) pair.
+-- (The inverse of &#39;runWriter&#39;.)
+</span><span style="color:#8fa1b3;">writer </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Monad </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">=&gt;</span><span style="color:#c0c5ce;"> (</span><span style="color:#bf616a;">a</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">-&gt; WriterT </span><span style="color:#bf616a;">w m a
+</span><span style="color:#c0c5ce;">writer = </span><span style="color:#d08770;">WriterT </span><span style="color:#c0c5ce;">. return
+</span></code></pre>
+<p>熟悉的套路，<code>Writer</code>的定义之于<code>WriterT</code>，就像<code>Reader</code>之于<code>ReaderT</code>。</p>
+<p>于是<code>WriterT</code>的<code>return</code>方法：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#c0c5ce;">return a = writer (a, mempty)
+				 = </span><span style="color:#d08770;">WriterT </span><span style="color:#c0c5ce;">. return (a,mempty) 
+				 = </span><span style="color:#d08770;">WriterT </span><span style="color:#c0c5ce;">. m (a,mempty)  </span><span style="color:#65737e;">-- Writer 的 return a = m a
+</span></code></pre>
+<p>也即是将 <code>a</code> 包装成了 <code>WriterT mempty m a</code>。形如<code>Writer w m a </code> 。<code>w</code>这个累积量为<code>mempty</code>。</p>
+<h3 id="fang-fa">&gt;&gt;= 方法</h3>
+<p>继续看<code>Monad (WriterT w m)</code>的<code>&gt;&gt;=</code>方法实现：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#c0c5ce;">    m &gt;&gt;= k  = </span><span style="color:#d08770;">WriterT </span><span style="color:#c0c5ce;">$ </span><span style="color:#b48ead;">do
+        </span><span style="color:#c0c5ce;">~(a, w)  &lt;- runWriterT m
+        ~(b, w&#39;) &lt;- runWriterT (k a)
+        return (b, w </span><span style="color:#8fa1b3;">`</span><span style="color:#c0c5ce;">mappend</span><span style="color:#8fa1b3;">`</span><span style="color:#c0c5ce;"> w&#39;)
+</span></code></pre>
+<p><code>~</code> 关键字是<code>Lazy pattern bindings</code>，当左边匹配值在后续被使用时，才对匹配的绑定值进行具体求值。</p>
+<p>注意<code>m &gt;&gt;= k </code>里的<code>m</code>不是<code>WriterT w m</code>里的<code>m</code>，而是表示<code>WriterT w m a</code>。(因为<code>Monad (WriterT w m)</code>)。</p>
+<p>这里的逻辑比较容易理解：</p>
+<p><code>do</code>里面执行<code>runWriterT m</code> 得到<code>(a,w)</code>。</p>
+<p>再次执行<code>runWriterT  (k,a)</code>得到<code>(b,w')</code> </p>
+<p>然后将<code>result</code> 值<code>b</code>以及拼接的<code> w mappend w'</code> <code>return</code>成 <code>m (b, w mappend w')</code></p>
+<p>最后使用<code>WriterT</code>生成最终值（刚好符合定义的类型<code>WriterT { runWriterT :: m (a, w) }</code>）。</p>
+<p>从这里的操作过程可以更清楚<code>w</code>为什么被称为<code>the output to accumulate</code>。</p>
+<p><code>mempty</code>与<code>mappend</code>都是<code>monoid</code>中定义的操作：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#b48ead;">class </span><span style="color:#a3be8c;">Semigroup </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;"> =&gt; </span><span style="color:#ebcb8b;">Monoid </span><span style="color:#bf616a;">m </span><span style="color:#b48ead;">where
+  </span><span style="color:#8fa1b3;">mempty </span><span style="color:#b48ead;">:: </span><span style="color:#bf616a;">m
+
+  </span><span style="color:#65737e;">-- defining mappend is unnecessary, it copies from Semigroup
+  </span><span style="color:#8fa1b3;">mappend </span><span style="color:#b48ead;">:: </span><span style="color:#bf616a;">m </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m
+</span><span style="color:#c0c5ce;">  mappend = </span><span style="color:#8fa1b3;">(&lt;&gt;)
+
+  </span><span style="color:#65737e;">-- defining mconcat is optional, since it has the following default:
+  </span><span style="color:#8fa1b3;">mconcat </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> [</span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">] </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m
+</span><span style="color:#c0c5ce;">  mconcat = foldr mappend mempty
+</span></code></pre>
+<p>而<code>&lt;&gt;</code>来自于<code>Semigroup</code>。<code>monoid</code>遵循的定律：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- 单位元法则
+-- Identity laws
+</span><span style="color:#c0c5ce;">x &lt;&gt; mempty = x
+mempty &lt;&gt; x = x
+
+</span><span style="color:#65737e;">-- 结合律
+-- Associativity laws
+</span><span style="color:#c0c5ce;">(x &lt;&gt; y) &lt;&gt; z = x &lt;&gt; (y &lt;&gt; z)
+</span></code></pre>
+<p><code>fail msg = WriterT $ fail msg</code> 比较直观不解释。</p>
+<h2 id="monadwriter">MonadWriter</h2>
+<p>在看<code>WriterT</code>的其他操作之前，先看一看<code>MonadWriter</code>这个重要的<code>typeclass</code>。<code>MonadWriter</code>抽象定义了<code>Monad </code> <code>Writer</code>的行为。<code>WriterT</code>是<code>MonadWriter</code>众多<code>instance</code>其中的一个。</p>
+<p>在<code>Control.Monad.Writer.Class </code>文件：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#b48ead;">class</span><span style="color:#c0c5ce;"> (</span><span style="color:#ebcb8b;">Monoid </span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;">, </span><span style="color:#ebcb8b;">Monad </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">) =&gt; </span><span style="color:#a3be8c;">MonadWriter </span><span style="color:#bf616a;">w m</span><span style="color:#c0c5ce;"> | </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;"> -&gt; </span><span style="color:#bf616a;">w </span><span style="color:#b48ead;">where
+    </span><span style="color:#65737e;">-- | @&#39;writer&#39; (a,w)@ embeds a simple writer action.
+    </span><span style="color:#8fa1b3;">writer </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#bf616a;">a</span><span style="color:#c0c5ce;">,</span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m a
+</span><span style="color:#c0c5ce;">    writer ~(a, w) = </span><span style="color:#b48ead;">do
+</span><span style="color:#c0c5ce;">      tell w
+      return a
+
+    </span><span style="color:#65737e;">-- | @&#39;tell&#39; w@ is an action that produces the output @w@.
+    </span><span style="color:#8fa1b3;">tell   </span><span style="color:#b48ead;">:: </span><span style="color:#bf616a;">w </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m </span><span style="color:#c0c5ce;">()
+    tell w = writer (</span><span style="color:#d08770;">()</span><span style="color:#c0c5ce;">,w)
+
+    </span><span style="color:#65737e;">-- | @&#39;listen&#39; m@ is an action that executes the action @m@ and adds
+    -- its output to the value of the computation.
+    </span><span style="color:#8fa1b3;">listen </span><span style="color:#b48ead;">:: </span><span style="color:#bf616a;">m a </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;"> (</span><span style="color:#bf616a;">a</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;">)
+    </span><span style="color:#65737e;">-- | @&#39;pass&#39; m@ is an action that executes the action @m@, which
+    -- returns a value and a function, and returns the value, applying
+    -- the function to the output.
+    </span><span style="color:#8fa1b3;">pass   </span><span style="color:#b48ead;">:: </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;"> (</span><span style="color:#bf616a;">a</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">w </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m a
+    
+    
+</span><span style="color:#b48ead;">instance</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Monoid </span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">Monad </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">=&gt; MonadWriter </span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Lazy</span><span style="color:#c0c5ce;">.</span><span style="color:#b48ead;">WriterT </span><span style="color:#bf616a;">w m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">where
+</span><span style="color:#c0c5ce;">    writer = </span><span style="color:#d08770;">Lazy</span><span style="color:#c0c5ce;">.writer
+    tell   = </span><span style="color:#d08770;">Lazy</span><span style="color:#c0c5ce;">.tell
+    listen = </span><span style="color:#d08770;">Lazy</span><span style="color:#c0c5ce;">.listen
+    pass   = </span><span style="color:#d08770;">Lazy</span><span style="color:#c0c5ce;">.pass
+
+</span><span style="color:#b48ead;">instance</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Monoid </span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">Monad </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">=&gt; MonadWriter </span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Strict</span><span style="color:#c0c5ce;">.</span><span style="color:#b48ead;">WriterT </span><span style="color:#bf616a;">w m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">where
+</span><span style="color:#c0c5ce;">    writer = </span><span style="color:#d08770;">Strict</span><span style="color:#c0c5ce;">.writer
+    tell   = </span><span style="color:#d08770;">Strict</span><span style="color:#c0c5ce;">.tell
+    listen = </span><span style="color:#d08770;">Strict</span><span style="color:#c0c5ce;">.listen
+    pass   = </span><span style="color:#d08770;">Strict</span><span style="color:#c0c5ce;">.pass 
+</span></code></pre>
+<p><code>MonadWriter w m</code>定义了四个方法。<code>writer</code>与<code>tell</code>相互递归定义（<code>Mutual recursion</code>），但<code>writer</code>操作接受一个<code>(a,w)</code>类型参数，<code>tell</code>接受一个<code>w</code>类型的参数（<code>w</code>是一个 <code>monoid</code>）。</p>
+<p><code>Lazy.WriterT w m</code>就是上面我们看过的<code>WriterT w m</code>。</p>
+<p>接着分析<code>WriterT </code>实现<code>MonadWriter</code>的四个操作。</p>
+<p><code>Lazy.writer</code>就是上面<code>type Writer w</code>里面定义的<code>writer</code>操作，已经介绍过不再分析。</p>
+<p><code>Lazy.tell</code>在<code>WriterT</code>中的定义：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- | @&#39;tell&#39; w@ is an action that produces the output @w@.
+</span><span style="color:#8fa1b3;">tell </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Monad </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#bf616a;">w </span><span style="color:#b48ead;">-&gt; WriterT </span><span style="color:#bf616a;">w m </span><span style="color:#c0c5ce;">()
+tell w = writer (</span><span style="color:#d08770;">()</span><span style="color:#c0c5ce;">, w)
+</span></code></pre>
+<p>我们知道<code>writer</code>操作就是将<code>(a,w)</code>构造成<code>WriterT w m a </code>类型的，于是有<code>tell</code>：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#c0c5ce;">tell w  = writer (</span><span style="color:#d08770;">()</span><span style="color:#c0c5ce;">,w)
+	= </span><span style="color:#d08770;">WriterT </span><span style="color:#c0c5ce;">. return (</span><span style="color:#d08770;">()</span><span style="color:#c0c5ce;">, w)
+	= </span><span style="color:#d08770;">WriterT</span><span style="color:#c0c5ce;"> m (</span><span style="color:#d08770;">()</span><span style="color:#c0c5ce;">,w)
+	= </span><span style="color:#d08770;">WriterT</span><span style="color:#c0c5ce;"> w m </span><span style="color:#d08770;">()
+</span></code></pre>
+<p><code>Lazy.listen</code>在<code>WriterT</code>中的定义，步骤很直观，无需解释：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- | @&#39;listen&#39; m@ is an action that executes the action @m@ and adds its
+-- output to the value of the computation.
+--
+-- * @&#39;runWriterT&#39; (&#39;listen&#39; m) = &#39;liftM&#39; (\\ (a, w) -&gt; ((a, w), w)) (&#39;runWriterT&#39; m)@
+</span><span style="color:#8fa1b3;">listen </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Monad </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">=&gt; WriterT </span><span style="color:#bf616a;">w m a </span><span style="color:#b48ead;">-&gt; WriterT </span><span style="color:#bf616a;">w m</span><span style="color:#c0c5ce;"> (</span><span style="color:#bf616a;">a</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;">)
+listen m = </span><span style="color:#d08770;">WriterT </span><span style="color:#c0c5ce;">$ </span><span style="color:#b48ead;">do
+    </span><span style="color:#c0c5ce;">~(a, w) &lt;- runWriterT m
+    return ((a, w), w)    
+</span></code></pre>
+<p><code>Lazy.pass</code>在<code>WriterT</code>中的定义：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- | @&#39;pass&#39; m@ is an action that executes the action @m@, which returns
+-- a value and a function, and returns the value, applying the function
+-- to the output.
+--
+-- * @&#39;runWriterT&#39; (&#39;pass&#39; m) = &#39;liftM&#39; (\\ ((a, f), w) -&gt; (a, f w)) (&#39;runWriterT&#39; m)@
+</span><span style="color:#8fa1b3;">pass </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Monad </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">=&gt; WriterT </span><span style="color:#bf616a;">w m</span><span style="color:#c0c5ce;"> (</span><span style="color:#bf616a;">a</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">w </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">-&gt; WriterT </span><span style="color:#bf616a;">w m a
+</span><span style="color:#c0c5ce;">pass m = </span><span style="color:#d08770;">WriterT </span><span style="color:#c0c5ce;">$ </span><span style="color:#b48ead;">do
+    </span><span style="color:#c0c5ce;">~((a, f), w) &lt;- runWriterT m
+    return (a, f w)
+</span></code></pre><h2 id="chang-yong-cao-zuo-operation">常用操作（operation）</h2>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- | Extract the output from a writer computation.
+--
+-- * @&#39;execWriterT&#39; m = &#39;liftM&#39; &#39;snd&#39; (&#39;runWriterT&#39; m)@
+</span><span style="color:#8fa1b3;">execWriterT </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Monad </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">=&gt; WriterT </span><span style="color:#bf616a;">w m a </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m w
+</span><span style="color:#c0c5ce;">execWriterT m = </span><span style="color:#b48ead;">do
+    </span><span style="color:#c0c5ce;">~(_, w) &lt;- runWriterT m
+    return w
+    
+</span><span style="color:#65737e;">-- | Map both the return value and output of a computation using
+-- the given function.
+--
+-- * @&#39;runWriterT&#39; (&#39;mapWriterT&#39; f m) = f (&#39;runWriterT&#39; m)@
+</span><span style="color:#8fa1b3;">mapWriterT </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;"> (</span><span style="color:#bf616a;">a</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">n</span><span style="color:#c0c5ce;"> (</span><span style="color:#bf616a;">b</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;">&#39;)) </span><span style="color:#b48ead;">-&gt; WriterT </span><span style="color:#bf616a;">w m a </span><span style="color:#b48ead;">-&gt; WriterT </span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;">&#39; </span><span style="color:#bf616a;">n b
+</span><span style="color:#c0c5ce;">mapWriterT f m = </span><span style="color:#d08770;">WriterT </span><span style="color:#c0c5ce;">$ f (runWriterT m)
+
+
+</span><span style="color:#65737e;">-- | @&#39;listens&#39; f m@ is an action that executes the action @m@ and adds
+-- the result of applying @f@ to the output to the value of the computation.
+--
+-- * @&#39;listens&#39; f m = &#39;liftM&#39; (id *** f) (&#39;listen&#39; m)@
+--
+-- * @&#39;runWriterT&#39; (&#39;listens&#39; f m) = &#39;liftM&#39; (\\ (a, w) -&gt; ((a, f w), w)) (&#39;runWriterT&#39; m)@
+</span><span style="color:#8fa1b3;">listens </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Monad </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">=&gt;</span><span style="color:#c0c5ce;"> (</span><span style="color:#bf616a;">w </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">b</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">-&gt; WriterT </span><span style="color:#bf616a;">w m a </span><span style="color:#b48ead;">-&gt; WriterT </span><span style="color:#bf616a;">w m</span><span style="color:#c0c5ce;"> (</span><span style="color:#bf616a;">a</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">b</span><span style="color:#c0c5ce;">)
+listens f m = </span><span style="color:#d08770;">WriterT </span><span style="color:#c0c5ce;">$ </span><span style="color:#b48ead;">do
+    </span><span style="color:#c0c5ce;">~(a, w) &lt;- runWriterT m
+    return ((a, f w), w)
+    
+</span></code></pre>
+<p>实现都比较直观。</p>
+<p>另外也看一看<code>Writer</code>的其他常用操作：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- | Unwrap a writer computation as a (result, output) pair.
+-- (The inverse of &#39;writer&#39;.)
+</span><span style="color:#8fa1b3;">runWriter </span><span style="color:#b48ead;">:: Writer </span><span style="color:#bf616a;">w a </span><span style="color:#b48ead;">-&gt;</span><span style="color:#c0c5ce;"> (</span><span style="color:#bf616a;">a</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;">)
+runWriter = runIdentity . runWriterT
+
+</span><span style="color:#65737e;">-- | Extract the output from a writer computation.
+--
+-- * @&#39;execWriter&#39; m = &#39;snd&#39; (&#39;runWriter&#39; m)@
+</span><span style="color:#8fa1b3;">execWriter </span><span style="color:#b48ead;">:: Writer </span><span style="color:#bf616a;">w a </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">w
+</span><span style="color:#c0c5ce;">execWriter m = snd (runWriter m)
+
+</span><span style="color:#65737e;">-- | Map both the return value and output of a computation using
+-- the given function.
+--
+-- * @&#39;runWriter&#39; (&#39;mapWriter&#39; f m) = f (&#39;runWriter&#39; m)@
+</span><span style="color:#8fa1b3;">mapWriter </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> ((</span><span style="color:#bf616a;">a</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">-&gt;</span><span style="color:#c0c5ce;"> (</span><span style="color:#bf616a;">b</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;">&#39;)) </span><span style="color:#b48ead;">-&gt; Writer </span><span style="color:#bf616a;">w a </span><span style="color:#b48ead;">-&gt; Writer </span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;">&#39; </span><span style="color:#bf616a;">b
+</span><span style="color:#c0c5ce;">mapWriter f = mapWriterT (</span><span style="color:#d08770;">Identity </span><span style="color:#c0c5ce;">. f . runIdentity)
+</span></code></pre>
+<p><code>runWriter</code> 与<code>writer</code>是互逆操作。<code>runWriter</code>的实现的详细解析过程如下：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#c0c5ce;">runWriter (</span><span style="color:#d08770;">Writer</span><span style="color:#c0c5ce;"> w a)  = runIndentity . runWriterT (</span><span style="color:#d08770;">Writer</span><span style="color:#c0c5ce;"> w a)
+			= runIndentity . runWriterT (</span><span style="color:#d08770;">WriterT</span><span style="color:#c0c5ce;"> w </span><span style="color:#d08770;">Indentity</span><span style="color:#c0c5ce;"> a)
+			</span><span style="color:#65737e;">-- runIndentity . m (a,w)
+			</span><span style="color:#c0c5ce;">= runIndentity . </span><span style="color:#d08770;">Indentity</span><span style="color:#c0c5ce;"> (a,w) 
+			= (a,w)
+</span></code></pre>
+<p>其他两个方法的实现也是类似推导。</p>
+<h2 id="zai-kan-shi-li">再看示例</h2>
+<p>看完了源码，终于可以分析一开始的示例了，对于关键操作：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#8fa1b3;">calc </span><span style="color:#b48ead;">:: Writer</span><span style="color:#c0c5ce;"> [</span><span style="color:#b48ead;">LogEntry</span><span style="color:#c0c5ce;">] </span><span style="color:#b48ead;">Integer
+</span><span style="color:#c0c5ce;">calc = </span><span style="color:#b48ead;">do
+</span><span style="color:#c0c5ce;">    tell [</span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">Start</span><span style="color:#c0c5ce;">&quot;]
+    </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> x = sum [</span><span style="color:#d08770;">1 </span><span style="color:#c0c5ce;">.. </span><span style="color:#d08770;">10000000</span><span style="color:#c0c5ce;">]
+    tell [</span><span style="color:#d08770;">LogEntry</span><span style="color:#c0c5ce;"> (show x)]
+    tell [</span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">done</span><span style="color:#c0c5ce;">&quot;]
+    return x
+</span></code></pre>
+<p>理解的第一个关键点是<code>do</code>操作，在<code>do</code>里面我们调用了三次<code>tell</code>，表面上看，没有使用 <code>a &lt;- m a</code>这种方式调用<code>tell</code>，而是丢弃了<code>tell</code>的计算结果，那如何进行积累操作呢？让我们还原<code>do</code>语法糖：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#8fa1b3;">calc </span><span style="color:#b48ead;">:: Writer</span><span style="color:#c0c5ce;"> [</span><span style="color:#b48ead;">LogEntry</span><span style="color:#c0c5ce;">] </span><span style="color:#b48ead;">Integer
+</span><span style="color:#65737e;">-- let 的声明转换有一点不精确，但是这个例子无影响
+</span><span style="color:#c0c5ce;">calc = </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> x = sum [</span><span style="color:#d08770;">1 </span><span style="color:#c0c5ce;">.. </span><span style="color:#d08770;">10000000</span><span style="color:#c0c5ce;">] </span><span style="color:#b48ead;">in
+</span><span style="color:#c0c5ce;">		tell [</span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">Start</span><span style="color:#c0c5ce;">&quot;] &gt;&gt;  tell [</span><span style="color:#d08770;">LogEntry</span><span style="color:#c0c5ce;"> (show x)] &gt;&gt; tell [</span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">done</span><span style="color:#c0c5ce;">&quot;]
+		return x
+</span></code></pre>
+<p>第二个关键点是<code>&gt;&gt;</code> 操作符的理解。从上面的源码我们知道，<code>WriterT</code> 以及<code>Writer</code>都没有重新定义自己的<code>&gt;&gt;</code>，那么这个<code>&gt;&gt;</code>就是<code>Monad</code>原始定义的：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#8fa1b3;">(&gt;&gt;) </span><span style="color:#b48ead;">:: </span><span style="color:#bf616a;">m a </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m b </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m b
+</span><span style="color:#c0c5ce;">a &gt;&gt; f = a &gt;&gt;= \_ -&gt; f
+</span></code></pre>
+<p>我们先只看<code>tell [LogEntry &quot;Start&quot;] &gt;&gt;  tell [LogEntry (show x)] </code>，对<code>show x</code>求值为 <code> &quot;50000005000000&quot;</code> ，同时注意应用<code>&gt;&gt;=</code>  在<code>WriterT</code>中的定义：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#c0c5ce;">tell [</span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">Start</span><span style="color:#c0c5ce;">&quot;] &gt;&gt; tell [</span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">50000005000000</span><span style="color:#c0c5ce;">&quot;] 
+= tell [</span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">Start</span><span style="color:#c0c5ce;">&quot;] &gt;&gt;=  \_ -&gt; tell [</span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">50000005000000</span><span style="color:#c0c5ce;">&quot;]
+</span><span style="color:#65737e;">-- 用writer替换
+</span><span style="color:#c0c5ce;">= writer(</span><span style="color:#d08770;">()</span><span style="color:#c0c5ce;">,[</span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">Start</span><span style="color:#c0c5ce;">&quot;]) &gt;&gt;= \_ -&gt; writer(</span><span style="color:#d08770;">()</span><span style="color:#c0c5ce;">,[</span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">50000005000000</span><span style="color:#c0c5ce;">&quot;])
+</span><span style="color:#65737e;">-- 接下来就是套用 &gt;&gt;= 的定义了
+</span><span style="color:#c0c5ce;">= </span><span style="color:#d08770;">WriterT </span><span style="color:#c0c5ce;">$  </span><span style="color:#b48ead;">do
+  </span><span style="color:#c0c5ce;">~(a,w)  &lt;- runWriterT writer(</span><span style="color:#d08770;">()</span><span style="color:#c0c5ce;">,[</span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">Start</span><span style="color:#c0c5ce;">&quot;])
+  ~(b,w&#39;) &lt;- runWriterT (\_ -&gt; writer(</span><span style="color:#d08770;">()</span><span style="color:#c0c5ce;">,[</span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">50000005000000</span><span style="color:#c0c5ce;">&quot;]) a)
+  return (b, w </span><span style="color:#8fa1b3;">`</span><span style="color:#c0c5ce;">mappend</span><span style="color:#8fa1b3;">`</span><span style="color:#c0c5ce;"> w&#39;)
+</span><span style="color:#65737e;">-- 操作符&quot;&lt;-&quot;右边的可以计算, 另外 Writer 的 m 是 Indentity
+</span><span style="color:#c0c5ce;">= </span><span style="color:#d08770;">WriterT </span><span style="color:#c0c5ce;">$  </span><span style="color:#b48ead;">do
+  </span><span style="color:#c0c5ce;">~(a,w)  &lt;- </span><span style="color:#d08770;">Identity</span><span style="color:#c0c5ce;"> (</span><span style="color:#d08770;">()</span><span style="color:#c0c5ce;">,[</span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">Start</span><span style="color:#c0c5ce;">&quot;])
+  </span><span style="color:#65737e;">-- (\_ -&gt; m) a = m ,这一步是应用函数到参数
+  </span><span style="color:#c0c5ce;">~(b,w&#39;) &lt;- </span><span style="color:#d08770;">Identity</span><span style="color:#c0c5ce;"> (</span><span style="color:#d08770;">()</span><span style="color:#c0c5ce;">,[</span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">50000005000000</span><span style="color:#c0c5ce;">&quot;])
+  return (b, w </span><span style="color:#8fa1b3;">`</span><span style="color:#c0c5ce;">mappend</span><span style="color:#8fa1b3;">`</span><span style="color:#c0c5ce;"> w&#39;)
+= </span><span style="color:#d08770;">Writer </span><span style="color:#c0c5ce;">$ </span><span style="color:#b48ead;">do
+  </span><span style="color:#65737e;">-- a = (),b = (),w = [LogEntry &quot;Start&quot;], w&#39;=[LogEntry &quot;50000005000000&quot;]
+</span><span style="color:#c0c5ce;">  return (</span><span style="color:#d08770;">()</span><span style="color:#c0c5ce;">,[</span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">Start</span><span style="color:#c0c5ce;">&quot;] </span><span style="color:#8fa1b3;">`</span><span style="color:#c0c5ce;">mappend</span><span style="color:#8fa1b3;">`</span><span style="color:#c0c5ce;"> [</span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">50000005000000</span><span style="color:#c0c5ce;">&quot;])
+= </span><span style="color:#d08770;">WriterT</span><span style="color:#c0c5ce;"> [</span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">Start</span><span style="color:#c0c5ce;">&quot;,</span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">50000005000000</span><span style="color:#c0c5ce;">&quot;] </span><span style="color:#d08770;">Identity ()
+</span><span style="color:#c0c5ce;">= </span><span style="color:#d08770;">Writer</span><span style="color:#c0c5ce;"> [</span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">Start</span><span style="color:#c0c5ce;">&quot;,</span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">50000005000000</span><span style="color:#c0c5ce;">&quot;] </span><span style="color:#d08770;">()
+</span></code></pre>
+<p>再加上<code>tell [LogEntry &quot;done&quot;]</code> 就会是：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#d08770;">Writer</span><span style="color:#c0c5ce;"> [</span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">Start</span><span style="color:#c0c5ce;">&quot;,</span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">50000005000000</span><span style="color:#c0c5ce;">&quot;,</span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">done</span><span style="color:#c0c5ce;">&quot;] </span><span style="color:#d08770;">()
+</span></code></pre>
+<p>至于<code>execWriter</code> 和<code>runWriter</code>上面源码已经很明显，不需要再讲解。</p>
+<h2 id="can-kao">参考</h2>
+<ol>
+<li><a href="https://hackage.haskell.org/package/mtl-2.2.2/docs/src/Control.Monad.Writer.Class.html#MonadWriter">https://hackage.haskell.org/package/mtl-2.2.2/docs/src/Control.Monad.Writer.Class.html#MonadWriter</a></li>
+<li><a href="https://hackage.haskell.org/package/transformers-0.6.0.2/docs/src/Control.Monad.Trans.Writer.Lazy.html">https://hackage.haskell.org/package/transformers-0.6.0.2/docs/src/Control.Monad.Trans.Writer.Lazy.html</a></li>
+<li><a href="https://hackage.haskell.org/package/transformers-0.6.0.2/docs/src/Control.Monad.Trans.Writer.Strict.html">https://hackage.haskell.org/package/transformers-0.6.0.2/docs/src/Control.Monad.Trans.Writer.Strict.html</a></li>
+<li><a href="https://kseo.github.io/posts/2017-01-21-writer-monad.html">https://kseo.github.io/posts/2017-01-21-writer-monad.html</a></li>
+<li><a href="http://dev.stephendiehl.com/fun/basics.html">http://dev.stephendiehl.com/fun/basics.html</a></li>
+<li><a href="https://mmhaskell.com/monads/reader-writer">https://mmhaskell.com/monads/reader-writer</a></li>
+<li><a href="https://blog.ssanj.net/posts/2018-01-12-stacking-the-readert-writert-monad-transformer-stack-in-haskell.html">https://blog.ssanj.net/posts/2018-01-12-stacking-the-readert-writert-monad-transformer-stack-in-haskell.html</a></li>
+</ol>
+
+    </div>
+
+    
+    <div class="article-info">
+        
+        <div class="article-date">2021-08-24</div>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/haskell/">#Haskell</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/ruan-jian-she-ji/">#软件设计</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/bian-cheng-yu-yan/">#编程语言</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/yuan-ma/">#源码</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+</article>
+
+
+            </main>
+            <footer>
+                <p>
+                © zongwu&#x27;s blog 2015 - 2021<br>
+                </p>
+                <p>
+                
+                
+                </p>
+            </footer>
+        </div>
+        <!--  add cnzz trace code  -->
+        
+                <script type="text/javascript">document.write(unescape("%3Cspan style='display:none;' id='cnzz_stat_icon_1279242175'%3E%3C/span%3E%3Cscript src='https://s9.cnzz.com/z_stat.php%3Fid%3D1279242175' type='text/javascript'%3E%3C/script%3E"));</script>
+        
+</body>
+</html>

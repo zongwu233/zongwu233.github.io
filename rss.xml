@@ -7,12 +7,42 @@
         <generator>Zola</generator>
         <language>en</language>
         <atom:link href="https://blog.zongwu233.com/rss.xml" rel="self" type="application/rss+xml"/>
-        <lastBuildDate>Sun, 15 Aug 2021 00:00:00 +0000</lastBuildDate>
+        <lastBuildDate>Tue, 24 Aug 2021 00:00:00 +0000</lastBuildDate>
+        <item>
+            <title>WriterT 相关源码分析 </title>
+            <pubDate>Tue, 24 Aug 2021 00:00:00 +0000</pubDate>
+            <link>https://blog.zongwu233.com/writert-source-code-analysis/</link>
+            <guid>https://blog.zongwu233.com/writert-source-code-analysis/</guid>
+            <description>&lt;p&gt;看完&lt;code&gt;ReaderT&lt;&#x2F;code&gt;的&lt;a href=&quot;&#x2F;readert-source-code-analysis&quot;&gt;源码&lt;&#x2F;a&gt;，接着来分析&lt;code&gt;WriterT&lt;&#x2F;code&gt;的源码。&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;shi-li&quot;&gt;示例&lt;&#x2F;h2&gt;
+&lt;p&gt;先看一个超级简单的例子：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;code class=&quot;language-haskell&quot; data-lang=&quot;haskell&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;Control.Monad
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;import &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;Control.Monad.Trans.Writer
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;data &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;LogEntry &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;LogEntry&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; { msg :: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;String&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; } &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;deriving&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Eq&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Show&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;)
+
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;calc &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;:: Writer&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;LogEntry&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;] &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;Integer
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;calc = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;do
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;    tell [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;LogEntry &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Start&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;]
+    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;let&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; x = sum [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;.. &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;10000000&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;]
+    tell [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;LogEntry&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; (show x)]
+    tell [&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;LogEntry &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;done&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;]
+    return x
+    
+test = execWriter calc
+test2 = runWriter calc
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;code&gt;test&lt;&#x2F;code&gt;执行结果：&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;&quot;&gt;
+&lt;code class=&quot;language-haskell&quot; data-lang=&quot;haskell&quot;&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;LogEntry&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; {msg = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Start&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;},&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;LogEntry&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; {msg = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;50000005000000&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;},&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;LogEntry&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt; {msg = &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;done&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c0c5ce;&quot;&gt;&amp;quot;}]
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;</description>
+        </item>
         <item>
             <title>ReaderT 相关源码分析 </title>
             <pubDate>Sun, 15 Aug 2021 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/readert-source-code-analysing/</link>
-            <guid>https://blog.zongwu233.com/readert-source-code-analysing/</guid>
+            <link>https://blog.zongwu233.com/readert-source-code-analysis/</link>
+            <guid>https://blog.zongwu233.com/readert-source-code-analysis/</guid>
             <description>&lt;p&gt;&lt;code&gt;ReaderT&lt;&#x2F;code&gt;是&lt;code&gt;Haskell&lt;&#x2F;code&gt;里很常见的一种模式。比如读取环境配置：&lt;&#x2F;p&gt;
 </description>
         </item>
