@@ -173,8 +173,8 @@ port: </span><span style="color:#d08770;">7654
 </span></code></pre>
 <p><code>type</code>关键字定义别名，类型与别名可以通用。 <code>Reader r</code>只是把<code>ReaderT r m </code>类型的<code>m</code>替换为<code>Identity</code>。</p>
 <p>于是可以认为<code>Reader r</code>封装了<code>r -&gt; a</code>函数。</p>
-<p>用于<code>ReaderT r m</code>的函数，都适用于<code>Reader r</code>。</p>
-<p><code>Reader </code> 的函数：</p>
+<p>用于<code>ReaderT r m</code>的方法，都适用于<code>Reader r</code>。</p>
+<p>一些常用的方法：</p>
 <pre style="background-color:#2b303b;">
 <code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- | Constructor for computations in the reader monad (equivalent to &#39;asks&#39;).
 </span><span style="color:#8fa1b3;">reader </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Monad </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">=&gt;</span><span style="color:#c0c5ce;"> (</span><span style="color:#bf616a;">r </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">a</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">-&gt; ReaderT </span><span style="color:#bf616a;">r m a
@@ -237,7 +237,7 @@ port: </span><span style="color:#d08770;">7654
     </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m a
 </span><span style="color:#c0c5ce;">asks = reader
 </span></code></pre>
-<p>上面的定义中，<code>ask</code> <code>reader</code>两个函数<code>Mutual recursion</code> 相互递归定义。重点看<code>reader</code></p>
+<p>上面的定义中，<code>ask</code> <code>reader</code>两个方法<code>Mutual recursion</code> 相互递归定义。重点看<code>reader</code></p>
 <pre style="background-color:#2b303b;">
 <code class="language-haskell" data-lang="haskell"><span style="color:#c0c5ce;">     reader f = </span><span style="color:#b48ead;">do
 </span><span style="color:#c0c5ce;">      r &lt;- ask
@@ -248,7 +248,7 @@ port: </span><span style="color:#d08770;">7654
 <code class="language-haskell" data-lang="haskell"><span style="color:#c0c5ce;">reader f = ask &gt;&gt;= \r -&gt; return(f r)
 </span></code></pre>
 <p>从上面的声明可以知道，<code>ask:: m a</code>，这里注意<code>MonadReader r m</code>不是<code>Monad</code>，只有<code>Monad m</code>。</p>
-<p>那么<code>&gt;&gt;=</code>是<code>Monad m</code>的函数。</p>
+<p>那么<code>&gt;&gt;=</code>是<code>Monad m</code>的方法。</p>
 <pre style="background-color:#2b303b;">
 <code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- ask:: m a 
 -- \r -&gt; retrun(f r) ::  r -&gt; m a
@@ -266,8 +266,8 @@ port: </span><span style="color:#d08770;">7654
     local = </span><span style="color:#d08770;">ReaderT</span><span style="color:#c0c5ce;">.local
     reader = </span><span style="color:#d08770;">ReaderT</span><span style="color:#c0c5ce;">.reader
 </span></code></pre>
-<p>从<code>MonadReader r m</code>的定义里，我们知道<code>ask:: m r</code>，依据上面<code>instance</code>的定义，（<code>ReaderT r m</code>就是<code>MonadReader r m</code>中的<code>m</code>）那么 <code>ask:: ReaderT r m r</code>。<code>local</code>，<code>reader </code>函数的类型也类似。</p>
-<p>现在可以看看<code>ReaderT</code>里对应的函数定义。</p>
+<p>从<code>MonadReader r m</code>的定义里，我们知道<code>ask:: m r</code>，依据上面<code>instance</code>的定义，（<code>ReaderT r m</code>就是<code>MonadReader r m</code>中的<code>m</code>）那么 <code>ask:: ReaderT r m r</code>。<code>local</code>，<code>reader </code>的类型也类似。</p>
+<p>现在可以看看<code>ReaderT</code>里对应的方法的定义。</p>
 <pre style="background-color:#2b303b;">
 <code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- | Fetch the value of the environment.
 </span><span style="color:#8fa1b3;">ask </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Monad </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">=&gt; ReaderT </span><span style="color:#bf616a;">r m r
