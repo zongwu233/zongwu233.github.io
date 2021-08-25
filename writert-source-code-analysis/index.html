@@ -87,12 +87,12 @@ test2 = runWriter calc
 <p><code>Writer</code>是如何实现<code>tell</code>这种操作的？我们从源码层面深入了解一下。</p>
 <p>先从<code>Writer</code>开始。</p>
 <h2 id="writer">Writer</h2>
-<p>在<code>Control.Monad.Trans.Writer.Strict</code> 模块<code>Control.Monad.Trans.Writer.Lazy </code> 模块分别定义了<code>WriterT</code>，两者绝大部分的代码都是相同的。主要区别在于，如果其中使用模式匹配的求值模式。例如：</p>
+<p>在<code>Control.Monad.Trans.Writer.Strict</code> 模块<code>Control.Monad.Trans.Writer.Lazy </code> 模块同时都定义了<code>Writert</code>和<code>WriterT</code>，两个模块绝大部分的代码都是相同的。主要区别在于，如果其中使用模式匹配的求值模式。例如：</p>
 <pre style="background-color:#2b303b;">
 <code class="language-haskell" data-lang="haskell"><span style="color:#c0c5ce;">(a,b) =  ...
 </span></code></pre>
-<p><code>(a,b)</code>是否立即求值（Strict 模式），还是等<code>a,b</code>真正使用的那一刻再求值（如果不使用就永远不求值，Lazy模式）。这可能会影响程序的性能，而且如果<code>b</code>是一个无限队列，<code>Strict</code> 模块就不能正确处理了。</p>
-<p><code>Control.Monad.Trans.Writer</code>模块使用的是<code>Lazy</code>模型，所以我们只看<code>Control.Monad.Trans.Writer.Lazy </code> 模块下的相关定义。</p>
+<p><code>(a,b)</code>是否立即求值（Strict 模式），还是等<code>a,b</code>真正使用的那一刻再求值（如果不使用就永远不求值，Lazy模式）。这可能会影响程序的性能，此外如果<code>b</code>是一个无限队列，<code>Strict</code> 模块就不能正确处理了。</p>
+<p><code>Control.Monad.Trans.Writer</code>模块使用的是<code>Lazy</code>模块，所以我们只看<code>Control.Monad.Trans.Writer.Lazy </code> 模块下的相关定义。</p>
 <pre style="background-color:#2b303b;">
 <code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- ---------------------------------------------------------------------------
 -- | A writer monad parameterized by the type @w@ of output to accumulate.
@@ -101,6 +101,7 @@ test2 = runWriter calc
 -- combines the outputs of the subcomputations using &#39;mappend&#39;.
 </span><span style="color:#b48ead;">type </span><span style="color:#d08770;">Writer</span><span style="color:#c0c5ce;"> w = </span><span style="color:#d08770;">WriterT</span><span style="color:#c0c5ce;"> w </span><span style="color:#d08770;">Identity
 </span></code></pre>
+<p>熟悉的套路，<code>Writer</code>的定义之于<code>WriterT</code>，就像<code>Reader</code>之于<code>ReaderT</code>。</p>
 <p><code>Writer</code>只是一个别名，重点看<code>WriterT</code>，在同一个源文件里。</p>
 <h2 id="writert">WriterT</h2>
 <pre style="background-color:#2b303b;">
@@ -146,26 +147,28 @@ test2 = runWriter calc
     fail msg = </span><span style="color:#d08770;">WriterT </span><span style="color:#c0c5ce;">$ fail msg
 #endif
 </span></code></pre>
-<p><code>WriterT</code>的定义只是包装了一下<code>m (a,w)</code>。</p>
-<p>定义前面的注释讲 <code>m</code>是一个<code>monad</code>，<code>w</code>是用于累积的输出。</p>
-<p><code>WriterT</code>实现了很多<code>typeclass</code> 比如<code>Functor</code>,<code>Foldable</code>,<code>Traversable</code>,<code>Applicative</code>,<code>Alternative</code>,<code>Monad</code>。</p>
+<p><code>WriterT</code>的定义只是包装了一下<code>m (a,w)</code>。定义前面的注释讲， <code>m</code>是一个<code>monad</code>，<code>w</code>是用于累积的输出。</p>
+<p><code>WriterT</code>实现了很多<code>typeclass</code> 比如<code>Functor</code>, <code>Foldable</code>, <code>Traversable</code>, <code>Applicative</code>, <code>Alternative</code>, <code>Monad</code>。</p>
 <p>我们重点看<code>Monad (WriterT w m)</code>的实现。自然就是<code>return</code>以及<code>&gt;&gt;=</code>操作的实现了。</p>
+<p><code>fail msg = WriterT $ fail msg</code> 比较直观不解释。</p>
 <h3 id="return-fang-fa">return 方法</h3>
-<p><code>return</code> 方法调用了<code>writer</code>：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#c0c5ce;"> return a = writer (a, mempty)
+</span></code></pre>
+<p>调用的<code>writer</code>的定义：</p>
 <pre style="background-color:#2b303b;">
 <code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- | Construct a writer computation from a (result, output) pair.
 -- (The inverse of &#39;runWriter&#39;.)
 </span><span style="color:#8fa1b3;">writer </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Monad </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">=&gt;</span><span style="color:#c0c5ce;"> (</span><span style="color:#bf616a;">a</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">-&gt; WriterT </span><span style="color:#bf616a;">w m a
 </span><span style="color:#c0c5ce;">writer = </span><span style="color:#d08770;">WriterT </span><span style="color:#c0c5ce;">. return
 </span></code></pre>
-<p>熟悉的套路，<code>Writer</code>的定义之于<code>WriterT</code>，就像<code>Reader</code>之于<code>ReaderT</code>。</p>
 <p>于是<code>WriterT</code>的<code>return</code>方法：</p>
 <pre style="background-color:#2b303b;">
 <code class="language-haskell" data-lang="haskell"><span style="color:#c0c5ce;">return a = writer (a, mempty)
 				 = </span><span style="color:#d08770;">WriterT </span><span style="color:#c0c5ce;">. return (a,mempty) 
 				 = </span><span style="color:#d08770;">WriterT </span><span style="color:#c0c5ce;">. m (a,mempty)  </span><span style="color:#65737e;">-- Writer 的 return a = m a
 </span></code></pre>
-<p>也即是将 <code>a</code> 包装成了 <code>WriterT mempty m a</code>。形如<code>Writer w m a </code> 。<code>w</code>这个累积量为<code>mempty</code>。</p>
+<p>也即是将 <code>a</code> 包装成了 <code>WriterT mempty m a</code>。<code>w</code>这个累积量为<code>mempty</code>。</p>
 <h3 id="fang-fa">&gt;&gt;= 方法</h3>
 <p>继续看<code>Monad (WriterT w m)</code>的<code>&gt;&gt;=</code>方法实现：</p>
 <pre style="background-color:#2b303b;">
@@ -179,8 +182,8 @@ test2 = runWriter calc
 <p>这里的逻辑比较容易理解：</p>
 <p><code>do</code>里面执行<code>runWriterT m</code> 得到<code>(a,w)</code>。</p>
 <p>再次执行<code>runWriterT  (k,a)</code>得到<code>(b,w')</code> </p>
-<p>然后将<code>result</code> 值<code>b</code>以及拼接的<code> w mappend w'</code> <code>return</code>成 <code>m (b, w mappend w')</code></p>
-<p>最后使用<code>WriterT</code>生成最终值（刚好符合定义的类型<code>WriterT { runWriterT :: m (a, w) }</code>）。</p>
+<p>然后将<code>result</code> 值<code>b</code>以及拼接的<code> w mappend w'</code>作为元组， <code>return</code>成 <code>m (b, w mappend w')</code></p>
+<p>再使用<code>WriterT</code>生成最终值（刚好符合定义的类型<code>WriterT { runWriterT :: m (a, w) }</code>）。</p>
 <p>从这里的操作过程可以更清楚<code>w</code>为什么被称为<code>the output to accumulate</code>。</p>
 <p><code>mempty</code>与<code>mappend</code>都是<code>monoid</code>中定义的操作：</p>
 <pre style="background-color:#2b303b;">
@@ -205,9 +208,7 @@ mempty &lt;&gt; x = x
 </span><span style="color:#65737e;">-- 结合律
 -- Associativity laws
 </span><span style="color:#c0c5ce;">(x &lt;&gt; y) &lt;&gt; z = x &lt;&gt; (y &lt;&gt; z)
-</span></code></pre>
-<p><code>fail msg = WriterT $ fail msg</code> 比较直观不解释。</p>
-<h2 id="monadwriter">MonadWriter</h2>
+</span></code></pre><h2 id="monadwriter">MonadWriter</h2>
 <p>在看<code>WriterT</code>的其他操作之前，先看一看<code>MonadWriter</code>这个重要的<code>typeclass</code>。<code>MonadWriter</code>抽象定义了<code>Monad </code> <code>Writer</code>的行为。<code>WriterT</code>是<code>MonadWriter</code>众多<code>instance</code>其中的一个。</p>
 <p>在<code>Control.Monad.Writer.Class </code>文件：</p>
 <pre style="background-color:#2b303b;">
@@ -243,10 +244,29 @@ mempty &lt;&gt; x = x
     listen = </span><span style="color:#d08770;">Strict</span><span style="color:#c0c5ce;">.listen
     pass   = </span><span style="color:#d08770;">Strict</span><span style="color:#c0c5ce;">.pass 
 </span></code></pre>
-<p><code>MonadWriter w m</code>定义了四个方法。<code>writer</code>与<code>tell</code>相互递归定义（<code>Mutual recursion</code>），但<code>writer</code>操作接受一个<code>(a,w)</code>类型参数，<code>tell</code>接受一个<code>w</code>类型的参数（<code>w</code>是一个 <code>monoid</code>）。</p>
-<p><code>Lazy.WriterT w m</code>就是上面我们看过的<code>WriterT w m</code>。</p>
-<p>接着分析<code>WriterT </code>实现<code>MonadWriter</code>的四个操作。</p>
-<p><code>Lazy.writer</code>就是上面<code>type Writer w</code>里面定义的<code>writer</code>操作，已经介绍过不再分析。</p>
+<p><code>MonadWriter w m</code>定义了四个方法。<code>writer</code>与<code>tell</code>相互递归定义（<code>Mutual recursion</code>），<code>writer</code>操作接受一个<code>(a,w)</code>类型参数，<code>tell</code>接受一个<code>w</code>类型的参数（<code>w</code>是一个 <code>monoid</code>）。两者都产生一个<code>Writer action</code>。</p>
+<p><strong>实际上，如果一个值的类型是 <code>Monad m =&gt; m a</code>，这个值就是一个<code>action</code>，<code>m</code>是<code>Monad</code>的实例，<code>a</code>是执行（do）<code>action</code>的结果的类型。</strong></p>
+<p>而函数(function)，是将输入参数与输出结果关联起来而构建的特定关系。<code>Haskell</code>是纯函数式编程，这意味着，在<code>runtime</code>阶段，函数表现的还是像编译阶段那样，只是一种（关联输入参数与输出的）结构，此外不会<code>do</code>其他任何事情。</p>
+<p>而<code>action</code>，不需要输入参数，并且产生结果。在<code>runtime</code>阶段，执行（例如 <code>do { m a ; ... }</code>）之后，会对环境产生副作用。</p>
+<p>为了体会一下两者的区别，看一下：</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#8fa1b3;">putStrLn</span><span style="color:#b48ead;">::String -&gt; IO </span><span style="color:#c0c5ce;">()
+</span></code></pre>
+<p><strong>是一个函数。</strong></p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#c0c5ce;">putStrLn &quot;</span><span style="color:#a3be8c;">hello world</span><span style="color:#c0c5ce;">&quot; :: </span><span style="color:#d08770;">IO ()
+</span></code></pre>
+<p><strong>是一个 <code>action</code>，执行这个 <code>action</code>的话，会在屏幕输出&quot;hello world&quot;，这个<code>action</code>的结果类型是 <code>()</code>。</strong></p>
+<p>回来继续看，<code>Lazy.WriterT w m</code>就是上面我们看过的<code>WriterT w m</code>。</p>
+<pre style="background-color:#2b303b;">
+<code class="language-haskell" data-lang="haskell"><span style="color:#b48ead;">instance</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Monoid </span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">Monad </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">=&gt; MonadWriter </span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Lazy</span><span style="color:#c0c5ce;">.</span><span style="color:#b48ead;">WriterT </span><span style="color:#bf616a;">w m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">where
+</span><span style="color:#c0c5ce;">    writer = </span><span style="color:#d08770;">Lazy</span><span style="color:#c0c5ce;">.writer
+    tell   = </span><span style="color:#d08770;">Lazy</span><span style="color:#c0c5ce;">.tell
+    listen = </span><span style="color:#d08770;">Lazy</span><span style="color:#c0c5ce;">.listen
+    pass   = </span><span style="color:#d08770;">Lazy</span><span style="color:#c0c5ce;">.pass
+</span></code></pre>
+<p>接下来分析<code>WriterT </code>实现<code>MonadWriter</code>的四个操作（为什么称为操作，因为这类方法经常以<code>monad</code>为参数，或者经常含有<code>do</code>，会执行<code>action</code>）。</p>
+<p><code>Lazy.writer</code>就是上面分析<code>return</code>时分析过的<code>writer</code>操作，不再分析。</p>
 <p><code>Lazy.tell</code>在<code>WriterT</code>中的定义：</p>
 <pre style="background-color:#2b303b;">
 <code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- | @&#39;tell&#39; w@ is an action that produces the output @w@.
@@ -343,7 +363,7 @@ runWriter = runIdentity . runWriterT
 </span></code></pre>
 <p>其他两个方法的实现也是类似推导。</p>
 <h2 id="zai-kan-shi-li">再看示例</h2>
-<p>看完了源码，终于可以分析一开始的示例了，对于关键操作：</p>
+<p>看完了源码，终于可以彻底分析一开始的示例了，对于关键操作：</p>
 <pre style="background-color:#2b303b;">
 <code class="language-haskell" data-lang="haskell"><span style="color:#8fa1b3;">calc </span><span style="color:#b48ead;">:: Writer</span><span style="color:#c0c5ce;"> [</span><span style="color:#b48ead;">LogEntry</span><span style="color:#c0c5ce;">] </span><span style="color:#b48ead;">Integer
 </span><span style="color:#c0c5ce;">calc = </span><span style="color:#b48ead;">do
