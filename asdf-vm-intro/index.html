@@ -9,7 +9,7 @@
         <title>adsf-vm </title>
         <meta name="description" content="">
 
-        <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
+        <link rel="stylesheet" href="https://blog.zongwu233.com/main.css">
 
         
         <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
@@ -27,6 +27,16 @@
           gtag('js', new Date());
 
           gtag('config', 'UA-68155231-1');
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZF40590PZW"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+            gtag('config', 'G-ZF40590PZW');
         </script>
         
     </head>
@@ -81,81 +91,70 @@
 <h2 id="an-zhuang">安装</h2>
 <p>参考官方文档即可。https://asdf-vm.com/#/core-manage-asdf-vm
 对于<code>macOS</code> 我是通过<code>brew</code>安装，比较简单：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">brew install coreutils curl git
-brew install asdf
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>brew install coreutils curl git
+</span><span>brew install asdf
 </span></code></pre>
 <p>添加到<code>zsh</code>环境：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">echo -e &quot;\n. $(brew --prefix asdf)/asdf.sh&quot; &gt;&gt; ~/.zshrc
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>echo -e &quot;\n. $(brew --prefix asdf)/asdf.sh&quot; &gt;&gt; ~/.zshrc
 </span></code></pre>
 <p>搞定。</p>
 <h2 id="cha-jian-guan-li">插件管理</h2>
 <p>主要流程是：先添加插件，然后安装，设置当前使用的版本。就可以使用了。
 添加插件：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">asdf plugin add &lt;name&gt;
-# asdf plugin add gradle
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>asdf plugin add &lt;name&gt;
+</span><span># asdf plugin add gradle
 </span></code></pre>
 <p>如果需要安装的插件不在当前插件库，也可以指定插件的仓库url:</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">asdf plugin add &lt;name&gt; &lt;git-url&gt;
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>asdf plugin add &lt;name&gt; &lt;git-url&gt;
 </span></code></pre>
 <p>查看当前添加的插件列表：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">asdf plugin list
-# asdf plugin list
-# java
-# nodejs
-</span></code></pre><pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">asdf plugin list --urls
-# asdf plugin list
-# java            https://github.com/halcyon/asdf-java.git
-# nodejs          https://github.com/asdf-vm/asdf-nodejs.git
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>asdf plugin list
+</span><span># asdf plugin list
+</span><span># java
+</span><span># nodejs
+</span></code></pre>
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>asdf plugin list --urls
+</span><span># asdf plugin list
+</span><span># java            https://github.com/halcyon/asdf-java.git
+</span><span># nodejs          https://github.com/asdf-vm/asdf-nodejs.git
 </span></code></pre>
 <p>更新插件：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">asdf plugin update --all
-
-asdf plugin update &lt;name&gt;
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>asdf plugin update --all
+</span><span>
+</span><span>asdf plugin update &lt;name&gt;
 </span></code></pre>
 <p>移除一个插件：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">asdf plugin remove &lt;name&gt;
-</span></code></pre><h2 id="cha-jian-de-ban-ben-guan-li">插件的版本管理</h2>
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>asdf plugin remove &lt;name&gt;
+</span></code></pre>
+<h2 id="cha-jian-de-ban-ben-guan-li">插件的版本管理</h2>
 <p>查看插件库里所有可用的版本</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">asdf list all &lt;name&gt;
-
-asdf list all &lt;name&gt; &lt;version&gt;
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>asdf list all &lt;name&gt;
+</span><span>
+</span><span>asdf list all &lt;name&gt; &lt;version&gt;
 </span></code></pre>
 <p>指定插件的版本安装：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">asdf install &lt;name&gt; &lt;version&gt;
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>asdf install &lt;name&gt; &lt;version&gt;
 </span></code></pre>
 <p>查看已经安装的插件版本：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">asdf list &lt;name&gt;
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>asdf list &lt;name&gt;
 </span></code></pre>
 <p>设置插件的当前版本：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">asdf global &lt;name&gt; &lt;version&gt; [&lt;version&gt;...]
-asdf shell &lt;name&gt; &lt;version&gt; [&lt;version&gt;...]
-asdf local &lt;name&gt; &lt;version&gt; [&lt;version&gt;...]
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>asdf global &lt;name&gt; &lt;version&gt; [&lt;version&gt;...]
+</span><span>asdf shell &lt;name&gt; &lt;version&gt; [&lt;version&gt;...]
+</span><span>asdf local &lt;name&gt; &lt;version&gt; [&lt;version&gt;...]
 </span></code></pre>
 <p><code>global</code> 就是全局设定了，会把版本写入<code>$HOME/.tool-versions</code> 
 <code>shell</code> 就是设定在当前shell环境生效。实际上是把版本信息写入了当前环境变量<code>ASDF_${LANG}_VERSION</code>
 <code>local</code> 会写入<code>$PWD/.tool-versions</code></p>
 <p>查看插件的当前版本</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">asdf current
-
-asdf current &lt;name&gt;
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>asdf current
+</span><span>
+</span><span>asdf current &lt;name&gt;
 </span></code></pre>
 <p>卸载当前版本</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">asdf uninstall &lt;name&gt; &lt;version&gt;
-</span></code></pre><h2 id="shen-ru-cha-jian">深入插件</h2>
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>asdf uninstall &lt;name&gt; &lt;version&gt;
+</span></code></pre>
+<h2 id="shen-ru-cha-jian">深入插件</h2>
 <p>插件非常简单，就是一个git库。包含3个脚本，用于响应<code>list-all</code>, <code>install</code> 或者 <code>uninstall</code> 命令。</p>
 <ol>
 <li><code>bin/list-all</code> 列出插件所有可用版本</li>

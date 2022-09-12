@@ -9,7 +9,7 @@
         <title>其实你不知道MultiDex到底有多坑</title>
         <meta name="description" content="">
 
-        <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
+        <link rel="stylesheet" href="https://blog.zongwu233.com/main.css">
 
         
         <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
@@ -27,6 +27,16 @@
           gtag('js', new Date());
 
           gtag('config', 'UA-68155231-1');
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZF40590PZW"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+            gtag('config', 'G-ZF40590PZW');
         </script>
         
     </head>
@@ -70,18 +80,17 @@
         <p>愉快地写着Android代码的总悟君往工程里引入了一个默默无闻的jar然后Run了一下， 经过漫长的等待AndroidStudio构建失败了。</p>
 <span id="continue-reading"></span>
 <p>于是总悟君带着疑惑查看错误信息。</p>
-<pre style="background-color:#2b303b;">
-<code class="language-java" data-lang="java"><span style="color:#d08770;">UNEXPECTED TOP</span><span style="color:#c0c5ce;">-</span><span style="color:#d08770;">LEVEL EXCEPTION</span><span style="color:#c0c5ce;">: java.lang.</span><span style="color:#ebcb8b;">IllegalArgumentException</span><span style="color:#c0c5ce;">: method </span><span style="color:#d08770;">ID</span><span style="color:#c0c5ce;"> not in [</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">0xffff</span><span style="color:#c0c5ce;">]: </span><span style="color:#d08770;">65536 
-</span><span style="color:#c0c5ce;">	at com.android.dx.merge.</span><span style="color:#ebcb8b;">DexMerger$6</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">updateIndex</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">DexMerger</span><span style="color:#c0c5ce;">.java:</span><span style="color:#d08770;">501</span><span style="color:#c0c5ce;">) 
-	at com.android.dx.merge.</span><span style="color:#ebcb8b;">DexMerger$IdMerger</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">mergeSorted</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">DexMerger</span><span style="color:#c0c5ce;">.java:</span><span style="color:#d08770;">276</span><span style="color:#c0c5ce;">) 
-	at com.android.dx.merge.</span><span style="color:#ebcb8b;">DexMerger</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">mergeMethodIds</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">DexMerger</span><span style="color:#c0c5ce;">.java:</span><span style="color:#d08770;">490</span><span style="color:#c0c5ce;">) 
-	at com.android.dx.merge.</span><span style="color:#ebcb8b;">DexMerger</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">mergeDexes</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">DexMerger</span><span style="color:#c0c5ce;">.java:</span><span style="color:#d08770;">167</span><span style="color:#c0c5ce;">) 
-	at com.android.dx.merge.</span><span style="color:#ebcb8b;">DexMerger</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">merge</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">DexMerger</span><span style="color:#c0c5ce;">.java:</span><span style="color:#d08770;">188</span><span style="color:#c0c5ce;">) 
-	at com.android.dx.command.dexer.</span><span style="color:#ebcb8b;">Main</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">mergeLibraryDexBuffers</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">Main</span><span style="color:#c0c5ce;">.java:</span><span style="color:#d08770;">439</span><span style="color:#c0c5ce;">) 
-	at com.android.dx.command.dexer.</span><span style="color:#ebcb8b;">Main</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">runMonoDex</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">Main</span><span style="color:#c0c5ce;">.java:</span><span style="color:#d08770;">287</span><span style="color:#c0c5ce;">) 
-	at com.android.dx.command.dexer.</span><span style="color:#ebcb8b;">Main</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">run</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">Main</span><span style="color:#c0c5ce;">.java:</span><span style="color:#d08770;">230</span><span style="color:#c0c5ce;">) 
-	at com.android.dx.command.dexer.</span><span style="color:#ebcb8b;">Main</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">main</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">Main</span><span style="color:#c0c5ce;">.java:</span><span style="color:#d08770;">199</span><span style="color:#c0c5ce;">) 
-	at com.android.dx.command.</span><span style="color:#ebcb8b;">Main</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">main</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">Main</span><span style="color:#c0c5ce;">.java:</span><span style="color:#d08770;">103</span><span style="color:#c0c5ce;">):</span><span style="color:#ebcb8b;">Derp</span><span style="color:#c0c5ce;">:dexDerpDebug </span><span style="color:#d08770;">FAILED
+<pre data-lang="java" style="background-color:#2b303b;color:#c0c5ce;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#d08770;">UNEXPECTED TOP</span><span>-</span><span style="color:#d08770;">LEVEL EXCEPTION</span><span>: java.lang.</span><span style="color:#ebcb8b;">IllegalArgumentException</span><span>: method </span><span style="color:#d08770;">ID</span><span> not in [</span><span style="color:#d08770;">0</span><span>, </span><span style="color:#d08770;">0xffff</span><span>]: </span><span style="color:#d08770;">65536 
+</span><span>	at com.android.dx.merge.</span><span style="color:#ebcb8b;">DexMerger$6</span><span>.</span><span style="color:#bf616a;">updateIndex</span><span>(</span><span style="color:#ebcb8b;">DexMerger</span><span>.java:</span><span style="color:#d08770;">501</span><span>) 
+</span><span>	at com.android.dx.merge.</span><span style="color:#ebcb8b;">DexMerger$IdMerger</span><span>.</span><span style="color:#bf616a;">mergeSorted</span><span>(</span><span style="color:#ebcb8b;">DexMerger</span><span>.java:</span><span style="color:#d08770;">276</span><span>) 
+</span><span>	at com.android.dx.merge.</span><span style="color:#ebcb8b;">DexMerger</span><span>.</span><span style="color:#bf616a;">mergeMethodIds</span><span>(</span><span style="color:#ebcb8b;">DexMerger</span><span>.java:</span><span style="color:#d08770;">490</span><span>) 
+</span><span>	at com.android.dx.merge.</span><span style="color:#ebcb8b;">DexMerger</span><span>.</span><span style="color:#bf616a;">mergeDexes</span><span>(</span><span style="color:#ebcb8b;">DexMerger</span><span>.java:</span><span style="color:#d08770;">167</span><span>) 
+</span><span>	at com.android.dx.merge.</span><span style="color:#ebcb8b;">DexMerger</span><span>.</span><span style="color:#bf616a;">merge</span><span>(</span><span style="color:#ebcb8b;">DexMerger</span><span>.java:</span><span style="color:#d08770;">188</span><span>) 
+</span><span>	at com.android.dx.command.dexer.</span><span style="color:#ebcb8b;">Main</span><span>.</span><span style="color:#bf616a;">mergeLibraryDexBuffers</span><span>(</span><span style="color:#ebcb8b;">Main</span><span>.java:</span><span style="color:#d08770;">439</span><span>) 
+</span><span>	at com.android.dx.command.dexer.</span><span style="color:#ebcb8b;">Main</span><span>.</span><span style="color:#bf616a;">runMonoDex</span><span>(</span><span style="color:#ebcb8b;">Main</span><span>.java:</span><span style="color:#d08770;">287</span><span>) 
+</span><span>	at com.android.dx.command.dexer.</span><span style="color:#ebcb8b;">Main</span><span>.</span><span style="color:#bf616a;">run</span><span>(</span><span style="color:#ebcb8b;">Main</span><span>.java:</span><span style="color:#d08770;">230</span><span>) 
+</span><span>	at com.android.dx.command.dexer.</span><span style="color:#ebcb8b;">Main</span><span>.</span><span style="color:#bf616a;">main</span><span>(</span><span style="color:#ebcb8b;">Main</span><span>.java:</span><span style="color:#d08770;">199</span><span>) 
+</span><span>	at com.android.dx.command.</span><span style="color:#ebcb8b;">Main</span><span>.</span><span style="color:#bf616a;">main</span><span>(</span><span style="color:#ebcb8b;">Main</span><span>.java:</span><span style="color:#d08770;">103</span><span>):</span><span style="color:#ebcb8b;">Derp</span><span>:dexDerpDebug </span><span style="color:#d08770;">FAILED
 </span></code></pre>
 <p>看起来是：在试图将 classes和jar塞进一个Dex文件的过程中产生了错误。</p>
 <p>早期的Dex文件保存所有classes的方法个数的范围在0~65535之间。业务一直在增长，总悟君写(copy)的代码越来越长引入的库越来越多，超过这个范围只是时间问题。</p>
@@ -107,47 +116,44 @@
 <li>修改manifest 使用MulitDexApplication。</li>
 </ol>
 <p>步骤1在gradle脚本里写上：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-groovy" data-lang="groovy"><span style="color:#c0c5ce;">android {
-	compileSdkVersion </span><span style="color:#d08770;">21
-</span><span style="color:#c0c5ce;">	buildToolsVersion &quot;</span><span style="color:#a3be8c;">21.1.0</span><span style="color:#c0c5ce;">&quot;
-
-	defaultConfig {
-		...
-		minSdkVersion </span><span style="color:#d08770;">14
-</span><span style="color:#c0c5ce;">		targetSdkVersion </span><span style="color:#d08770;">21
-		</span><span style="color:#c0c5ce;">...
-
-		</span><span style="color:#65737e;">// Enabling multidex support.
-</span><span style="color:#c0c5ce;">		multiDexEnabled </span><span style="color:#d08770;">true
-	</span><span style="color:#c0c5ce;">}
-	...
-}
-
-dependencies {
-compile &#39;</span><span style="color:#a3be8c;">com.android.support:multidex:1.0.0</span><span style="color:#c0c5ce;">&#39;
-}
+<pre data-lang="groovy" style="background-color:#2b303b;color:#c0c5ce;" class="language-groovy "><code class="language-groovy" data-lang="groovy"><span>android {
+</span><span>	compileSdkVersion </span><span style="color:#d08770;">21
+</span><span>	buildToolsVersion &quot;</span><span style="color:#a3be8c;">21.1.0</span><span>&quot;
+</span><span>
+</span><span>	defaultConfig {
+</span><span>		...
+</span><span>		minSdkVersion </span><span style="color:#d08770;">14
+</span><span>		targetSdkVersion </span><span style="color:#d08770;">21
+</span><span>		...
+</span><span>
+</span><span>		</span><span style="color:#65737e;">// Enabling multidex support.
+</span><span>		multiDexEnabled </span><span style="color:#d08770;">true
+</span><span>	}
+</span><span>	...
+</span><span>}
+</span><span>
+</span><span>dependencies {
+</span><span>compile &#39;</span><span style="color:#a3be8c;">com.android.support:multidex:1.0.0</span><span>&#39;
+</span><span>}
 </span></code></pre>
 <p>步骤2manifest声明修改</p>
-<pre style="background-color:#2b303b;">
-<code class="language-gradle" data-lang="gradle"><span style="color:#c0c5ce;">&lt;?xml version=&quot;</span><span style="color:#a3be8c;">1.0</span><span style="color:#c0c5ce;">&quot; encoding=&quot;</span><span style="color:#a3be8c;">utf-8</span><span style="color:#c0c5ce;">&quot;?&gt;
-&lt;manifest </span><span style="color:#d08770;">xmlns</span><span style="color:#c0c5ce;">:android=&quot;</span><span style="color:#a3be8c;">http://schemas.android.com/apk/res/android</span><span style="color:#c0c5ce;">&quot;
-package=&quot;</span><span style="color:#a3be8c;">com.example.android.multidex.myapplication</span><span style="color:#c0c5ce;">&quot;&gt;
-&lt;application
-...
-</span><span style="color:#d08770;">android</span><span style="color:#c0c5ce;">:name=&quot;</span><span style="color:#a3be8c;">android.support.multidex.MultiDexApplication</span><span style="color:#c0c5ce;">&quot;&gt;
-...
-&lt;/</span><span style="color:#96b5b4;">application&gt;
-&lt;</span><span style="color:#c0c5ce;">/manifest&gt;
+<pre data-lang="gradle" style="background-color:#2b303b;color:#c0c5ce;" class="language-gradle "><code class="language-gradle" data-lang="gradle"><span>&lt;?xml version=&quot;</span><span style="color:#a3be8c;">1.0</span><span>&quot; encoding=&quot;</span><span style="color:#a3be8c;">utf-8</span><span>&quot;?&gt;
+</span><span>&lt;manifest </span><span style="color:#d08770;">xmlns</span><span>:android=&quot;</span><span style="color:#a3be8c;">http://schemas.android.com/apk/res/android</span><span>&quot;
+</span><span>package=&quot;</span><span style="color:#a3be8c;">com.example.android.multidex.myapplication</span><span>&quot;&gt;
+</span><span>&lt;application
+</span><span>...
+</span><span style="color:#d08770;">android</span><span>:name=&quot;</span><span style="color:#a3be8c;">android.support.multidex.MultiDexApplication</span><span>&quot;&gt;
+</span><span>...
+</span><span>&lt;/application&gt;
+</span><span>&lt;/manifest&gt;
 </span></code></pre>
 <p>如果有自己的Application，继承MulitDexApplication。如果当前代码已经继承自其它Application没办法修改那也行，就重写 Application的attachBaseContext()这个方法。</p>
-<pre style="background-color:#2b303b;">
-<code class="language-java" data-lang="java"><span style="color:#c0c5ce;">@</span><span style="color:#bf616a;">Override
-</span><span style="color:#b48ead;">protected</span><span style="color:#c0c5ce;"> void </span><span style="color:#bf616a;">attachBaseContext</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">Context</span><span style="color:#c0c5ce;"> base) {
-	</span><span style="color:#bf616a;">super</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">attachBaseContext</span><span style="color:#c0c5ce;">(base);
-	</span><span style="color:#ebcb8b;">MultiDex</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">install</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">this</span><span style="color:#c0c5ce;">);     
-
-} 
+<pre data-lang="java" style="background-color:#2b303b;color:#c0c5ce;" class="language-java "><code class="language-java" data-lang="java"><span>@</span><span style="color:#bf616a;">Override
+</span><span style="color:#b48ead;">protected</span><span> void </span><span style="color:#bf616a;">attachBaseContext</span><span>(</span><span style="color:#ebcb8b;">Context</span><span> base) {
+</span><span>	</span><span style="color:#bf616a;">super</span><span>.</span><span style="color:#bf616a;">attachBaseContext</span><span>(base);
+</span><span>	</span><span style="color:#ebcb8b;">MultiDex</span><span>.</span><span style="color:#bf616a;">install</span><span>(</span><span style="color:#bf616a;">this</span><span>);     
+</span><span>
+</span><span>} 
 </span></code></pre>
 <p>run一下，可以了！但是dex过程好像变慢了。。。</p>
 <p>文档还写明了multiDex support lib 的局限。瞄一下是什么：</p>
@@ -163,18 +169,17 @@ package=&quot;</span><span style="color:#a3be8c;">com.example.android.multidex.m
 <p>apk是一个zip压缩包，dalvik每次加载apk都要从中解压出class.dex文件，加载过程还涉及到dex的classes需要的杂七杂八的依赖库的加载，真耗时间。于是Android决定优化一下这个问题，在app安装到手机之后，系统运行<a href="http://www.netmite.com/android/mydroid/dalvik/docs/dexopt.html">dexopt</a>程序对dex进行优化，将dex的依赖库文件和一些辅助数据打包成odex文件。存放在cache/dalvik_cache目录下。保存格式为apk路径 @ apk名 @ classes.dex。这样以空间换时间大大缩短读取/加载dex文件的过程。</p>
 <p>那刚才那个bug是啥问题呢，原来dexopt程序的dalvik分配一块内存来统计你的app的dex里面的classes的信息，由于classes太多方法太多超过这个linearAlloc 的限制 。那减小dex的大小就可以咯。</p>
 <p>gradle脚本如下：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-gradle" data-lang="gradle"><span style="color:#c0c5ce;">android.applicationVariants.all {
-    variant -&gt;
-        dex.doFirst{
-            dex-&gt;
-            </span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> (dex.additionalParameters == </span><span style="color:#d08770;">null</span><span style="color:#c0c5ce;">) {
-                dex.additionalParameters = []
-            }
-                dex.additionalParameters += &#39;</span><span style="color:#a3be8c;">--set-max-idx-number=48000</span><span style="color:#c0c5ce;">&#39;
-
-       }
-}
+<pre data-lang="gradle" style="background-color:#2b303b;color:#c0c5ce;" class="language-gradle "><code class="language-gradle" data-lang="gradle"><span>android.applicationVariants.all {
+</span><span>    variant -&gt;
+</span><span>        dex.doFirst{
+</span><span>            dex-&gt;
+</span><span>            </span><span style="color:#b48ead;">if</span><span> (dex.additionalParameters == </span><span style="color:#d08770;">null</span><span>) {
+</span><span>                dex.additionalParameters = []
+</span><span>            }
+</span><span>                dex.additionalParameters += &#39;</span><span style="color:#a3be8c;">--set-max-idx-number=48000</span><span>&#39;
+</span><span>
+</span><span>       }
+</span><span>}
 </span></code></pre>
 <p>--set-max-idx-number=<value> 用于控制每一个dex的最大方法个数，写小一点可以产生好几个dex。
 踩过更多坑的FB的工程师表示这个linearAlloc的限制不仅仅在安装时候的dexopt程序里<a href="https://www.facebook.com/notes/facebook-engineering/under-the-hood-dalvik-patch-for-facebook-for-android/10151345597798920">7</a>，还在你的app的dalvik rumtime里。（很显然啊dvk vm的宿主进程fork自于同一个母体啊）。为了表示对这个坑的不满以及对Google的产品表示遗憾，FB工程师Read The Fucking Source Code找到了一个hack方案。这个linearAlloc的size定义在c层而且是一个全局变量，他们通过对结构体的size的计算成功覆盖了该值的内容，这里要特别感谢C语言的指针和内存的设计。C的世界里，You Are The King of This World。当然实际情况是大部分用户用这把利刃割伤了自己。。。<del>别问总悟君谁是世界上最好的语言。。。</del></p>
@@ -215,206 +220,201 @@ package=&quot;</span><span style="color:#a3be8c;">com.example.android.multidex.m
 <p><img src="http://7xn3gz.com1.z0.glb.clouddn.com/image/github/zongwu233multiDex-process.png" alt="方案的流程图" />
 上最终解决问题版的代码！</p>
 <p>在Application里面(这里不要再继承自MultiApplication了，我们要手动加载Dex):</p>
-<pre style="background-color:#2b303b;">
-<code class="language-java" data-lang="java"><span style="color:#c0c5ce;">
-</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">java.util.</span><span style="color:#ebcb8b;">Map</span><span style="color:#c0c5ce;">;
-</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">java.util.jar.</span><span style="color:#ebcb8b;">Attributes</span><span style="color:#c0c5ce;">;
-</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">java.util.jar.</span><span style="color:#ebcb8b;">JarFile</span><span style="color:#c0c5ce;">;
-</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">java.util.jar.</span><span style="color:#ebcb8b;">Manifest</span><span style="color:#c0c5ce;">;
-
+<pre data-lang="java" style="background-color:#2b303b;color:#c0c5ce;" class="language-java "><code class="language-java" data-lang="java"><span>
+</span><span style="color:#b48ead;">import </span><span>java.util.</span><span style="color:#ebcb8b;">Map</span><span>;
+</span><span style="color:#b48ead;">import </span><span>java.util.jar.</span><span style="color:#ebcb8b;">Attributes</span><span>;
+</span><span style="color:#b48ead;">import </span><span>java.util.jar.</span><span style="color:#ebcb8b;">JarFile</span><span>;
+</span><span style="color:#b48ead;">import </span><span>java.util.jar.</span><span style="color:#ebcb8b;">Manifest</span><span>;
+</span><span>
 </span><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">App </span><span style="color:#b48ead;">extends </span><span style="color:#a3be8c;">Application </span><span style="color:#eff1f5;">{
-    </span><span style="color:#b48ead;">public static final </span><span style="color:#ebcb8b;">String </span><span style="color:#eff1f5;">KEY_DEX2_SHA1 </span><span style="color:#c0c5ce;">= &quot;</span><span style="color:#a3be8c;">dex2-SHA1-Digest</span><span style="color:#c0c5ce;">&quot;</span><span style="color:#eff1f5;">;
-    @</span><span style="color:#bf616a;">Override
-    </span><span style="color:#b48ead;">protected void </span><span style="color:#8fa1b3;">attachBaseContext</span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">Context </span><span style="color:#bf616a;">base</span><span style="color:#eff1f5;">) {
-        </span><span style="color:#bf616a;">super </span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">attachBaseContext</span><span style="color:#eff1f5;">(base);
-        </span><span style="color:#ebcb8b;">LogUtils</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">d</span><span style="color:#eff1f5;">( </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">loadDex</span><span style="color:#c0c5ce;">&quot;</span><span style="color:#eff1f5;">, </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">App attachBaseContext </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#eff1f5;">);
-        </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#c0c5ce;">!</span><span style="color:#bf616a;">quickStart</span><span style="color:#eff1f5;">() </span><span style="color:#c0c5ce;">&amp;&amp; </span><span style="color:#ebcb8b;">Build</span><span style="color:#eff1f5;">.</span><span style="color:#d08770;">VERSION</span><span style="color:#eff1f5;">.</span><span style="color:#d08770;">SDK_INT </span><span style="color:#c0c5ce;">&lt; </span><span style="color:#ebcb8b;">Build</span><span style="color:#eff1f5;">.</span><span style="color:#d08770;">VERSION_CODES</span><span style="color:#eff1f5;">.</span><span style="color:#d08770;">LOLLIPOP</span><span style="color:#eff1f5;">) {</span><span style="color:#65737e;">//&gt;=5.0的系统默认对dex进行oat优化
-            </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">needWait</span><span style="color:#eff1f5;">(base)){
-                </span><span style="color:#bf616a;">waitForDexopt</span><span style="color:#eff1f5;">(base);
-            }
-            </span><span style="color:#ebcb8b;">MultiDex</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">install </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this </span><span style="color:#eff1f5;">);
-        } </span><span style="color:#b48ead;">else </span><span style="color:#eff1f5;">{
-            </span><span style="color:#b48ead;">return</span><span style="color:#eff1f5;">;
-        }
-    }
-
-    @</span><span style="color:#bf616a;">Override
-    </span><span style="color:#b48ead;">public void </span><span style="color:#8fa1b3;">onCreate</span><span style="color:#eff1f5;">() {
-        </span><span style="color:#bf616a;">super </span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">onCreate</span><span style="color:#eff1f5;">();
-        </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">quickStart</span><span style="color:#eff1f5;">()) {
-            </span><span style="color:#b48ead;">return</span><span style="color:#eff1f5;">;
-        }
-        ...
-    }
-
-    </span><span style="color:#b48ead;">public boolean </span><span style="color:#8fa1b3;">quickStart</span><span style="color:#eff1f5;">() {
-        </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">StringUtils</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">contains</span><span style="color:#eff1f5;">( </span><span style="color:#bf616a;">getCurProcessName</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">), </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">:mini</span><span style="color:#c0c5ce;">&quot;</span><span style="color:#eff1f5;">)) {
-            </span><span style="color:#ebcb8b;">LogUtils</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">d</span><span style="color:#eff1f5;">( </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">loadDex</span><span style="color:#c0c5ce;">&quot;</span><span style="color:#eff1f5;">, </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">:mini start!</span><span style="color:#c0c5ce;">&quot;</span><span style="color:#eff1f5;">);
-            </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">true</span><span style="color:#eff1f5;">;
-        }
-        </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">false </span><span style="color:#eff1f5;">;
-    }
-    </span><span style="color:#65737e;">//neead wait for dexopt ?
-    </span><span style="color:#b48ead;">private boolean </span><span style="color:#8fa1b3;">needWait</span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">Context </span><span style="color:#bf616a;">context</span><span style="color:#eff1f5;">){
-        </span><span style="color:#ebcb8b;">String</span><span style="color:#eff1f5;"> flag </span><span style="color:#c0c5ce;">= </span><span style="color:#bf616a;">get2thDexSHA1</span><span style="color:#eff1f5;">(context);
-        </span><span style="color:#ebcb8b;">LogUtils</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">d</span><span style="color:#eff1f5;">( </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">loadDex</span><span style="color:#c0c5ce;">&quot;</span><span style="color:#eff1f5;">, </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">dex2-sha1 </span><span style="color:#c0c5ce;">&quot;+</span><span style="color:#eff1f5;">flag);
-        </span><span style="color:#ebcb8b;">SharedPreferences</span><span style="color:#eff1f5;"> sp </span><span style="color:#c0c5ce;">=</span><span style="color:#eff1f5;"> context.</span><span style="color:#bf616a;">getSharedPreferences</span><span style="color:#eff1f5;">(
-                </span><span style="color:#ebcb8b;">PackageUtil</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">getPackageInfo</span><span style="color:#eff1f5;">(context). versionName, </span><span style="color:#d08770;">MODE_MULTI_PROCESS</span><span style="color:#eff1f5;">);
-        </span><span style="color:#ebcb8b;">String</span><span style="color:#eff1f5;"> saveValue </span><span style="color:#c0c5ce;">=</span><span style="color:#eff1f5;"> sp.</span><span style="color:#bf616a;">getString</span><span style="color:#eff1f5;">(</span><span style="color:#d08770;">KEY_DEX2_SHA1</span><span style="color:#eff1f5;">, </span><span style="color:#c0c5ce;">&quot;&quot;</span><span style="color:#eff1f5;">);
-        </span><span style="color:#b48ead;">return </span><span style="color:#c0c5ce;">!</span><span style="color:#ebcb8b;">StringUtils</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">equals</span><span style="color:#eff1f5;">(flag,saveValue);
-    }
-    </span><span style="color:#65737e;">/**
-     * Get classes.dex file signature
-     * </span><span style="color:#b48ead;">@param </span><span style="color:#bf616a;">context
-     </span><span style="color:#65737e;">* </span><span style="color:#b48ead;">@return
-     </span><span style="color:#65737e;">*/
-    private String get2thDexSHA1(Context context) {
-        ApplicationInfo ai = context.getApplicationInfo();
-        String source = ai.sourceDir;
-        try {
-            JarFile jar = new JarFile(source);
-            Manifest mf = jar.getManifest();
-            Map&lt;</span><span style="color:#bf616a;">String, </span><span style="color:#d08770;">Attributes</span><span style="color:#65737e;">&gt; map = mf.getEntries();
-            Attributes a = map.get(&quot;classes2.dex&quot;);
-            return a.getValue(&quot;SHA1-Digest&quot;);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null ;
-    }
-    // optDex finish 
-    public void installFinish(Context context){
-        SharedPreferences sp = context.getSharedPreferences(
-                PackageUtil.getPackageInfo(context).versionName, MODE_MULTI_PROCESS);
-        sp.edit().putString(KEY_DEX2_SHA1,get2thDexSHA1(context)).commit();
-    }
-
-
-    public static String getCurProcessName(Context context) {
-        try {
-            int pid = android.os.Process.myPid();
-            ActivityManager mActivityManager = (ActivityManager) context
-                    .getSystemService(Context. ACTIVITY_SERVICE);
-            for (ActivityManager.RunningAppProcessInfo appProcess : mActivityManager
-                    .getRunningAppProcesses()) {
-                if (appProcess.pid == pid) {
-                    return appProcess. processName;
-                }
-            }
-        } catch (Exception e) {
-            // ignore
-        }
-        return null ;
-    }
-    public void waitForDexopt(Context base) {
-        Intent intent = new Intent();
-        ComponentName componentName = new
-                ComponentName( &quot;com.zongwu&quot;, LoadResActivity.class.getName());
-        intent.setComponent(componentName);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        base.startActivity(intent);
-        long startWait = System.currentTimeMillis ();
-        long waitTime = 10 * 1000 ;
-        if (Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.HONEYCOMB_MR1 ) {
-            waitTime = 20 * 1000 ;//实测发现某些场景下有些2.3版本有可能10s都不能完成optdex
-        }
-        while (needWait(base)) {
-            try {
-                long nowWait = System.currentTimeMillis() - startWait;
-                LogUtils.d(&quot;loadDex&quot; , &quot;wait ms :&quot; + nowWait);
-                if (nowWait &gt;= waitTime) {
-                    return;
-                }
-                Thread.sleep(200 );
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-}
-
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">public static final </span><span style="color:#ebcb8b;">String </span><span style="color:#eff1f5;">KEY_DEX2_SHA1 </span><span>= &quot;</span><span style="color:#a3be8c;">dex2-SHA1-Digest</span><span>&quot;</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    @</span><span style="color:#bf616a;">Override
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">protected void </span><span style="color:#8fa1b3;">attachBaseContext</span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">Context </span><span style="color:#bf616a;">base</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">super </span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">attachBaseContext</span><span style="color:#eff1f5;">(base);
+</span><span style="color:#eff1f5;">        </span><span style="color:#ebcb8b;">LogUtils</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">d</span><span style="color:#eff1f5;">( </span><span>&quot;</span><span style="color:#a3be8c;">loadDex</span><span>&quot;</span><span style="color:#eff1f5;">, </span><span>&quot;</span><span style="color:#a3be8c;">App attachBaseContext </span><span>&quot;</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span>!</span><span style="color:#bf616a;">quickStart</span><span style="color:#eff1f5;">() </span><span>&amp;&amp; </span><span style="color:#ebcb8b;">Build</span><span style="color:#eff1f5;">.</span><span style="color:#d08770;">VERSION</span><span style="color:#eff1f5;">.</span><span style="color:#d08770;">SDK_INT </span><span>&lt; </span><span style="color:#ebcb8b;">Build</span><span style="color:#eff1f5;">.</span><span style="color:#d08770;">VERSION_CODES</span><span style="color:#eff1f5;">.</span><span style="color:#d08770;">LOLLIPOP</span><span style="color:#eff1f5;">) {</span><span style="color:#65737e;">//&gt;=5.0的系统默认对dex进行oat优化
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">needWait</span><span style="color:#eff1f5;">(base)){
+</span><span style="color:#eff1f5;">                </span><span style="color:#bf616a;">waitForDexopt</span><span style="color:#eff1f5;">(base);
+</span><span style="color:#eff1f5;">            }
+</span><span style="color:#eff1f5;">            </span><span style="color:#ebcb8b;">MultiDex</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">install </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this </span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        } </span><span style="color:#b48ead;">else </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">return</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">        }
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">    @</span><span style="color:#bf616a;">Override
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">public void </span><span style="color:#8fa1b3;">onCreate</span><span style="color:#eff1f5;">() {
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">super </span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">onCreate</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">quickStart</span><span style="color:#eff1f5;">()) {
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">return</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">        }
+</span><span style="color:#eff1f5;">        ...
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">public boolean </span><span style="color:#8fa1b3;">quickStart</span><span style="color:#eff1f5;">() {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">if </span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">StringUtils</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">contains</span><span style="color:#eff1f5;">( </span><span style="color:#bf616a;">getCurProcessName</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">this</span><span style="color:#eff1f5;">), </span><span>&quot;</span><span style="color:#a3be8c;">:mini</span><span>&quot;</span><span style="color:#eff1f5;">)) {
+</span><span style="color:#eff1f5;">            </span><span style="color:#ebcb8b;">LogUtils</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">d</span><span style="color:#eff1f5;">( </span><span>&quot;</span><span style="color:#a3be8c;">loadDex</span><span>&quot;</span><span style="color:#eff1f5;">, </span><span>&quot;</span><span style="color:#a3be8c;">:mini start!</span><span>&quot;</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">true</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">        }
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">false </span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">//neead wait for dexopt ?
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">private boolean </span><span style="color:#8fa1b3;">needWait</span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">Context </span><span style="color:#bf616a;">context</span><span style="color:#eff1f5;">){
+</span><span style="color:#eff1f5;">        </span><span style="color:#ebcb8b;">String</span><span style="color:#eff1f5;"> flag </span><span>= </span><span style="color:#bf616a;">get2thDexSHA1</span><span style="color:#eff1f5;">(context);
+</span><span style="color:#eff1f5;">        </span><span style="color:#ebcb8b;">LogUtils</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">d</span><span style="color:#eff1f5;">( </span><span>&quot;</span><span style="color:#a3be8c;">loadDex</span><span>&quot;</span><span style="color:#eff1f5;">, </span><span>&quot;</span><span style="color:#a3be8c;">dex2-sha1 </span><span>&quot;+</span><span style="color:#eff1f5;">flag);
+</span><span style="color:#eff1f5;">        </span><span style="color:#ebcb8b;">SharedPreferences</span><span style="color:#eff1f5;"> sp </span><span>=</span><span style="color:#eff1f5;"> context.</span><span style="color:#bf616a;">getSharedPreferences</span><span style="color:#eff1f5;">(
+</span><span style="color:#eff1f5;">                </span><span style="color:#ebcb8b;">PackageUtil</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">getPackageInfo</span><span style="color:#eff1f5;">(context). versionName, </span><span style="color:#d08770;">MODE_MULTI_PROCESS</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        </span><span style="color:#ebcb8b;">String</span><span style="color:#eff1f5;"> saveValue </span><span>=</span><span style="color:#eff1f5;"> sp.</span><span style="color:#bf616a;">getString</span><span style="color:#eff1f5;">(</span><span style="color:#d08770;">KEY_DEX2_SHA1</span><span style="color:#eff1f5;">, </span><span>&quot;&quot;</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return </span><span>!</span><span style="color:#ebcb8b;">StringUtils</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">equals</span><span style="color:#eff1f5;">(flag,saveValue);
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">/**
+</span><span style="color:#65737e;">     * Get classes.dex file signature
+</span><span style="color:#65737e;">     * </span><span style="color:#b48ead;">@param </span><span style="color:#bf616a;">context
+</span><span style="color:#65737e;">     * </span><span style="color:#b48ead;">@return
+</span><span style="color:#65737e;">     */
+</span><span style="color:#65737e;">    private String get2thDexSHA1(Context context) {
+</span><span style="color:#65737e;">        ApplicationInfo ai = context.getApplicationInfo();
+</span><span style="color:#65737e;">        String source = ai.sourceDir;
+</span><span style="color:#65737e;">        try {
+</span><span style="color:#65737e;">            JarFile jar = new JarFile(source);
+</span><span style="color:#65737e;">            Manifest mf = jar.getManifest();
+</span><span style="color:#65737e;">            Map&lt;</span><span style="color:#bf616a;">String, </span><span style="color:#d08770;">Attributes</span><span style="color:#65737e;">&gt; map = mf.getEntries();
+</span><span style="color:#65737e;">            Attributes a = map.get(&quot;classes2.dex&quot;);
+</span><span style="color:#65737e;">            return a.getValue(&quot;SHA1-Digest&quot;);
+</span><span style="color:#65737e;">        } catch (Exception e) {
+</span><span style="color:#65737e;">            e.printStackTrace();
+</span><span style="color:#65737e;">        }
+</span><span style="color:#65737e;">        return null ;
+</span><span style="color:#65737e;">    }
+</span><span style="color:#65737e;">    // optDex finish 
+</span><span style="color:#65737e;">    public void installFinish(Context context){
+</span><span style="color:#65737e;">        SharedPreferences sp = context.getSharedPreferences(
+</span><span style="color:#65737e;">                PackageUtil.getPackageInfo(context).versionName, MODE_MULTI_PROCESS);
+</span><span style="color:#65737e;">        sp.edit().putString(KEY_DEX2_SHA1,get2thDexSHA1(context)).commit();
+</span><span style="color:#65737e;">    }
+</span><span style="color:#65737e;">
+</span><span style="color:#65737e;">
+</span><span style="color:#65737e;">    public static String getCurProcessName(Context context) {
+</span><span style="color:#65737e;">        try {
+</span><span style="color:#65737e;">            int pid = android.os.Process.myPid();
+</span><span style="color:#65737e;">            ActivityManager mActivityManager = (ActivityManager) context
+</span><span style="color:#65737e;">                    .getSystemService(Context. ACTIVITY_SERVICE);
+</span><span style="color:#65737e;">            for (ActivityManager.RunningAppProcessInfo appProcess : mActivityManager
+</span><span style="color:#65737e;">                    .getRunningAppProcesses()) {
+</span><span style="color:#65737e;">                if (appProcess.pid == pid) {
+</span><span style="color:#65737e;">                    return appProcess. processName;
+</span><span style="color:#65737e;">                }
+</span><span style="color:#65737e;">            }
+</span><span style="color:#65737e;">        } catch (Exception e) {
+</span><span style="color:#65737e;">            // ignore
+</span><span style="color:#65737e;">        }
+</span><span style="color:#65737e;">        return null ;
+</span><span style="color:#65737e;">    }
+</span><span style="color:#65737e;">    public void waitForDexopt(Context base) {
+</span><span style="color:#65737e;">        Intent intent = new Intent();
+</span><span style="color:#65737e;">        ComponentName componentName = new
+</span><span style="color:#65737e;">                ComponentName( &quot;com.zongwu&quot;, LoadResActivity.class.getName());
+</span><span style="color:#65737e;">        intent.setComponent(componentName);
+</span><span style="color:#65737e;">        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+</span><span style="color:#65737e;">        base.startActivity(intent);
+</span><span style="color:#65737e;">        long startWait = System.currentTimeMillis ();
+</span><span style="color:#65737e;">        long waitTime = 10 * 1000 ;
+</span><span style="color:#65737e;">        if (Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.HONEYCOMB_MR1 ) {
+</span><span style="color:#65737e;">            waitTime = 20 * 1000 ;//实测发现某些场景下有些2.3版本有可能10s都不能完成optdex
+</span><span style="color:#65737e;">        }
+</span><span style="color:#65737e;">        while (needWait(base)) {
+</span><span style="color:#65737e;">            try {
+</span><span style="color:#65737e;">                long nowWait = System.currentTimeMillis() - startWait;
+</span><span style="color:#65737e;">                LogUtils.d(&quot;loadDex&quot; , &quot;wait ms :&quot; + nowWait);
+</span><span style="color:#65737e;">                if (nowWait &gt;= waitTime) {
+</span><span style="color:#65737e;">                    return;
+</span><span style="color:#65737e;">                }
+</span><span style="color:#65737e;">                Thread.sleep(200 );
+</span><span style="color:#65737e;">            } catch (InterruptedException e) {
+</span><span style="color:#65737e;">                e.printStackTrace();
+</span><span style="color:#65737e;">            }
+</span><span style="color:#65737e;">        }
+</span><span style="color:#65737e;">    }
+</span><span style="color:#65737e;">}
+</span><span style="color:#65737e;">
 </span></code></pre>
 <p>PackageUtil的方法</p>
-<pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;"> public static PackageInfo getPackageInfo(Context context){
-        PackageManager pm = context.getPackageManager();
-        try {
-            return pm.getPackageInfo(context.getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            LogUtils.e(e.getLocalizedMessage());
-        }
-        return  new PackageInfo();
-    }
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span> public static PackageInfo getPackageInfo(Context context){
+</span><span>        PackageManager pm = context.getPackageManager();
+</span><span>        try {
+</span><span>            return pm.getPackageInfo(context.getPackageName(), 0);
+</span><span>        } catch (PackageManager.NameNotFoundException e) {
+</span><span>            LogUtils.e(e.getLocalizedMessage());
+</span><span>        }
+</span><span>        return  new PackageInfo();
+</span><span>    }
 </span></code></pre>
 <p>这里使用了classes(N).dex的方式保存了后面的dex而不是像微信目前的做法放到assest文件夹。前面有说到ART模式会将多个dex优化合并成oat文件。如果放置在asset里面就没有这个好处了。</p>
 <p>Launcher Activity 依然是原来的代码里的WelcomeActivity。</p>
 <p>在Application启动的时候会检测dexopt是否已经完成过，（检测方式是查看sp文件是否有dex文件的SHA1-Digest记录，这里要两个进程读取该sp,读取模式是MODE_MULTI_PROCESS）。如果没有就启动LoadDexActivity(属于：mini进程) 。否则就直接install dex ！对，直接install。通过日志发现，已经dexopt的dex文件再次install的时候 只耗费几十毫秒。</p>
 <p>LoadDexActivity 的逻辑比较简单，启动AsyncTask 来install dex 这时候会触发dexopt 。</p>
-<pre style="background-color:#2b303b;">
-<code class="language-java" data-lang="java"><span style="color:#c0c5ce;">
+<pre data-lang="java" style="background-color:#2b303b;color:#c0c5ce;" class="language-java "><code class="language-java" data-lang="java"><span>
 </span><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">LoadResActivity </span><span style="color:#b48ead;">extends </span><span style="color:#a3be8c;">Activity </span><span style="color:#eff1f5;">{
-    @</span><span style="color:#bf616a;">Override
-    </span><span style="color:#b48ead;">public void </span><span style="color:#8fa1b3;">onCreate</span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">Bundle </span><span style="color:#bf616a;">savedInstanceState</span><span style="color:#eff1f5;">) {
-        </span><span style="color:#bf616a;">requestWindowFeature</span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">Window</span><span style="color:#eff1f5;">.</span><span style="color:#d08770;">FEATURE_NO_TITLE</span><span style="color:#eff1f5;">);
-        </span><span style="color:#bf616a;">super </span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">onCreate</span><span style="color:#eff1f5;">(savedInstanceState);
-        </span><span style="color:#bf616a;">getWindow</span><span style="color:#eff1f5;">().</span><span style="color:#bf616a;">setFlags</span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">WindowManager</span><span style="color:#eff1f5;">.</span><span style="color:#ebcb8b;">LayoutParams</span><span style="color:#eff1f5;">.</span><span style="color:#d08770;">FLAG_FULLSCREEN </span><span style="color:#eff1f5;">, </span><span style="color:#ebcb8b;">WindowManager</span><span style="color:#eff1f5;">.</span><span style="color:#ebcb8b;">LayoutParams</span><span style="color:#eff1f5;">.</span><span style="color:#d08770;">FLAG_FULLSCREEN </span><span style="color:#eff1f5;">);
-        </span><span style="color:#bf616a;">overridePendingTransition</span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">R</span><span style="color:#eff1f5;">.anim.null_anim, </span><span style="color:#ebcb8b;">R</span><span style="color:#eff1f5;">.anim.null_anim);
-        </span><span style="color:#bf616a;">setContentView</span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">R</span><span style="color:#eff1f5;">.layout.layout_load);      
-        </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">LoadDexTask</span><span style="color:#eff1f5;">().</span><span style="color:#bf616a;">execute</span><span style="color:#eff1f5;">();
-    }
-    </span><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">LoadDexTask </span><span style="color:#b48ead;">extends </span><span style="color:#a3be8c;">AsyncTask </span><span style="color:#eff1f5;">{
-        @</span><span style="color:#bf616a;">Override
-        </span><span style="color:#b48ead;">protected </span><span style="color:#ebcb8b;">Object </span><span style="color:#8fa1b3;">doInBackground</span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">Object</span><span style="color:#b48ead;">[] </span><span style="color:#bf616a;">params</span><span style="color:#eff1f5;">) {
-            </span><span style="color:#b48ead;">try </span><span style="color:#eff1f5;">{
-                </span><span style="color:#ebcb8b;">MultiDex</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">install</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">getApplication</span><span style="color:#eff1f5;">());
-                </span><span style="color:#ebcb8b;">LogUtils</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">d</span><span style="color:#eff1f5;">(</span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">loadDex</span><span style="color:#c0c5ce;">&quot; </span><span style="color:#eff1f5;">, </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">install finish</span><span style="color:#c0c5ce;">&quot; </span><span style="color:#eff1f5;">);
-                ((</span><span style="color:#ebcb8b;">App</span><span style="color:#eff1f5;">) </span><span style="color:#bf616a;">getApplication</span><span style="color:#eff1f5;">()).</span><span style="color:#bf616a;">installFinish</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">getApplication</span><span style="color:#eff1f5;">());
-            } </span><span style="color:#b48ead;">catch </span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">Exception </span><span style="color:#bf616a;">e</span><span style="color:#eff1f5;">) {
-                </span><span style="color:#ebcb8b;">LogUtils</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">e</span><span style="color:#eff1f5;">(</span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">loadDex</span><span style="color:#c0c5ce;">&quot; </span><span style="color:#eff1f5;">, e.</span><span style="color:#bf616a;">getLocalizedMessage</span><span style="color:#eff1f5;">());
-            }
-            </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">null</span><span style="color:#eff1f5;">;
-        }
-        @</span><span style="color:#bf616a;">Override
-        </span><span style="color:#b48ead;">protected void </span><span style="color:#8fa1b3;">onPostExecute</span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">Object </span><span style="color:#bf616a;">o</span><span style="color:#eff1f5;">) {
-            </span><span style="color:#ebcb8b;">LogUtils</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">d</span><span style="color:#eff1f5;">( </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">loadDex</span><span style="color:#c0c5ce;">&quot;</span><span style="color:#eff1f5;">, </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">get install finish</span><span style="color:#c0c5ce;">&quot;</span><span style="color:#eff1f5;">);
-            </span><span style="color:#bf616a;">finish</span><span style="color:#eff1f5;">();
-            </span><span style="color:#ebcb8b;">System</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">exit</span><span style="color:#eff1f5;">( </span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">);
-        }
-    }
-    @</span><span style="color:#bf616a;">Override
-    </span><span style="color:#b48ead;">public void </span><span style="color:#8fa1b3;">onBackPressed</span><span style="color:#eff1f5;">() {
-        </span><span style="color:#65737e;">//cannot backpress
-    </span><span style="color:#eff1f5;">}
-
+</span><span style="color:#eff1f5;">    @</span><span style="color:#bf616a;">Override
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">public void </span><span style="color:#8fa1b3;">onCreate</span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">Bundle </span><span style="color:#bf616a;">savedInstanceState</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">requestWindowFeature</span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">Window</span><span style="color:#eff1f5;">.</span><span style="color:#d08770;">FEATURE_NO_TITLE</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">super </span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">onCreate</span><span style="color:#eff1f5;">(savedInstanceState);
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">getWindow</span><span style="color:#eff1f5;">().</span><span style="color:#bf616a;">setFlags</span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">WindowManager</span><span style="color:#eff1f5;">.</span><span style="color:#ebcb8b;">LayoutParams</span><span style="color:#eff1f5;">.</span><span style="color:#d08770;">FLAG_FULLSCREEN </span><span style="color:#eff1f5;">, </span><span style="color:#ebcb8b;">WindowManager</span><span style="color:#eff1f5;">.</span><span style="color:#ebcb8b;">LayoutParams</span><span style="color:#eff1f5;">.</span><span style="color:#d08770;">FLAG_FULLSCREEN </span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">overridePendingTransition</span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">R</span><span style="color:#eff1f5;">.anim.null_anim, </span><span style="color:#ebcb8b;">R</span><span style="color:#eff1f5;">.anim.null_anim);
+</span><span style="color:#eff1f5;">        </span><span style="color:#bf616a;">setContentView</span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">R</span><span style="color:#eff1f5;">.layout.layout_load);      
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">LoadDexTask</span><span style="color:#eff1f5;">().</span><span style="color:#bf616a;">execute</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">LoadDexTask </span><span style="color:#b48ead;">extends </span><span style="color:#a3be8c;">AsyncTask </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">        @</span><span style="color:#bf616a;">Override
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">protected </span><span style="color:#ebcb8b;">Object </span><span style="color:#8fa1b3;">doInBackground</span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">Object</span><span style="color:#b48ead;">[] </span><span style="color:#bf616a;">params</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">try </span><span style="color:#eff1f5;">{
+</span><span style="color:#eff1f5;">                </span><span style="color:#ebcb8b;">MultiDex</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">install</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">getApplication</span><span style="color:#eff1f5;">());
+</span><span style="color:#eff1f5;">                </span><span style="color:#ebcb8b;">LogUtils</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">d</span><span style="color:#eff1f5;">(</span><span>&quot;</span><span style="color:#a3be8c;">loadDex</span><span>&quot; </span><span style="color:#eff1f5;">, </span><span>&quot;</span><span style="color:#a3be8c;">install finish</span><span>&quot; </span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">                ((</span><span style="color:#ebcb8b;">App</span><span style="color:#eff1f5;">) </span><span style="color:#bf616a;">getApplication</span><span style="color:#eff1f5;">()).</span><span style="color:#bf616a;">installFinish</span><span style="color:#eff1f5;">(</span><span style="color:#bf616a;">getApplication</span><span style="color:#eff1f5;">());
+</span><span style="color:#eff1f5;">            } </span><span style="color:#b48ead;">catch </span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">Exception </span><span style="color:#bf616a;">e</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">                </span><span style="color:#ebcb8b;">LogUtils</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">e</span><span style="color:#eff1f5;">(</span><span>&quot;</span><span style="color:#a3be8c;">loadDex</span><span>&quot; </span><span style="color:#eff1f5;">, e.</span><span style="color:#bf616a;">getLocalizedMessage</span><span style="color:#eff1f5;">());
+</span><span style="color:#eff1f5;">            }
+</span><span style="color:#eff1f5;">            </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">null</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">        }
+</span><span style="color:#eff1f5;">        @</span><span style="color:#bf616a;">Override
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">protected void </span><span style="color:#8fa1b3;">onPostExecute</span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">Object </span><span style="color:#bf616a;">o</span><span style="color:#eff1f5;">) {
+</span><span style="color:#eff1f5;">            </span><span style="color:#ebcb8b;">LogUtils</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">d</span><span style="color:#eff1f5;">( </span><span>&quot;</span><span style="color:#a3be8c;">loadDex</span><span>&quot;</span><span style="color:#eff1f5;">, </span><span>&quot;</span><span style="color:#a3be8c;">get install finish</span><span>&quot;</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">            </span><span style="color:#bf616a;">finish</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">            </span><span style="color:#ebcb8b;">System</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">exit</span><span style="color:#eff1f5;">( </span><span style="color:#d08770;">0</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        }
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">    @</span><span style="color:#bf616a;">Override
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">public void </span><span style="color:#8fa1b3;">onBackPressed</span><span style="color:#eff1f5;">() {
+</span><span style="color:#eff1f5;">        </span><span style="color:#65737e;">//cannot backpress
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">
 </span></code></pre>
 <p>Manifest.xml 里面 <br/></p>
-<pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">&lt;activity
-    android:name= &quot;com.zongwu.LoadResActivity&quot;
-    android:launchMode= &quot;singleTask&quot;
-    android:process= &quot;:mini&quot;
-    android:alwaysRetainTaskState= &quot;false&quot;
-    android:excludeFromRecents= &quot;true&quot;
-    android:screenOrientation= &quot;portrait&quot; /&gt;
-
-&lt;activity
-    android:name= &quot;com.zongwu.WelcomeActivity&quot;
-    android:launchMode= &quot;singleTop&quot;
-    android:screenOrientation= &quot;portrait&quot;&gt;
-    &lt;intent-filter &gt;
-        &lt;action android:name=&quot;android.intent.action.MAIN&quot;/&gt;
-        &lt;category android:name=&quot;android.intent.category.LAUNCHER&quot;/&gt;
-    &lt;/intent-filter &gt;
-&lt;/activity&gt;
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>&lt;activity
+</span><span>    android:name= &quot;com.zongwu.LoadResActivity&quot;
+</span><span>    android:launchMode= &quot;singleTask&quot;
+</span><span>    android:process= &quot;:mini&quot;
+</span><span>    android:alwaysRetainTaskState= &quot;false&quot;
+</span><span>    android:excludeFromRecents= &quot;true&quot;
+</span><span>    android:screenOrientation= &quot;portrait&quot; /&gt;
+</span><span>
+</span><span>&lt;activity
+</span><span>    android:name= &quot;com.zongwu.WelcomeActivity&quot;
+</span><span>    android:launchMode= &quot;singleTop&quot;
+</span><span>    android:screenOrientation= &quot;portrait&quot;&gt;
+</span><span>    &lt;intent-filter &gt;
+</span><span>        &lt;action android:name=&quot;android.intent.action.MAIN&quot;/&gt;
+</span><span>        &lt;category android:name=&quot;android.intent.category.LAUNCHER&quot;/&gt;
+</span><span>    &lt;/intent-filter &gt;
+</span><span>&lt;/activity&gt;
 </span></code></pre>
 <p>替换Activity默认的出现动画 R.anim.null_anim 文件的定义：</p>
-<pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">&lt;set xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
-    &lt;alpha
-        android:fromAlpha=&quot;1.0&quot;
-        android:toAlpha=&quot;1.0&quot;
-        android:duration=&quot;550&quot;/&gt;
-&lt;/set&gt;
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>&lt;set xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;
+</span><span>    &lt;alpha
+</span><span>        android:fromAlpha=&quot;1.0&quot;
+</span><span>        android:toAlpha=&quot;1.0&quot;
+</span><span>        android:duration=&quot;550&quot;/&gt;
+</span><span>&lt;/set&gt;
 </span></code></pre>
 <p>如<a href="http://mp.weixin.qq.com/s?__biz=MzAwNDY1ODY2OQ==&amp;mid=207151651&amp;idx=1&amp;sn=9eab282711f4eb2b4daf2fbae5a5ca9a&amp;3rd=MzA3MDU4NTYzMw==&amp;scene=6#rd">微信开发团队的这篇文章</a>所说，application启动了LoadDexActivity之后，自身不再是前台进程所以怎么hold 线程都不会ANR。</p>
 <p>系统何时会对apk进行dexopt总悟君其实并没有十分明白。通过查看安装运行的日志发现，安装的时候packageManagerService会对classes.dex 进行dexopt 。在调用MultiDex.install（）加载 secondary.dex的时候，也会进行一次dexopt 。 这背后的流程到底是怎样的？dexopt是如何在另外一个进程执行的？如果是另外一个进程执行为何会阻塞主app的UI进程？ 官方文档并没有详细介绍这个，那就RTFSC一探究竟吧.</p>

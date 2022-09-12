@@ -9,7 +9,7 @@
         <title>最简单的内网导航网站</title>
         <meta name="description" content="">
 
-        <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
+        <link rel="stylesheet" href="https://blog.zongwu233.com/main.css">
 
         
         <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
@@ -27,6 +27,16 @@
           gtag('js', new Date());
 
           gtag('config', 'UA-68155231-1');
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZF40590PZW"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+            gtag('config', 'G-ZF40590PZW');
         </script>
         
     </head>
@@ -74,63 +84,59 @@
 <span id="continue-reading"></span>
 <p>这时候就要介绍一下python3的HTTP server。</p>
 <p>在控制台执行：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-python" data-lang="python"><span style="color:#c0c5ce;">python -m http.server
+<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span>python -m http.server
 </span></code></pre>
 <p>就可以看到<code>Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) …</code>  ，python启动了一个http server端口默认是8000。访问<code>loalhost:8000</code>可以看到当前目录的文件列表。</p>
 <p>我们就通过pyhton 的http server 来实现这个最简单的内网导航。</p>
 <p>小项目就叫my123吧，项目只有2个文件，server.py和index.html。</p>
 <p>服务代码<code>server.py</code>很简单：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-python" data-lang="python"><span style="color:#65737e;">#coding=utf-8
-
-</span><span style="color:#b48ead;">from </span><span style="color:#c0c5ce;">http.server </span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">HTTPServer, BaseHTTPRequestHandler
-</span><span style="color:#b48ead;">from </span><span style="color:#c0c5ce;">os </span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">curdir, sep
-
+<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#65737e;">#coding=utf-8
+</span><span>
+</span><span style="color:#b48ead;">from </span><span>http.server </span><span style="color:#b48ead;">import </span><span>HTTPServer, BaseHTTPRequestHandler
+</span><span style="color:#b48ead;">from </span><span>os </span><span style="color:#b48ead;">import </span><span>curdir, sep
+</span><span>
 </span><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">MyRequestHandler</span><span style="color:#eff1f5;">(</span><span style="color:#a3be8c;">BaseHTTPRequestHandler</span><span style="color:#eff1f5;">):
-    </span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">do_GET</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">):
-        </span><span style="color:#b48ead;">if </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.path==&quot;</span><span style="color:#a3be8c;">/index.html</span><span style="color:#c0c5ce;">&quot; or </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.path==&#39;</span><span style="color:#a3be8c;">/</span><span style="color:#c0c5ce;">&#39;:
-                file = </span><span style="color:#96b5b4;">open</span><span style="color:#c0c5ce;">(curdir+sep +&#39;</span><span style="color:#a3be8c;">index.html</span><span style="color:#c0c5ce;">&#39;)
-                </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">send_response</span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">200</span><span style="color:#c0c5ce;">)
-                </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">send_header</span><span style="color:#c0c5ce;">(&#39;</span><span style="color:#a3be8c;">Content-Type</span><span style="color:#c0c5ce;">&#39;, &#39;</span><span style="color:#a3be8c;">text/html;charset=utf-8</span><span style="color:#c0c5ce;">&#39;)
-                </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">end_headers</span><span style="color:#c0c5ce;">()
-                </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.wfile.</span><span style="color:#bf616a;">write</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">bytes</span><span style="color:#c0c5ce;">(file.</span><span style="color:#bf616a;">read</span><span style="color:#c0c5ce;">(),&#39;</span><span style="color:#a3be8c;">utf-8</span><span style="color:#c0c5ce;">&#39;))
-                file.</span><span style="color:#bf616a;">close</span><span style="color:#c0c5ce;">()
-
-server = </span><span style="color:#bf616a;">HTTPServer</span><span style="color:#c0c5ce;">((&#39;</span><span style="color:#a3be8c;">0.0.0.0</span><span style="color:#c0c5ce;">&#39;, </span><span style="color:#d08770;">8123</span><span style="color:#c0c5ce;">), MyRequestHandler)
-server.</span><span style="color:#bf616a;">serve_forever</span><span style="color:#c0c5ce;">()
+</span><span>    </span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">do_GET</span><span>(</span><span style="color:#bf616a;">self</span><span>):
+</span><span>        </span><span style="color:#b48ead;">if </span><span style="color:#bf616a;">self</span><span>.path==&quot;</span><span style="color:#a3be8c;">/index.html</span><span>&quot; or </span><span style="color:#bf616a;">self</span><span>.path==&#39;</span><span style="color:#a3be8c;">/</span><span>&#39;:
+</span><span>                file = </span><span style="color:#96b5b4;">open</span><span>(curdir+sep +&#39;</span><span style="color:#a3be8c;">index.html</span><span>&#39;)
+</span><span>                </span><span style="color:#bf616a;">self</span><span>.</span><span style="color:#bf616a;">send_response</span><span>(</span><span style="color:#d08770;">200</span><span>)
+</span><span>                </span><span style="color:#bf616a;">self</span><span>.</span><span style="color:#bf616a;">send_header</span><span>(&#39;</span><span style="color:#a3be8c;">Content-Type</span><span>&#39;, &#39;</span><span style="color:#a3be8c;">text/html;charset=utf-8</span><span>&#39;)
+</span><span>                </span><span style="color:#bf616a;">self</span><span>.</span><span style="color:#bf616a;">end_headers</span><span>()
+</span><span>                </span><span style="color:#bf616a;">self</span><span>.wfile.</span><span style="color:#bf616a;">write</span><span>(</span><span style="color:#bf616a;">bytes</span><span>(file.</span><span style="color:#bf616a;">read</span><span>(),&#39;</span><span style="color:#a3be8c;">utf-8</span><span>&#39;))
+</span><span>                file.</span><span style="color:#bf616a;">close</span><span>()
+</span><span>
+</span><span>server = </span><span style="color:#bf616a;">HTTPServer</span><span>((&#39;</span><span style="color:#a3be8c;">0.0.0.0</span><span>&#39;, </span><span style="color:#d08770;">8123</span><span>), MyRequestHandler)
+</span><span>server.</span><span style="color:#bf616a;">serve_forever</span><span>()
 </span></code></pre>
 <p>主要逻辑就有访问<code>/index.html</code>或者<code>/</code>的时候，读取当前目录下的index.html文件，将内容返回。</p>
 <p>index.html文件的内容：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-html" data-lang="html"><span style="color:#c0c5ce;">&lt;</span><span style="color:#bf616a;">html</span><span style="color:#c0c5ce;">&gt;
-
-&lt;</span><span style="color:#bf616a;">head</span><span style="color:#c0c5ce;">&gt;
-      &lt;</span><span style="color:#bf616a;">meta </span><span style="color:#d08770;">charset</span><span style="color:#c0c5ce;">=&quot;</span><span style="color:#a3be8c;">UTF-8</span><span style="color:#c0c5ce;">&quot;&gt;
-        &lt;</span><span style="color:#bf616a;">title</span><span style="color:#c0c5ce;">&gt;常用网址导航&lt;/</span><span style="color:#bf616a;">title</span><span style="color:#c0c5ce;">&gt;
-&lt;/</span><span style="color:#bf616a;">head</span><span style="color:#c0c5ce;">&gt;
-
-&lt;</span><span style="color:#bf616a;">body</span><span style="color:#c0c5ce;">&gt;
-
-&lt;</span><span style="color:#bf616a;">h2</span><span style="color:#c0c5ce;">&gt;监控&lt;/</span><span style="color:#bf616a;">h2</span><span style="color:#c0c5ce;">&gt;
-
- &lt;</span><span style="color:#bf616a;">a </span><span style="color:#d08770;">href</span><span style="color:#c0c5ce;">=&quot;</span><span style="color:#a3be8c;">http://your.server.name.com</span><span style="color:#c0c5ce;">&quot; </span><span style="color:#d08770;">target</span><span style="color:#c0c5ce;">=&quot;</span><span style="color:#a3be8c;">view_window</span><span style="color:#c0c5ce;">&quot;&gt;A服务监控&lt;/</span><span style="color:#bf616a;">a</span><span style="color:#c0c5ce;">&gt;  
- &lt;/</span><span style="color:#bf616a;">br</span><span style="color:#c0c5ce;">&gt;
-
- &lt;</span><span style="color:#bf616a;">a </span><span style="color:#d08770;">href</span><span style="color:#c0c5ce;">=&quot;</span><span style="color:#a3be8c;">http://your.server2.name.com</span><span style="color:#c0c5ce;">&quot; </span><span style="color:#d08770;">target</span><span style="color:#c0c5ce;">=&quot;</span><span style="color:#a3be8c;">view_window</span><span style="color:#c0c5ce;">&quot;&gt;B服务监控&lt;/</span><span style="color:#bf616a;">a</span><span style="color:#c0c5ce;">&gt;
-&lt;/</span><span style="color:#bf616a;">br</span><span style="color:#c0c5ce;">&gt;
-
-...
-
-&lt;/</span><span style="color:#bf616a;">br</span><span style="color:#c0c5ce;">&gt;&lt;/</span><span style="color:#bf616a;">br</span><span style="color:#c0c5ce;">&gt;&lt;/</span><span style="color:#bf616a;">br</span><span style="color:#c0c5ce;">&gt;&lt;/</span><span style="color:#bf616a;">br</span><span style="color:#c0c5ce;">&gt;
-
-&lt;/</span><span style="color:#bf616a;">body</span><span style="color:#c0c5ce;">&gt;
-&lt;/</span><span style="color:#bf616a;">html</span><span style="color:#c0c5ce;">&gt;
+<pre data-lang="html" style="background-color:#2b303b;color:#c0c5ce;" class="language-html "><code class="language-html" data-lang="html"><span>&lt;</span><span style="color:#bf616a;">html</span><span>&gt;
+</span><span>
+</span><span>&lt;</span><span style="color:#bf616a;">head</span><span>&gt;
+</span><span>      &lt;</span><span style="color:#bf616a;">meta </span><span style="color:#d08770;">charset</span><span>=&quot;</span><span style="color:#a3be8c;">UTF-8</span><span>&quot;&gt;
+</span><span>        &lt;</span><span style="color:#bf616a;">title</span><span>&gt;常用网址导航&lt;/</span><span style="color:#bf616a;">title</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">head</span><span>&gt;
+</span><span>
+</span><span>&lt;</span><span style="color:#bf616a;">body</span><span>&gt;
+</span><span>
+</span><span>&lt;</span><span style="color:#bf616a;">h2</span><span>&gt;监控&lt;/</span><span style="color:#bf616a;">h2</span><span>&gt;
+</span><span>
+</span><span> &lt;</span><span style="color:#bf616a;">a </span><span style="color:#d08770;">href</span><span>=&quot;</span><span style="color:#a3be8c;">http://your.server.name.com</span><span>&quot; </span><span style="color:#d08770;">target</span><span>=&quot;</span><span style="color:#a3be8c;">view_window</span><span>&quot;&gt;A服务监控&lt;/</span><span style="color:#bf616a;">a</span><span>&gt;  
+</span><span> &lt;/</span><span style="color:#bf616a;">br</span><span>&gt;
+</span><span>
+</span><span> &lt;</span><span style="color:#bf616a;">a </span><span style="color:#d08770;">href</span><span>=&quot;</span><span style="color:#a3be8c;">http://your.server2.name.com</span><span>&quot; </span><span style="color:#d08770;">target</span><span>=&quot;</span><span style="color:#a3be8c;">view_window</span><span>&quot;&gt;B服务监控&lt;/</span><span style="color:#bf616a;">a</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">br</span><span>&gt;
+</span><span>
+</span><span>...
+</span><span>
+</span><span>&lt;/</span><span style="color:#bf616a;">br</span><span>&gt;&lt;/</span><span style="color:#bf616a;">br</span><span>&gt;&lt;/</span><span style="color:#bf616a;">br</span><span>&gt;&lt;/</span><span style="color:#bf616a;">br</span><span>&gt;
+</span><span>
+</span><span>&lt;/</span><span style="color:#bf616a;">body</span><span>&gt;
+</span><span>&lt;/</span><span style="color:#bf616a;">html</span><span>&gt;
 </span></code></pre>
 <p>就是简单的html内容，连CSS都没有。简单粗暴。</p>
 <p>调用命令启动：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-python" data-lang="python"><span style="color:#c0c5ce;">python server.py
+<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span>python server.py
 </span></code></pre>
 <p>搞定。</p>
 

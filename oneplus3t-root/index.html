@@ -9,7 +9,7 @@
         <title>一加3T Root</title>
         <meta name="description" content="">
 
-        <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
+        <link rel="stylesheet" href="https://blog.zongwu233.com/main.css">
 
         
         <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
@@ -27,6 +27,16 @@
           gtag('js', new Date());
 
           gtag('config', 'UA-68155231-1');
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZF40590PZW"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+            gtag('config', 'G-ZF40590PZW');
         </script>
         
     </head>
@@ -77,8 +87,7 @@
 <h5 id="bootloaderjie-suo">BootLoader解锁</h5>
 <p>按住电源键和音量增大键开机几秒，进入bootLoader模式。这时候出现bootLoader的菜单。</p>
 <p>输入：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">fastboot flashing unlock
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>fastboot flashing unlock
 </span></code></pre>
 <p>弹出确认对话框，这时候使用音量按键选择yes，用电源键选择confirm。</p>
 <p>(Lollipop及以下版本的命令是<code>fastboot oem unlock</code>)</p>
@@ -86,14 +95,13 @@
 <h5 id="shua-ru-recovery">刷入Recovery</h5>
 <p>TWRP是个开源社区项目，做自定义boot recovery，涵盖了大部分机型。</p>
 <p>TWRP的recovery已经下载好。执行命令：</p>
-<pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">fastboot flash recovery twrp-oneplus3.img
-</span></code></pre><h5 id="shua-ru-supersu">刷入SuperSU</h5>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>fastboot flash recovery twrp-oneplus3.img
+</span></code></pre>
+<h5 id="shua-ru-supersu">刷入SuperSU</h5>
 <p>使用音量按键选择  <code>Recovery mode</code>重启。</p>
 <p>重启过程中，按住电源＋音量向下按键，进入TWRP。然后选择<code>allow modifications</code>。</p>
 <p>选择 <code>Advanced</code> 再选择 <code>ADB Sideload</code>。执行命令：</p>
-<pre style="background-color:#2b303b;">
-<code><span style="color:#c0c5ce;">adb sideload sr3-superSU.zip
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>adb sideload sr3-superSU.zip
 </span></code></pre>
 <p>完成后选择重启手机。</p>
 <p>正常进入手机，打开superSU验证root是否成功。</p>

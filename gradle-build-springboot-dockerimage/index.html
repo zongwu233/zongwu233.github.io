@@ -9,7 +9,7 @@
         <title>使用Gradle 构建SpringBoot应用的Docker镜像</title>
         <meta name="description" content="">
 
-        <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
+        <link rel="stylesheet" href="https://blog.zongwu233.com/main.css">
 
         
         <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
@@ -27,6 +27,16 @@
           gtag('js', new Date());
 
           gtag('config', 'UA-68155231-1');
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZF40590PZW"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+            gtag('config', 'G-ZF40590PZW');
         </script>
         
     </head>
@@ -85,65 +95,60 @@
 </ul>
 <p>我们最终选用了 <a href="https://github.com/bmuschko/gradle-docker-plugin">https://github.com/bmuschko/gradle-docker-plugin</a> 的gradle-docker-plugin来实现构建docker镜像。该插件支持<code>java-application</code>  和 <code>spring-boot-application</code> 两种方式，很明显我们选取spring-boot-applicaiton插件。</p>
 <p>在原工程的build.gradle 最后加上：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-groovy" data-lang="groovy"><span style="color:#c0c5ce;">apply </span><span style="color:#d08770;">from</span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">docker.gradle</span><span style="color:#c0c5ce;">&#39;
+<pre data-lang="groovy" style="background-color:#2b303b;color:#c0c5ce;" class="language-groovy "><code class="language-groovy" data-lang="groovy"><span>apply </span><span style="color:#d08770;">from</span><span>: &#39;</span><span style="color:#a3be8c;">docker.gradle</span><span>&#39;
 </span></code></pre>
 <p>在build.gradle的同一级目录下新建文件docker.gradle。</p>
 <p>添加：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-groovy" data-lang="groovy"><span style="color:#c0c5ce;">buildscript {
-    repositories {
-
-        mavenCentral()
-        gradlePluginPortal()
-    }
-    dependencies {
-        classpath &#39;</span><span style="color:#a3be8c;">com.bmuschko:gradle-docker-plugin:4.0.1</span><span style="color:#c0c5ce;">&#39;
-    }
-}
-
-apply </span><span style="color:#d08770;">plugin</span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">java</span><span style="color:#c0c5ce;">&#39;
-apply </span><span style="color:#d08770;">plugin</span><span style="color:#c0c5ce;">: &#39;</span><span style="color:#a3be8c;">org.springframework.boot</span><span style="color:#c0c5ce;">&#39;
-apply </span><span style="color:#d08770;">plugin</span><span style="color:#c0c5ce;">: </span><span style="color:#b48ead;">DockerRemoteApiPlugin
-</span><span style="color:#c0c5ce;">apply </span><span style="color:#d08770;">plugin</span><span style="color:#c0c5ce;">: </span><span style="color:#b48ead;">com.bmuschko.gradle.docker.DockerSpringBootApplicationPlugin
-
+<pre data-lang="groovy" style="background-color:#2b303b;color:#c0c5ce;" class="language-groovy "><code class="language-groovy" data-lang="groovy"><span>buildscript {
+</span><span>    repositories {
+</span><span>
+</span><span>        mavenCentral()
+</span><span>        gradlePluginPortal()
+</span><span>    }
+</span><span>    dependencies {
+</span><span>        classpath &#39;</span><span style="color:#a3be8c;">com.bmuschko:gradle-docker-plugin:4.0.1</span><span>&#39;
+</span><span>    }
+</span><span>}
+</span><span>
+</span><span>apply </span><span style="color:#d08770;">plugin</span><span>: &#39;</span><span style="color:#a3be8c;">java</span><span>&#39;
+</span><span>apply </span><span style="color:#d08770;">plugin</span><span>: &#39;</span><span style="color:#a3be8c;">org.springframework.boot</span><span>&#39;
+</span><span>apply </span><span style="color:#d08770;">plugin</span><span>: </span><span style="color:#b48ead;">DockerRemoteApiPlugin
+</span><span>apply </span><span style="color:#d08770;">plugin</span><span>: </span><span style="color:#b48ead;">com.bmuschko.gradle.docker.DockerSpringBootApplicationPlugin
+</span><span>
 </span></code></pre>
 <p>都是一些基础配置。</p>
-<pre style="background-color:#2b303b;">
-<code class="language-groovy" data-lang="groovy"><span style="color:#c0c5ce;">
-</span><span style="color:#b48ead;">def</span><span style="color:#c0c5ce;"> projectname = &quot;</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">project.getName()</span><span style="color:#ab7967;">}</span><span style="color:#c0c5ce;">&quot;
-</span><span style="color:#b48ead;">def</span><span style="color:#c0c5ce;"> dockerVer = getGitVersion()
-</span><span style="color:#b48ead;">def</span><span style="color:#c0c5ce;"> port = </span><span style="color:#d08770;">8990
-
+<pre data-lang="groovy" style="background-color:#2b303b;color:#c0c5ce;" class="language-groovy "><code class="language-groovy" data-lang="groovy"><span>
+</span><span style="color:#b48ead;">def</span><span> projectname = &quot;</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">project.getName()</span><span style="color:#ab7967;">}</span><span>&quot;
+</span><span style="color:#b48ead;">def</span><span> dockerVer = getGitVersion()
+</span><span style="color:#b48ead;">def</span><span> port = </span><span style="color:#d08770;">8990
+</span><span>
 </span></code></pre>
 <p>这里定义一些全局变量使用。port可以根据实际情况定义。其中<code>getGitVersion()</code>的定义：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-groovy" data-lang="groovy"><span style="color:#b48ead;">import java.text.SimpleDateFormat
-def </span><span style="color:#c0c5ce;">getGitVersion() {
-    </span><span style="color:#b48ead;">def</span><span style="color:#c0c5ce;"> logTime = &#39;</span><span style="color:#a3be8c;">git log</span><span style="color:#c0c5ce;">&#39;.execute() | &#39;</span><span style="color:#a3be8c;">grep Date:</span><span style="color:#c0c5ce;">&#39;.execute() | &#39;</span><span style="color:#a3be8c;">head -n 1</span><span style="color:#c0c5ce;">&#39;.execute()
-    logTime.waitFor()
-    </span><span style="color:#b48ead;">Date</span><span style="color:#c0c5ce;"> date = </span><span style="color:#b48ead;">new Date</span><span style="color:#c0c5ce;">(logTime.text.replace(&quot;</span><span style="color:#a3be8c;">Date:</span><span style="color:#c0c5ce;">&quot;, &quot;&quot;).trim())
-    </span><span style="color:#b48ead;">String</span><span style="color:#c0c5ce;"> pushTime = </span><span style="color:#b48ead;">new SimpleDateFormat</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">yyyyMMddHHmmss</span><span style="color:#c0c5ce;">&quot;).format(date)
-    </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> pushTime + &quot;</span><span style="color:#a3be8c;">.</span><span style="color:#c0c5ce;">&quot; + (&#39;</span><span style="color:#a3be8c;">git rev-parse --short HEAD</span><span style="color:#c0c5ce;">&#39;.execute().text.trim())
-}
-
+<pre data-lang="groovy" style="background-color:#2b303b;color:#c0c5ce;" class="language-groovy "><code class="language-groovy" data-lang="groovy"><span style="color:#b48ead;">import java.text.SimpleDateFormat
+</span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">getGitVersion</span><span>() {
+</span><span>    </span><span style="color:#b48ead;">def</span><span> logTime = &#39;</span><span style="color:#a3be8c;">git log</span><span>&#39;.execute() | &#39;</span><span style="color:#a3be8c;">grep Date:</span><span>&#39;.execute() | &#39;</span><span style="color:#a3be8c;">head -n 1</span><span>&#39;.execute()
+</span><span>    logTime.waitFor()
+</span><span>    </span><span style="color:#b48ead;">Date</span><span> date = </span><span style="color:#b48ead;">new Date</span><span>(logTime.text.replace(&quot;</span><span style="color:#a3be8c;">Date:</span><span>&quot;, &quot;&quot;).trim())
+</span><span>    </span><span style="color:#b48ead;">String</span><span> pushTime = </span><span style="color:#b48ead;">new SimpleDateFormat</span><span>(&quot;</span><span style="color:#a3be8c;">yyyyMMddHHmmss</span><span>&quot;).format(date)
+</span><span>    </span><span style="color:#b48ead;">return</span><span> pushTime + &quot;</span><span style="color:#a3be8c;">.</span><span>&quot; + (&#39;</span><span style="color:#a3be8c;">git rev-parse --short HEAD</span><span>&#39;.execute().text.trim())
+</span><span>}
+</span><span>
 </span></code></pre>
 <p>可以看到拼接了git仓库的最后一个commit 的提交时间和hash值。</p>
 <p>gradle-docker-plugin 预定义了一些task，我们只需要简单配置：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-groovy" data-lang="groovy"><span style="color:#c0c5ce;">docker { 
-    url = getDefaultDockerUrl()
-    registryCredentials {
-        url = &quot;</span><span style="color:#a3be8c;">registry.cn-hangzhou.aliyuncs.com</span><span style="color:#c0c5ce;">&quot;
-        username = &#39;</span><span style="color:#a3be8c;">yourRepoUsername</span><span style="color:#c0c5ce;">&#39;
-        password = &#39;</span><span style="color:#a3be8c;">yourRepopswd</span><span style="color:#c0c5ce;">&#39;
-    }
-    springBootApplication {
-        baseImage = &#39;</span><span style="color:#a3be8c;">openjdk:8-alpine</span><span style="color:#c0c5ce;">&#39;
-        ports = [port, port]
-    }
-
-}
+<pre data-lang="groovy" style="background-color:#2b303b;color:#c0c5ce;" class="language-groovy "><code class="language-groovy" data-lang="groovy"><span>docker { 
+</span><span>    url = getDefaultDockerUrl()
+</span><span>    registryCredentials {
+</span><span>        url = &quot;</span><span style="color:#a3be8c;">registry.cn-hangzhou.aliyuncs.com</span><span>&quot;
+</span><span>        username = &#39;</span><span style="color:#a3be8c;">yourRepoUsername</span><span>&#39;
+</span><span>        password = &#39;</span><span style="color:#a3be8c;">yourRepopswd</span><span>&#39;
+</span><span>    }
+</span><span>    springBootApplication {
+</span><span>        baseImage = &#39;</span><span style="color:#a3be8c;">openjdk:8-alpine</span><span>&#39;
+</span><span>        ports = [port, port]
+</span><span>    }
+</span><span>
+</span><span>}
 </span></code></pre>
 <p><code>getDefaultDockerUrl</code> 是本地docker 的url，plugin对windows、linux、mac都已经有了相应实现。</p>
 <p><code>registryCredentials</code> 是docker Hub的认证信息配置。 阿里云的dockerHub配置如上。</p>
@@ -155,64 +160,59 @@ def </span><span style="color:#c0c5ce;">getGitVersion() {
 </ol>
 <p>接下来我们需要重写其中的 createDockerFile，buildImage，PushImage Task 来解决这两个问题。</p>
 <p>其中 createDockerFile：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-groovy" data-lang="groovy"><span style="color:#c0c5ce;">
-task createDockerfile(</span><span style="color:#d08770;">type</span><span style="color:#c0c5ce;">: </span><span style="color:#b48ead;">Dockerfile</span><span style="color:#c0c5ce;">) {
-    dependsOn dockerSyncArchive
-    from(docker.springBootApplication.baseImage.get())
-    copyFile(bootWar.archiveName, &quot;</span><span style="color:#a3be8c;">/app/</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">bootWar.archiveName</span><span style="color:#ab7967;">}</span><span style="color:#c0c5ce;">&quot;.toString())
-    </span><span style="color:#65737e;">//https://wiki.alpinelinux.org/wiki/Setting_the_timezone
-    //https://github.com/gliderlabs/docker-alpine/issues/428
-    </span><span style="color:#c0c5ce;">runCommand(&#39;</span><span style="color:#a3be8c;"> echo </span><span style="color:#96b5b4;">\&#39;</span><span style="color:#a3be8c;">http://mirrors.ustc.edu.cn/alpine/v3.8/main</span><span style="color:#96b5b4;">\&#39;</span><span style="color:#a3be8c;"> &gt; /etc/apk/repositories  </span><span style="color:#c0c5ce;">&#39; +
-            &#39;</span><span style="color:#a3be8c;"> &amp;&amp; echo </span><span style="color:#96b5b4;">\&#39;</span><span style="color:#a3be8c;">http://mirrors.ustc.edu.cn/alpine/v3.8/community</span><span style="color:#96b5b4;">\&#39;</span><span style="color:#a3be8c;"> &gt;&gt;/etc/apk/repositories  </span><span style="color:#c0c5ce;">&#39; +
-            &#39;</span><span style="color:#a3be8c;"> &amp;&amp; apk update &amp;&amp; apk add tzdata  </span><span style="color:#c0c5ce;">&#39; +
-            &#39;</span><span style="color:#a3be8c;"> &amp;&amp; ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime  </span><span style="color:#c0c5ce;">&#39; +
-            &#39;</span><span style="color:#a3be8c;"> &amp;&amp; echo &quot;Asia/Shanghai&quot; &gt; /etc/timezone  </span><span style="color:#c0c5ce;">&#39; +
-            &#39;</span><span style="color:#a3be8c;"> &amp;&amp; date </span><span style="color:#c0c5ce;">&#39;+
-            &#39;</span><span style="color:#a3be8c;"> &amp;&amp; rm -rf /var/cache/apk/* </span><span style="color:#c0c5ce;">&#39; +
-            &#39;</span><span style="color:#a3be8c;"> &amp;&amp; rm -rf /usr/local/share/.cache</span><span style="color:#c0c5ce;">&#39;)
-    entryPoint(&quot;</span><span style="color:#a3be8c;">java</span><span style="color:#c0c5ce;">&quot;)
-    defaultCommand(&quot;</span><span style="color:#a3be8c;">-jar</span><span style="color:#c0c5ce;">&quot;, &quot;</span><span style="color:#a3be8c;">/app/</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">bootWar.archiveName</span><span style="color:#ab7967;">}</span><span style="color:#c0c5ce;">&quot;.toString())
-    exposePort(docker.springBootApplication.ports)
-
-
-}
+<pre data-lang="groovy" style="background-color:#2b303b;color:#c0c5ce;" class="language-groovy "><code class="language-groovy" data-lang="groovy"><span>
+</span><span>task createDockerfile(</span><span style="color:#d08770;">type</span><span>: </span><span style="color:#b48ead;">Dockerfile</span><span>) {
+</span><span>    dependsOn dockerSyncArchive
+</span><span>    from(docker.springBootApplication.baseImage.get())
+</span><span>    copyFile(bootWar.archiveName, &quot;</span><span style="color:#a3be8c;">/app/</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">bootWar.archiveName</span><span style="color:#ab7967;">}</span><span>&quot;.toString())
+</span><span>    </span><span style="color:#65737e;">//https://wiki.alpinelinux.org/wiki/Setting_the_timezone
+</span><span>    </span><span style="color:#65737e;">//https://github.com/gliderlabs/docker-alpine/issues/428
+</span><span>    runCommand(&#39;</span><span style="color:#a3be8c;"> echo </span><span style="color:#96b5b4;">\&#39;</span><span style="color:#a3be8c;">http://mirrors.ustc.edu.cn/alpine/v3.8/main</span><span style="color:#96b5b4;">\&#39;</span><span style="color:#a3be8c;"> &gt; /etc/apk/repositories  </span><span>&#39; +
+</span><span>            &#39;</span><span style="color:#a3be8c;"> &amp;&amp; echo </span><span style="color:#96b5b4;">\&#39;</span><span style="color:#a3be8c;">http://mirrors.ustc.edu.cn/alpine/v3.8/community</span><span style="color:#96b5b4;">\&#39;</span><span style="color:#a3be8c;"> &gt;&gt;/etc/apk/repositories  </span><span>&#39; +
+</span><span>            &#39;</span><span style="color:#a3be8c;"> &amp;&amp; apk update &amp;&amp; apk add tzdata  </span><span>&#39; +
+</span><span>            &#39;</span><span style="color:#a3be8c;"> &amp;&amp; ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime  </span><span>&#39; +
+</span><span>            &#39;</span><span style="color:#a3be8c;"> &amp;&amp; echo &quot;Asia/Shanghai&quot; &gt; /etc/timezone  </span><span>&#39; +
+</span><span>            &#39;</span><span style="color:#a3be8c;"> &amp;&amp; date </span><span>&#39;+
+</span><span>            &#39;</span><span style="color:#a3be8c;"> &amp;&amp; rm -rf /var/cache/apk/* </span><span>&#39; +
+</span><span>            &#39;</span><span style="color:#a3be8c;"> &amp;&amp; rm -rf /usr/local/share/.cache</span><span>&#39;)
+</span><span>    entryPoint(&quot;</span><span style="color:#a3be8c;">java</span><span>&quot;)
+</span><span>    defaultCommand(&quot;</span><span style="color:#a3be8c;">-jar</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">/app/</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">bootWar.archiveName</span><span style="color:#ab7967;">}</span><span>&quot;.toString())
+</span><span>    exposePort(docker.springBootApplication.ports)
+</span><span>
+</span><span>
+</span><span>}
 </span></code></pre>
 <p>上面主要是创建Dockerfile，编写指令来配置合适的<code>timezone</code>。使用中科大的apk安装源（mirrors.ustc.edu.cn）更快。。。</p>
-<pre style="background-color:#2b303b;">
-<code class="language-groovy" data-lang="groovy"><span style="color:#c0c5ce;">task buildImage(</span><span style="color:#d08770;">type</span><span style="color:#c0c5ce;">: </span><span style="color:#b48ead;">DockerBuildImage</span><span style="color:#c0c5ce;">) {
-    dependsOn createDockerfile
-    inputDir = createDockerfile.destFile.get().asFile.parentFile
-    tag = &quot;</span><span style="color:#a3be8c;">zongwu233/</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">projectname</span><span style="color:#ab7967;">}</span><span style="color:#a3be8c;">:</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">dockerVer</span><span style="color:#ab7967;">}</span><span style="color:#c0c5ce;">&quot;.toLowerCase()
-}
-
+<pre data-lang="groovy" style="background-color:#2b303b;color:#c0c5ce;" class="language-groovy "><code class="language-groovy" data-lang="groovy"><span>task buildImage(</span><span style="color:#d08770;">type</span><span>: </span><span style="color:#b48ead;">DockerBuildImage</span><span>) {
+</span><span>    dependsOn createDockerfile
+</span><span>    inputDir = createDockerfile.destFile.get().asFile.parentFile
+</span><span>    tag = &quot;</span><span style="color:#a3be8c;">zongwu233/</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">projectname</span><span style="color:#ab7967;">}</span><span style="color:#a3be8c;">:</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">dockerVer</span><span style="color:#ab7967;">}</span><span>&quot;.toLowerCase()
+</span><span>}
+</span><span>
 </span><span style="color:#65737e;">//https://github.com/bmuschko/gradle-docker-plugin/issues/209
-</span><span style="color:#c0c5ce;">task dockerTag(</span><span style="color:#d08770;">type</span><span style="color:#c0c5ce;">: </span><span style="color:#b48ead;">com.bmuschko.gradle.docker.tasks.image.DockerTagImage</span><span style="color:#c0c5ce;">) {
-    dependsOn buildImage
-    imageId = &quot;</span><span style="color:#a3be8c;">zongwu233/</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">projectname</span><span style="color:#ab7967;">}</span><span style="color:#a3be8c;">:</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">dockerVer</span><span style="color:#ab7967;">}</span><span style="color:#c0c5ce;">&quot;.toLowerCase()
-    tag = &quot;</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">dockerVer</span><span style="color:#ab7967;">}</span><span style="color:#c0c5ce;">&quot;.toLowerCase()
-    repository = &quot;</span><span style="color:#a3be8c;">registry.cn-hangzhou.aliyuncs.com/zongwu233/</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">projectname</span><span style="color:#ab7967;">}</span><span style="color:#c0c5ce;">&quot;.toLowerCase()
-}
+</span><span>task dockerTag(</span><span style="color:#d08770;">type</span><span>: </span><span style="color:#b48ead;">com.bmuschko.gradle.docker.tasks.image.DockerTagImage</span><span>) {
+</span><span>    dependsOn buildImage
+</span><span>    imageId = &quot;</span><span style="color:#a3be8c;">zongwu233/</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">projectname</span><span style="color:#ab7967;">}</span><span style="color:#a3be8c;">:</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">dockerVer</span><span style="color:#ab7967;">}</span><span>&quot;.toLowerCase()
+</span><span>    tag = &quot;</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">dockerVer</span><span style="color:#ab7967;">}</span><span>&quot;.toLowerCase()
+</span><span>    repository = &quot;</span><span style="color:#a3be8c;">registry.cn-hangzhou.aliyuncs.com/zongwu233/</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">projectname</span><span style="color:#ab7967;">}</span><span>&quot;.toLowerCase()
+</span><span>}
 </span></code></pre>
 <p>解决私有DockerHub 的tag问题。更详细的讨论见<code>https://github.com/bmuschko/gradle-docker-plugin/issues/209</code></p>
 <p>其中<code>zongwu233</code> 是在阿里云DockerHub中的命名空间，<code>${projectname}</code> 是仓库名称。</p>
 <p>最后是push task：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-groovy" data-lang="groovy"><span style="color:#c0c5ce;">task pushImage(</span><span style="color:#d08770;">type</span><span style="color:#c0c5ce;">: </span><span style="color:#b48ead;">DockerPushImage</span><span style="color:#c0c5ce;">) {
-    dependsOn dockerTag
-    imageName = &quot;</span><span style="color:#a3be8c;">registry.cn-hangzhou.aliyuncs.com/zongwu233/</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">projectname</span><span style="color:#ab7967;">}</span><span style="color:#c0c5ce;">&quot;.toLowerCase()
-}
+<pre data-lang="groovy" style="background-color:#2b303b;color:#c0c5ce;" class="language-groovy "><code class="language-groovy" data-lang="groovy"><span>task pushImage(</span><span style="color:#d08770;">type</span><span>: </span><span style="color:#b48ead;">DockerPushImage</span><span>) {
+</span><span>    dependsOn dockerTag
+</span><span>    imageName = &quot;</span><span style="color:#a3be8c;">registry.cn-hangzhou.aliyuncs.com/zongwu233/</span><span style="color:#ab7967;">${</span><span style="color:#a3be8c;">projectname</span><span style="color:#ab7967;">}</span><span>&quot;.toLowerCase()
+</span><span>}
 </span></code></pre>
 <p>另外要在createDockerFile，buildImage 等task之前 加上import 声明：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-groovy" data-lang="groovy"><span style="color:#b48ead;">import com.bmuschko.gradle.docker.DockerRemoteApiPlugin
-import</span><span style="color:#c0c5ce;"> com.bmuschko.gradle.docker.tasks.image.*
+<pre data-lang="groovy" style="background-color:#2b303b;color:#c0c5ce;" class="language-groovy "><code class="language-groovy" data-lang="groovy"><span style="color:#b48ead;">import com.bmuschko.gradle.docker.DockerRemoteApiPlugin
+</span><span style="color:#b48ead;">import com.bmuschko.gradle.docker.tasks.image.*
 </span><span style="color:#b48ead;">import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
-import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+</span><span style="color:#b48ead;">import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
 </span></code></pre>
 <p>这样，在控制台输入命令:</p>
-<pre style="background-color:#2b303b;">
-<code class="language-bash" data-lang="bash"><span style="color:#bf616a;">gradle</span><span style="color:#c0c5ce;"> pushImage
+<pre data-lang="bash" style="background-color:#2b303b;color:#c0c5ce;" class="language-bash "><code class="language-bash" data-lang="bash"><span style="color:#bf616a;">gradle</span><span> pushImage
 </span></code></pre>
 <p>即可完成应用的docker镜像构建并且push到阿里云仓库。</p>
 

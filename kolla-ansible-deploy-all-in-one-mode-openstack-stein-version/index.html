@@ -9,7 +9,7 @@
         <title>kolla-ansible 部署 all-in-one 模式 OpenStack stein版</title>
         <meta name="description" content="">
 
-        <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
+        <link rel="stylesheet" href="https://blog.zongwu233.com/main.css">
 
         
         <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
@@ -27,6 +27,16 @@
           gtag('js', new Date());
 
           gtag('config', 'UA-68155231-1');
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZF40590PZW"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+            gtag('config', 'G-ZF40590PZW');
         </script>
         
     </head>
@@ -75,184 +85,169 @@
 <h3 id="xi-tong-huan-jing-pei-zhi">系统环境配置</h3>
 <p>系统为 centOS 7.8  python 2.7.5</p>
 <p>关闭防火墙/NetworkManager/SElinux</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">systemctl stop NetworkManager firewalld
-
-systemctl disable NetworkManager firewalld
-
-sed -i &quot;s/SELINUX=enforcing/SELINUX=disabled/&quot; /etc/selinux/config
-
-setenforce 0
-
-</span></code></pre><h3 id="ying-pan-de-kuai-cun-chu-pei-zhi">硬盘的块存储配置</h3>
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>systemctl stop NetworkManager firewalld
+</span><span>
+</span><span>systemctl disable NetworkManager firewalld
+</span><span>
+</span><span>sed -i &quot;s/SELINUX=enforcing/SELINUX=disabled/&quot; /etc/selinux/config
+</span><span>
+</span><span>setenforce 0
+</span><span>
+</span></code></pre>
+<h3 id="ying-pan-de-kuai-cun-chu-pei-zhi">硬盘的块存储配置</h3>
 <p>这台机器的硬盘主要挂载在 /home 下</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">cd /home
-truncate -s 2000G disk.img
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>cd /home
+</span><span>truncate -s 2000G disk.img
 </span></code></pre>
 <p>创建了一个大小为2T的文件。采用下面这种方式创建大文件的速度太慢：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">dd if=/dev/zero of=./disk.img count=4096 bs=512MB 
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>dd if=/dev/zero of=./disk.img count=4096 bs=512MB 
 </span></code></pre>
 <p>创建文件之后，将磁盘文件虚拟成块设备</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">losetup -f
-
-losetup /dev/loop0 disk.img
-</span></code></pre><pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">#将物理磁盘初始化为物理卷PV
-pvcreate /dev/loop0
-#创建卷组 cinder-volumes，将PV加入到VG中
-vgcreate cinder-volumes /dev/loop0
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>losetup -f
+</span><span>
+</span><span>losetup /dev/loop0 disk.img
+</span></code></pre>
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>#将物理磁盘初始化为物理卷PV
+</span><span>pvcreate /dev/loop0
+</span><span>#创建卷组 cinder-volumes，将PV加入到VG中
+</span><span>vgcreate cinder-volumes /dev/loop0
 </span></code></pre>
 <p>（注意生产环境要单独配置真正的硬盘到VG，不要采用上述挂载方式，否则机器重启导致虚拟机文件找不到）</p>
 <h2 id="an-zhuang">安装</h2>
 <h3 id="an-zhuang-docker">安装 docker</h3>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">curl -sSL https://get.docker.io | bash
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>curl -sSL https://get.docker.io | bash
 </span></code></pre>
 <p>配置共享</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">vim /etc/systemd/system/docker.service.d/kolla.conf
-
-[Service]
-MountFlags=shared　　
-ExecStart=
-ExecStart=/usr/bin/dockerd --log-opt max-file=5 --log-opt max-size=50m
-
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>vim /etc/systemd/system/docker.service.d/kolla.conf
+</span><span>
+</span><span>[Service]
+</span><span>MountFlags=shared　　
+</span><span>ExecStart=
+</span><span>ExecStart=/usr/bin/dockerd --log-opt max-file=5 --log-opt max-size=50m
+</span><span>
 </span></code></pre>
 <p>配置加速</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">sudo mkdir -p /etc/docker
-sudo tee /etc/docker/daemon.json &lt;&lt;-&#39;EOF&#39;
-{
-  &quot;registry-mirrors&quot;: [&quot;https://******.mirror.aliyuncs.com&quot;]
-}
-EOF
-
-sudo systemctl daemon-reload
-sudo systemctl restart docker
-
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>sudo mkdir -p /etc/docker
+</span><span>sudo tee /etc/docker/daemon.json &lt;&lt;-&#39;EOF&#39;
+</span><span>{
+</span><span>  &quot;registry-mirrors&quot;: [&quot;https://******.mirror.aliyuncs.com&quot;]
+</span><span>}
+</span><span>EOF
+</span><span>
+</span><span>sudo systemctl daemon-reload
+</span><span>sudo systemctl restart docker
+</span><span>
 </span></code></pre>
 <p><code>registry-mirrors</code> 地址可以在阿里云镜像管理自行申请。</p>
 <h3 id="an-zhuang-qi-ta-yi-lai">安装其他依赖</h3>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">yum install git
-yum install -y epel-release  
-yum install -y python-pip 
-mkdir .pip
-# 更改pip软件包源
-tee /root/.pip/pip.conf &lt;&lt; &#39;EOF&#39;
-[global]
-index-url = https://pypi.tuna.tsinghua.edu.cn/simple
-EOF
-pip install -U pip
-</span></code></pre><h3 id="an-zhuang-ansible">安装ansible</h3>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">pip install ansible
-</span></code></pre><h3 id="an-zhuang-kolla-ansible">安装 kolla-ansible</h3>
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>yum install git
+</span><span>yum install -y epel-release  
+</span><span>yum install -y python-pip 
+</span><span>mkdir .pip
+</span><span># 更改pip软件包源
+</span><span>tee /root/.pip/pip.conf &lt;&lt; &#39;EOF&#39;
+</span><span>[global]
+</span><span>index-url = https://pypi.tuna.tsinghua.edu.cn/simple
+</span><span>EOF
+</span><span>pip install -U pip
+</span></code></pre>
+<h3 id="an-zhuang-ansible">安装ansible</h3>
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>pip install ansible
+</span></code></pre>
+<h3 id="an-zhuang-kolla-ansible">安装 kolla-ansible</h3>
 <p><strong>这里要特别注意，不要按照官方文档说明，而是按照下面的操作，否则后面部署的时候，会出现各种错误导致部署失败</strong></p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">git clone https://github.com/openstack/kolla -b stable/stein
-git clone https://github.com/openstack/kolla-ansible -b stable/stein
-pip install -r kolla/requirements.txt
-pip install -r kolla-ansible/requirements.txt
-cd kolla-ansible &amp;&amp;  python setup.py install
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>git clone https://github.com/openstack/kolla -b stable/stein
+</span><span>git clone https://github.com/openstack/kolla-ansible -b stable/stein
+</span><span>pip install -r kolla/requirements.txt
+</span><span>pip install -r kolla-ansible/requirements.txt
+</span><span>cd kolla-ansible &amp;&amp;  python setup.py install
 </span></code></pre>
 <p>这里是采用指定源码分支，安装 kolla-ansible。</p>
 <p>当前目录是 kolla-ansible ，执行</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">mkdir /etc/kolla &amp;&amp; cp etc/kolla/* /etc/kolla
-cp ansible/inventory/* ~
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>mkdir /etc/kolla &amp;&amp; cp etc/kolla/* /etc/kolla
+</span><span>cp ansible/inventory/* ~
 </span></code></pre>
 <p>生成OpenStack各服务的密码文件</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">kolla-genpwd
-#修改openstack管理后台的登陆密码
-vim /etc/kolla/passwords.yml
-keystone_admin_password 123456
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>kolla-genpwd
+</span><span>#修改openstack管理后台的登陆密码
+</span><span>vim /etc/kolla/passwords.yml
+</span><span>keystone_admin_password 123456
 </span></code></pre>
 <p>编辑 kolla的配置文件</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">vim /etc/kolla/globals.yml
-</span></code></pre><pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">
-kolla_base_distro: &quot;centos&quot;
-
-#官方建议采用 source 更稳定而不是binary
-kolla_install_type: &quot;source&quot;
-# 版本
-openstack_release: &quot;stein&quot;
-</span></code></pre><pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;"># Kolla options
-
-#这里的ip 是 network_interface 网卡的ip 如果不配置，导致数据库（高可用模式）无法正常启动
-kolla_internal_vip_address: &quot;10.0.0.104&quot;
-
-#单机模式，关闭高可用
-enable_haproxy: &quot;no&quot;
-
-# Neutron - Networking Options
-network_interface: &quot;enp3s0&quot;
-neutron_external_interface: &quot;enp4s0&quot;
-
-# TLS options
-kolla_enable_tls_internal: &quot;no&quot;
-kolla_enable_tls_external: &quot;no&quot;
-
-# 使用cinder存储
-enable_cinder: &quot;yes&quot;
-enable_glance: &quot;yes&quot;
-enable_magnum: &quot;yes&quot;
-enable_heat: &quot;yes&quot;
-
-# 如果使用lvm，需先创建cinder-volumes的卷组，上面已经创建过
-enable_cinder_backend_lvm: &quot;yes&quot;
-# 默认是kvm ，但是实际部署发现不生效，系统自动采用了 qemu
-nova_compute_virt_type: &quot;kvm&quot;
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>vim /etc/kolla/globals.yml
+</span></code></pre>
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>
+</span><span>kolla_base_distro: &quot;centos&quot;
+</span><span>
+</span><span>#官方建议采用 source 更稳定而不是binary
+</span><span>kolla_install_type: &quot;source&quot;
+</span><span># 版本
+</span><span>openstack_release: &quot;stein&quot;
+</span></code></pre>
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span># Kolla options
+</span><span>
+</span><span>#这里的ip 是 network_interface 网卡的ip 如果不配置，导致数据库（高可用模式）无法正常启动
+</span><span>kolla_internal_vip_address: &quot;10.0.0.104&quot;
+</span><span>
+</span><span>#单机模式，关闭高可用
+</span><span>enable_haproxy: &quot;no&quot;
+</span><span>
+</span><span># Neutron - Networking Options
+</span><span>network_interface: &quot;enp3s0&quot;
+</span><span>neutron_external_interface: &quot;enp4s0&quot;
+</span><span>
+</span><span># TLS options
+</span><span>kolla_enable_tls_internal: &quot;no&quot;
+</span><span>kolla_enable_tls_external: &quot;no&quot;
+</span><span>
+</span><span># 使用cinder存储
+</span><span>enable_cinder: &quot;yes&quot;
+</span><span>enable_glance: &quot;yes&quot;
+</span><span>enable_magnum: &quot;yes&quot;
+</span><span>enable_heat: &quot;yes&quot;
+</span><span>
+</span><span># 如果使用lvm，需先创建cinder-volumes的卷组，上面已经创建过
+</span><span>enable_cinder_backend_lvm: &quot;yes&quot;
+</span><span># 默认是kvm ，但是实际部署发现不生效，系统自动采用了 qemu
+</span><span>nova_compute_virt_type: &quot;kvm&quot;
 </span></code></pre>
 <p>配置修改完成，可以拉取所有镜像，当前工作目录是 <code>~</code></p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">#提前拉取依赖的镜像
-kolla-ansible -i ./all-in-one pull
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>#提前拉取依赖的镜像
+</span><span>kolla-ansible -i ./all-in-one pull
 </span></code></pre>
 <p>这个过程会很久，看网络情况。</p>
 <h2 id="bu-shu">部署</h2>
 <p>执行openstack部署需要的引导服务、部署前检查</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;"># 引导服务
-kolla-ansible -i ./all-in-one bootstrap-servers 
-#安装前的检查
-kolla-ansible -i ./all-in-one prechecks
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span># 引导服务
+</span><span>kolla-ansible -i ./all-in-one bootstrap-servers 
+</span><span>#安装前的检查
+</span><span>kolla-ansible -i ./all-in-one prechecks
 </span></code></pre>
 <p>结果都ok，可以进行部署</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">kolla-ansible -i ./all-in-one deploy
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>kolla-ansible -i ./all-in-one deploy
 </span></code></pre>
 <p>这一步也会很久。部署完成之后，</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">kolla-ansible -i ./all-in-one  post-deploy
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>kolla-ansible -i ./all-in-one  post-deploy
 </span></code></pre>
 <p>这一步会生成 <code>/etc/kolla/admin-openrc.sh</code> 文件。</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">cat /etc/kolla/admin-openrc.sh　
-
-export OS_PROJECT_DOMAIN_NAME=Default
-export OS_USER_DOMAIN_NAME=Default
-export OS_PROJECT_NAME=admin
-export OS_TENANT_NAME=admin
-export OS_USERNAME=admin
-export OS_PASSWORD=123456
-export OS_AUTH_URL=http://10.0.0.104:35357/v3
-export OS_INTERFACE=internal
-export OS_IDENTITY_API_VERSION=3
-export OS_REGION_NAME=RegionOne
-export OS_AUTH_PLUGIN=password
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>cat /etc/kolla/admin-openrc.sh　
+</span><span>
+</span><span>export OS_PROJECT_DOMAIN_NAME=Default
+</span><span>export OS_USER_DOMAIN_NAME=Default
+</span><span>export OS_PROJECT_NAME=admin
+</span><span>export OS_TENANT_NAME=admin
+</span><span>export OS_USERNAME=admin
+</span><span>export OS_PASSWORD=123456
+</span><span>export OS_AUTH_URL=http://10.0.0.104:35357/v3
+</span><span>export OS_INTERFACE=internal
+</span><span>export OS_IDENTITY_API_VERSION=3
+</span><span>export OS_REGION_NAME=RegionOne
+</span><span>export OS_AUTH_PLUGIN=password
 </span></code></pre>
 <p>安装 openstackclient ，可以在控制台执行openstack命令</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">pip install python-openstackclient
-</span></code></pre><h2 id="guan-li">管理</h2>
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>pip install python-openstackclient
+</span></code></pre>
+<h2 id="guan-li">管理</h2>
 <p>在浏览器打开 http://10.0.0.104 输入 admin 账号密码即可进入。</p>
 
     </div>

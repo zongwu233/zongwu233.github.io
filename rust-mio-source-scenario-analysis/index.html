@@ -9,7 +9,7 @@
         <title>Rust mio库源码情景分析</title>
         <meta name="description" content="">
 
-        <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
+        <link rel="stylesheet" href="https://blog.zongwu233.com/main.css">
 
         
         <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
@@ -27,6 +27,16 @@
           gtag('js', new Date());
 
           gtag('config', 'UA-68155231-1');
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZF40590PZW"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+            gtag('config', 'G-ZF40590PZW');
         </script>
         
     </head>
@@ -73,564 +83,536 @@
 </blockquote>
 <p>mio目前已经发布了v0.6.19版本，这次分析代码版本选择 <code>master</code>分支，<code>commit id  </code> <code>14f37f283576040c8763f45de6c2b2bbcb82436d</code></p>
 <p>我们从官方自带的example进行源码跟踪分析。</p>
-<span id="continue-reading"></span><pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">use </span><span style="color:#c0c5ce;">std::collections::HashMap;
-</span><span style="color:#b48ead;">use </span><span style="color:#c0c5ce;">std::io::{</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, Read, Write};
-</span><span style="color:#b48ead;">use </span><span style="color:#c0c5ce;">std::str::from_utf8;
-
-</span><span style="color:#b48ead;">use </span><span style="color:#c0c5ce;">mio::event::Event;
-</span><span style="color:#b48ead;">use </span><span style="color:#c0c5ce;">mio::net::{TcpListener, TcpStream};
-</span><span style="color:#b48ead;">use </span><span style="color:#c0c5ce;">mio::{Events, Interests, Poll, Token};
-
+<span id="continue-reading"></span><pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">use </span><span>std::collections::HashMap;
+</span><span style="color:#b48ead;">use </span><span>std::io::{</span><span style="color:#bf616a;">self</span><span>, Read, Write};
+</span><span style="color:#b48ead;">use </span><span>std::str::from_utf8;
+</span><span>
+</span><span style="color:#b48ead;">use </span><span>mio::event::Event;
+</span><span style="color:#b48ead;">use </span><span>mio::net::{TcpListener, TcpStream};
+</span><span style="color:#b48ead;">use </span><span>mio::{Events, Interests, Poll, Token};
+</span><span>
 </span><span style="color:#65737e;">// Setup some tokens to allow us to identify which event is for which socket.
-</span><span style="color:#b48ead;">const </span><span style="color:#d08770;">SERVER</span><span style="color:#c0c5ce;">: Token = Token(</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">);
-
+</span><span style="color:#b48ead;">const </span><span style="color:#d08770;">SERVER</span><span>: Token = Token(</span><span style="color:#d08770;">0</span><span>);
+</span><span>
 </span><span style="color:#65737e;">// Some data we&#39;ll send over the connection.
-</span><span style="color:#b48ead;">const </span><span style="color:#d08770;">DATA</span><span style="color:#c0c5ce;">: &amp;[</span><span style="color:#b48ead;">u8</span><span style="color:#c0c5ce;">] = </span><span style="color:#b48ead;">b</span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">Hello world!</span><span style="color:#96b5b4;">\n</span><span style="color:#c0c5ce;">&quot;;
-
-</span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">() -&gt; io::Result&lt;()&gt; {
-    env_logger::init();
-
-    </span><span style="color:#65737e;">// Create a poll instance.
-    </span><span style="color:#b48ead;">let mut</span><span style="color:#c0c5ce;"> poll = Poll::new()?;
-    </span><span style="color:#65737e;">// Create storage for events.
-    </span><span style="color:#b48ead;">let mut</span><span style="color:#c0c5ce;"> events = Events::with_capacity(</span><span style="color:#d08770;">128</span><span style="color:#c0c5ce;">);
-
-    </span><span style="color:#65737e;">// Setup the TCP server socket.
-    </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> addr = &quot;</span><span style="color:#a3be8c;">127.0.0.1:13265</span><span style="color:#c0c5ce;">&quot;.</span><span style="color:#96b5b4;">parse</span><span style="color:#c0c5ce;">().</span><span style="color:#96b5b4;">unwrap</span><span style="color:#c0c5ce;">();
-    </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> server = TcpListener::bind(addr)?;
-
-    </span><span style="color:#65737e;">// Register the server with poll we can receive events for it.
-</span><span style="color:#c0c5ce;">    poll.</span><span style="color:#96b5b4;">registry</span><span style="color:#c0c5ce;">()
-        .</span><span style="color:#96b5b4;">register</span><span style="color:#c0c5ce;">(&amp;server, </span><span style="color:#d08770;">SERVER</span><span style="color:#c0c5ce;">, Interests::</span><span style="color:#d08770;">READABLE</span><span style="color:#c0c5ce;">)?;
-
-    </span><span style="color:#65737e;">// Map of `Token` -&gt; `TcpStream`.
-    </span><span style="color:#b48ead;">let mut</span><span style="color:#c0c5ce;"> connections = HashMap::new();
-    </span><span style="color:#65737e;">// Unique token for each incoming connection.
-    </span><span style="color:#b48ead;">let mut</span><span style="color:#c0c5ce;"> unique_token = Token(</span><span style="color:#d08770;">SERVER</span><span style="color:#c0c5ce;">.</span><span style="color:#d08770;">0 </span><span style="color:#c0c5ce;">+ </span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">);
-
-    println!(&quot;</span><span style="color:#a3be8c;">You can connect to the server using `nc`:</span><span style="color:#c0c5ce;">&quot;);
-    println!(&quot;</span><span style="color:#a3be8c;"> $ nc 127.0.0.1 13265</span><span style="color:#c0c5ce;">&quot;);
-    println!(&quot;</span><span style="color:#a3be8c;">You&#39;ll see our welcome message and anything you type we&#39;ll be printed here.</span><span style="color:#c0c5ce;">&quot;);
-
-    </span><span style="color:#b48ead;">loop </span><span style="color:#c0c5ce;">{
-        poll.</span><span style="color:#96b5b4;">poll</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> events, None)?;
-
-        </span><span style="color:#b48ead;">for</span><span style="color:#c0c5ce;"> event in events.</span><span style="color:#96b5b4;">iter</span><span style="color:#c0c5ce;">() {
-            </span><span style="color:#b48ead;">match</span><span style="color:#c0c5ce;"> event.</span><span style="color:#96b5b4;">token</span><span style="color:#c0c5ce;">() {
-                </span><span style="color:#d08770;">SERVER </span><span style="color:#c0c5ce;">=&gt; {
-                    </span><span style="color:#65737e;">// Received an event for the TCP server socket.
-                    // Accept an connection.
-                    </span><span style="color:#b48ead;">let </span><span style="color:#c0c5ce;">(connection, address) = server.</span><span style="color:#96b5b4;">accept</span><span style="color:#c0c5ce;">()?;
-                    println!(&quot;</span><span style="color:#a3be8c;">Accepted connection from: </span><span style="color:#d08770;">{}</span><span style="color:#c0c5ce;">&quot;, address);
-
-                    </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> token = </span><span style="color:#96b5b4;">next</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> unique_token);
-                    poll.</span><span style="color:#96b5b4;">registry</span><span style="color:#c0c5ce;">().</span><span style="color:#96b5b4;">register</span><span style="color:#c0c5ce;">(
-                        &amp;connection,
-                        token,
-                        Interests::</span><span style="color:#d08770;">READABLE</span><span style="color:#c0c5ce;">.</span><span style="color:#96b5b4;">add</span><span style="color:#c0c5ce;">(Interests::</span><span style="color:#d08770;">WRITABLE</span><span style="color:#c0c5ce;">),
-                    )?;
-
-                    connections.</span><span style="color:#96b5b4;">insert</span><span style="color:#c0c5ce;">(token, connection);
-                }
-                token =&gt; {
-                    </span><span style="color:#65737e;">// (maybe) received an event for a TCP connection.
-                    </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> done = </span><span style="color:#b48ead;">if let </span><span style="color:#c0c5ce;">Some(connection) = connections.</span><span style="color:#96b5b4;">get_mut</span><span style="color:#c0c5ce;">(&amp;token) {
-                        </span><span style="color:#96b5b4;">handle_connection_event</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> poll, connection, event)?
-                    } </span><span style="color:#b48ead;">else </span><span style="color:#c0c5ce;">{
-                        </span><span style="color:#65737e;">// Sporadic events happen.
-                        </span><span style="color:#d08770;">false
-                    </span><span style="color:#c0c5ce;">};
-                    </span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> done {
-                        connections.</span><span style="color:#96b5b4;">remove</span><span style="color:#c0c5ce;">(&amp;token);
-                    }
-                }
-            }
-        }
-    }
-}
-
-</span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">next</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">current</span><span style="color:#c0c5ce;">: &amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> Token) -&gt; Token {
-    </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> next = current.</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">;
-    current.</span><span style="color:#d08770;">0 </span><span style="color:#c0c5ce;">+= </span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">;
-    Token(next)
-}
-
+</span><span style="color:#b48ead;">const </span><span style="color:#d08770;">DATA</span><span>: &amp;[</span><span style="color:#b48ead;">u8</span><span>] = </span><span style="color:#b48ead;">b</span><span>&quot;</span><span style="color:#a3be8c;">Hello world!</span><span style="color:#96b5b4;">\n</span><span>&quot;;
+</span><span>
+</span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">main</span><span>() -&gt; io::Result&lt;()&gt; {
+</span><span>    env_logger::init();
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// Create a poll instance.
+</span><span>    </span><span style="color:#b48ead;">let mut</span><span> poll = Poll::new()?;
+</span><span>    </span><span style="color:#65737e;">// Create storage for events.
+</span><span>    </span><span style="color:#b48ead;">let mut</span><span> events = Events::with_capacity(</span><span style="color:#d08770;">128</span><span>);
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// Setup the TCP server socket.
+</span><span>    </span><span style="color:#b48ead;">let</span><span> addr = &quot;</span><span style="color:#a3be8c;">127.0.0.1:13265</span><span>&quot;.</span><span style="color:#96b5b4;">parse</span><span>().</span><span style="color:#96b5b4;">unwrap</span><span>();
+</span><span>    </span><span style="color:#b48ead;">let</span><span> server = TcpListener::bind(addr)?;
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// Register the server with poll we can receive events for it.
+</span><span>    poll.</span><span style="color:#96b5b4;">registry</span><span>()
+</span><span>        .</span><span style="color:#96b5b4;">register</span><span>(&amp;server, </span><span style="color:#d08770;">SERVER</span><span>, Interests::</span><span style="color:#d08770;">READABLE</span><span>)?;
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// Map of `Token` -&gt; `TcpStream`.
+</span><span>    </span><span style="color:#b48ead;">let mut</span><span> connections = HashMap::new();
+</span><span>    </span><span style="color:#65737e;">// Unique token for each incoming connection.
+</span><span>    </span><span style="color:#b48ead;">let mut</span><span> unique_token = Token(</span><span style="color:#d08770;">SERVER</span><span>.</span><span style="color:#d08770;">0 </span><span>+ </span><span style="color:#d08770;">1</span><span>);
+</span><span>
+</span><span>    println!(&quot;</span><span style="color:#a3be8c;">You can connect to the server using `nc`:</span><span>&quot;);
+</span><span>    println!(&quot;</span><span style="color:#a3be8c;"> $ nc 127.0.0.1 13265</span><span>&quot;);
+</span><span>    println!(&quot;</span><span style="color:#a3be8c;">You&#39;ll see our welcome message and anything you type we&#39;ll be printed here.</span><span>&quot;);
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">loop </span><span>{
+</span><span>        poll.</span><span style="color:#96b5b4;">poll</span><span>(&amp;</span><span style="color:#b48ead;">mut</span><span> events, None)?;
+</span><span>
+</span><span>        </span><span style="color:#b48ead;">for</span><span> event in events.</span><span style="color:#96b5b4;">iter</span><span>() {
+</span><span>            </span><span style="color:#b48ead;">match</span><span> event.</span><span style="color:#96b5b4;">token</span><span>() {
+</span><span>                </span><span style="color:#d08770;">SERVER </span><span>=&gt; {
+</span><span>                    </span><span style="color:#65737e;">// Received an event for the TCP server socket.
+</span><span>                    </span><span style="color:#65737e;">// Accept an connection.
+</span><span>                    </span><span style="color:#b48ead;">let </span><span>(connection, address) = server.</span><span style="color:#96b5b4;">accept</span><span>()?;
+</span><span>                    println!(&quot;</span><span style="color:#a3be8c;">Accepted connection from: </span><span style="color:#d08770;">{}</span><span>&quot;, address);
+</span><span>
+</span><span>                    </span><span style="color:#b48ead;">let</span><span> token = </span><span style="color:#96b5b4;">next</span><span>(&amp;</span><span style="color:#b48ead;">mut</span><span> unique_token);
+</span><span>                    poll.</span><span style="color:#96b5b4;">registry</span><span>().</span><span style="color:#96b5b4;">register</span><span>(
+</span><span>                        &amp;connection,
+</span><span>                        token,
+</span><span>                        Interests::</span><span style="color:#d08770;">READABLE</span><span>.</span><span style="color:#96b5b4;">add</span><span>(Interests::</span><span style="color:#d08770;">WRITABLE</span><span>),
+</span><span>                    )?;
+</span><span>
+</span><span>                    connections.</span><span style="color:#96b5b4;">insert</span><span>(token, connection);
+</span><span>                }
+</span><span>                token =&gt; {
+</span><span>                    </span><span style="color:#65737e;">// (maybe) received an event for a TCP connection.
+</span><span>                    </span><span style="color:#b48ead;">let</span><span> done = </span><span style="color:#b48ead;">if let </span><span>Some(connection) = connections.</span><span style="color:#96b5b4;">get_mut</span><span>(&amp;token) {
+</span><span>                        </span><span style="color:#96b5b4;">handle_connection_event</span><span>(&amp;</span><span style="color:#b48ead;">mut</span><span> poll, connection, event)?
+</span><span>                    } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>                        </span><span style="color:#65737e;">// Sporadic events happen.
+</span><span>                        </span><span style="color:#d08770;">false
+</span><span>                    };
+</span><span>                    </span><span style="color:#b48ead;">if</span><span> done {
+</span><span>                        connections.</span><span style="color:#96b5b4;">remove</span><span>(&amp;token);
+</span><span>                    }
+</span><span>                }
+</span><span>            }
+</span><span>        }
+</span><span>    }
+</span><span>}
+</span><span>
+</span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">next</span><span>(</span><span style="color:#bf616a;">current</span><span>: &amp;</span><span style="color:#b48ead;">mut</span><span> Token) -&gt; Token {
+</span><span>    </span><span style="color:#b48ead;">let</span><span> next = current.</span><span style="color:#d08770;">0</span><span>;
+</span><span>    current.</span><span style="color:#d08770;">0 </span><span>+= </span><span style="color:#d08770;">1</span><span>;
+</span><span>    Token(next)
+</span><span>}
+</span><span>
 </span><span style="color:#65737e;">/// Returns `true` if the connection is done.
-</span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">handle_connection_event</span><span style="color:#c0c5ce;">(
-    </span><span style="color:#bf616a;">poll</span><span style="color:#c0c5ce;">: &amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> Poll,
-    </span><span style="color:#bf616a;">connection</span><span style="color:#c0c5ce;">: &amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> TcpStream,
-    </span><span style="color:#bf616a;">event</span><span style="color:#c0c5ce;">: &amp;Event,
-) -&gt; io::Result&lt;</span><span style="color:#b48ead;">bool</span><span style="color:#c0c5ce;">&gt; {
-    </span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> event.</span><span style="color:#96b5b4;">is_writable</span><span style="color:#c0c5ce;">() {
-        </span><span style="color:#65737e;">// We can (maybe) write to the connection.
-        </span><span style="color:#b48ead;">match</span><span style="color:#c0c5ce;"> connection.</span><span style="color:#96b5b4;">write</span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">DATA</span><span style="color:#c0c5ce;">) {
-            </span><span style="color:#65737e;">// We want to write the entire `DATA` buffer in a single go. If we
-            // write less we&#39;ll return a short write error (same as
-            // `io::Write::write_all` does).
-            </span><span style="color:#c0c5ce;">Ok(n) </span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> n &lt; </span><span style="color:#d08770;">DATA</span><span style="color:#c0c5ce;">.</span><span style="color:#96b5b4;">len</span><span style="color:#c0c5ce;">() =&gt; </span><span style="color:#b48ead;">return </span><span style="color:#c0c5ce;">Err(io::ErrorKind::WriteZero.</span><span style="color:#96b5b4;">into</span><span style="color:#c0c5ce;">()),
-            Ok(_) =&gt; {
-                </span><span style="color:#65737e;">// After we&#39;ve written something we&#39;ll reregister the connection
-                // to only respond to readable events.
-</span><span style="color:#c0c5ce;">                poll.</span><span style="color:#96b5b4;">registry</span><span style="color:#c0c5ce;">()
-                    .</span><span style="color:#96b5b4;">reregister</span><span style="color:#c0c5ce;">(&amp;connection, event.</span><span style="color:#96b5b4;">token</span><span style="color:#c0c5ce;">(), Interests::</span><span style="color:#d08770;">READABLE</span><span style="color:#c0c5ce;">)?
-            }
-            </span><span style="color:#65737e;">// Would block &quot;errors&quot; are the OS&#39;s way of saying that the
-            // connection is not actually ready to perform this I/O operation.
-            </span><span style="color:#c0c5ce;">Err(</span><span style="color:#b48ead;">ref</span><span style="color:#c0c5ce;"> err) </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">would_block</span><span style="color:#c0c5ce;">(err) =&gt; {}
-            </span><span style="color:#65737e;">// Got interrupted (how rude!), we&#39;ll try again.
-            </span><span style="color:#c0c5ce;">Err(</span><span style="color:#b48ead;">ref</span><span style="color:#c0c5ce;"> err) </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">interrupted</span><span style="color:#c0c5ce;">(err) =&gt; {
-                </span><span style="color:#b48ead;">return </span><span style="color:#96b5b4;">handle_connection_event</span><span style="color:#c0c5ce;">(poll, connection, event)
-            }
-            </span><span style="color:#65737e;">// Other errors we&#39;ll consider fatal.
-            </span><span style="color:#c0c5ce;">Err(err) =&gt; </span><span style="color:#b48ead;">return </span><span style="color:#c0c5ce;">Err(err),
-        }
-    }
-
-    </span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> event.</span><span style="color:#96b5b4;">is_readable</span><span style="color:#c0c5ce;">() {
-        </span><span style="color:#b48ead;">let mut</span><span style="color:#c0c5ce;"> connection_closed = </span><span style="color:#d08770;">false</span><span style="color:#c0c5ce;">;
-        </span><span style="color:#b48ead;">let mut</span><span style="color:#c0c5ce;"> received_data = Vec::with_capacity(</span><span style="color:#d08770;">4096</span><span style="color:#c0c5ce;">);
-        </span><span style="color:#65737e;">// We can (maybe) read from the connection.
-        </span><span style="color:#b48ead;">loop </span><span style="color:#c0c5ce;">{
-            </span><span style="color:#b48ead;">let mut</span><span style="color:#c0c5ce;"> buf = [</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">; </span><span style="color:#d08770;">256</span><span style="color:#c0c5ce;">];
-            </span><span style="color:#b48ead;">match</span><span style="color:#c0c5ce;"> connection.</span><span style="color:#96b5b4;">read</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> buf) {
-                Ok(</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">) =&gt; {
-                    </span><span style="color:#65737e;">// Reading 0 bytes means the other side has closed the
-                    // connection or is done writing, then so are we.
-</span><span style="color:#c0c5ce;">                    connection_closed = </span><span style="color:#d08770;">true</span><span style="color:#c0c5ce;">;
-                    </span><span style="color:#b48ead;">break</span><span style="color:#c0c5ce;">;
-                }
-                Ok(n) =&gt; received_data.</span><span style="color:#96b5b4;">extend_from_slice</span><span style="color:#c0c5ce;">(&amp;buf[..n]),
-                </span><span style="color:#65737e;">// Would block &quot;errors&quot; are the OS&#39;s way of saying that the
-                // connection is not actually ready to perform this I/O operation.
-                </span><span style="color:#c0c5ce;">Err(</span><span style="color:#b48ead;">ref</span><span style="color:#c0c5ce;"> err) </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">would_block</span><span style="color:#c0c5ce;">(err) =&gt; </span><span style="color:#b48ead;">break</span><span style="color:#c0c5ce;">,
-                Err(</span><span style="color:#b48ead;">ref</span><span style="color:#c0c5ce;"> err) </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">interrupted</span><span style="color:#c0c5ce;">(err) =&gt; </span><span style="color:#b48ead;">continue</span><span style="color:#c0c5ce;">,
-                </span><span style="color:#65737e;">// Other errors we&#39;ll consider fatal.
-                </span><span style="color:#c0c5ce;">Err(err) =&gt; </span><span style="color:#b48ead;">return </span><span style="color:#c0c5ce;">Err(err),
-            }
-        }
-
-        </span><span style="color:#b48ead;">if let </span><span style="color:#c0c5ce;">Ok(str_buf) = </span><span style="color:#96b5b4;">from_utf8</span><span style="color:#c0c5ce;">(&amp;received_data) {
-            println!(&quot;</span><span style="color:#a3be8c;">Received data: </span><span style="color:#d08770;">{}</span><span style="color:#c0c5ce;">&quot;, str_buf.</span><span style="color:#96b5b4;">trim_end</span><span style="color:#c0c5ce;">());
-        } </span><span style="color:#b48ead;">else </span><span style="color:#c0c5ce;">{
-            println!(&quot;</span><span style="color:#a3be8c;">Received (none UTF-8) data: </span><span style="color:#d08770;">{:?}</span><span style="color:#c0c5ce;">&quot;, &amp;received_data);
-        }
-
-        </span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> connection_closed {
-            println!(&quot;</span><span style="color:#a3be8c;">Connection closed</span><span style="color:#c0c5ce;">&quot;);
-            </span><span style="color:#b48ead;">return </span><span style="color:#c0c5ce;">Ok(</span><span style="color:#d08770;">true</span><span style="color:#c0c5ce;">);
-        }
-    }
-
-    Ok(</span><span style="color:#d08770;">false</span><span style="color:#c0c5ce;">)
-}
-
-</span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">would_block</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">err</span><span style="color:#c0c5ce;">: &amp;io::Error) -&gt; </span><span style="color:#b48ead;">bool </span><span style="color:#c0c5ce;">{
-    err.</span><span style="color:#96b5b4;">kind</span><span style="color:#c0c5ce;">() == io::ErrorKind::WouldBlock
-}
-
-</span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">interrupted</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">err</span><span style="color:#c0c5ce;">: &amp;io::Error) -&gt; </span><span style="color:#b48ead;">bool </span><span style="color:#c0c5ce;">{
-    err.</span><span style="color:#96b5b4;">kind</span><span style="color:#c0c5ce;">() == io::ErrorKind::Interrupted
-}
-
+</span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">handle_connection_event</span><span>(
+</span><span>    </span><span style="color:#bf616a;">poll</span><span>: &amp;</span><span style="color:#b48ead;">mut</span><span> Poll,
+</span><span>    </span><span style="color:#bf616a;">connection</span><span>: &amp;</span><span style="color:#b48ead;">mut</span><span> TcpStream,
+</span><span>    </span><span style="color:#bf616a;">event</span><span>: &amp;Event,
+</span><span>) -&gt; io::Result&lt;</span><span style="color:#b48ead;">bool</span><span>&gt; {
+</span><span>    </span><span style="color:#b48ead;">if</span><span> event.</span><span style="color:#96b5b4;">is_writable</span><span>() {
+</span><span>        </span><span style="color:#65737e;">// We can (maybe) write to the connection.
+</span><span>        </span><span style="color:#b48ead;">match</span><span> connection.</span><span style="color:#96b5b4;">write</span><span>(</span><span style="color:#d08770;">DATA</span><span>) {
+</span><span>            </span><span style="color:#65737e;">// We want to write the entire `DATA` buffer in a single go. If we
+</span><span>            </span><span style="color:#65737e;">// write less we&#39;ll return a short write error (same as
+</span><span>            </span><span style="color:#65737e;">// `io::Write::write_all` does).
+</span><span>            Ok(n) </span><span style="color:#b48ead;">if</span><span> n &lt; </span><span style="color:#d08770;">DATA</span><span>.</span><span style="color:#96b5b4;">len</span><span>() =&gt; </span><span style="color:#b48ead;">return </span><span>Err(io::ErrorKind::WriteZero.</span><span style="color:#96b5b4;">into</span><span>()),
+</span><span>            Ok(_) =&gt; {
+</span><span>                </span><span style="color:#65737e;">// After we&#39;ve written something we&#39;ll reregister the connection
+</span><span>                </span><span style="color:#65737e;">// to only respond to readable events.
+</span><span>                poll.</span><span style="color:#96b5b4;">registry</span><span>()
+</span><span>                    .</span><span style="color:#96b5b4;">reregister</span><span>(&amp;connection, event.</span><span style="color:#96b5b4;">token</span><span>(), Interests::</span><span style="color:#d08770;">READABLE</span><span>)?
+</span><span>            }
+</span><span>            </span><span style="color:#65737e;">// Would block &quot;errors&quot; are the OS&#39;s way of saying that the
+</span><span>            </span><span style="color:#65737e;">// connection is not actually ready to perform this I/O operation.
+</span><span>            Err(</span><span style="color:#b48ead;">ref</span><span> err) </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">would_block</span><span>(err) =&gt; {}
+</span><span>            </span><span style="color:#65737e;">// Got interrupted (how rude!), we&#39;ll try again.
+</span><span>            Err(</span><span style="color:#b48ead;">ref</span><span> err) </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">interrupted</span><span>(err) =&gt; {
+</span><span>                </span><span style="color:#b48ead;">return </span><span style="color:#96b5b4;">handle_connection_event</span><span>(poll, connection, event)
+</span><span>            }
+</span><span>            </span><span style="color:#65737e;">// Other errors we&#39;ll consider fatal.
+</span><span>            Err(err) =&gt; </span><span style="color:#b48ead;">return </span><span>Err(err),
+</span><span>        }
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">if</span><span> event.</span><span style="color:#96b5b4;">is_readable</span><span>() {
+</span><span>        </span><span style="color:#b48ead;">let mut</span><span> connection_closed = </span><span style="color:#d08770;">false</span><span>;
+</span><span>        </span><span style="color:#b48ead;">let mut</span><span> received_data = Vec::with_capacity(</span><span style="color:#d08770;">4096</span><span>);
+</span><span>        </span><span style="color:#65737e;">// We can (maybe) read from the connection.
+</span><span>        </span><span style="color:#b48ead;">loop </span><span>{
+</span><span>            </span><span style="color:#b48ead;">let mut</span><span> buf = [</span><span style="color:#d08770;">0</span><span>; </span><span style="color:#d08770;">256</span><span>];
+</span><span>            </span><span style="color:#b48ead;">match</span><span> connection.</span><span style="color:#96b5b4;">read</span><span>(&amp;</span><span style="color:#b48ead;">mut</span><span> buf) {
+</span><span>                Ok(</span><span style="color:#d08770;">0</span><span>) =&gt; {
+</span><span>                    </span><span style="color:#65737e;">// Reading 0 bytes means the other side has closed the
+</span><span>                    </span><span style="color:#65737e;">// connection or is done writing, then so are we.
+</span><span>                    connection_closed = </span><span style="color:#d08770;">true</span><span>;
+</span><span>                    </span><span style="color:#b48ead;">break</span><span>;
+</span><span>                }
+</span><span>                Ok(n) =&gt; received_data.</span><span style="color:#96b5b4;">extend_from_slice</span><span>(&amp;buf[..n]),
+</span><span>                </span><span style="color:#65737e;">// Would block &quot;errors&quot; are the OS&#39;s way of saying that the
+</span><span>                </span><span style="color:#65737e;">// connection is not actually ready to perform this I/O operation.
+</span><span>                Err(</span><span style="color:#b48ead;">ref</span><span> err) </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">would_block</span><span>(err) =&gt; </span><span style="color:#b48ead;">break</span><span>,
+</span><span>                Err(</span><span style="color:#b48ead;">ref</span><span> err) </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">interrupted</span><span>(err) =&gt; </span><span style="color:#b48ead;">continue</span><span>,
+</span><span>                </span><span style="color:#65737e;">// Other errors we&#39;ll consider fatal.
+</span><span>                Err(err) =&gt; </span><span style="color:#b48ead;">return </span><span>Err(err),
+</span><span>            }
+</span><span>        }
+</span><span>
+</span><span>        </span><span style="color:#b48ead;">if let </span><span>Ok(str_buf) = </span><span style="color:#96b5b4;">from_utf8</span><span>(&amp;received_data) {
+</span><span>            println!(&quot;</span><span style="color:#a3be8c;">Received data: </span><span style="color:#d08770;">{}</span><span>&quot;, str_buf.</span><span style="color:#96b5b4;">trim_end</span><span>());
+</span><span>        } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>            println!(&quot;</span><span style="color:#a3be8c;">Received (none UTF-8) data: </span><span style="color:#d08770;">{:?}</span><span>&quot;, &amp;received_data);
+</span><span>        }
+</span><span>
+</span><span>        </span><span style="color:#b48ead;">if</span><span> connection_closed {
+</span><span>            println!(&quot;</span><span style="color:#a3be8c;">Connection closed</span><span>&quot;);
+</span><span>            </span><span style="color:#b48ead;">return </span><span>Ok(</span><span style="color:#d08770;">true</span><span>);
+</span><span>        }
+</span><span>    }
+</span><span>
+</span><span>    Ok(</span><span style="color:#d08770;">false</span><span>)
+</span><span>}
+</span><span>
+</span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">would_block</span><span>(</span><span style="color:#bf616a;">err</span><span>: &amp;io::Error) -&gt; </span><span style="color:#b48ead;">bool </span><span>{
+</span><span>    err.</span><span style="color:#96b5b4;">kind</span><span>() == io::ErrorKind::WouldBlock
+</span><span>}
+</span><span>
+</span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">interrupted</span><span>(</span><span style="color:#bf616a;">err</span><span>: &amp;io::Error) -&gt; </span><span style="color:#b48ead;">bool </span><span>{
+</span><span>    err.</span><span style="color:#96b5b4;">kind</span><span>() == io::ErrorKind::Interrupted
+</span><span>}
+</span><span>
 </span></code></pre>
 <p>从<code>main()</code>方法体开始看：</p>
 <h2 id="poll-new">Poll::new()</h2>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">new</span><span style="color:#c0c5ce;">() -&gt; io::Result&lt;Poll&gt; {
-        sys::Selector::new().</span><span style="color:#96b5b4;">map</span><span style="color:#c0c5ce;">(|</span><span style="color:#bf616a;">selector</span><span style="color:#c0c5ce;">| Poll {
-            registry: Registry { selector },
-        })
-    }
-
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span>    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">new</span><span>() -&gt; io::Result&lt;Poll&gt; {
+</span><span>        sys::Selector::new().</span><span style="color:#96b5b4;">map</span><span>(|</span><span style="color:#bf616a;">selector</span><span>| Poll {
+</span><span>            registry: Registry { selector },
+</span><span>        })
+</span><span>    }
+</span><span>
 </span></code></pre>
 <p>看一下Poll的结构体</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub struct </span><span style="color:#c0c5ce;">Poll {
-    </span><span style="color:#bf616a;">registry</span><span style="color:#c0c5ce;">: Registry,
-}
-
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub struct </span><span>Poll {
+</span><span>    </span><span style="color:#bf616a;">registry</span><span>: Registry,
+</span><span>}
+</span><span>
 </span><span style="color:#65737e;">/// Registers I/O resources.
-</span><span style="color:#b48ead;">pub struct </span><span style="color:#c0c5ce;">Registry {
-    </span><span style="color:#bf616a;">selector</span><span style="color:#c0c5ce;">: sys::Selector,
-}
+</span><span style="color:#b48ead;">pub struct </span><span>Registry {
+</span><span>    </span><span style="color:#bf616a;">selector</span><span>: sys::Selector,
+</span><span>}
 </span></code></pre>
 <p><code>sys::Selector</code> 在不同的操作系统上有不同的实现：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#65737e;">/// `Poll` is backed by the selector provided by the operating system.
-///
-/// |      OS       |  Selector |
-/// |---------------|-----------|
-/// | Android       | [epoll]   |
-/// | DragonFly BSD | [kqueue]  |
-/// | FreeBSD       | [kqueue]  |
-/// | Linux         | [epoll]   |
-/// | NetBSD        | [kqueue]  |
-/// | OpenBSD       | [kqueue]  |
-/// | Solaris       | [epoll]   |
-/// | Windows       | [IOCP]    |
-/// | iOS           | [kqueue]  |
-/// | macOS         | [kqueue]  |
-///
-
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#65737e;">/// `Poll` is backed by the selector provided by the operating system.
+</span><span style="color:#65737e;">///
+</span><span style="color:#65737e;">/// |      OS       |  Selector |
+</span><span style="color:#65737e;">/// |---------------|-----------|
+</span><span style="color:#65737e;">/// | Android       | [epoll]   |
+</span><span style="color:#65737e;">/// | DragonFly BSD | [kqueue]  |
+</span><span style="color:#65737e;">/// | FreeBSD       | [kqueue]  |
+</span><span style="color:#65737e;">/// | Linux         | [epoll]   |
+</span><span style="color:#65737e;">/// | NetBSD        | [kqueue]  |
+</span><span style="color:#65737e;">/// | OpenBSD       | [kqueue]  |
+</span><span style="color:#65737e;">/// | Solaris       | [epoll]   |
+</span><span style="color:#65737e;">/// | Windows       | [IOCP]    |
+</span><span style="color:#65737e;">/// | iOS           | [kqueue]  |
+</span><span style="color:#65737e;">/// | macOS         | [kqueue]  |
+</span><span style="color:#65737e;">///
+</span><span>
 </span></code></pre>
 <p>我们挑选Linux的epoll跟踪。源文件在<code>/src/sys/unix/epoll.rs</code></p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">Selector {
-    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">new</span><span style="color:#c0c5ce;">() -&gt; io::Result&lt;Selector&gt; {
-        </span><span style="color:#65737e;">// According to libuv `EPOLL_CLOEXEC` is not defined on Android API &lt;
-        // 21. But `EPOLL_CLOEXEC` is an alias for `O_CLOEXEC` on all platforms,
-        // so we use that instead.
-        </span><span style="color:#c0c5ce;">syscall!(</span><span style="color:#96b5b4;">epoll_create1</span><span style="color:#c0c5ce;">(libc::</span><span style="color:#d08770;">O_CLOEXEC</span><span style="color:#c0c5ce;">)).</span><span style="color:#96b5b4;">map</span><span style="color:#c0c5ce;">(|</span><span style="color:#bf616a;">ep</span><span style="color:#c0c5ce;">| Selector {
-            #[</span><span style="color:#bf616a;">cfg</span><span style="color:#c0c5ce;">(debug_assertions)]
-            id: </span><span style="color:#d08770;">NEXT_ID</span><span style="color:#c0c5ce;">.</span><span style="color:#96b5b4;">fetch_add</span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">, Ordering::Relaxed),
-            ep,
-        })
-    }
-  
-...  
-}
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">impl </span><span>Selector {
+</span><span>    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">new</span><span>() -&gt; io::Result&lt;Selector&gt; {
+</span><span>        </span><span style="color:#65737e;">// According to libuv `EPOLL_CLOEXEC` is not defined on Android API &lt;
+</span><span>        </span><span style="color:#65737e;">// 21. But `EPOLL_CLOEXEC` is an alias for `O_CLOEXEC` on all platforms,
+</span><span>        </span><span style="color:#65737e;">// so we use that instead.
+</span><span>        syscall!(</span><span style="color:#96b5b4;">epoll_create1</span><span>(libc::</span><span style="color:#d08770;">O_CLOEXEC</span><span>)).</span><span style="color:#96b5b4;">map</span><span>(|</span><span style="color:#bf616a;">ep</span><span>| Selector {
+</span><span>            #[</span><span style="color:#bf616a;">cfg</span><span>(debug_assertions)]
+</span><span>            id: </span><span style="color:#d08770;">NEXT_ID</span><span>.</span><span style="color:#96b5b4;">fetch_add</span><span>(</span><span style="color:#d08770;">1</span><span>, Ordering::Relaxed),
+</span><span>            ep,
+</span><span>        })
+</span><span>    }
+</span><span>  
+</span><span>...  
+</span><span>}
 </span></code></pre>
 <p>这段代码调用了linux的api <code>epoll_create1()</code>  该接口返回一个int值，表示指向epoll实例的文件描述符。就是代码中的<code>ep</code>。还涉及到<code>id</code> 自增。 <code>NEXT_ID</code> 的定义：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#65737e;">/// Unique id for use as `SelectorId`.
-</span><span style="color:#c0c5ce;">#[</span><span style="color:#bf616a;">cfg</span><span style="color:#c0c5ce;">(debug_assertions)]
-</span><span style="color:#b48ead;">static </span><span style="color:#d08770;">NEXT_ID</span><span style="color:#c0c5ce;">: AtomicUsize = AtomicUsize::new(</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">);
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#65737e;">/// Unique id for use as `SelectorId`.
+</span><span>#[</span><span style="color:#bf616a;">cfg</span><span>(debug_assertions)]
+</span><span style="color:#b48ead;">static </span><span style="color:#d08770;">NEXT_ID</span><span>: AtomicUsize = AtomicUsize::new(</span><span style="color:#d08770;">1</span><span>);
 </span></code></pre>
 <p>看一下<code>syscall!</code>宏。定义的文件在`/src/sys/unix/mod.rs</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#65737e;">// Macro must be defined before any modules that uses them.
-</span><span style="color:#96b5b4;">macro_rules! </span><span style="color:#c0c5ce;">syscall {
-    ($fn: ident ( $($arg: expr),* $(,)* ) ) =&gt; {{
-        let res = unsafe { libc::</span><span style="color:#bf616a;">$fn</span><span style="color:#c0c5ce;">($($arg, )*) };
-        </span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> res == -</span><span style="color:#d08770;">1 </span><span style="color:#c0c5ce;">{
-            Err(io::Error::last_os_error())
-        } </span><span style="color:#b48ead;">else </span><span style="color:#c0c5ce;">{
-            Ok(res)
-        }
-    }};
-}
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#65737e;">// Macro must be defined before any modules that uses them.
+</span><span style="color:#96b5b4;">macro_rules! </span><span>syscall {
+</span><span>    ($fn: ident ( $($arg: expr),* $(,)* ) ) =&gt; {{
+</span><span>        let res = unsafe { libc::</span><span style="color:#bf616a;">$fn</span><span>($($arg, )*) };
+</span><span>        </span><span style="color:#b48ead;">if</span><span> res == -</span><span style="color:#d08770;">1 </span><span>{
+</span><span>            Err(io::Error::last_os_error())
+</span><span>        } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>            Ok(res)
+</span><span>        }
+</span><span>    }};
+</span><span>}
 </span></code></pre>
 <p>就是指定函数名和实际参数，调用<code>libc</code>下的函数。</p>
 <h2 id="tcplistener">TcpListener</h2>
 <p>接着是<code>    let server = TcpListener::bind(addr)?;</code>看一看这个<code>bind</code>方法 </p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">    </span><span style="color:#65737e;">/// 1. Create a new TCP socket.
-    /// 2. Set the `SO_REUSEADDR` option on the socket on Unix.
-    /// 3. Bind the socket to the specified address.
-    /// 4. Calls `listen` on the socket to prepare it to receive new connections.
-		</span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">bind</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">addr</span><span style="color:#c0c5ce;">: SocketAddr) -&gt; io::Result&lt;TcpListener&gt; {
-        sys::TcpListener::bind(addr).</span><span style="color:#96b5b4;">map</span><span style="color:#c0c5ce;">(|</span><span style="color:#bf616a;">sys</span><span style="color:#c0c5ce;">| TcpListener {
-            sys,
-            #[</span><span style="color:#bf616a;">cfg</span><span style="color:#c0c5ce;">(debug_assertions)]
-            selector_id: SelectorId::new(),
-        })
-    }
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span>    </span><span style="color:#65737e;">/// 1. Create a new TCP socket.
+</span><span>    </span><span style="color:#65737e;">/// 2. Set the `SO_REUSEADDR` option on the socket on Unix.
+</span><span>    </span><span style="color:#65737e;">/// 3. Bind the socket to the specified address.
+</span><span>    </span><span style="color:#65737e;">/// 4. Calls `listen` on the socket to prepare it to receive new connections.
+</span><span>		</span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">bind</span><span>(</span><span style="color:#bf616a;">addr</span><span>: SocketAddr) -&gt; io::Result&lt;TcpListener&gt; {
+</span><span>        sys::TcpListener::bind(addr).</span><span style="color:#96b5b4;">map</span><span>(|</span><span style="color:#bf616a;">sys</span><span>| TcpListener {
+</span><span>            sys,
+</span><span>            #[</span><span style="color:#bf616a;">cfg</span><span>(debug_assertions)]
+</span><span>            selector_id: SelectorId::new(),
+</span><span>        })
+</span><span>    }
 </span></code></pre>
 <p>注释说明该方法完成了socket编程的4个步骤。由于是调用<code>sys::TcpListener::bind()</code>,跟进去看</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">bind</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">addr</span><span style="color:#c0c5ce;">: SocketAddr) -&gt; io::Result&lt;TcpListener&gt; {
-        </span><span style="color:#96b5b4;">new_ip_socket</span><span style="color:#c0c5ce;">(addr, libc::</span><span style="color:#d08770;">SOCK_STREAM</span><span style="color:#c0c5ce;">).</span><span style="color:#96b5b4;">and_then</span><span style="color:#c0c5ce;">(|</span><span style="color:#bf616a;">socket</span><span style="color:#c0c5ce;">| {
-            </span><span style="color:#65737e;">// Set SO_REUSEADDR (mirrors what libstd does).
-            </span><span style="color:#c0c5ce;">syscall!(</span><span style="color:#96b5b4;">setsockopt</span><span style="color:#c0c5ce;">(
-                socket,
-                libc::</span><span style="color:#d08770;">SOL_SOCKET</span><span style="color:#c0c5ce;">,
-                libc::</span><span style="color:#d08770;">SO_REUSEADDR</span><span style="color:#c0c5ce;">,
-                &amp;</span><span style="color:#d08770;">1 </span><span style="color:#c0c5ce;">as </span><span style="color:#b48ead;">*const </span><span style="color:#c0c5ce;">libc::</span><span style="color:#b48ead;">c_int </span><span style="color:#c0c5ce;">as </span><span style="color:#b48ead;">*const </span><span style="color:#c0c5ce;">libc::</span><span style="color:#b48ead;">c_void</span><span style="color:#c0c5ce;">,
-                size_of::&lt;libc::c_int&gt;() as libc::</span><span style="color:#b48ead;">socklen_t</span><span style="color:#c0c5ce;">,
-            ))
-            .</span><span style="color:#96b5b4;">and_then</span><span style="color:#c0c5ce;">(|_| {
-                </span><span style="color:#b48ead;">let </span><span style="color:#c0c5ce;">(raw_addr, raw_addr_length) = </span><span style="color:#96b5b4;">socket_addr</span><span style="color:#c0c5ce;">(&amp;addr);
-                syscall!(</span><span style="color:#96b5b4;">bind</span><span style="color:#c0c5ce;">(socket, raw_addr, raw_addr_length))
-            })
-            .</span><span style="color:#96b5b4;">and_then</span><span style="color:#c0c5ce;">(|_| syscall!(</span><span style="color:#96b5b4;">listen</span><span style="color:#c0c5ce;">(socket, </span><span style="color:#d08770;">1024</span><span style="color:#c0c5ce;">)))
-            .</span><span style="color:#96b5b4;">map_err</span><span style="color:#c0c5ce;">(|</span><span style="color:#bf616a;">err</span><span style="color:#c0c5ce;">| {
-                </span><span style="color:#65737e;">// Close the socket if we hit an error, ignoring the error
-                // from closing since we can&#39;t pass back two errors.
-                </span><span style="color:#b48ead;">let </span><span style="color:#c0c5ce;">_ = </span><span style="color:#b48ead;">unsafe </span><span style="color:#c0c5ce;">{ libc::close(socket) };
-                err
-            })
-            .</span><span style="color:#96b5b4;">map</span><span style="color:#c0c5ce;">(|_| TcpListener {
-                inner: </span><span style="color:#b48ead;">unsafe </span><span style="color:#c0c5ce;">{ net::TcpListener::from_raw_fd(socket) },
-            })
-        })
-    }
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span>    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">bind</span><span>(</span><span style="color:#bf616a;">addr</span><span>: SocketAddr) -&gt; io::Result&lt;TcpListener&gt; {
+</span><span>        </span><span style="color:#96b5b4;">new_ip_socket</span><span>(addr, libc::</span><span style="color:#d08770;">SOCK_STREAM</span><span>).</span><span style="color:#96b5b4;">and_then</span><span>(|</span><span style="color:#bf616a;">socket</span><span>| {
+</span><span>            </span><span style="color:#65737e;">// Set SO_REUSEADDR (mirrors what libstd does).
+</span><span>            syscall!(</span><span style="color:#96b5b4;">setsockopt</span><span>(
+</span><span>                socket,
+</span><span>                libc::</span><span style="color:#d08770;">SOL_SOCKET</span><span>,
+</span><span>                libc::</span><span style="color:#d08770;">SO_REUSEADDR</span><span>,
+</span><span>                &amp;</span><span style="color:#d08770;">1 </span><span>as </span><span style="color:#b48ead;">*const </span><span>libc::</span><span style="color:#b48ead;">c_int </span><span>as </span><span style="color:#b48ead;">*const </span><span>libc::</span><span style="color:#b48ead;">c_void</span><span>,
+</span><span>                size_of::&lt;libc::c_int&gt;() as libc::</span><span style="color:#b48ead;">socklen_t</span><span>,
+</span><span>            ))
+</span><span>            .</span><span style="color:#96b5b4;">and_then</span><span>(|_| {
+</span><span>                </span><span style="color:#b48ead;">let </span><span>(raw_addr, raw_addr_length) = </span><span style="color:#96b5b4;">socket_addr</span><span>(&amp;addr);
+</span><span>                syscall!(</span><span style="color:#96b5b4;">bind</span><span>(socket, raw_addr, raw_addr_length))
+</span><span>            })
+</span><span>            .</span><span style="color:#96b5b4;">and_then</span><span>(|_| syscall!(</span><span style="color:#96b5b4;">listen</span><span>(socket, </span><span style="color:#d08770;">1024</span><span>)))
+</span><span>            .</span><span style="color:#96b5b4;">map_err</span><span>(|</span><span style="color:#bf616a;">err</span><span>| {
+</span><span>                </span><span style="color:#65737e;">// Close the socket if we hit an error, ignoring the error
+</span><span>                </span><span style="color:#65737e;">// from closing since we can&#39;t pass back two errors.
+</span><span>                </span><span style="color:#b48ead;">let </span><span>_ = </span><span style="color:#b48ead;">unsafe </span><span>{ libc::close(socket) };
+</span><span>                err
+</span><span>            })
+</span><span>            .</span><span style="color:#96b5b4;">map</span><span>(|_| TcpListener {
+</span><span>                inner: </span><span style="color:#b48ead;">unsafe </span><span>{ net::TcpListener::from_raw_fd(socket) },
+</span><span>            })
+</span><span>        })
+</span><span>    }
 </span></code></pre>
 <p>回到主方法继续看</p>
 <h2 id="poll-registry-register">poll.registry().register()</h2>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">registry</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; &amp;Registry {
-        &amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.registry
-    }
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span>    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">registry</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>) -&gt; &amp;Registry {
+</span><span>        &amp;</span><span style="color:#bf616a;">self</span><span>.registry
+</span><span>    }
 </span></code></pre>
 <p>真正完成register动作的是<code>&amp;self.registry</code></p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">register</span><span style="color:#c0c5ce;">&lt;S&gt;(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">source</span><span style="color:#c0c5ce;">: &amp;S, </span><span style="color:#bf616a;">token</span><span style="color:#c0c5ce;">: Token, </span><span style="color:#bf616a;">interests</span><span style="color:#c0c5ce;">: Interests) -&gt; io::Result&lt;()&gt;
-    </span><span style="color:#b48ead;">where
-</span><span style="color:#c0c5ce;">        S: event::Source + ?Sized,
-    {
-        trace!(
-            &quot;</span><span style="color:#a3be8c;">registering event source with poller: token={:?}, interests={:?}</span><span style="color:#c0c5ce;">&quot;,
-            token,
-            interests
-        );
-        source.</span><span style="color:#96b5b4;">register</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, token, interests)
-    }
-
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span>    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">register</span><span>&lt;S&gt;(&amp;</span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">source</span><span>: &amp;S, </span><span style="color:#bf616a;">token</span><span>: Token, </span><span style="color:#bf616a;">interests</span><span>: Interests) -&gt; io::Result&lt;()&gt;
+</span><span>    </span><span style="color:#b48ead;">where
+</span><span>        S: event::Source + ?Sized,
+</span><span>    {
+</span><span>        trace!(
+</span><span>            &quot;</span><span style="color:#a3be8c;">registering event source with poller: token={:?}, interests={:?}</span><span>&quot;,
+</span><span>            token,
+</span><span>            interests
+</span><span>        );
+</span><span>        source.</span><span style="color:#96b5b4;">register</span><span>(</span><span style="color:#bf616a;">self</span><span>, token, interests)
+</span><span>    }
+</span><span>
 </span></code></pre>
 <p>又调用了<code>source.register()</code>，看一看<code>source trait</code> 的定义：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub trait </span><span style="color:#c0c5ce;">Source {   
-		</span><span style="color:#65737e;">/// Register `self` with the given `Registry` instance.
-    ///
-    /// This function should not be called directly. Use [`Registry::register`]
-    /// instead. Implementors should handle registration by delegating the call
-    /// to another `Source` type.
-    ///
-    /// [`Registry::register`]: crate::Registry::register
-    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">register</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">registry</span><span style="color:#c0c5ce;">: &amp;Registry, </span><span style="color:#bf616a;">token</span><span style="color:#c0c5ce;">: Token, </span><span style="color:#bf616a;">interests</span><span style="color:#c0c5ce;">: Interests) -&gt; io::Result&lt;()&gt;;
-
-    </span><span style="color:#65737e;">/// Re-register `self` with the given `Registry` instance.
-    ///
-    /// This function should not be called directly. Use
-    /// [`Registry::reregister`] instead. Implementors should handle
-    /// re-registration by either delegating the call to another `Source` type.
-    ///
-    /// [`Registry::reregister`]: crate::Registry::reregister
-    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">reregister</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">registry</span><span style="color:#c0c5ce;">: &amp;Registry, </span><span style="color:#bf616a;">token</span><span style="color:#c0c5ce;">: Token, </span><span style="color:#bf616a;">interests</span><span style="color:#c0c5ce;">: Interests)
-        -&gt; io::Result&lt;()&gt;;
-
-    </span><span style="color:#65737e;">/// Deregister `self` from the given `Registry` instance.
-    ///
-    /// This function should not be called directly. Use
-    /// [`Registry::deregister`] instead. Implementors should handle
-    /// deregistration by delegating the call to another `Source` type.
-    ///
-    /// [`Registry::deregister`]: crate::Registry::deregister
-    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">deregister</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">registry</span><span style="color:#c0c5ce;">: &amp;Registry) -&gt; io::Result&lt;()&gt;;
-}
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub trait </span><span>Source {   
+</span><span>		</span><span style="color:#65737e;">/// Register `self` with the given `Registry` instance.
+</span><span>    </span><span style="color:#65737e;">///
+</span><span>    </span><span style="color:#65737e;">/// This function should not be called directly. Use [`Registry::register`]
+</span><span>    </span><span style="color:#65737e;">/// instead. Implementors should handle registration by delegating the call
+</span><span>    </span><span style="color:#65737e;">/// to another `Source` type.
+</span><span>    </span><span style="color:#65737e;">///
+</span><span>    </span><span style="color:#65737e;">/// [`Registry::register`]: crate::Registry::register
+</span><span>    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">register</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">registry</span><span>: &amp;Registry, </span><span style="color:#bf616a;">token</span><span>: Token, </span><span style="color:#bf616a;">interests</span><span>: Interests) -&gt; io::Result&lt;()&gt;;
+</span><span>
+</span><span>    </span><span style="color:#65737e;">/// Re-register `self` with the given `Registry` instance.
+</span><span>    </span><span style="color:#65737e;">///
+</span><span>    </span><span style="color:#65737e;">/// This function should not be called directly. Use
+</span><span>    </span><span style="color:#65737e;">/// [`Registry::reregister`] instead. Implementors should handle
+</span><span>    </span><span style="color:#65737e;">/// re-registration by either delegating the call to another `Source` type.
+</span><span>    </span><span style="color:#65737e;">///
+</span><span>    </span><span style="color:#65737e;">/// [`Registry::reregister`]: crate::Registry::reregister
+</span><span>    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">reregister</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">registry</span><span>: &amp;Registry, </span><span style="color:#bf616a;">token</span><span>: Token, </span><span style="color:#bf616a;">interests</span><span>: Interests)
+</span><span>        -&gt; io::Result&lt;()&gt;;
+</span><span>
+</span><span>    </span><span style="color:#65737e;">/// Deregister `self` from the given `Registry` instance.
+</span><span>    </span><span style="color:#65737e;">///
+</span><span>    </span><span style="color:#65737e;">/// This function should not be called directly. Use
+</span><span>    </span><span style="color:#65737e;">/// [`Registry::deregister`] instead. Implementors should handle
+</span><span>    </span><span style="color:#65737e;">/// deregistration by delegating the call to another `Source` type.
+</span><span>    </span><span style="color:#65737e;">///
+</span><span>    </span><span style="color:#65737e;">/// [`Registry::deregister`]: crate::Registry::deregister
+</span><span>    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">deregister</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">registry</span><span>: &amp;Registry) -&gt; io::Result&lt;()&gt;;
+</span><span>}
 </span></code></pre>
 <p>三个方法，注册、再次注册、反注册。</p>
 <p>example里传入的 <code>source</code>是 <code>&amp;server:TcpListener</code>。</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">event::Source </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">TcpListener {
-    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">register</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">registry</span><span style="color:#c0c5ce;">: &amp;Registry, </span><span style="color:#bf616a;">token</span><span style="color:#c0c5ce;">: Token, </span><span style="color:#bf616a;">interests</span><span style="color:#c0c5ce;">: Interests) -&gt; io::Result&lt;()&gt; {
-        #[</span><span style="color:#bf616a;">cfg</span><span style="color:#c0c5ce;">(debug_assertions)]
-        </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.selector_id.</span><span style="color:#96b5b4;">associate_selector</span><span style="color:#c0c5ce;">(registry)?;
-        </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.sys.</span><span style="color:#96b5b4;">register</span><span style="color:#c0c5ce;">(registry, token, interests)
-    }
-
-    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">reregister</span><span style="color:#c0c5ce;">(
-        &amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">,
-        </span><span style="color:#bf616a;">registry</span><span style="color:#c0c5ce;">: &amp;Registry,
-        </span><span style="color:#bf616a;">token</span><span style="color:#c0c5ce;">: Token,
-        </span><span style="color:#bf616a;">interests</span><span style="color:#c0c5ce;">: Interests,
-    ) -&gt; io::Result&lt;()&gt; {
-        </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.sys.</span><span style="color:#96b5b4;">reregister</span><span style="color:#c0c5ce;">(registry, token, interests)
-    }
-
-    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">deregister</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">registry</span><span style="color:#c0c5ce;">: &amp;Registry) -&gt; io::Result&lt;()&gt; {
-        </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.sys.</span><span style="color:#96b5b4;">deregister</span><span style="color:#c0c5ce;">(registry)
-    }
-}
-
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">impl </span><span>event::Source </span><span style="color:#b48ead;">for </span><span>TcpListener {
+</span><span>    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">register</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">registry</span><span>: &amp;Registry, </span><span style="color:#bf616a;">token</span><span>: Token, </span><span style="color:#bf616a;">interests</span><span>: Interests) -&gt; io::Result&lt;()&gt; {
+</span><span>        #[</span><span style="color:#bf616a;">cfg</span><span>(debug_assertions)]
+</span><span>        </span><span style="color:#bf616a;">self</span><span>.selector_id.</span><span style="color:#96b5b4;">associate_selector</span><span>(registry)?;
+</span><span>        </span><span style="color:#bf616a;">self</span><span>.sys.</span><span style="color:#96b5b4;">register</span><span>(registry, token, interests)
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">reregister</span><span>(
+</span><span>        &amp;</span><span style="color:#bf616a;">self</span><span>,
+</span><span>        </span><span style="color:#bf616a;">registry</span><span>: &amp;Registry,
+</span><span>        </span><span style="color:#bf616a;">token</span><span>: Token,
+</span><span>        </span><span style="color:#bf616a;">interests</span><span>: Interests,
+</span><span>    ) -&gt; io::Result&lt;()&gt; {
+</span><span>        </span><span style="color:#bf616a;">self</span><span>.sys.</span><span style="color:#96b5b4;">reregister</span><span>(registry, token, interests)
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">deregister</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">registry</span><span>: &amp;Registry) -&gt; io::Result&lt;()&gt; {
+</span><span>        </span><span style="color:#bf616a;">self</span><span>.sys.</span><span style="color:#96b5b4;">deregister</span><span>(registry)
+</span><span>    }
+</span><span>}
+</span><span>
 </span></code></pre>
 <p>其中<code>register()</code>主要涉及到：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.selector_id.</span><span style="color:#96b5b4;">associate_selector</span><span style="color:#c0c5ce;">(registry)?;
-</span></code></pre><pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.sys.</span><span style="color:#96b5b4;">register</span><span style="color:#c0c5ce;">(registry, token, interests)
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#bf616a;">self</span><span>.selector_id.</span><span style="color:#96b5b4;">associate_selector</span><span>(registry)?;
+</span></code></pre>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#bf616a;">self</span><span>.sys.</span><span style="color:#96b5b4;">register</span><span>(registry, token, interests)
 </span></code></pre>
 <p>先看第一个。</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">SelectorId {
-    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">new</span><span style="color:#c0c5ce;">() -&gt; SelectorId {
-        SelectorId {
-            id: AtomicUsize::new(</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">),
-        }
-    }
-
-    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">associate_selector</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">registry</span><span style="color:#c0c5ce;">: &amp;Registry) -&gt; io::Result&lt;()&gt; {
-        </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> selector_id = </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.id.</span><span style="color:#96b5b4;">load</span><span style="color:#c0c5ce;">(Ordering::SeqCst);
-
-        </span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> selector_id != </span><span style="color:#d08770;">0 </span><span style="color:#c0c5ce;">&amp;&amp; selector_id != registry.selector.</span><span style="color:#96b5b4;">id</span><span style="color:#c0c5ce;">() {
-            Err(io::Error::new(
-                io::ErrorKind::Other,
-                &quot;</span><span style="color:#a3be8c;">socket already registered</span><span style="color:#c0c5ce;">&quot;,
-            ))
-        } </span><span style="color:#b48ead;">else </span><span style="color:#c0c5ce;">{
-            </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.id.</span><span style="color:#96b5b4;">store</span><span style="color:#c0c5ce;">(registry.selector.</span><span style="color:#96b5b4;">id</span><span style="color:#c0c5ce;">(), Ordering::SeqCst);
-            Ok(())
-        }
-    }
-}
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">impl </span><span>SelectorId {
+</span><span>    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">new</span><span>() -&gt; SelectorId {
+</span><span>        SelectorId {
+</span><span>            id: AtomicUsize::new(</span><span style="color:#d08770;">0</span><span>),
+</span><span>        }
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">associate_selector</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">registry</span><span>: &amp;Registry) -&gt; io::Result&lt;()&gt; {
+</span><span>        </span><span style="color:#b48ead;">let</span><span> selector_id = </span><span style="color:#bf616a;">self</span><span>.id.</span><span style="color:#96b5b4;">load</span><span>(Ordering::SeqCst);
+</span><span>
+</span><span>        </span><span style="color:#b48ead;">if</span><span> selector_id != </span><span style="color:#d08770;">0 </span><span>&amp;&amp; selector_id != registry.selector.</span><span style="color:#96b5b4;">id</span><span>() {
+</span><span>            Err(io::Error::new(
+</span><span>                io::ErrorKind::Other,
+</span><span>                &quot;</span><span style="color:#a3be8c;">socket already registered</span><span>&quot;,
+</span><span>            ))
+</span><span>        } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>            </span><span style="color:#bf616a;">self</span><span>.id.</span><span style="color:#96b5b4;">store</span><span>(registry.selector.</span><span style="color:#96b5b4;">id</span><span>(), Ordering::SeqCst);
+</span><span>            Ok(())
+</span><span>        }
+</span><span>    }
+</span><span>}
 </span></code></pre>
 <p>这里就是把<code>registry.selector.id()</code> 赋值给<code>SelectorId.id</code>。注意后者是<code>AtomicUsize</code>。</p>
 <p>看第二个。看看<code>sys</code>的类型：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub struct </span><span style="color:#c0c5ce;">TcpListener {
-    </span><span style="color:#bf616a;">sys</span><span style="color:#c0c5ce;">: sys::TcpListener,
-    #[</span><span style="color:#bf616a;">cfg</span><span style="color:#c0c5ce;">(debug_assertions)]
-    </span><span style="color:#bf616a;">selector_id</span><span style="color:#c0c5ce;">: SelectorId,
-}
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub struct </span><span>TcpListener {
+</span><span>    </span><span style="color:#bf616a;">sys</span><span>: sys::TcpListener,
+</span><span>    #[</span><span style="color:#bf616a;">cfg</span><span>(debug_assertions)]
+</span><span>    </span><span style="color:#bf616a;">selector_id</span><span>: SelectorId,
+</span><span>}
 </span></code></pre>
 <p><code>sys::TcpListener</code>的<code>register</code>方法：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">register</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">registry</span><span style="color:#c0c5ce;">: &amp;Registry, </span><span style="color:#bf616a;">token</span><span style="color:#c0c5ce;">: Token, </span><span style="color:#bf616a;">interests</span><span style="color:#c0c5ce;">: Interests) -&gt; io::Result&lt;()&gt; {
-        SourceFd(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.</span><span style="color:#96b5b4;">as_raw_fd</span><span style="color:#c0c5ce;">()).</span><span style="color:#96b5b4;">register</span><span style="color:#c0c5ce;">(registry, token, interests)
-    }
-
-</span></code></pre><h2 id="sourcefd">SourceFd()</h2>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span>    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">register</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">registry</span><span>: &amp;Registry, </span><span style="color:#bf616a;">token</span><span>: Token, </span><span style="color:#bf616a;">interests</span><span>: Interests) -&gt; io::Result&lt;()&gt; {
+</span><span>        SourceFd(&amp;</span><span style="color:#bf616a;">self</span><span>.</span><span style="color:#96b5b4;">as_raw_fd</span><span>()).</span><span style="color:#96b5b4;">register</span><span>(registry, token, interests)
+</span><span>    }
+</span><span>
+</span></code></pre>
+<h2 id="sourcefd">SourceFd()</h2>
 <p>先看<code>SourceFd()</code> 的第一个入参<code>&amp;self.as_raw_fd()</code></p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">AsRawFd </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">TcpListener {
-    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">as_raw_fd</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; RawFd {
-        </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.inner.</span><span style="color:#96b5b4;">as_raw_fd</span><span style="color:#c0c5ce;">()
-    }
-}
-
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">impl </span><span>AsRawFd </span><span style="color:#b48ead;">for </span><span>TcpListener {
+</span><span>    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">as_raw_fd</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>) -&gt; RawFd {
+</span><span>        </span><span style="color:#bf616a;">self</span><span>.inner.</span><span style="color:#96b5b4;">as_raw_fd</span><span>()
+</span><span>    }
+</span><span>}
+</span><span>
 </span></code></pre>
 <p>这里的<code>inner</code>是<code>net::TcpListener</code>类型。跟踪到<code>std::net::TcpListner</code>的实现：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">#[</span><span style="color:#bf616a;">stable</span><span style="color:#c0c5ce;">(feature = &quot;</span><span style="color:#a3be8c;">rust1</span><span style="color:#c0c5ce;">&quot;, since = &quot;</span><span style="color:#a3be8c;">1.0.0</span><span style="color:#c0c5ce;">&quot;)]
-</span><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">AsRawFd </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">net::TcpListener {
-    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">as_raw_fd</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; RawFd { *</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.</span><span style="color:#96b5b4;">as_inner</span><span style="color:#c0c5ce;">().</span><span style="color:#96b5b4;">socket</span><span style="color:#c0c5ce;">().</span><span style="color:#96b5b4;">as_inner</span><span style="color:#c0c5ce;">() }
-}
-</span></code></pre><pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">AsInner&lt;net_imp::TcpListener&gt; </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">TcpListener {
-    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">as_inner</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; &amp;net_imp::TcpListener { &amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.</span><span style="color:#d08770;">0 </span><span style="color:#c0c5ce;">}
-}
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#[</span><span style="color:#bf616a;">stable</span><span>(feature = &quot;</span><span style="color:#a3be8c;">rust1</span><span>&quot;, since = &quot;</span><span style="color:#a3be8c;">1.0.0</span><span>&quot;)]
+</span><span style="color:#b48ead;">impl </span><span>AsRawFd </span><span style="color:#b48ead;">for </span><span>net::TcpListener {
+</span><span>    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">as_raw_fd</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>) -&gt; RawFd { *</span><span style="color:#bf616a;">self</span><span>.</span><span style="color:#96b5b4;">as_inner</span><span>().</span><span style="color:#96b5b4;">socket</span><span>().</span><span style="color:#96b5b4;">as_inner</span><span>() }
+</span><span>}
+</span></code></pre>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">impl </span><span>AsInner&lt;net_imp::TcpListener&gt; </span><span style="color:#b48ead;">for </span><span>TcpListener {
+</span><span>    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">as_inner</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>) -&gt; &amp;net_imp::TcpListener { &amp;</span><span style="color:#bf616a;">self</span><span>.</span><span style="color:#d08770;">0 </span><span>}
+</span><span>}
 </span></code></pre>
 <p>注意到 <code>use crate::sys_common::net as net_imp;</code></p>
 <p>这里稍微梳理一下<code>TcpListener</code>的依赖关系 。 mio提供的<code>TcpListener</code> --&gt;<code>sys::TcpListener</code> --&gt; <code>net::TcpListener </code>--&gt;<code>sys_common::net::TcpListener</code></p>
 <p><code>sys_common::net::TcpListener</code>的<code>socket()</code> 方法</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">socket</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; &amp;Socket { &amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.inner }
-
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span>    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">socket</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>) -&gt; &amp;Socket { &amp;</span><span style="color:#bf616a;">self</span><span>.inner }
+</span><span>
 </span></code></pre>
 <p>std库的<code>/src/libstd/sys/unix/net.rs</code>找到<code>socket</code>的定义：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub struct </span><span style="color:#c0c5ce;">Socket(FileDesc);
-</span></code></pre><pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">AsInner&lt;c_int&gt; </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">Socket {
-    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">as_inner</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; &amp;c_int { </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.</span><span style="color:#d08770;">0.</span><span style="color:#96b5b4;">as_inner</span><span style="color:#c0c5ce;">() }
-}
-</span></code></pre><pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub struct </span><span style="color:#c0c5ce;">FileDesc {
-    </span><span style="color:#bf616a;">fd</span><span style="color:#c0c5ce;">: c_int,
-}
-</span></code></pre><pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">AsInner&lt;c_int&gt; </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">FileDesc {
-    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">as_inner</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; &amp;c_int { &amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.fd }
-}
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub struct </span><span>Socket(FileDesc);
+</span></code></pre>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">impl </span><span>AsInner&lt;c_int&gt; </span><span style="color:#b48ead;">for </span><span>Socket {
+</span><span>    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">as_inner</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>) -&gt; &amp;c_int { </span><span style="color:#bf616a;">self</span><span>.</span><span style="color:#d08770;">0.</span><span style="color:#96b5b4;">as_inner</span><span>() }
+</span><span>}
+</span></code></pre>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub struct </span><span>FileDesc {
+</span><span>    </span><span style="color:#bf616a;">fd</span><span>: c_int,
+</span><span>}
+</span></code></pre>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">impl </span><span>AsInner&lt;c_int&gt; </span><span style="color:#b48ead;">for </span><span>FileDesc {
+</span><span>    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">as_inner</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>) -&gt; &amp;c_int { &amp;</span><span style="color:#bf616a;">self</span><span>.fd }
+</span><span>}
 </span></code></pre>
 <p>回到<code>SourceFd(&amp;self.as_raw_fd()).register(registry, token, interests)</code></p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#65737e;">/// Adapter for [`RawFd`] providing an [`event::Source`] implementation.
-///
-/// `SourceFd` enables registering any type with an FD with [`Poll`].
-///
-/// While only implementations for TCP and UDP are provided, Mio supports
-/// registering any FD that can be registered with the underlying OS selector.
-/// `SourceFd` provides the necessary bridge.
-/// ...
-
-</span><span style="color:#b48ead;">pub struct </span><span style="color:#c0c5ce;">SourceFd&lt;</span><span style="color:#b48ead;">&#39;a</span><span style="color:#c0c5ce;">&gt;(pub &amp;</span><span style="color:#b48ead;">&#39;a</span><span style="color:#c0c5ce;"> RawFd);
-
-</span><span style="color:#b48ead;">impl</span><span style="color:#c0c5ce;">&lt;</span><span style="color:#b48ead;">&#39;a</span><span style="color:#c0c5ce;">&gt; event::Source </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">SourceFd&lt;</span><span style="color:#b48ead;">&#39;a</span><span style="color:#c0c5ce;">&gt; {
-    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">register</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">registry</span><span style="color:#c0c5ce;">: &amp;Registry, </span><span style="color:#bf616a;">token</span><span style="color:#c0c5ce;">: Token, </span><span style="color:#bf616a;">interests</span><span style="color:#c0c5ce;">: Interests) -&gt; io::Result&lt;()&gt; {
-        poll::selector(registry).</span><span style="color:#96b5b4;">register</span><span style="color:#c0c5ce;">(*</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, token, interests)
-    }
-
-    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">reregister</span><span style="color:#c0c5ce;">(
-        &amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">,
-        </span><span style="color:#bf616a;">registry</span><span style="color:#c0c5ce;">: &amp;Registry,
-        </span><span style="color:#bf616a;">token</span><span style="color:#c0c5ce;">: Token,
-        </span><span style="color:#bf616a;">interests</span><span style="color:#c0c5ce;">: Interests,
-    ) -&gt; io::Result&lt;()&gt; {
-        poll::selector(registry).</span><span style="color:#96b5b4;">reregister</span><span style="color:#c0c5ce;">(*</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, token, interests)
-    }
-
-    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">deregister</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">registry</span><span style="color:#c0c5ce;">: &amp;Registry) -&gt; io::Result&lt;()&gt; {
-        poll::selector(registry).</span><span style="color:#96b5b4;">deregister</span><span style="color:#c0c5ce;">(*</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">)
-    }
-}
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#65737e;">/// Adapter for [`RawFd`] providing an [`event::Source`] implementation.
+</span><span style="color:#65737e;">///
+</span><span style="color:#65737e;">/// `SourceFd` enables registering any type with an FD with [`Poll`].
+</span><span style="color:#65737e;">///
+</span><span style="color:#65737e;">/// While only implementations for TCP and UDP are provided, Mio supports
+</span><span style="color:#65737e;">/// registering any FD that can be registered with the underlying OS selector.
+</span><span style="color:#65737e;">/// `SourceFd` provides the necessary bridge.
+</span><span style="color:#65737e;">/// ...
+</span><span>
+</span><span style="color:#b48ead;">pub struct </span><span>SourceFd&lt;</span><span style="color:#b48ead;">&#39;a</span><span>&gt;(pub &amp;</span><span style="color:#b48ead;">&#39;a</span><span> RawFd);
+</span><span>
+</span><span style="color:#b48ead;">impl</span><span>&lt;</span><span style="color:#b48ead;">&#39;a</span><span>&gt; event::Source </span><span style="color:#b48ead;">for </span><span>SourceFd&lt;</span><span style="color:#b48ead;">&#39;a</span><span>&gt; {
+</span><span>    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">register</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">registry</span><span>: &amp;Registry, </span><span style="color:#bf616a;">token</span><span>: Token, </span><span style="color:#bf616a;">interests</span><span>: Interests) -&gt; io::Result&lt;()&gt; {
+</span><span>        poll::selector(registry).</span><span style="color:#96b5b4;">register</span><span>(*</span><span style="color:#bf616a;">self</span><span>.</span><span style="color:#d08770;">0</span><span>, token, interests)
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">reregister</span><span>(
+</span><span>        &amp;</span><span style="color:#bf616a;">self</span><span>,
+</span><span>        </span><span style="color:#bf616a;">registry</span><span>: &amp;Registry,
+</span><span>        </span><span style="color:#bf616a;">token</span><span>: Token,
+</span><span>        </span><span style="color:#bf616a;">interests</span><span>: Interests,
+</span><span>    ) -&gt; io::Result&lt;()&gt; {
+</span><span>        poll::selector(registry).</span><span style="color:#96b5b4;">reregister</span><span>(*</span><span style="color:#bf616a;">self</span><span>.</span><span style="color:#d08770;">0</span><span>, token, interests)
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">deregister</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">registry</span><span>: &amp;Registry) -&gt; io::Result&lt;()&gt; {
+</span><span>        poll::selector(registry).</span><span style="color:#96b5b4;">deregister</span><span>(*</span><span style="color:#bf616a;">self</span><span>.</span><span style="color:#d08770;">0</span><span>)
+</span><span>    }
+</span><span>}
 </span></code></pre>
 <p><code>SourceFd</code> 也实现了<code>event::Source</code> trait。注释中说明很详细，<code>SourceFd</code> 主要是做一个桥接，使得可以注册一个文件描述符到系统的<code>selector</code>。</p>
 <p>为什么要这么绕？因为<code>sys::selector</code> 需要一个文件描述符参数。</p>
 <p><code>poll::selector()</code>方法的定义：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#65737e;">// ===== Accessors for internal usage =====
-
-</span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">selector</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">registry</span><span style="color:#c0c5ce;">: &amp;Registry) -&gt; &amp;sys::Selector {
-    &amp;registry.selector
-}
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#65737e;">// ===== Accessors for internal usage =====
+</span><span>
+</span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">selector</span><span>(</span><span style="color:#bf616a;">registry</span><span>: &amp;Registry) -&gt; &amp;sys::Selector {
+</span><span>    &amp;registry.selector
+</span><span>}
 </span></code></pre>
 <p>通过前面的代码我们知道<code>&amp;registry.selector</code>  是<code>sys::Selector</code>。跟进去看看</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">register</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">fd</span><span style="color:#c0c5ce;">: RawFd, </span><span style="color:#bf616a;">token</span><span style="color:#c0c5ce;">: Token, </span><span style="color:#bf616a;">interests</span><span style="color:#c0c5ce;">: Interests) -&gt; io::Result&lt;()&gt; {
-        </span><span style="color:#b48ead;">let mut</span><span style="color:#c0c5ce;"> event = libc::epoll_event {
-            events: </span><span style="color:#96b5b4;">interests_to_epoll</span><span style="color:#c0c5ce;">(interests),
-            </span><span style="color:#b48ead;">u64</span><span style="color:#c0c5ce;">: </span><span style="color:#b48ead;">usize</span><span style="color:#c0c5ce;">::from(token) as </span><span style="color:#b48ead;">u64</span><span style="color:#c0c5ce;">,
-        };
-
-        syscall!(</span><span style="color:#96b5b4;">epoll_ctl</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.ep, libc::</span><span style="color:#d08770;">EPOLL_CTL_ADD</span><span style="color:#c0c5ce;">, fd, &amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> event)).</span><span style="color:#96b5b4;">map</span><span style="color:#c0c5ce;">(|_| ())
-    }
-
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span>    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">register</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">fd</span><span>: RawFd, </span><span style="color:#bf616a;">token</span><span>: Token, </span><span style="color:#bf616a;">interests</span><span>: Interests) -&gt; io::Result&lt;()&gt; {
+</span><span>        </span><span style="color:#b48ead;">let mut</span><span> event = libc::epoll_event {
+</span><span>            events: </span><span style="color:#96b5b4;">interests_to_epoll</span><span>(interests),
+</span><span>            </span><span style="color:#b48ead;">u64</span><span>: </span><span style="color:#b48ead;">usize</span><span>::from(token) as </span><span style="color:#b48ead;">u64</span><span>,
+</span><span>        };
+</span><span>
+</span><span>        syscall!(</span><span style="color:#96b5b4;">epoll_ctl</span><span>(</span><span style="color:#bf616a;">self</span><span>.ep, libc::</span><span style="color:#d08770;">EPOLL_CTL_ADD</span><span>, fd, &amp;</span><span style="color:#b48ead;">mut</span><span> event)).</span><span style="color:#96b5b4;">map</span><span>(|_| ())
+</span><span>    }
+</span><span>
 </span></code></pre>
 <p>最终是调用linux系统的</p>
-<pre style="background-color:#2b303b;">
-<code class="language-c" data-lang="c"><span style="color:#c0c5ce;">       </span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">epoll_ctl</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">epfd</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">op</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">fd</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">struct</span><span style="color:#c0c5ce;"> epoll_event *</span><span style="color:#bf616a;">event</span><span style="color:#c0c5ce;">);
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span>       </span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">epoll_ctl</span><span>(</span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">epfd</span><span>, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">op</span><span>, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">fd</span><span>, </span><span style="color:#b48ead;">struct</span><span> epoll_event *</span><span style="color:#bf616a;">event</span><span>);
 </span></code></pre>
 <p>其中的参数</p>
 <p><code>self.ep</code> 是<code>sys::Selector::new()</code>方法里调用<code>int epoll_create1(int flags);</code>返回的int值，是表示<code>epoll</code>实例的文件描述符。</p>
 <p><code>op</code> 参数传入的是<code>libc::EPOLL_CTL_ADD</code>表示本次操作是<code>add</code>一个fd到<code>interest list</code></p>
 <p><code>fd</code> 就是刚才分析的<code>SourceFd</code>持有的<code>RawFd</code></p>
 <p><code>epoll_event *</code> 参数传入了<code>&amp;mut event</code> 是<code>libc::epoll_event </code>结构体。</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub struct </span><span style="color:#c0c5ce;">epoll_event {
-    </span><span style="color:#b48ead;">pub </span><span style="color:#bf616a;">events</span><span style="color:#c0c5ce;">: uint32_t,
-    </span><span style="color:#b48ead;">pub </span><span style="color:#bf616a;">u64</span><span style="color:#c0c5ce;">: uint64_t,
-}
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub struct </span><span>epoll_event {
+</span><span>    </span><span style="color:#b48ead;">pub </span><span style="color:#bf616a;">events</span><span>: uint32_t,
+</span><span>    </span><span style="color:#b48ead;">pub </span><span style="color:#bf616a;">u64</span><span>: uint64_t,
+</span><span>}
 </span></code></pre>
 <p>Linux 结构体相关定义：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-c" data-lang="c"><span style="color:#c0c5ce;">          typedef </span><span style="color:#b48ead;">union</span><span style="color:#c0c5ce;"> epoll_data {
-               </span><span style="color:#b48ead;">void        </span><span style="color:#c0c5ce;">*ptr;
-               </span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;">          fd;
-               uint32_t     u32;
-               uint64_t     u64;
-           } epoll_data_t;
-
-           </span><span style="color:#b48ead;">struct </span><span style="color:#c0c5ce;">epoll_event {
-               uint32_t     events;      </span><span style="color:#65737e;">/* Epoll events */
-</span><span style="color:#c0c5ce;">               epoll_data_t data;        </span><span style="color:#65737e;">/* User data variable */
-           </span><span style="color:#c0c5ce;">};
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span>          typedef </span><span style="color:#b48ead;">union</span><span> epoll_data {
+</span><span>               </span><span style="color:#b48ead;">void        </span><span>*ptr;
+</span><span>               </span><span style="color:#b48ead;">int</span><span>          fd;
+</span><span>               uint32_t     u32;
+</span><span>               uint64_t     u64;
+</span><span>           } epoll_data_t;
+</span><span>
+</span><span>           </span><span style="color:#b48ead;">struct </span><span>epoll_event {
+</span><span>               uint32_t     events;      </span><span style="color:#65737e;">/* Epoll events */
+</span><span>               epoll_data_t data;        </span><span style="color:#65737e;">/* User data variable */
+</span><span>           };
 </span></code></pre>
 <p><code>uint32_t</code>的bit位表示事件类型，和<code>epoll_data_t</code> 存放用户的自定义参数，这里是<code>Token</code>。</p>
 <p>看一下向系统注册了什么<code>interests</code></p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">interests_to_epoll</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">interests</span><span style="color:#c0c5ce;">: Interests) -&gt; </span><span style="color:#b48ead;">u32 </span><span style="color:#c0c5ce;">{
-    </span><span style="color:#b48ead;">let mut</span><span style="color:#c0c5ce;"> kind = </span><span style="color:#d08770;">EPOLLET</span><span style="color:#c0c5ce;">;
-
-    </span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> interests.</span><span style="color:#96b5b4;">is_readable</span><span style="color:#c0c5ce;">() {
-        kind = kind | </span><span style="color:#d08770;">EPOLLIN </span><span style="color:#c0c5ce;">| </span><span style="color:#d08770;">EPOLLRDHUP</span><span style="color:#c0c5ce;">;
-    }
-
-    </span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> interests.</span><span style="color:#96b5b4;">is_writable</span><span style="color:#c0c5ce;">() {
-        kind |= </span><span style="color:#d08770;">EPOLLOUT</span><span style="color:#c0c5ce;">;
-    }
-
-    kind as </span><span style="color:#b48ead;">u32
-</span><span style="color:#c0c5ce;">}
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">interests_to_epoll</span><span>(</span><span style="color:#bf616a;">interests</span><span>: Interests) -&gt; </span><span style="color:#b48ead;">u32 </span><span>{
+</span><span>    </span><span style="color:#b48ead;">let mut</span><span> kind = </span><span style="color:#d08770;">EPOLLET</span><span>;
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">if</span><span> interests.</span><span style="color:#96b5b4;">is_readable</span><span>() {
+</span><span>        kind = kind | </span><span style="color:#d08770;">EPOLLIN </span><span>| </span><span style="color:#d08770;">EPOLLRDHUP</span><span>;
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">if</span><span> interests.</span><span style="color:#96b5b4;">is_writable</span><span>() {
+</span><span>        kind |= </span><span style="color:#d08770;">EPOLLOUT</span><span>;
+</span><span>    }
+</span><span>
+</span><span>    kind as </span><span style="color:#b48ead;">u32
+</span><span>}
 </span></code></pre>
 <p><code>EPOLLET</code> 表示设置 <strong>Edge Triggered</strong>  边缘触发模式。</p>
 <p><code>epoll</code> 默认采用<strong>Level Triggered</strong>水平触发模式。关于两种模式更详细的介绍，可以参考 http://man7.org/linux/man-pages/man7/epoll.7.html</p>
 <p>最开始的example里，<code>interests</code>的实际参数是<code>Interests::READABLE</code>所以会走到：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">   </span><span style="color:#c0c5ce;">	</span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> interests.</span><span style="color:#96b5b4;">is_readable</span><span style="color:#c0c5ce;">() {
-</span><span style="color:#c0c5ce;">       kind = kind | </span><span style="color:#d08770;">EPOLLIN </span><span style="color:#c0c5ce;">| </span><span style="color:#d08770;">EPOLLRDHUP</span><span style="color:#c0c5ce;">;
-</span><span style="color:#c0c5ce;">   }
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span>   </span><span>	</span><span style="color:#b48ead;">if</span><span> interests.</span><span style="color:#96b5b4;">is_readable</span><span>() {
+</span><span>       kind = kind | </span><span style="color:#d08770;">EPOLLIN </span><span>| </span><span style="color:#d08770;">EPOLLRDHUP</span><span>;
+</span><span>   }
 </span></code></pre>
 <p>这里还添加了<code>EPOLLIN | EPOLLRDHUP</code> 事件。</p>
 <p><code>EPOLLIN</code>就是文件处于可读性状态，<code>EPOLLRDHUP</code>表示socket节点关闭了连接，或者关闭了写连接（TCP是双工模式，任何一方都可以同时读写，所以任何一方也可以只关闭读或者写的连接状态）。</p>
@@ -638,74 +620,70 @@
 <p><strong>跟踪到这里，我们总算看到了将<code>TcpListener</code>关联的<code>socket</code>注册到了<code>epoll</code>的<code>interest list</code>。</strong></p>
 <h2 id="poll-poll">poll.poll()</h2>
 <p>总算进入了核心方法</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">poll.</span><span style="color:#96b5b4;">poll</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> events, None)?;
-</span></code></pre><pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;"> 		</span><span style="color:#65737e;">/// Wait for readiness events
-    ///
-    /// Blocks the current thread and waits for readiness events for any of the
-    /// [`event::Source`]s that have been registered with this `Poll` instance.
-    /// The function will block until either at least one readiness event has
-    /// been received or `timeout` has elapsed. A `timeout` of `None` means that
-    /// `poll` will block until a readiness event has been received.
-    ///
-		</span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">poll</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#b48ead;">mut </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">events</span><span style="color:#c0c5ce;">: &amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> Events, </span><span style="color:#bf616a;">timeout</span><span style="color:#c0c5ce;">: Option&lt;Duration&gt;) -&gt; io::Result&lt;()&gt; {
-        </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.registry.selector.</span><span style="color:#96b5b4;">select</span><span style="color:#c0c5ce;">(events.</span><span style="color:#96b5b4;">sys</span><span style="color:#c0c5ce;">(), timeout)
-    }
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span>poll.</span><span style="color:#96b5b4;">poll</span><span>(&amp;</span><span style="color:#b48ead;">mut</span><span> events, None)?;
+</span></code></pre>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span> 		</span><span style="color:#65737e;">/// Wait for readiness events
+</span><span>    </span><span style="color:#65737e;">///
+</span><span>    </span><span style="color:#65737e;">/// Blocks the current thread and waits for readiness events for any of the
+</span><span>    </span><span style="color:#65737e;">/// [`event::Source`]s that have been registered with this `Poll` instance.
+</span><span>    </span><span style="color:#65737e;">/// The function will block until either at least one readiness event has
+</span><span>    </span><span style="color:#65737e;">/// been received or `timeout` has elapsed. A `timeout` of `None` means that
+</span><span>    </span><span style="color:#65737e;">/// `poll` will block until a readiness event has been received.
+</span><span>    </span><span style="color:#65737e;">///
+</span><span>		</span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">poll</span><span>(&amp;</span><span style="color:#b48ead;">mut </span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">events</span><span>: &amp;</span><span style="color:#b48ead;">mut</span><span> Events, </span><span style="color:#bf616a;">timeout</span><span>: Option&lt;Duration&gt;) -&gt; io::Result&lt;()&gt; {
+</span><span>        </span><span style="color:#bf616a;">self</span><span>.registry.selector.</span><span style="color:#96b5b4;">select</span><span>(events.</span><span style="color:#96b5b4;">sys</span><span>(), timeout)
+</span><span>    }
 </span></code></pre>
 <p>注释里说明，如果没有就绪事件的话，该方法阻塞当前线程。<code>timeout</code>的实参是<code>None</code>，表示该方法会一直阻塞直到有事件到达。所以外面用一个<code>loop{}</code>循环包裹该方法。</p>
 <p>跟进去真正干活的的<code>select()</code>方法</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">select</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">events</span><span style="color:#c0c5ce;">: &amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> Events, </span><span style="color:#bf616a;">timeout</span><span style="color:#c0c5ce;">: Option&lt;Duration&gt;) -&gt; io::Result&lt;()&gt; {
-        </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> timeout = timeout
-            .</span><span style="color:#96b5b4;">map</span><span style="color:#c0c5ce;">(|</span><span style="color:#bf616a;">to</span><span style="color:#c0c5ce;">| cmp::min(to.</span><span style="color:#96b5b4;">as_millis</span><span style="color:#c0c5ce;">(), libc::</span><span style="color:#b48ead;">c_int</span><span style="color:#c0c5ce;">::max_value() as </span><span style="color:#b48ead;">u128</span><span style="color:#c0c5ce;">) as libc::</span><span style="color:#b48ead;">c_int</span><span style="color:#c0c5ce;">)
-            .</span><span style="color:#96b5b4;">unwrap_or</span><span style="color:#c0c5ce;">(-</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">);
-
-        events.</span><span style="color:#96b5b4;">clear</span><span style="color:#c0c5ce;">();
-        syscall!(</span><span style="color:#96b5b4;">epoll_wait</span><span style="color:#c0c5ce;">(
-            </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.ep,
-            events.</span><span style="color:#96b5b4;">as_mut_ptr</span><span style="color:#c0c5ce;">(),
-            events.</span><span style="color:#96b5b4;">capacity</span><span style="color:#c0c5ce;">() as </span><span style="color:#b48ead;">i32</span><span style="color:#c0c5ce;">,
-            timeout,
-        ))
-        .</span><span style="color:#96b5b4;">map</span><span style="color:#c0c5ce;">(|</span><span style="color:#bf616a;">n_events</span><span style="color:#c0c5ce;">| {
-            </span><span style="color:#65737e;">// This is safe because `epoll_wait` ensures that `n_events` are
-            // assigned.
-            </span><span style="color:#b48ead;">unsafe </span><span style="color:#c0c5ce;">{ events.</span><span style="color:#96b5b4;">set_len</span><span style="color:#c0c5ce;">(n_events as </span><span style="color:#b48ead;">usize</span><span style="color:#c0c5ce;">) };
-        })
-    }
-
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span>    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">select</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">events</span><span>: &amp;</span><span style="color:#b48ead;">mut</span><span> Events, </span><span style="color:#bf616a;">timeout</span><span>: Option&lt;Duration&gt;) -&gt; io::Result&lt;()&gt; {
+</span><span>        </span><span style="color:#b48ead;">let</span><span> timeout = timeout
+</span><span>            .</span><span style="color:#96b5b4;">map</span><span>(|</span><span style="color:#bf616a;">to</span><span>| cmp::min(to.</span><span style="color:#96b5b4;">as_millis</span><span>(), libc::</span><span style="color:#b48ead;">c_int</span><span>::max_value() as </span><span style="color:#b48ead;">u128</span><span>) as libc::</span><span style="color:#b48ead;">c_int</span><span>)
+</span><span>            .</span><span style="color:#96b5b4;">unwrap_or</span><span>(-</span><span style="color:#d08770;">1</span><span>);
+</span><span>
+</span><span>        events.</span><span style="color:#96b5b4;">clear</span><span>();
+</span><span>        syscall!(</span><span style="color:#96b5b4;">epoll_wait</span><span>(
+</span><span>            </span><span style="color:#bf616a;">self</span><span>.ep,
+</span><span>            events.</span><span style="color:#96b5b4;">as_mut_ptr</span><span>(),
+</span><span>            events.</span><span style="color:#96b5b4;">capacity</span><span>() as </span><span style="color:#b48ead;">i32</span><span>,
+</span><span>            timeout,
+</span><span>        ))
+</span><span>        .</span><span style="color:#96b5b4;">map</span><span>(|</span><span style="color:#bf616a;">n_events</span><span>| {
+</span><span>            </span><span style="color:#65737e;">// This is safe because `epoll_wait` ensures that `n_events` are
+</span><span>            </span><span style="color:#65737e;">// assigned.
+</span><span>            </span><span style="color:#b48ead;">unsafe </span><span>{ events.</span><span style="color:#96b5b4;">set_len</span><span>(n_events as </span><span style="color:#b48ead;">usize</span><span>) };
+</span><span>        })
+</span><span>    }
+</span><span>
 </span></code></pre>
 <p><code>events.clear()</code>然后调用系统的<code>epoll_wait</code>。如果有就绪事件，返回事件个数，并且将事件设置在<code>events</code>里。系统的<code>epoll_wait</code></p>
-<pre style="background-color:#2b303b;">
-<code class="language-c" data-lang="c"><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">epoll_wait</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">epfd</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">struct</span><span style="color:#c0c5ce;"> epoll_event *</span><span style="color:#bf616a;">events</span><span style="color:#c0c5ce;">,
-                      </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">maxevents</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">timeout</span><span style="color:#c0c5ce;">);
-</span></code></pre><h2 id="event-consume">event consume</h2>
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">epoll_wait</span><span>(</span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">epfd</span><span>, </span><span style="color:#b48ead;">struct</span><span> epoll_event *</span><span style="color:#bf616a;">events</span><span>,
+</span><span>                      </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">maxevents</span><span>, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">timeout</span><span>);
+</span></code></pre>
+<h2 id="event-consume">event consume</h2>
 <p>回到example的代码，如果有客户端连接到<code>server</code>，代码中的<code> events</code> 被赋值，</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">for</span><span style="color:#c0c5ce;"> event in events.</span><span style="color:#96b5b4;">iter</span><span style="color:#c0c5ce;">() {
-            </span><span style="color:#b48ead;">match</span><span style="color:#c0c5ce;"> event.</span><span style="color:#96b5b4;">token</span><span style="color:#c0c5ce;">() {
-                </span><span style="color:#d08770;">SERVER </span><span style="color:#c0c5ce;">=&gt; {
-                  ...
-              },
-              	token =&gt;{
-                  ...
-              }
-  }
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">for</span><span> event in events.</span><span style="color:#96b5b4;">iter</span><span>() {
+</span><span>            </span><span style="color:#b48ead;">match</span><span> event.</span><span style="color:#96b5b4;">token</span><span>() {
+</span><span>                </span><span style="color:#d08770;">SERVER </span><span>=&gt; {
+</span><span>                  ...
+</span><span>              },
+</span><span>              	token =&gt;{
+</span><span>                  ...
+</span><span>              }
+</span><span>  }
 </span></code></pre>
 <p>通过匹配<code>event.token()</code>进入<code>SERVER</code> 的代码块（一开始注册的token就是<code>SERVER</code> ）。看里面的逻辑：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">                   </span><span style="color:#b48ead;">let </span><span style="color:#c0c5ce;">(connection, address) = server.</span><span style="color:#96b5b4;">accept</span><span style="color:#c0c5ce;">()?;
-                    println!(&quot;</span><span style="color:#a3be8c;">Accepted connection from: </span><span style="color:#d08770;">{}</span><span style="color:#c0c5ce;">&quot;, address);
-
-                    </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> token = </span><span style="color:#96b5b4;">next</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> unique_token);
-                    poll.</span><span style="color:#96b5b4;">registry</span><span style="color:#c0c5ce;">().</span><span style="color:#96b5b4;">register</span><span style="color:#c0c5ce;">(
-                        &amp;connection,
-                        token,
-                        Interests::</span><span style="color:#d08770;">READABLE</span><span style="color:#c0c5ce;">.</span><span style="color:#96b5b4;">add</span><span style="color:#c0c5ce;">(Interests::</span><span style="color:#d08770;">WRITABLE</span><span style="color:#c0c5ce;">),
-                    )?;
-
-                    connections.</span><span style="color:#96b5b4;">insert</span><span style="color:#c0c5ce;">(token, connection);
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span>                   </span><span style="color:#b48ead;">let </span><span>(connection, address) = server.</span><span style="color:#96b5b4;">accept</span><span>()?;
+</span><span>                    println!(&quot;</span><span style="color:#a3be8c;">Accepted connection from: </span><span style="color:#d08770;">{}</span><span>&quot;, address);
+</span><span>
+</span><span>                    </span><span style="color:#b48ead;">let</span><span> token = </span><span style="color:#96b5b4;">next</span><span>(&amp;</span><span style="color:#b48ead;">mut</span><span> unique_token);
+</span><span>                    poll.</span><span style="color:#96b5b4;">registry</span><span>().</span><span style="color:#96b5b4;">register</span><span>(
+</span><span>                        &amp;connection,
+</span><span>                        token,
+</span><span>                        Interests::</span><span style="color:#d08770;">READABLE</span><span>.</span><span style="color:#96b5b4;">add</span><span>(Interests::</span><span style="color:#d08770;">WRITABLE</span><span>),
+</span><span>                    )?;
+</span><span>
+</span><span>                    connections.</span><span style="color:#96b5b4;">insert</span><span>(token, connection);
 </span></code></pre>
 <ol>
 <li>通过<code>server.accept()</code>获取<code>connection</code>实例和客户端<code>address</code></li>
@@ -713,198 +691,186 @@
 <li>将<code>connection</code>插入<code>HashMap</code>方便后面使用</li>
 </ol>
 <p>一个一个看。 先看<code>TcpListener</code>的<code>accept()</code>:</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">accept</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; io::Result&lt;(TcpStream, SocketAddr)&gt; {
-        </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.inner.</span><span style="color:#96b5b4;">accept</span><span style="color:#c0c5ce;">().</span><span style="color:#96b5b4;">and_then</span><span style="color:#c0c5ce;">(|(</span><span style="color:#bf616a;">inner</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">addr</span><span style="color:#c0c5ce;">)| {
-            inner
-                .</span><span style="color:#96b5b4;">set_nonblocking</span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">true</span><span style="color:#c0c5ce;">)
-                .</span><span style="color:#96b5b4;">map</span><span style="color:#c0c5ce;">(|()| (TcpStream::new(inner), addr))
-        })
-    }
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span>    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">accept</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>) -&gt; io::Result&lt;(TcpStream, SocketAddr)&gt; {
+</span><span>        </span><span style="color:#bf616a;">self</span><span>.inner.</span><span style="color:#96b5b4;">accept</span><span>().</span><span style="color:#96b5b4;">and_then</span><span>(|(</span><span style="color:#bf616a;">inner</span><span>, </span><span style="color:#bf616a;">addr</span><span>)| {
+</span><span>            inner
+</span><span>                .</span><span style="color:#96b5b4;">set_nonblocking</span><span>(</span><span style="color:#d08770;">true</span><span>)
+</span><span>                .</span><span style="color:#96b5b4;">map</span><span>(|()| (TcpStream::new(inner), addr))
+</span><span>        })
+</span><span>    }
 </span></code></pre>
 <p>跟进去看它的<code>inner</code>(net::TcpListener)的<code>accept()</code> 方法:</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">		#[</span><span style="color:#bf616a;">stable</span><span style="color:#c0c5ce;">(feature = &quot;</span><span style="color:#a3be8c;">rust1</span><span style="color:#c0c5ce;">&quot;, since = &quot;</span><span style="color:#a3be8c;">1.0.0</span><span style="color:#c0c5ce;">&quot;)]
-    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">accept</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; io::Result&lt;(TcpStream, SocketAddr)&gt; {
-        </span><span style="color:#65737e;">// On WASM, `TcpStream` is uninhabited (as it&#39;s unsupported) and so
-        // the `a` variable here is technically unused.
-        </span><span style="color:#c0c5ce;">#[</span><span style="color:#bf616a;">cfg_attr</span><span style="color:#c0c5ce;">(target_arch = &quot;</span><span style="color:#a3be8c;">wasm32</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#bf616a;">allow</span><span style="color:#c0c5ce;">(unused_variables))]
-        </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.</span><span style="color:#d08770;">0.</span><span style="color:#96b5b4;">accept</span><span style="color:#c0c5ce;">().</span><span style="color:#96b5b4;">map</span><span style="color:#c0c5ce;">(|(</span><span style="color:#bf616a;">a</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">b</span><span style="color:#c0c5ce;">)| (TcpStream(a), b))
-    }
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span>		#[</span><span style="color:#bf616a;">stable</span><span>(feature = &quot;</span><span style="color:#a3be8c;">rust1</span><span>&quot;, since = &quot;</span><span style="color:#a3be8c;">1.0.0</span><span>&quot;)]
+</span><span>    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">accept</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>) -&gt; io::Result&lt;(TcpStream, SocketAddr)&gt; {
+</span><span>        </span><span style="color:#65737e;">// On WASM, `TcpStream` is uninhabited (as it&#39;s unsupported) and so
+</span><span>        </span><span style="color:#65737e;">// the `a` variable here is technically unused.
+</span><span>        #[</span><span style="color:#bf616a;">cfg_attr</span><span>(target_arch = &quot;</span><span style="color:#a3be8c;">wasm32</span><span>&quot;, </span><span style="color:#bf616a;">allow</span><span>(unused_variables))]
+</span><span>        </span><span style="color:#bf616a;">self</span><span>.</span><span style="color:#d08770;">0.</span><span style="color:#96b5b4;">accept</span><span>().</span><span style="color:#96b5b4;">map</span><span>(|(</span><span style="color:#bf616a;">a</span><span>, </span><span style="color:#bf616a;">b</span><span>)| (TcpStream(a), b))
+</span><span>    }
 </span></code></pre>
 <p>又会像之前一个进入<code>sys_common::net::TcpListener</code> 的方法，不再重复跟踪。</p>
 <p>创建一个新的<code>token</code>，然后注册到<code>Poll</code>。注意<code>register()</code> 方法的参数，<code>event::Source</code>是<code>&amp;connection:TcpStream</code>，</p>
 <p><code>Interests</code>是<code>Interests::READABLE.add(Interests::WRITABLE)</code>可读就绪与可写就绪。看一看<code>TcpStream</code>对<code>event::Source</code>的实现：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">event::Source </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">TcpStream {
-    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">register</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">registry</span><span style="color:#c0c5ce;">: &amp;Registry, </span><span style="color:#bf616a;">token</span><span style="color:#c0c5ce;">: Token, </span><span style="color:#bf616a;">interests</span><span style="color:#c0c5ce;">: Interests) -&gt; io::Result&lt;()&gt; {
-        #[</span><span style="color:#bf616a;">cfg</span><span style="color:#c0c5ce;">(debug_assertions)]
-        </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.selector_id.</span><span style="color:#96b5b4;">associate_selector</span><span style="color:#c0c5ce;">(registry)?;
-        </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.sys.</span><span style="color:#96b5b4;">register</span><span style="color:#c0c5ce;">(registry, token, interests)
-    }
-
-    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">reregister</span><span style="color:#c0c5ce;">(
-        &amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">,
-        </span><span style="color:#bf616a;">registry</span><span style="color:#c0c5ce;">: &amp;Registry,
-        </span><span style="color:#bf616a;">token</span><span style="color:#c0c5ce;">: Token,
-        </span><span style="color:#bf616a;">interests</span><span style="color:#c0c5ce;">: Interests,
-    ) -&gt; io::Result&lt;()&gt; {
-        </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.sys.</span><span style="color:#96b5b4;">reregister</span><span style="color:#c0c5ce;">(registry, token, interests)
-    }
-
-    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">deregister</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">registry</span><span style="color:#c0c5ce;">: &amp;Registry) -&gt; io::Result&lt;()&gt; {
-        </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.sys.</span><span style="color:#96b5b4;">deregister</span><span style="color:#c0c5ce;">(registry)
-    }
-}
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">impl </span><span>event::Source </span><span style="color:#b48ead;">for </span><span>TcpStream {
+</span><span>    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">register</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">registry</span><span>: &amp;Registry, </span><span style="color:#bf616a;">token</span><span>: Token, </span><span style="color:#bf616a;">interests</span><span>: Interests) -&gt; io::Result&lt;()&gt; {
+</span><span>        #[</span><span style="color:#bf616a;">cfg</span><span>(debug_assertions)]
+</span><span>        </span><span style="color:#bf616a;">self</span><span>.selector_id.</span><span style="color:#96b5b4;">associate_selector</span><span>(registry)?;
+</span><span>        </span><span style="color:#bf616a;">self</span><span>.sys.</span><span style="color:#96b5b4;">register</span><span>(registry, token, interests)
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">reregister</span><span>(
+</span><span>        &amp;</span><span style="color:#bf616a;">self</span><span>,
+</span><span>        </span><span style="color:#bf616a;">registry</span><span>: &amp;Registry,
+</span><span>        </span><span style="color:#bf616a;">token</span><span>: Token,
+</span><span>        </span><span style="color:#bf616a;">interests</span><span>: Interests,
+</span><span>    ) -&gt; io::Result&lt;()&gt; {
+</span><span>        </span><span style="color:#bf616a;">self</span><span>.sys.</span><span style="color:#96b5b4;">reregister</span><span>(registry, token, interests)
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">deregister</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">registry</span><span>: &amp;Registry) -&gt; io::Result&lt;()&gt; {
+</span><span>        </span><span style="color:#bf616a;">self</span><span>.sys.</span><span style="color:#96b5b4;">deregister</span><span>(registry)
+</span><span>    }
+</span><span>}
 </span></code></pre>
 <p>在<code>register()</code>方法里，设置了<code>self.selector_id</code>。通过<code>self.sys.register()</code>注册到<code>selector</code>。</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub struct </span><span style="color:#c0c5ce;">TcpStream {
-    </span><span style="color:#bf616a;">sys</span><span style="color:#c0c5ce;">: sys::TcpStream,
-    #[</span><span style="color:#bf616a;">cfg</span><span style="color:#c0c5ce;">(debug_assertions)]
-    </span><span style="color:#bf616a;">selector_id</span><span style="color:#c0c5ce;">: SelectorId,
-}
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub struct </span><span>TcpStream {
+</span><span>    </span><span style="color:#bf616a;">sys</span><span>: sys::TcpStream,
+</span><span>    #[</span><span style="color:#bf616a;">cfg</span><span>(debug_assertions)]
+</span><span>    </span><span style="color:#bf616a;">selector_id</span><span>: SelectorId,
+</span><span>}
 </span></code></pre>
 <p>跟进去<code>sys::TcpStream::register()</code></p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">event::Source </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">TcpStream {
-    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">register</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">registry</span><span style="color:#c0c5ce;">: &amp;Registry, </span><span style="color:#bf616a;">token</span><span style="color:#c0c5ce;">: Token, </span><span style="color:#bf616a;">interests</span><span style="color:#c0c5ce;">: Interests) -&gt; io::Result&lt;()&gt; {
-        SourceFd(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.</span><span style="color:#96b5b4;">as_raw_fd</span><span style="color:#c0c5ce;">()).</span><span style="color:#96b5b4;">register</span><span style="color:#c0c5ce;">(registry, token, interests)
-    }
-
-    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">reregister</span><span style="color:#c0c5ce;">(
-        &amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">,
-        </span><span style="color:#bf616a;">registry</span><span style="color:#c0c5ce;">: &amp;Registry,
-        </span><span style="color:#bf616a;">token</span><span style="color:#c0c5ce;">: Token,
-        </span><span style="color:#bf616a;">interests</span><span style="color:#c0c5ce;">: Interests,
-    ) -&gt; io::Result&lt;()&gt; {
-        SourceFd(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.</span><span style="color:#96b5b4;">as_raw_fd</span><span style="color:#c0c5ce;">()).</span><span style="color:#96b5b4;">reregister</span><span style="color:#c0c5ce;">(registry, token, interests)
-    }
-
-    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">deregister</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">registry</span><span style="color:#c0c5ce;">: &amp;Registry) -&gt; io::Result&lt;()&gt; {
-        SourceFd(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.</span><span style="color:#96b5b4;">as_raw_fd</span><span style="color:#c0c5ce;">()).</span><span style="color:#96b5b4;">deregister</span><span style="color:#c0c5ce;">(registry)
-    }
-}
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">impl </span><span>event::Source </span><span style="color:#b48ead;">for </span><span>TcpStream {
+</span><span>    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">register</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">registry</span><span>: &amp;Registry, </span><span style="color:#bf616a;">token</span><span>: Token, </span><span style="color:#bf616a;">interests</span><span>: Interests) -&gt; io::Result&lt;()&gt; {
+</span><span>        SourceFd(&amp;</span><span style="color:#bf616a;">self</span><span>.</span><span style="color:#96b5b4;">as_raw_fd</span><span>()).</span><span style="color:#96b5b4;">register</span><span>(registry, token, interests)
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">reregister</span><span>(
+</span><span>        &amp;</span><span style="color:#bf616a;">self</span><span>,
+</span><span>        </span><span style="color:#bf616a;">registry</span><span>: &amp;Registry,
+</span><span>        </span><span style="color:#bf616a;">token</span><span>: Token,
+</span><span>        </span><span style="color:#bf616a;">interests</span><span>: Interests,
+</span><span>    ) -&gt; io::Result&lt;()&gt; {
+</span><span>        SourceFd(&amp;</span><span style="color:#bf616a;">self</span><span>.</span><span style="color:#96b5b4;">as_raw_fd</span><span>()).</span><span style="color:#96b5b4;">reregister</span><span>(registry, token, interests)
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">deregister</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">registry</span><span>: &amp;Registry) -&gt; io::Result&lt;()&gt; {
+</span><span>        SourceFd(&amp;</span><span style="color:#bf616a;">self</span><span>.</span><span style="color:#96b5b4;">as_raw_fd</span><span>()).</span><span style="color:#96b5b4;">deregister</span><span>(registry)
+</span><span>    }
+</span><span>}
 </span></code></pre>
 <p>进入了<code>SourceFd()</code>，上面已经分析过，不再重复。</p>
 <p>将<code>connection</code>插入<code>HashMap</code>方便后面使用，不需要解释。</p>
 <p>通过将<code>TcpStream</code>注册到<code>Poll</code>，一旦连接建立稳定，将触发读就绪和写就绪事件。通过<code>event.token() </code>分流到下面的代码：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">                token =&gt; {
-                    </span><span style="color:#65737e;">// (maybe) received an event for a TCP connection.
-                    </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> done = </span><span style="color:#b48ead;">if let </span><span style="color:#c0c5ce;">Some(connection) = connections.</span><span style="color:#96b5b4;">get_mut</span><span style="color:#c0c5ce;">(&amp;token) {
-                        </span><span style="color:#96b5b4;">handle_connection_event</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> poll, connection, event)?
-                    } </span><span style="color:#b48ead;">else </span><span style="color:#c0c5ce;">{
-                        </span><span style="color:#65737e;">// Sporadic events happen.
-                        </span><span style="color:#d08770;">false
-                    </span><span style="color:#c0c5ce;">};
-                    </span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> done {
-                        connections.</span><span style="color:#96b5b4;">remove</span><span style="color:#c0c5ce;">(&amp;token);
-                    }
-                }
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span>                token =&gt; {
+</span><span>                    </span><span style="color:#65737e;">// (maybe) received an event for a TCP connection.
+</span><span>                    </span><span style="color:#b48ead;">let</span><span> done = </span><span style="color:#b48ead;">if let </span><span>Some(connection) = connections.</span><span style="color:#96b5b4;">get_mut</span><span>(&amp;token) {
+</span><span>                        </span><span style="color:#96b5b4;">handle_connection_event</span><span>(&amp;</span><span style="color:#b48ead;">mut</span><span> poll, connection, event)?
+</span><span>                    } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>                        </span><span style="color:#65737e;">// Sporadic events happen.
+</span><span>                        </span><span style="color:#d08770;">false
+</span><span>                    };
+</span><span>                    </span><span style="color:#b48ead;">if</span><span> done {
+</span><span>                        connections.</span><span style="color:#96b5b4;">remove</span><span>(&amp;token);
+</span><span>                    }
+</span><span>                }
 </span></code></pre>
 <p><code>if let Some(connection) = connections.get_mut(&amp;token)</code>通过<code>&amp;token</code>从<code>HashMap</code>获取保存的<code>connection</code>然后进入<code>handle_connection_event()</code>，该方法判断<code>event.is_writable()</code> 和<code>event.is_readable()</code>然后分别处理。对一个<code>TcpStream</code>哪一个事件会先到达？不确定。代码中的两个<code>if</code>没有先后的依赖关系。</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#65737e;">/// Returns `true` if the connection is done.
-</span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">handle_connection_event</span><span style="color:#c0c5ce;">(
-    </span><span style="color:#bf616a;">poll</span><span style="color:#c0c5ce;">: &amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> Poll,
-    </span><span style="color:#bf616a;">connection</span><span style="color:#c0c5ce;">: &amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> TcpStream,
-    </span><span style="color:#bf616a;">event</span><span style="color:#c0c5ce;">: &amp;Event,
-) -&gt; io::Result&lt;</span><span style="color:#b48ead;">bool</span><span style="color:#c0c5ce;">&gt; {
-    </span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> event.</span><span style="color:#96b5b4;">is_writable</span><span style="color:#c0c5ce;">() {
-      ...
-    }
-
-    </span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> event.</span><span style="color:#96b5b4;">is_readable</span><span style="color:#c0c5ce;">() {
-      ...
-    }
-
-    Ok(</span><span style="color:#d08770;">false</span><span style="color:#c0c5ce;">)
-}
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#65737e;">/// Returns `true` if the connection is done.
+</span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">handle_connection_event</span><span>(
+</span><span>    </span><span style="color:#bf616a;">poll</span><span>: &amp;</span><span style="color:#b48ead;">mut</span><span> Poll,
+</span><span>    </span><span style="color:#bf616a;">connection</span><span>: &amp;</span><span style="color:#b48ead;">mut</span><span> TcpStream,
+</span><span>    </span><span style="color:#bf616a;">event</span><span>: &amp;Event,
+</span><span>) -&gt; io::Result&lt;</span><span style="color:#b48ead;">bool</span><span>&gt; {
+</span><span>    </span><span style="color:#b48ead;">if</span><span> event.</span><span style="color:#96b5b4;">is_writable</span><span>() {
+</span><span>      ...
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">if</span><span> event.</span><span style="color:#96b5b4;">is_readable</span><span>() {
+</span><span>      ...
+</span><span>    }
+</span><span>
+</span><span>    Ok(</span><span style="color:#d08770;">false</span><span>)
+</span><span>}
 </span></code></pre>
 <p>我们从<code>if event.is_writable() </code>看</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">		</span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> event.</span><span style="color:#96b5b4;">is_writable</span><span style="color:#c0c5ce;">() {
-        </span><span style="color:#65737e;">// We can (maybe) write to the connection.
-        </span><span style="color:#b48ead;">match</span><span style="color:#c0c5ce;"> connection.</span><span style="color:#96b5b4;">write</span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">DATA</span><span style="color:#c0c5ce;">) {
-            </span><span style="color:#65737e;">// We want to write the entire `DATA` buffer in a single go. If we
-            // write less we&#39;ll return a short write error (same as
-            // `io::Write::write_all` does).
-            </span><span style="color:#c0c5ce;">Ok(n) </span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> n &lt; </span><span style="color:#d08770;">DATA</span><span style="color:#c0c5ce;">.</span><span style="color:#96b5b4;">len</span><span style="color:#c0c5ce;">() =&gt; </span><span style="color:#b48ead;">return </span><span style="color:#c0c5ce;">Err(io::ErrorKind::WriteZero.</span><span style="color:#96b5b4;">into</span><span style="color:#c0c5ce;">()),
-            Ok(_) =&gt; {
-                </span><span style="color:#65737e;">// After we&#39;ve written something we&#39;ll reregister the connection
-                // to only respond to readable events.
-</span><span style="color:#c0c5ce;">                poll.</span><span style="color:#96b5b4;">registry</span><span style="color:#c0c5ce;">()
-                    .</span><span style="color:#96b5b4;">reregister</span><span style="color:#c0c5ce;">(&amp;connection, event.</span><span style="color:#96b5b4;">token</span><span style="color:#c0c5ce;">(), Interests::</span><span style="color:#d08770;">READABLE</span><span style="color:#c0c5ce;">)?
-            }
-            </span><span style="color:#65737e;">// Would block &quot;errors&quot; are the OS&#39;s way of saying that the
-            // connection is not actually ready to perform this I/O operation.
-            </span><span style="color:#c0c5ce;">Err(</span><span style="color:#b48ead;">ref</span><span style="color:#c0c5ce;"> err) </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">would_block</span><span style="color:#c0c5ce;">(err) =&gt; {}
-            </span><span style="color:#65737e;">// Got interrupted (how rude!), we&#39;ll try again.
-            </span><span style="color:#c0c5ce;">Err(</span><span style="color:#b48ead;">ref</span><span style="color:#c0c5ce;"> err) </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">interrupted</span><span style="color:#c0c5ce;">(err) =&gt; {
-                </span><span style="color:#b48ead;">return </span><span style="color:#96b5b4;">handle_connection_event</span><span style="color:#c0c5ce;">(poll, connection, event)
-            }
-            </span><span style="color:#65737e;">// Other errors we&#39;ll consider fatal.
-            </span><span style="color:#c0c5ce;">Err(err) =&gt; </span><span style="color:#b48ead;">return </span><span style="color:#c0c5ce;">Err(err),
-        }
-    }
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span>		</span><span style="color:#b48ead;">if</span><span> event.</span><span style="color:#96b5b4;">is_writable</span><span>() {
+</span><span>        </span><span style="color:#65737e;">// We can (maybe) write to the connection.
+</span><span>        </span><span style="color:#b48ead;">match</span><span> connection.</span><span style="color:#96b5b4;">write</span><span>(</span><span style="color:#d08770;">DATA</span><span>) {
+</span><span>            </span><span style="color:#65737e;">// We want to write the entire `DATA` buffer in a single go. If we
+</span><span>            </span><span style="color:#65737e;">// write less we&#39;ll return a short write error (same as
+</span><span>            </span><span style="color:#65737e;">// `io::Write::write_all` does).
+</span><span>            Ok(n) </span><span style="color:#b48ead;">if</span><span> n &lt; </span><span style="color:#d08770;">DATA</span><span>.</span><span style="color:#96b5b4;">len</span><span>() =&gt; </span><span style="color:#b48ead;">return </span><span>Err(io::ErrorKind::WriteZero.</span><span style="color:#96b5b4;">into</span><span>()),
+</span><span>            Ok(_) =&gt; {
+</span><span>                </span><span style="color:#65737e;">// After we&#39;ve written something we&#39;ll reregister the connection
+</span><span>                </span><span style="color:#65737e;">// to only respond to readable events.
+</span><span>                poll.</span><span style="color:#96b5b4;">registry</span><span>()
+</span><span>                    .</span><span style="color:#96b5b4;">reregister</span><span>(&amp;connection, event.</span><span style="color:#96b5b4;">token</span><span>(), Interests::</span><span style="color:#d08770;">READABLE</span><span>)?
+</span><span>            }
+</span><span>            </span><span style="color:#65737e;">// Would block &quot;errors&quot; are the OS&#39;s way of saying that the
+</span><span>            </span><span style="color:#65737e;">// connection is not actually ready to perform this I/O operation.
+</span><span>            Err(</span><span style="color:#b48ead;">ref</span><span> err) </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">would_block</span><span>(err) =&gt; {}
+</span><span>            </span><span style="color:#65737e;">// Got interrupted (how rude!), we&#39;ll try again.
+</span><span>            Err(</span><span style="color:#b48ead;">ref</span><span> err) </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">interrupted</span><span>(err) =&gt; {
+</span><span>                </span><span style="color:#b48ead;">return </span><span style="color:#96b5b4;">handle_connection_event</span><span>(poll, connection, event)
+</span><span>            }
+</span><span>            </span><span style="color:#65737e;">// Other errors we&#39;ll consider fatal.
+</span><span>            Err(err) =&gt; </span><span style="color:#b48ead;">return </span><span>Err(err),
+</span><span>        }
+</span><span>    }
 </span></code></pre>
 <p>如果可写就绪，就立即<code>connection.write(DATA)</code>。客户端会收到<code>&quot;Hello world!\n&quot;</code>字符，该方法的签名</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">write</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#b48ead;">mut </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">buf</span><span style="color:#c0c5ce;">: &amp;[</span><span style="color:#b48ead;">u8</span><span style="color:#c0c5ce;">]) -&gt; io::Result&lt;</span><span style="color:#b48ead;">usize</span><span style="color:#c0c5ce;">&gt;;
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">write</span><span>(&amp;</span><span style="color:#b48ead;">mut </span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">buf</span><span>: &amp;[</span><span style="color:#b48ead;">u8</span><span>]) -&gt; io::Result&lt;</span><span style="color:#b48ead;">usize</span><span>&gt;;
 </span></code></pre>
 <p>如果写入字节长度小于<code>DATA.len()</code>就返回Err。</p>
 <p>如果写入成功，重新注册该<code>connection</code>，只关心<code>Interests::READABLE</code>可读就绪事件。</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">                </span><span style="color:#65737e;">// After we&#39;ve written something we&#39;ll reregister the connection
-                // to only respond to readable events.
-</span><span style="color:#c0c5ce;">                poll.</span><span style="color:#96b5b4;">registry</span><span style="color:#c0c5ce;">()
-                    .</span><span style="color:#96b5b4;">reregister</span><span style="color:#c0c5ce;">(&amp;connection, event.</span><span style="color:#96b5b4;">token</span><span style="color:#c0c5ce;">(), Interests::</span><span style="color:#d08770;">READABLE</span><span style="color:#c0c5ce;">)?
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span>                </span><span style="color:#65737e;">// After we&#39;ve written something we&#39;ll reregister the connection
+</span><span>                </span><span style="color:#65737e;">// to only respond to readable events.
+</span><span>                poll.</span><span style="color:#96b5b4;">registry</span><span>()
+</span><span>                    .</span><span style="color:#96b5b4;">reregister</span><span>(&amp;connection, event.</span><span style="color:#96b5b4;">token</span><span>(), Interests::</span><span style="color:#d08770;">READABLE</span><span>)?
 </span></code></pre>
 <p>如果返回的错误是阻塞则什么也不做。</p>
 <p>如果返回的是被打断，则递归调用<code>handle_connection_event()</code></p>
 <p>接着看<code>if event.is_readable()</code></p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> event.</span><span style="color:#96b5b4;">is_readable</span><span style="color:#c0c5ce;">() {
-        </span><span style="color:#b48ead;">let mut</span><span style="color:#c0c5ce;"> connection_closed = </span><span style="color:#d08770;">false</span><span style="color:#c0c5ce;">;
-        </span><span style="color:#b48ead;">let mut</span><span style="color:#c0c5ce;"> received_data = Vec::with_capacity(</span><span style="color:#d08770;">4096</span><span style="color:#c0c5ce;">);
-        </span><span style="color:#65737e;">// We can (maybe) read from the connection.
-        </span><span style="color:#b48ead;">loop </span><span style="color:#c0c5ce;">{
-            </span><span style="color:#b48ead;">let mut</span><span style="color:#c0c5ce;"> buf = [</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">; </span><span style="color:#d08770;">256</span><span style="color:#c0c5ce;">];
-            </span><span style="color:#b48ead;">match</span><span style="color:#c0c5ce;"> connection.</span><span style="color:#96b5b4;">read</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> buf) {
-                Ok(</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">) =&gt; {
-                    </span><span style="color:#65737e;">// Reading 0 bytes means the other side has closed the
-                    // connection or is done writing, then so are we.
-</span><span style="color:#c0c5ce;">                    connection_closed = </span><span style="color:#d08770;">true</span><span style="color:#c0c5ce;">;
-                    </span><span style="color:#b48ead;">break</span><span style="color:#c0c5ce;">;
-                }
-                Ok(n) =&gt; received_data.</span><span style="color:#96b5b4;">extend_from_slice</span><span style="color:#c0c5ce;">(&amp;buf[..n]),
-                </span><span style="color:#65737e;">// Would block &quot;errors&quot; are the OS&#39;s way of saying that the
-                // connection is not actually ready to perform this I/O operation.
-                </span><span style="color:#c0c5ce;">Err(</span><span style="color:#b48ead;">ref</span><span style="color:#c0c5ce;"> err) </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">would_block</span><span style="color:#c0c5ce;">(err) =&gt; </span><span style="color:#b48ead;">break</span><span style="color:#c0c5ce;">,
-                Err(</span><span style="color:#b48ead;">ref</span><span style="color:#c0c5ce;"> err) </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">interrupted</span><span style="color:#c0c5ce;">(err) =&gt; </span><span style="color:#b48ead;">continue</span><span style="color:#c0c5ce;">,
-                </span><span style="color:#65737e;">// Other errors we&#39;ll consider fatal.
-                </span><span style="color:#c0c5ce;">Err(err) =&gt; </span><span style="color:#b48ead;">return </span><span style="color:#c0c5ce;">Err(err),
-            }
-        }
-
-        </span><span style="color:#b48ead;">if let </span><span style="color:#c0c5ce;">Ok(str_buf) = </span><span style="color:#96b5b4;">from_utf8</span><span style="color:#c0c5ce;">(&amp;received_data) {
-            println!(&quot;</span><span style="color:#a3be8c;">Received data: </span><span style="color:#d08770;">{}</span><span style="color:#c0c5ce;">&quot;, str_buf.</span><span style="color:#96b5b4;">trim_end</span><span style="color:#c0c5ce;">());
-        } </span><span style="color:#b48ead;">else </span><span style="color:#c0c5ce;">{
-            println!(&quot;</span><span style="color:#a3be8c;">Received (none UTF-8) data: </span><span style="color:#d08770;">{:?}</span><span style="color:#c0c5ce;">&quot;, &amp;received_data);
-        }
-
-        </span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> connection_closed {
-            println!(&quot;</span><span style="color:#a3be8c;">Connection closed</span><span style="color:#c0c5ce;">&quot;);
-            </span><span style="color:#b48ead;">return </span><span style="color:#c0c5ce;">Ok(</span><span style="color:#d08770;">true</span><span style="color:#c0c5ce;">);
-        }
-    }
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span>    </span><span style="color:#b48ead;">if</span><span> event.</span><span style="color:#96b5b4;">is_readable</span><span>() {
+</span><span>        </span><span style="color:#b48ead;">let mut</span><span> connection_closed = </span><span style="color:#d08770;">false</span><span>;
+</span><span>        </span><span style="color:#b48ead;">let mut</span><span> received_data = Vec::with_capacity(</span><span style="color:#d08770;">4096</span><span>);
+</span><span>        </span><span style="color:#65737e;">// We can (maybe) read from the connection.
+</span><span>        </span><span style="color:#b48ead;">loop </span><span>{
+</span><span>            </span><span style="color:#b48ead;">let mut</span><span> buf = [</span><span style="color:#d08770;">0</span><span>; </span><span style="color:#d08770;">256</span><span>];
+</span><span>            </span><span style="color:#b48ead;">match</span><span> connection.</span><span style="color:#96b5b4;">read</span><span>(&amp;</span><span style="color:#b48ead;">mut</span><span> buf) {
+</span><span>                Ok(</span><span style="color:#d08770;">0</span><span>) =&gt; {
+</span><span>                    </span><span style="color:#65737e;">// Reading 0 bytes means the other side has closed the
+</span><span>                    </span><span style="color:#65737e;">// connection or is done writing, then so are we.
+</span><span>                    connection_closed = </span><span style="color:#d08770;">true</span><span>;
+</span><span>                    </span><span style="color:#b48ead;">break</span><span>;
+</span><span>                }
+</span><span>                Ok(n) =&gt; received_data.</span><span style="color:#96b5b4;">extend_from_slice</span><span>(&amp;buf[..n]),
+</span><span>                </span><span style="color:#65737e;">// Would block &quot;errors&quot; are the OS&#39;s way of saying that the
+</span><span>                </span><span style="color:#65737e;">// connection is not actually ready to perform this I/O operation.
+</span><span>                Err(</span><span style="color:#b48ead;">ref</span><span> err) </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">would_block</span><span>(err) =&gt; </span><span style="color:#b48ead;">break</span><span>,
+</span><span>                Err(</span><span style="color:#b48ead;">ref</span><span> err) </span><span style="color:#b48ead;">if </span><span style="color:#96b5b4;">interrupted</span><span>(err) =&gt; </span><span style="color:#b48ead;">continue</span><span>,
+</span><span>                </span><span style="color:#65737e;">// Other errors we&#39;ll consider fatal.
+</span><span>                Err(err) =&gt; </span><span style="color:#b48ead;">return </span><span>Err(err),
+</span><span>            }
+</span><span>        }
+</span><span>
+</span><span>        </span><span style="color:#b48ead;">if let </span><span>Ok(str_buf) = </span><span style="color:#96b5b4;">from_utf8</span><span>(&amp;received_data) {
+</span><span>            println!(&quot;</span><span style="color:#a3be8c;">Received data: </span><span style="color:#d08770;">{}</span><span>&quot;, str_buf.</span><span style="color:#96b5b4;">trim_end</span><span>());
+</span><span>        } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>            println!(&quot;</span><span style="color:#a3be8c;">Received (none UTF-8) data: </span><span style="color:#d08770;">{:?}</span><span>&quot;, &amp;received_data);
+</span><span>        }
+</span><span>
+</span><span>        </span><span style="color:#b48ead;">if</span><span> connection_closed {
+</span><span>            println!(&quot;</span><span style="color:#a3be8c;">Connection closed</span><span>&quot;);
+</span><span>            </span><span style="color:#b48ead;">return </span><span>Ok(</span><span style="color:#d08770;">true</span><span>);
+</span><span>        }
+</span><span>    }
 </span></code></pre>
 <p>有一个<code>loop {}</code>，其中 <code>connection.read(&amp;mut buf) </code>方法的签名：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">read</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#b48ead;">mut </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, </span><span style="color:#bf616a;">buf</span><span style="color:#c0c5ce;">: &amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> [</span><span style="color:#b48ead;">u8</span><span style="color:#c0c5ce;">]) -&gt; io::Result&lt;</span><span style="color:#b48ead;">usize</span><span style="color:#c0c5ce;">&gt; {
-        (&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.sys).</span><span style="color:#96b5b4;">read</span><span style="color:#c0c5ce;">(buf)
-    }
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span>    </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">read</span><span>(&amp;</span><span style="color:#b48ead;">mut </span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">buf</span><span>: &amp;</span><span style="color:#b48ead;">mut</span><span> [</span><span style="color:#b48ead;">u8</span><span>]) -&gt; io::Result&lt;</span><span style="color:#b48ead;">usize</span><span>&gt; {
+</span><span>        (&amp;</span><span style="color:#bf616a;">self</span><span>.sys).</span><span style="color:#96b5b4;">read</span><span>(buf)
+</span><span>    }
 </span></code></pre>
 <p>如果返回结果为0，表示全部读取完毕。<code>connection_closed = true;</code>对方已经关闭连接。</p>
 <p>如果返回n，说明读取到客户端的数据，将数据追加到<code>received_data</code>。</p>
@@ -913,109 +879,105 @@
 <p>将读取到的数据打印出来，如果<code>connection_closed = true;</code>则返回<code>Ok(true)</code>，否则后面会默认返回<code>   Ok(false)</code> 。</p>
 <p>大部分情况下，可读就绪，但是客户端没有任何数据输入会走阻塞，跳出<code>loop</code>那个分支。</p>
 <p>回到外层的方法：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">                    
-                    </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> done = ... {
-                        </span><span style="color:#96b5b4;">handle_connection_event</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> poll, connection, event)?
-                    } </span><span style="color:#b48ead;">else </span><span style="color:#c0c5ce;">{
-                        </span><span style="color:#65737e;">// Sporadic events happen.
-                        </span><span style="color:#d08770;">false
-                    </span><span style="color:#c0c5ce;">};
-                    </span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> done {
-                        connections.</span><span style="color:#96b5b4;">remove</span><span style="color:#c0c5ce;">(&amp;token);
-                    }
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span>                    
+</span><span>                    </span><span style="color:#b48ead;">let</span><span> done = ... {
+</span><span>                        </span><span style="color:#96b5b4;">handle_connection_event</span><span>(&amp;</span><span style="color:#b48ead;">mut</span><span> poll, connection, event)?
+</span><span>                    } </span><span style="color:#b48ead;">else </span><span>{
+</span><span>                        </span><span style="color:#65737e;">// Sporadic events happen.
+</span><span>                        </span><span style="color:#d08770;">false
+</span><span>                    };
+</span><span>                    </span><span style="color:#b48ead;">if</span><span> done {
+</span><span>                        connections.</span><span style="color:#96b5b4;">remove</span><span>(&amp;token);
+</span><span>                    }
 </span></code></pre>
 <p>如果刚才返回了<code>Ok(true)</code>，会<code>connections.remove(&amp;token);</code></p>
 <h2 id="waker">Waker</h2>
 <p>上面的分析没涉及到的，有一个<code>/src/waker.rs</code>需要提一下。<code>Waker</code>允许跨线程唤醒<code>Poll</code>。</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">#[</span><span style="color:#bf616a;">derive</span><span style="color:#c0c5ce;">(Debug)]
-</span><span style="color:#b48ead;">pub struct </span><span style="color:#c0c5ce;">Waker {
-    </span><span style="color:#bf616a;">inner</span><span style="color:#c0c5ce;">: sys::Waker,
-}
-
-</span><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">Waker {
-    </span><span style="color:#65737e;">/// Create a new `Waker`.
-    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">new</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">registry</span><span style="color:#c0c5ce;">: &amp;Registry, </span><span style="color:#bf616a;">token</span><span style="color:#c0c5ce;">: Token) -&gt; io::Result&lt;Waker&gt; {
-        sys::Waker::new(poll::selector(&amp;registry), token).</span><span style="color:#96b5b4;">map</span><span style="color:#c0c5ce;">(|</span><span style="color:#bf616a;">inner</span><span style="color:#c0c5ce;">| Waker { inner })
-    }
-
-    </span><span style="color:#65737e;">/// Wake up the [`Poll`] associated with this `Waker`.
-    ///
-    /// [`Poll`]: crate::Poll
-    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">wake</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; io::Result&lt;()&gt; {
-        </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.inner.</span><span style="color:#96b5b4;">wake</span><span style="color:#c0c5ce;">()
-    }
-}
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#[</span><span style="color:#bf616a;">derive</span><span>(Debug)]
+</span><span style="color:#b48ead;">pub struct </span><span>Waker {
+</span><span>    </span><span style="color:#bf616a;">inner</span><span>: sys::Waker,
+</span><span>}
+</span><span>
+</span><span style="color:#b48ead;">impl </span><span>Waker {
+</span><span>    </span><span style="color:#65737e;">/// Create a new `Waker`.
+</span><span>    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">new</span><span>(</span><span style="color:#bf616a;">registry</span><span>: &amp;Registry, </span><span style="color:#bf616a;">token</span><span>: Token) -&gt; io::Result&lt;Waker&gt; {
+</span><span>        sys::Waker::new(poll::selector(&amp;registry), token).</span><span style="color:#96b5b4;">map</span><span>(|</span><span style="color:#bf616a;">inner</span><span>| Waker { inner })
+</span><span>    }
+</span><span>
+</span><span>    </span><span style="color:#65737e;">/// Wake up the [`Poll`] associated with this `Waker`.
+</span><span>    </span><span style="color:#65737e;">///
+</span><span>    </span><span style="color:#65737e;">/// [`Poll`]: crate::Poll
+</span><span>    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">wake</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>) -&gt; io::Result&lt;()&gt; {
+</span><span>        </span><span style="color:#bf616a;">self</span><span>.inner.</span><span style="color:#96b5b4;">wake</span><span>()
+</span><span>    }
+</span><span>}
 </span></code></pre>
 <p>定义比较简单，也就两个方法。我们看看Linux下的实现:</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">#[</span><span style="color:#bf616a;">cfg</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">any</span><span style="color:#c0c5ce;">(target_os = &quot;</span><span style="color:#a3be8c;">linux</span><span style="color:#c0c5ce;">&quot;, target_os = &quot;</span><span style="color:#a3be8c;">android</span><span style="color:#c0c5ce;">&quot;))]
-</span><span style="color:#b48ead;">mod </span><span style="color:#c0c5ce;">eventfd {
-</span><span style="color:#c0c5ce;">   </span><span style="color:#b48ead;">use crate</span><span style="color:#c0c5ce;">::sys::Selector;
-</span><span style="color:#c0c5ce;">   </span><span style="color:#b48ead;">use crate</span><span style="color:#c0c5ce;">::{Interests, Token};
-
-</span><span style="color:#c0c5ce;">   </span><span style="color:#b48ead;">use </span><span style="color:#c0c5ce;">std::fs::File;
-</span><span style="color:#c0c5ce;">   </span><span style="color:#b48ead;">use </span><span style="color:#c0c5ce;">std::io::{</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">, Read, Write};
-</span><span style="color:#c0c5ce;">   </span><span style="color:#b48ead;">use </span><span style="color:#c0c5ce;">std::os::unix::io::FromRawFd;
-
-</span><span style="color:#c0c5ce;">   </span><span style="color:#65737e;">/// Waker backed by `eventfd`.
-</span><span style="color:#c0c5ce;">   </span><span style="color:#65737e;">///
-</span><span style="color:#c0c5ce;">   </span><span style="color:#65737e;">/// `eventfd` is effectively an 64 bit counter. All writes must be of 8
-</span><span style="color:#c0c5ce;">   </span><span style="color:#65737e;">/// bytes (64 bits) and are converted (native endian) into an 64 bit
-</span><span style="color:#c0c5ce;">   </span><span style="color:#65737e;">/// unsigned integer and added to the count. Reads must also be 8 bytes and
-</span><span style="color:#c0c5ce;">   </span><span style="color:#65737e;">/// reset the count to 0, returning the count.
-</span><span style="color:#c0c5ce;">   #[</span><span style="color:#bf616a;">derive</span><span style="color:#c0c5ce;">(Debug)]
-</span><span style="color:#c0c5ce;">   </span><span style="color:#b48ead;">pub struct </span><span style="color:#c0c5ce;">Waker {
-</span><span style="color:#c0c5ce;">       </span><span style="color:#bf616a;">fd</span><span style="color:#c0c5ce;">: File,
-</span><span style="color:#c0c5ce;">   }
-
-</span><span style="color:#c0c5ce;">   </span><span style="color:#b48ead;">impl </span><span style="color:#c0c5ce;">Waker {
-</span><span style="color:#c0c5ce;">       </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">new</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">selector</span><span style="color:#c0c5ce;">: &amp;Selector, </span><span style="color:#bf616a;">token</span><span style="color:#c0c5ce;">: Token) -&gt; io::Result&lt;Waker&gt; {
-</span><span style="color:#c0c5ce;">           syscall!(</span><span style="color:#96b5b4;">eventfd</span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, libc::</span><span style="color:#d08770;">EFD_CLOEXEC </span><span style="color:#c0c5ce;">| libc::</span><span style="color:#d08770;">EFD_NONBLOCK</span><span style="color:#c0c5ce;">)).</span><span style="color:#96b5b4;">and_then</span><span style="color:#c0c5ce;">(|</span><span style="color:#bf616a;">fd</span><span style="color:#c0c5ce;">| {
-</span><span style="color:#c0c5ce;">               </span><span style="color:#65737e;">// Turn the file descriptor into a file first so we&#39;re ensured
-</span><span style="color:#c0c5ce;">               </span><span style="color:#65737e;">// it&#39;s closed when dropped, e.g. when register below fails.
-</span><span style="color:#c0c5ce;">               </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> file = </span><span style="color:#b48ead;">unsafe </span><span style="color:#c0c5ce;">{ File::from_raw_fd(fd) };
-</span><span style="color:#c0c5ce;">               selector
-</span><span style="color:#c0c5ce;">                   .</span><span style="color:#96b5b4;">register</span><span style="color:#c0c5ce;">(fd, token, Interests::</span><span style="color:#d08770;">READABLE</span><span style="color:#c0c5ce;">)
-</span><span style="color:#c0c5ce;">                   .</span><span style="color:#96b5b4;">map</span><span style="color:#c0c5ce;">(|()| Waker { fd: file })
-</span><span style="color:#c0c5ce;">           })
-</span><span style="color:#c0c5ce;">       }
-
-</span><span style="color:#c0c5ce;">       </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">wake</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; io::Result&lt;()&gt; {
-</span><span style="color:#c0c5ce;">           </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> buf: [</span><span style="color:#b48ead;">u8</span><span style="color:#c0c5ce;">; </span><span style="color:#d08770;">8</span><span style="color:#c0c5ce;">] = </span><span style="color:#d08770;">1</span><span style="color:#b48ead;">u64</span><span style="color:#c0c5ce;">.</span><span style="color:#96b5b4;">to_ne_bytes</span><span style="color:#c0c5ce;">();
-</span><span style="color:#c0c5ce;">           </span><span style="color:#b48ead;">match </span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.fd).</span><span style="color:#96b5b4;">write</span><span style="color:#c0c5ce;">(&amp;buf) {
-</span><span style="color:#c0c5ce;">               Ok(_) =&gt; Ok(()),
-</span><span style="color:#c0c5ce;">               Err(</span><span style="color:#b48ead;">ref</span><span style="color:#c0c5ce;"> err) </span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> err.</span><span style="color:#96b5b4;">kind</span><span style="color:#c0c5ce;">() == io::ErrorKind::WouldBlock =&gt; {
-</span><span style="color:#c0c5ce;">                   </span><span style="color:#65737e;">// Writing only blocks if the counter is going to overflow.
-</span><span style="color:#c0c5ce;">                   </span><span style="color:#65737e;">// So we&#39;ll reset the counter to 0 and wake it again.
-</span><span style="color:#c0c5ce;">                   </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.</span><span style="color:#96b5b4;">reset</span><span style="color:#c0c5ce;">()?;
-</span><span style="color:#c0c5ce;">                   </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.</span><span style="color:#96b5b4;">wake</span><span style="color:#c0c5ce;">()
-</span><span style="color:#c0c5ce;">               }
-</span><span style="color:#c0c5ce;">               Err(err) =&gt; Err(err),
-</span><span style="color:#c0c5ce;">           }
-</span><span style="color:#c0c5ce;">       }
-
-</span><span style="color:#c0c5ce;">       </span><span style="color:#65737e;">/// Reset the eventfd object, only need to call this if `wake` fails.
-</span><span style="color:#c0c5ce;">       </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">reset</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; io::Result&lt;()&gt; {
-</span><span style="color:#c0c5ce;">           </span><span style="color:#b48ead;">let mut</span><span style="color:#c0c5ce;"> buf: [</span><span style="color:#b48ead;">u8</span><span style="color:#c0c5ce;">; </span><span style="color:#d08770;">8</span><span style="color:#c0c5ce;">] = </span><span style="color:#d08770;">0</span><span style="color:#b48ead;">u64</span><span style="color:#c0c5ce;">.</span><span style="color:#96b5b4;">to_ne_bytes</span><span style="color:#c0c5ce;">();
-</span><span style="color:#c0c5ce;">           </span><span style="color:#b48ead;">match </span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.fd).</span><span style="color:#96b5b4;">read</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#b48ead;">mut</span><span style="color:#c0c5ce;"> buf) {
-</span><span style="color:#c0c5ce;">               Ok(_) =&gt; Ok(()),
-</span><span style="color:#c0c5ce;">               </span><span style="color:#65737e;">// If the `Waker` hasn&#39;t been awoken yet this will return a
-</span><span style="color:#c0c5ce;">               </span><span style="color:#65737e;">// `WouldBlock` error which we can safely ignore.
-</span><span style="color:#c0c5ce;">               Err(</span><span style="color:#b48ead;">ref</span><span style="color:#c0c5ce;"> err) </span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> err.</span><span style="color:#96b5b4;">kind</span><span style="color:#c0c5ce;">() == io::ErrorKind::WouldBlock =&gt; Ok(()),
-</span><span style="color:#c0c5ce;">               Err(err) =&gt; Err(err),
-</span><span style="color:#c0c5ce;">           }
-</span><span style="color:#c0c5ce;">       }
-</span><span style="color:#c0c5ce;">   }
-}
-
-#[</span><span style="color:#bf616a;">cfg</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">any</span><span style="color:#c0c5ce;">(target_os = &quot;</span><span style="color:#a3be8c;">linux</span><span style="color:#c0c5ce;">&quot;, target_os = &quot;</span><span style="color:#a3be8c;">android</span><span style="color:#c0c5ce;">&quot;))]
-</span><span style="color:#b48ead;">pub use </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">::eventfd::Waker;
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#[</span><span style="color:#bf616a;">cfg</span><span>(</span><span style="color:#bf616a;">any</span><span>(target_os = &quot;</span><span style="color:#a3be8c;">linux</span><span>&quot;, target_os = &quot;</span><span style="color:#a3be8c;">android</span><span>&quot;))]
+</span><span style="color:#b48ead;">mod </span><span>eventfd {
+</span><span>   </span><span style="color:#b48ead;">use crate</span><span>::sys::Selector;
+</span><span>   </span><span style="color:#b48ead;">use crate</span><span>::{Interests, Token};
+</span><span>
+</span><span>   </span><span style="color:#b48ead;">use </span><span>std::fs::File;
+</span><span>   </span><span style="color:#b48ead;">use </span><span>std::io::{</span><span style="color:#bf616a;">self</span><span>, Read, Write};
+</span><span>   </span><span style="color:#b48ead;">use </span><span>std::os::unix::io::FromRawFd;
+</span><span>
+</span><span>   </span><span style="color:#65737e;">/// Waker backed by `eventfd`.
+</span><span>   </span><span style="color:#65737e;">///
+</span><span>   </span><span style="color:#65737e;">/// `eventfd` is effectively an 64 bit counter. All writes must be of 8
+</span><span>   </span><span style="color:#65737e;">/// bytes (64 bits) and are converted (native endian) into an 64 bit
+</span><span>   </span><span style="color:#65737e;">/// unsigned integer and added to the count. Reads must also be 8 bytes and
+</span><span>   </span><span style="color:#65737e;">/// reset the count to 0, returning the count.
+</span><span>   #[</span><span style="color:#bf616a;">derive</span><span>(Debug)]
+</span><span>   </span><span style="color:#b48ead;">pub struct </span><span>Waker {
+</span><span>       </span><span style="color:#bf616a;">fd</span><span>: File,
+</span><span>   }
+</span><span>
+</span><span>   </span><span style="color:#b48ead;">impl </span><span>Waker {
+</span><span>       </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">new</span><span>(</span><span style="color:#bf616a;">selector</span><span>: &amp;Selector, </span><span style="color:#bf616a;">token</span><span>: Token) -&gt; io::Result&lt;Waker&gt; {
+</span><span>           syscall!(</span><span style="color:#96b5b4;">eventfd</span><span>(</span><span style="color:#d08770;">0</span><span>, libc::</span><span style="color:#d08770;">EFD_CLOEXEC </span><span>| libc::</span><span style="color:#d08770;">EFD_NONBLOCK</span><span>)).</span><span style="color:#96b5b4;">and_then</span><span>(|</span><span style="color:#bf616a;">fd</span><span>| {
+</span><span>               </span><span style="color:#65737e;">// Turn the file descriptor into a file first so we&#39;re ensured
+</span><span>               </span><span style="color:#65737e;">// it&#39;s closed when dropped, e.g. when register below fails.
+</span><span>               </span><span style="color:#b48ead;">let</span><span> file = </span><span style="color:#b48ead;">unsafe </span><span>{ File::from_raw_fd(fd) };
+</span><span>               selector
+</span><span>                   .</span><span style="color:#96b5b4;">register</span><span>(fd, token, Interests::</span><span style="color:#d08770;">READABLE</span><span>)
+</span><span>                   .</span><span style="color:#96b5b4;">map</span><span>(|()| Waker { fd: file })
+</span><span>           })
+</span><span>       }
+</span><span>
+</span><span>       </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">wake</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>) -&gt; io::Result&lt;()&gt; {
+</span><span>           </span><span style="color:#b48ead;">let</span><span> buf: [</span><span style="color:#b48ead;">u8</span><span>; </span><span style="color:#d08770;">8</span><span>] = </span><span style="color:#d08770;">1</span><span style="color:#b48ead;">u64</span><span>.</span><span style="color:#96b5b4;">to_ne_bytes</span><span>();
+</span><span>           </span><span style="color:#b48ead;">match </span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>.fd).</span><span style="color:#96b5b4;">write</span><span>(&amp;buf) {
+</span><span>               Ok(_) =&gt; Ok(()),
+</span><span>               Err(</span><span style="color:#b48ead;">ref</span><span> err) </span><span style="color:#b48ead;">if</span><span> err.</span><span style="color:#96b5b4;">kind</span><span>() == io::ErrorKind::WouldBlock =&gt; {
+</span><span>                   </span><span style="color:#65737e;">// Writing only blocks if the counter is going to overflow.
+</span><span>                   </span><span style="color:#65737e;">// So we&#39;ll reset the counter to 0 and wake it again.
+</span><span>                   </span><span style="color:#bf616a;">self</span><span>.</span><span style="color:#96b5b4;">reset</span><span>()?;
+</span><span>                   </span><span style="color:#bf616a;">self</span><span>.</span><span style="color:#96b5b4;">wake</span><span>()
+</span><span>               }
+</span><span>               Err(err) =&gt; Err(err),
+</span><span>           }
+</span><span>       }
+</span><span>
+</span><span>       </span><span style="color:#65737e;">/// Reset the eventfd object, only need to call this if `wake` fails.
+</span><span>       </span><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">reset</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>) -&gt; io::Result&lt;()&gt; {
+</span><span>           </span><span style="color:#b48ead;">let mut</span><span> buf: [</span><span style="color:#b48ead;">u8</span><span>; </span><span style="color:#d08770;">8</span><span>] = </span><span style="color:#d08770;">0</span><span style="color:#b48ead;">u64</span><span>.</span><span style="color:#96b5b4;">to_ne_bytes</span><span>();
+</span><span>           </span><span style="color:#b48ead;">match </span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>.fd).</span><span style="color:#96b5b4;">read</span><span>(&amp;</span><span style="color:#b48ead;">mut</span><span> buf) {
+</span><span>               Ok(_) =&gt; Ok(()),
+</span><span>               </span><span style="color:#65737e;">// If the `Waker` hasn&#39;t been awoken yet this will return a
+</span><span>               </span><span style="color:#65737e;">// `WouldBlock` error which we can safely ignore.
+</span><span>               Err(</span><span style="color:#b48ead;">ref</span><span> err) </span><span style="color:#b48ead;">if</span><span> err.</span><span style="color:#96b5b4;">kind</span><span>() == io::ErrorKind::WouldBlock =&gt; Ok(()),
+</span><span>               Err(err) =&gt; Err(err),
+</span><span>           }
+</span><span>       }
+</span><span>   }
+</span><span>}
+</span><span>
+</span><span>#[</span><span style="color:#bf616a;">cfg</span><span>(</span><span style="color:#bf616a;">any</span><span>(target_os = &quot;</span><span style="color:#a3be8c;">linux</span><span>&quot;, target_os = &quot;</span><span style="color:#a3be8c;">android</span><span>&quot;))]
+</span><span style="color:#b48ead;">pub use </span><span style="color:#bf616a;">self</span><span>::eventfd::Waker;
 </span></code></pre>
 <p>可以看到，<code>Waker</code>的<code>new()</code>是调用了系统的<code>eventfd()</code>方法。</p>
-<pre style="background-color:#2b303b;">
-<code class="language-c" data-lang="c"><span style="color:#c0c5ce;"> </span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">eventfd</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">unsigned int </span><span style="color:#bf616a;">initval</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">flags</span><span style="color:#c0c5ce;">);
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span> </span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">eventfd</span><span>(</span><span style="color:#b48ead;">unsigned int </span><span style="color:#bf616a;">initval</span><span>, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">flags</span><span>);
 </span></code></pre>
 <p><code>eventfd()</code>方法创建一个文件描述符用于事件(event)通知。既可以用于用户空间的应用间通知，还可以用于内核空间事件通知用户空间的应用。实际上是内核空间维护的一个64位的int counter，表示“eventfd object”。</p>
 <p><code>initval</code>参数是初始化的值，<code>flags</code> 包括：</p>
@@ -1024,26 +986,24 @@
 <p><code>EFD_SEMAPHORE</code>支持semophore语义的read。</p>
 <p>这个&quot;eventfd object&quot;的相关操作很简单，<code>write()</code>会修改<code>counter</code>的值(累加)，<code>read()</code>读取<code>counter</code>的值，然后清零（如果是semophore模式，就减1）。</p>
 <p>上面的源码中，通过<code>eventfd()</code>创建了<code>fd</code>，然后将该<code>fd</code>注册到了<code>sys::selector</code>(实际上就是<code>epoll</code>)，<code>Interests</code>是可读就绪。</p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">                selector
-                    .</span><span style="color:#96b5b4;">register</span><span style="color:#c0c5ce;">(fd, token, Interests::</span><span style="color:#d08770;">READABLE</span><span style="color:#c0c5ce;">)
-                    .</span><span style="color:#96b5b4;">map</span><span style="color:#c0c5ce;">(|()| Waker { fd: file })
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span>                selector
+</span><span>                    .</span><span style="color:#96b5b4;">register</span><span>(fd, token, Interests::</span><span style="color:#d08770;">READABLE</span><span>)
+</span><span>                    .</span><span style="color:#96b5b4;">map</span><span>(|()| Waker { fd: file })
 </span></code></pre>
 <p>接着看它的<code>wake()</code></p>
-<pre style="background-color:#2b303b;">
-<code class="language-rust" data-lang="rust"><span style="color:#c0c5ce;">        </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">wake</span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">) -&gt; io::Result&lt;()&gt; {
-            </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> buf: [</span><span style="color:#b48ead;">u8</span><span style="color:#c0c5ce;">; </span><span style="color:#d08770;">8</span><span style="color:#c0c5ce;">] = </span><span style="color:#d08770;">1</span><span style="color:#b48ead;">u64</span><span style="color:#c0c5ce;">.</span><span style="color:#96b5b4;">to_ne_bytes</span><span style="color:#c0c5ce;">();
-            </span><span style="color:#b48ead;">match </span><span style="color:#c0c5ce;">(&amp;</span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.fd).</span><span style="color:#96b5b4;">write</span><span style="color:#c0c5ce;">(&amp;buf) {
-                Ok(_) =&gt; Ok(()),
-                Err(</span><span style="color:#b48ead;">ref</span><span style="color:#c0c5ce;"> err) </span><span style="color:#b48ead;">if</span><span style="color:#c0c5ce;"> err.</span><span style="color:#96b5b4;">kind</span><span style="color:#c0c5ce;">() == io::ErrorKind::WouldBlock =&gt; {
-                    </span><span style="color:#65737e;">// Writing only blocks if the counter is going to overflow.
-                    // So we&#39;ll reset the counter to 0 and wake it again.
-                    </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.</span><span style="color:#96b5b4;">reset</span><span style="color:#c0c5ce;">()?;
-                    </span><span style="color:#bf616a;">self</span><span style="color:#c0c5ce;">.</span><span style="color:#96b5b4;">wake</span><span style="color:#c0c5ce;">()
-                }
-                Err(err) =&gt; Err(err),
-            }
-        }
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span>        </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">wake</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>) -&gt; io::Result&lt;()&gt; {
+</span><span>            </span><span style="color:#b48ead;">let</span><span> buf: [</span><span style="color:#b48ead;">u8</span><span>; </span><span style="color:#d08770;">8</span><span>] = </span><span style="color:#d08770;">1</span><span style="color:#b48ead;">u64</span><span>.</span><span style="color:#96b5b4;">to_ne_bytes</span><span>();
+</span><span>            </span><span style="color:#b48ead;">match </span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>.fd).</span><span style="color:#96b5b4;">write</span><span>(&amp;buf) {
+</span><span>                Ok(_) =&gt; Ok(()),
+</span><span>                Err(</span><span style="color:#b48ead;">ref</span><span> err) </span><span style="color:#b48ead;">if</span><span> err.</span><span style="color:#96b5b4;">kind</span><span>() == io::ErrorKind::WouldBlock =&gt; {
+</span><span>                    </span><span style="color:#65737e;">// Writing only blocks if the counter is going to overflow.
+</span><span>                    </span><span style="color:#65737e;">// So we&#39;ll reset the counter to 0 and wake it again.
+</span><span>                    </span><span style="color:#bf616a;">self</span><span>.</span><span style="color:#96b5b4;">reset</span><span>()?;
+</span><span>                    </span><span style="color:#bf616a;">self</span><span>.</span><span style="color:#96b5b4;">wake</span><span>()
+</span><span>                }
+</span><span>                Err(err) =&gt; Err(err),
+</span><span>            }
+</span><span>        }
 </span></code></pre>
 <p>就是很简单地写入一个64位的1。会被加到当前的<code> counter</code>上。</p>
 <p><code>write(&amp;buf)</code>的结果正常都会<code> OK</code>。但是当超过了<code>counter</code>的最大值<code>0xfffffffffffffffe</code>会导致<code>int_64</code>溢出，本次写操作会阻塞直到有读操作，如果文件设置了非阻塞（上面源码设置的<code>libc::EFD_NONBLOCK</code>），会返回<code>EAGAIN</code>的错误。</p>

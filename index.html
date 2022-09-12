@@ -9,7 +9,7 @@
         <title>zongwu&#x27;s blog</title>
         <meta name="description" content="">
 
-        <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
+        <link rel="stylesheet" href="https://blog.zongwu233.com/main.css">
 
         
         <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
@@ -27,6 +27,16 @@
           gtag('js', new Date());
 
           gtag('config', 'UA-68155231-1');
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZF40590PZW"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+            gtag('config', 'G-ZF40590PZW');
         </script>
         
     </head>
@@ -76,24 +86,26 @@
             <p>看完<code>ReaderT</code>的<a href="/readert-source-code-analysis">源码</a>，接着来分析<code>WriterT</code>的源码。</p>
 <h2 id="shi-li">示例</h2>
 <p>先看一个超级简单的例子：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-haskell" data-lang="haskell"><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Control.Monad
-</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Control.Monad.Trans.Writer
-<p></span><span style="color:#b48ead;">data </span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">= </span><span style="color:#d08770;">LogEntry</span><span style="color:#c0c5ce;"> { msg :: </span><span style="color:#d08770;">String</span><span style="color:#c0c5ce;"> } </span><span style="color:#b48ead;">deriving</span><span style="color:#c0c5ce;"> (</span><span style="color:#a3be8c;">Eq</span><span style="color:#c0c5ce;">, </span><span style="color:#a3be8c;">Show</span><span style="color:#c0c5ce;">)</p>
-<p></span><span style="color:#8fa1b3;">calc </span><span style="color:#b48ead;">:: Writer</span><span style="color:#c0c5ce;"> [</span><span style="color:#b48ead;">LogEntry</span><span style="color:#c0c5ce;">] </span><span style="color:#b48ead;">Integer
-</span><span style="color:#c0c5ce;">calc = </span><span style="color:#b48ead;">do
-</span><span style="color:#c0c5ce;">    tell [</span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">Start</span><span style="color:#c0c5ce;">&quot;]
-</span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> x = sum [</span><span style="color:#d08770;">1 </span><span style="color:#c0c5ce;">.. </span><span style="color:#d08770;">10000000</span><span style="color:#c0c5ce;">]
-tell [</span><span style="color:#d08770;">LogEntry</span><span style="color:#c0c5ce;"> (show x)]
-tell [</span><span style="color:#d08770;">LogEntry </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">done</span><span style="color:#c0c5ce;">&quot;]
-return x</p>
-<p>test = execWriter calc
-test2 = runWriter calc
-</span></code></pre></p>
-<p><code>test</code>执行结果：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-haskell" data-lang="haskell"><span style="color:#c0c5ce;">[</span><span style="color:#d08770;">LogEntry</span><span style="color:#c0c5ce;"> {msg = &quot;</span><span style="color:#a3be8c;">Start</span><span style="color:#c0c5ce;">&quot;},</span><span style="color:#d08770;">LogEntry</span><span style="color:#c0c5ce;"> {msg = &quot;</span><span style="color:#a3be8c;">50000005000000</span><span style="color:#c0c5ce;">&quot;},</span><span style="color:#d08770;">LogEntry</span><span style="color:#c0c5ce;"> {msg = &quot;</span><span style="color:#a3be8c;">done</span><span style="color:#c0c5ce;">&quot;}]
+<pre data-lang="haskell" style="background-color:#2b303b;color:#c0c5ce;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span style="color:#b48ead;">import </span><span>Control.Monad
+</span><span style="color:#b48ead;">import </span><span>Control.Monad.Trans.Writer
+</span><span>
+</span><span style="color:#b48ead;">data </span><span style="color:#d08770;">LogEntry </span><span>= </span><span style="color:#d08770;">LogEntry</span><span> { msg :: </span><span style="color:#d08770;">String</span><span> } </span><span style="color:#b48ead;">deriving</span><span> (</span><span style="color:#a3be8c;">Eq</span><span>, </span><span style="color:#a3be8c;">Show</span><span>)
+</span><span>
+</span><span style="color:#8fa1b3;">calc </span><span style="color:#b48ead;">:: Writer</span><span> [</span><span style="color:#b48ead;">LogEntry</span><span>] </span><span style="color:#b48ead;">Integer
+</span><span>calc = </span><span style="color:#b48ead;">do
+</span><span>    tell [</span><span style="color:#d08770;">LogEntry </span><span>&quot;</span><span style="color:#a3be8c;">Start</span><span>&quot;]
+</span><span>    </span><span style="color:#b48ead;">let</span><span> x = sum [</span><span style="color:#d08770;">1 </span><span>.. </span><span style="color:#d08770;">10000000</span><span>]
+</span><span>    tell [</span><span style="color:#d08770;">LogEntry</span><span> (show x)]
+</span><span>    tell [</span><span style="color:#d08770;">LogEntry </span><span>&quot;</span><span style="color:#a3be8c;">done</span><span>&quot;]
+</span><span>    return x
+</span><span>    
+</span><span>test = execWriter calc
+</span><span>test2 = runWriter calc
 </span></code></pre>
+<p><code>test</code>执行结果：</p>
+<pre data-lang="haskell" style="background-color:#2b303b;color:#c0c5ce;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span>[</span><span style="color:#d08770;">LogEntry</span><span> {msg = &quot;</span><span style="color:#a3be8c;">Start</span><span>&quot;},</span><span style="color:#d08770;">LogEntry</span><span> {msg = &quot;</span><span style="color:#a3be8c;">50000005000000</span><span>&quot;},</span><span style="color:#d08770;">LogEntry</span><span> {msg = &quot;</span><span style="color:#a3be8c;">done</span><span>&quot;}]
+</span></code></pre>
+
         </div>
         
         
@@ -333,7 +345,7 @@ test2 = runWriter calc
 <p>持续地去解决工作生活中违背这些原则的事情，优秀的工具或者产品，不过是这个过程的副作用。</p>
 </blockquote>
 <h2 id="bei-jing">背景</h2>
-<p>该演讲最初由Bret Victor在CUSEC(Canadian University Software Engineering Conference) 2012上发表<sup class="footnote-reference"><a href="#1">1</a></sup>。</p>
+<p>该演讲最初由Bret Victor在CUSEC(Canadian University Software Engineering Conference) 2012上发表。</p>
 
         </div>
         

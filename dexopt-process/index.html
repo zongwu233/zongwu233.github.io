@@ -9,7 +9,7 @@
         <title>dexopt的源码跟踪</title>
         <meta name="description" content="">
 
-        <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
+        <link rel="stylesheet" href="https://blog.zongwu233.com/main.css">
 
         
         <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
@@ -27,6 +27,16 @@
           gtag('js', new Date());
 
           gtag('config', 'UA-68155231-1');
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZF40590PZW"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+            gtag('config', 'G-ZF40590PZW');
         </script>
         
     </head>
@@ -74,333 +84,315 @@ main函数调用了new Pm().run(args);<br />
 找到 runInstall（）方法<br />
 哦刚才的常用参数 &quot;-r&quot; 表示覆盖安装模式 INSTALL_REPLACE_EXISTING<br />
 runInstall（）方法最终会调用</p>
-<pre style="background-color:#2b303b;">
-<code class="language-c" data-lang="c"><span style="color:#c0c5ce;">mPm.</span><span style="color:#bf616a;">installPackageWithVerification</span><span style="color:#c0c5ce;">(apkURI, obs, installFlags, installerPackageName,</span><span style="color:#c0c5ce;">
- verificationURI, null, encryptionParams);</span><span style="color:#c0c5ce;">
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span>mPm.</span><span style="color:#bf616a;">installPackageWithVerification</span><span>(apkURI, obs, installFlags, installerPackageName,</span><span>
+</span><span> verificationURI, null, encryptionParams);</span><span>
 </span></code></pre>
 <p>而 mPm = IPackageManager.Stub.asInterface(ServiceManager.getService(&quot;package&quot;)); 就是PackageMangerService<br />
 PackageMangerService 的main方法：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-c" data-lang="c"><span style="color:#c0c5ce;">public </span><span style="color:#b48ead;">static</span><span style="color:#c0c5ce;"> final IPackageManager </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">(Context </span><span style="color:#bf616a;">context</span><span style="color:#c0c5ce;">, Installer </span><span style="color:#bf616a;">installer</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
- boolean </span><span style="color:#bf616a;">factoryTest</span><span style="color:#c0c5ce;">, boolean </span><span style="color:#bf616a;">onlyCore</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- PackageManagerService m = new </span><span style="color:#bf616a;">PackageManagerService</span><span style="color:#c0c5ce;">(context, installer,</span><span style="color:#c0c5ce;">
- factoryTest, onlyCore);</span><span style="color:#c0c5ce;">
- ServiceManager.</span><span style="color:#bf616a;">addService</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">package</span><span style="color:#c0c5ce;">&quot;, m);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> m;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span>public </span><span style="color:#b48ead;">static</span><span> final IPackageManager </span><span style="color:#8fa1b3;">main</span><span>(Context </span><span style="color:#bf616a;">context</span><span>, Installer </span><span style="color:#bf616a;">installer</span><span>,</span><span>
+</span><span> boolean </span><span style="color:#bf616a;">factoryTest</span><span>, boolean </span><span style="color:#bf616a;">onlyCore</span><span>) {</span><span>
+</span><span> PackageManagerService m = new </span><span style="color:#bf616a;">PackageManagerService</span><span>(context, installer,</span><span>
+</span><span> factoryTest, onlyCore);</span><span>
+</span><span> ServiceManager.</span><span style="color:#bf616a;">addService</span><span>(&quot;</span><span style="color:#a3be8c;">package</span><span>&quot;, m);</span><span>
+</span><span> </span><span style="color:#b48ead;">return</span><span> m;</span><span>
+</span><span> }</span><span>
 </span></code></pre>
 <p>去看installPackageWithVerification()</p>
-<pre style="background-color:#2b303b;">
-<code class="language-c" data-lang="c"><span style="color:#c0c5ce;">@Override</span><span style="color:#c0c5ce;">
- public </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">installPackageWithVerification</span><span style="color:#c0c5ce;">(Uri </span><span style="color:#bf616a;">packageURI</span><span style="color:#c0c5ce;">, IPackageInstallObserver </span><span style="color:#bf616a;">observer</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">flags</span><span style="color:#c0c5ce;">, String </span><span style="color:#bf616a;">installerPackageName</span><span style="color:#c0c5ce;">, Uri </span><span style="color:#bf616a;">verificationURI</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
- ManifestDigest </span><span style="color:#bf616a;">manifestDigest</span><span style="color:#c0c5ce;">, ContainerEncryptionParams </span><span style="color:#bf616a;">encryptionParams</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- VerificationParams verificationParams = new </span><span style="color:#bf616a;">VerificationParams</span><span style="color:#c0c5ce;">(verificationURI, null, null,</span><span style="color:#c0c5ce;">
- VerificationParams.</span><span style="color:#bf616a;">NO_UID</span><span style="color:#c0c5ce;">, manifestDigest);</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">installPackageWithVerificationAndEncryption</span><span style="color:#c0c5ce;">(packageURI, observer, flags,</span><span style="color:#c0c5ce;">
- installerPackageName, verificationParams, encryptionParams);</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span>@Override</span><span>
+</span><span> public </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">installPackageWithVerification</span><span>(Uri </span><span style="color:#bf616a;">packageURI</span><span>, IPackageInstallObserver </span><span style="color:#bf616a;">observer</span><span>,</span><span>
+</span><span> </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">flags</span><span>, String </span><span style="color:#bf616a;">installerPackageName</span><span>, Uri </span><span style="color:#bf616a;">verificationURI</span><span>,</span><span>
+</span><span> ManifestDigest </span><span style="color:#bf616a;">manifestDigest</span><span>, ContainerEncryptionParams </span><span style="color:#bf616a;">encryptionParams</span><span>) {</span><span>
+</span><span> VerificationParams verificationParams = new </span><span style="color:#bf616a;">VerificationParams</span><span>(verificationURI, null, null,</span><span>
+</span><span> VerificationParams.</span><span style="color:#bf616a;">NO_UID</span><span>, manifestDigest);</span><span>
+</span><span> </span><span style="color:#bf616a;">installPackageWithVerificationAndEncryption</span><span>(packageURI, observer, flags,</span><span>
+</span><span> installerPackageName, verificationParams, encryptionParams);</span><span>
+</span><span> }</span><span>
 </span></code></pre>
 <p>接着看 installPackageWithVerificationAndEncryption()方法</p>
-<pre style="background-color:#2b303b;">
-<code class="language-c" data-lang="c"><span style="color:#c0c5ce;">public </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">installPackageWithVerificationAndEncryption</span><span style="color:#c0c5ce;">(Uri </span><span style="color:#bf616a;">packageURI</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
- IPackageInstallObserver </span><span style="color:#bf616a;">observer</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">flags</span><span style="color:#c0c5ce;">, String </span><span style="color:#bf616a;">installerPackageName</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
- VerificationParams </span><span style="color:#bf616a;">verificationParams</span><span style="color:#c0c5ce;">, ContainerEncryptionParams </span><span style="color:#bf616a;">encryptionParams</span><span style="color:#c0c5ce;">)</span><span style="color:#c0c5ce;">
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span>public </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">installPackageWithVerificationAndEncryption</span><span>(Uri </span><span style="color:#bf616a;">packageURI</span><span>,</span><span>
+</span><span> IPackageInstallObserver </span><span style="color:#bf616a;">observer</span><span>, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">flags</span><span>, String </span><span style="color:#bf616a;">installerPackageName</span><span>,</span><span>
+</span><span> VerificationParams </span><span style="color:#bf616a;">verificationParams</span><span>, ContainerEncryptionParams </span><span style="color:#bf616a;">encryptionParams</span><span>)</span><span>
 </span></code></pre>
 <p>在最后的时候：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-c" data-lang="c"><span style="color:#c0c5ce;">final Message msg = mHandler.</span><span style="color:#bf616a;">obtainMessage</span><span style="color:#c0c5ce;">(INIT_COPY);</span><span style="color:#c0c5ce;">
- msg.</span><span style="color:#bf616a;">obj </span><span style="color:#c0c5ce;">= new </span><span style="color:#bf616a;">InstallParams</span><span style="color:#c0c5ce;">(packageURI, observer, filteredFlags, installerPackageName,</span><span style="color:#c0c5ce;">
- verificationParams, encryptionParams, user);</span><span style="color:#c0c5ce;">
- mHandler.</span><span style="color:#bf616a;">sendMessage</span><span style="color:#c0c5ce;">(msg);</span><span style="color:#c0c5ce;">
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span>final Message msg = mHandler.</span><span style="color:#bf616a;">obtainMessage</span><span>(INIT_COPY);</span><span>
+</span><span> msg.</span><span style="color:#bf616a;">obj </span><span>= new </span><span style="color:#bf616a;">InstallParams</span><span>(packageURI, observer, filteredFlags, installerPackageName,</span><span>
+</span><span> verificationParams, encryptionParams, user);</span><span>
+</span><span> mHandler.</span><span style="color:#bf616a;">sendMessage</span><span>(msg);</span><span>
 </span></code></pre>
 <p>发messge 给handler，找到这个handler的定义</p>
-<pre style="background-color:#2b303b;">
-<code class="language-c" data-lang="c"><span style="color:#c0c5ce;">mHandlerThread.</span><span style="color:#bf616a;">start</span><span style="color:#c0c5ce;">();</span><span style="color:#c0c5ce;">
- mHandler = new </span><span style="color:#bf616a;">PackageHandler</span><span style="color:#c0c5ce;">(mHandlerThread.</span><span style="color:#bf616a;">getLooper</span><span style="color:#c0c5ce;">());</span><span style="color:#c0c5ce;">
-final HandlerThread mHandlerThread = new </span><span style="color:#bf616a;">HandlerThread</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">PackageManager</span><span style="color:#c0c5ce;">&quot;,</span><span style="color:#c0c5ce;">
- Process.</span><span style="color:#bf616a;">THREAD_PRIORITY_BACKGROUND</span><span style="color:#c0c5ce;">);</span><span style="color:#c0c5ce;">
- final PackageHandler mHandler;</span><span style="color:#c0c5ce;">
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span>mHandlerThread.</span><span style="color:#bf616a;">start</span><span>();</span><span>
+</span><span> mHandler = new </span><span style="color:#bf616a;">PackageHandler</span><span>(mHandlerThread.</span><span style="color:#bf616a;">getLooper</span><span>());</span><span>
+</span><span>final HandlerThread mHandlerThread = new </span><span style="color:#bf616a;">HandlerThread</span><span>(&quot;</span><span style="color:#a3be8c;">PackageManager</span><span>&quot;,</span><span>
+</span><span> Process.</span><span style="color:#bf616a;">THREAD_PRIORITY_BACKGROUND</span><span>);</span><span>
+</span><span> final PackageHandler mHandler;</span><span>
 </span></code></pre>
 <p>看来 是个工作线程。<br />
 跟进handler的handlemsg()  消息类型会从 INIT_COPY 绕成 MCS_BOUND。总算调用了 params.startCopy()<br />
 先看handleStartCopy(). InstallParams 对该方法的实现。 略过各种检查和校验  找到了ret = args.copyApk(mContainerService, true);copy apk文件 到 /data/app 目录下 而且是以一种临时文件的格式。</p>
-<pre style="background-color:#2b303b;">
-<code class="language-c" data-lang="c"><span style="color:#c0c5ce;">final boolean </span><span style="color:#8fa1b3;">startCopy</span><span style="color:#c0c5ce;">() {</span><span style="color:#c0c5ce;">
- boolean res;</span><span style="color:#c0c5ce;">
- try {</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(DEBUG_INSTALL) Slog.</span><span style="color:#bf616a;">i</span><span style="color:#c0c5ce;">(TAG, &quot;</span><span style="color:#a3be8c;">startCopy</span><span style="color:#c0c5ce;">&quot;);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(++mRetries &gt; MAX_RETRIES) {</span><span style="color:#c0c5ce;">
- Slog.</span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;">(TAG, &quot;</span><span style="color:#a3be8c;">Failed to invoke remote methods on default container service. Giving up</span><span style="color:#c0c5ce;">&quot;);</span><span style="color:#c0c5ce;">
- mHandler.</span><span style="color:#bf616a;">sendEmptyMessage</span><span style="color:#c0c5ce;">(MCS_GIVE_UP);</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">handleServiceError</span><span style="color:#c0c5ce;">();</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">false</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- } </span><span style="color:#b48ead;">else </span><span style="color:#c0c5ce;">{</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">handleStartCopy</span><span style="color:#c0c5ce;">();</span><span style="color:#c0c5ce;">
- res = </span><span style="color:#d08770;">true</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- } </span><span style="color:#bf616a;">catch </span><span style="color:#c0c5ce;">(RemoteException e) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(DEBUG_INSTALL) Slog.</span><span style="color:#bf616a;">i</span><span style="color:#c0c5ce;">(TAG, &quot;</span><span style="color:#a3be8c;">Posting install MCS_RECONNECT</span><span style="color:#c0c5ce;">&quot;);</span><span style="color:#c0c5ce;">
- mHandler.</span><span style="color:#bf616a;">sendEmptyMessage</span><span style="color:#c0c5ce;">(MCS_RECONNECT);</span><span style="color:#c0c5ce;">
- res = </span><span style="color:#d08770;">false</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">handleReturnCode</span><span style="color:#c0c5ce;">();</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> res;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span>final boolean </span><span style="color:#8fa1b3;">startCopy</span><span>() {</span><span>
+</span><span> boolean res;</span><span>
+</span><span> try {</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(DEBUG_INSTALL) Slog.</span><span style="color:#bf616a;">i</span><span>(TAG, &quot;</span><span style="color:#a3be8c;">startCopy</span><span>&quot;);</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(++mRetries &gt; MAX_RETRIES) {</span><span>
+</span><span> Slog.</span><span style="color:#bf616a;">w</span><span>(TAG, &quot;</span><span style="color:#a3be8c;">Failed to invoke remote methods on default container service. Giving up</span><span>&quot;);</span><span>
+</span><span> mHandler.</span><span style="color:#bf616a;">sendEmptyMessage</span><span>(MCS_GIVE_UP);</span><span>
+</span><span> </span><span style="color:#bf616a;">handleServiceError</span><span>();</span><span>
+</span><span> </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">false</span><span>;</span><span>
+</span><span> } </span><span style="color:#b48ead;">else </span><span>{</span><span>
+</span><span> </span><span style="color:#bf616a;">handleStartCopy</span><span>();</span><span>
+</span><span> res = </span><span style="color:#d08770;">true</span><span>;</span><span>
+</span><span> }</span><span>
+</span><span> } </span><span style="color:#bf616a;">catch </span><span>(RemoteException e) {</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(DEBUG_INSTALL) Slog.</span><span style="color:#bf616a;">i</span><span>(TAG, &quot;</span><span style="color:#a3be8c;">Posting install MCS_RECONNECT</span><span>&quot;);</span><span>
+</span><span> mHandler.</span><span style="color:#bf616a;">sendEmptyMessage</span><span>(MCS_RECONNECT);</span><span>
+</span><span> res = </span><span style="color:#d08770;">false</span><span>;</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#bf616a;">handleReturnCode</span><span>();</span><span>
+</span><span> </span><span style="color:#b48ead;">return</span><span> res;</span><span>
+</span><span> }</span><span>
 </span></code></pre>
 <p>然后是handleReturnCode()   主要是:</p>
-<pre style="background-color:#2b303b;">
-<code class="language-c" data-lang="c"><span style="color:#c0c5ce;"> private </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">processPendingInstall</span><span style="color:#c0c5ce;">(final InstallArgs </span><span style="color:#bf616a;">args</span><span style="color:#c0c5ce;">, final </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">currentStatus</span><span style="color:#c0c5ce;">) </span><span style="color:#c0c5ce;">
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span> private </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">processPendingInstall</span><span>(final InstallArgs </span><span style="color:#bf616a;">args</span><span>, final </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">currentStatus</span><span>) </span><span>
 </span></code></pre>
 <p>该方法调用</p>
-<pre style="background-color:#2b303b;">
-<code class="language-c" data-lang="c"><span style="color:#c0c5ce;">private </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">installNewPackageLI</span><span style="color:#c0c5ce;">(PackageParser.</span><span style="color:#bf616a;">Package pkg</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">parseFlags</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">scanMode</span><span style="color:#c0c5ce;">, UserHandle </span><span style="color:#bf616a;">user</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
- String </span><span style="color:#bf616a;">installerPackageName</span><span style="color:#c0c5ce;">, PackageInstalledInfo </span><span style="color:#bf616a;">res</span><span style="color:#c0c5ce;">)</span><span style="color:#c0c5ce;">
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span>private </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">installNewPackageLI</span><span>(PackageParser.</span><span style="color:#bf616a;">Package pkg</span><span>,</span><span>
+</span><span> </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">parseFlags</span><span>, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">scanMode</span><span>, UserHandle </span><span style="color:#bf616a;">user</span><span>,</span><span>
+</span><span> String </span><span style="color:#bf616a;">installerPackageName</span><span>, PackageInstalledInfo </span><span style="color:#bf616a;">res</span><span>)</span><span>
 </span></code></pre>
 <p>终于到了 installnewPackage 了</p>
-<pre style="background-color:#2b303b;">
-<code class="language-c" data-lang="c"><span style="color:#c0c5ce;">private </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">installNewPackageLI</span><span style="color:#c0c5ce;">(PackageParser.</span><span style="color:#bf616a;">Package pkg</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
-</span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">parseFlags</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">scanMode</span><span style="color:#c0c5ce;">, UserHandle </span><span style="color:#bf616a;">user</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
-String </span><span style="color:#bf616a;">installerPackageName</span><span style="color:#c0c5ce;">, PackageInstalledInfo </span><span style="color:#bf616a;">res</span><span style="color:#c0c5ce;">)</span><span style="color:#c0c5ce;">
-</span><span style="color:#c0c5ce;">
-</span><span style="color:#c0c5ce;">
-private PackageParser.</span><span style="color:#bf616a;">Package scanPackageLI</span><span style="color:#c0c5ce;">(File scanFile,</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;"> parseFlags, </span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;"> scanMode, </span><span style="color:#b48ead;">long</span><span style="color:#c0c5ce;"> currentTime, UserHandle user)</span><span style="color:#c0c5ce;">
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span>private </span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">installNewPackageLI</span><span>(PackageParser.</span><span style="color:#bf616a;">Package pkg</span><span>,</span><span>
+</span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">parseFlags</span><span>, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">scanMode</span><span>, UserHandle </span><span style="color:#bf616a;">user</span><span>,</span><span>
+</span><span>String </span><span style="color:#bf616a;">installerPackageName</span><span>, PackageInstalledInfo </span><span style="color:#bf616a;">res</span><span>)</span><span>
+</span><span>
+</span><span>
+</span><span>private PackageParser.</span><span style="color:#bf616a;">Package scanPackageLI</span><span>(File scanFile,</span><span>
+</span><span> </span><span style="color:#b48ead;">int</span><span> parseFlags, </span><span style="color:#b48ead;">int</span><span> scanMode, </span><span style="color:#b48ead;">long</span><span> currentTime, UserHandle user)</span><span>
 </span></code></pre>
 <p>然后调用了 </p>
-<pre style="background-color:#2b303b;">
-<code class="language-c" data-lang="c"><span style="color:#65737e;">// Note that we invoke the following method only if we are about to unpack an application</span><span style="color:#65737e;">
-</span><span style="color:#c0c5ce;"> PackageParser.</span><span style="color:#bf616a;">Package</span><span style="color:#c0c5ce;"> scannedPkg = </span><span style="color:#bf616a;">scanPackageLI</span><span style="color:#c0c5ce;">(pkg, parseFlags, scanMode</span><span style="color:#c0c5ce;">
- | SCAN_UPDATE_SIGNATURE, currentTime, user);</span><span style="color:#c0c5ce;">
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#65737e;">// Note that we invoke the following method only if we are about to unpack an application</span><span style="color:#65737e;">
+</span><span> PackageParser.</span><span style="color:#bf616a;">Package</span><span> scannedPkg = </span><span style="color:#bf616a;">scanPackageLI</span><span>(pkg, parseFlags, scanMode</span><span>
+</span><span> | SCAN_UPDATE_SIGNATURE, currentTime, user);</span><span>
 </span></code></pre>
 <p>其中有</p>
-<pre style="background-color:#2b303b;">
-<code class="language-c" data-lang="c"><span style="color:#65737e;">//invoke installer to do the actual installation</span><span style="color:#65737e;">
- </span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;"> ret = </span><span style="color:#bf616a;">createDataDirsLI</span><span style="color:#c0c5ce;">(pkgName, pkg.</span><span style="color:#bf616a;">applicationInfo</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">uid</span><span style="color:#c0c5ce;">);</span><span style="color:#c0c5ce;">
-</span><span style="color:#c0c5ce;">
-</span><span style="color:#c0c5ce;">
-</span><span style="color:#c0c5ce;">
-</span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">((scanMode&amp;SCAN_NO_DEX) == </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">performDexOptLI</span><span style="color:#c0c5ce;">(pkg, forceDex, (scanMode&amp;SCAN_DEFER_DEX) != </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">)</span><span style="color:#c0c5ce;">
- == DEX_OPT_FAILED) {</span><span style="color:#c0c5ce;">
- mLastScanError = PackageManager.</span><span style="color:#bf616a;">INSTALL_FAILED_DEXOPT</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> null;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#65737e;">//invoke installer to do the actual installation</span><span style="color:#65737e;">
+</span><span> </span><span style="color:#b48ead;">int</span><span> ret = </span><span style="color:#bf616a;">createDataDirsLI</span><span>(pkgName, pkg.</span><span style="color:#bf616a;">applicationInfo</span><span>.</span><span style="color:#bf616a;">uid</span><span>);</span><span>
+</span><span>
+</span><span>
+</span><span>
+</span><span style="color:#b48ead;">if </span><span>((scanMode&amp;SCAN_NO_DEX) == </span><span style="color:#d08770;">0</span><span>) {</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">performDexOptLI</span><span>(pkg, forceDex, (scanMode&amp;SCAN_DEFER_DEX) != </span><span style="color:#d08770;">0</span><span>)</span><span>
+</span><span> == DEX_OPT_FAILED) {</span><span>
+</span><span> mLastScanError = PackageManager.</span><span style="color:#bf616a;">INSTALL_FAILED_DEXOPT</span><span>;</span><span>
+</span><span> </span><span style="color:#b48ead;">return</span><span> null;</span><span>
+</span><span> }</span><span>
+</span><span> }</span><span>
 </span></code></pre>
 <p>先看scanPackageLI </p>
-<pre style="background-color:#2b303b;">
-<code class="language-c" data-lang="c"><span style="color:#c0c5ce;">private </span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">createDataDirsLI</span><span style="color:#c0c5ce;">(String </span><span style="color:#bf616a;">packageName</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">uid</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;">[] users = </span><span style="color:#bf616a;">sUserManager</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">getUserIds</span><span style="color:#c0c5ce;">();</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;"> res = mInstaller.</span><span style="color:#bf616a;">install</span><span style="color:#c0c5ce;">(packageName, uid, uid);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(res &lt; </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> res;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;"> user : users) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(user != </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- res = mInstaller.</span><span style="color:#bf616a;">createUserData</span><span style="color:#c0c5ce;">(packageName,</span><span style="color:#c0c5ce;">
- UserHandle.</span><span style="color:#bf616a;">getUid</span><span style="color:#c0c5ce;">(user, uid), user);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(res &lt; </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> res;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> res;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span>private </span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">createDataDirsLI</span><span>(String </span><span style="color:#bf616a;">packageName</span><span>, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">uid</span><span>) {</span><span>
+</span><span> </span><span style="color:#b48ead;">int</span><span>[] users = </span><span style="color:#bf616a;">sUserManager</span><span>.</span><span style="color:#bf616a;">getUserIds</span><span>();</span><span>
+</span><span> </span><span style="color:#b48ead;">int</span><span> res = mInstaller.</span><span style="color:#bf616a;">install</span><span>(packageName, uid, uid);</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(res &lt; </span><span style="color:#d08770;">0</span><span>) {</span><span>
+</span><span> </span><span style="color:#b48ead;">return</span><span> res;</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> user : users) {</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(user != </span><span style="color:#d08770;">0</span><span>) {</span><span>
+</span><span> res = mInstaller.</span><span style="color:#bf616a;">createUserData</span><span>(packageName,</span><span>
+</span><span> UserHandle.</span><span style="color:#bf616a;">getUid</span><span>(user, uid), user);</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(res &lt; </span><span style="color:#d08770;">0</span><span>) {</span><span>
+</span><span> </span><span style="color:#b48ead;">return</span><span> res;</span><span>
+</span><span> }</span><span>
+</span><span> }</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#b48ead;">return</span><span> res;</span><span>
+</span><span> }</span><span>
 </span></code></pre>
 <p>mInstaller.install()  出现了<br />
 再看performDexOptLI()</p>
-<pre style="background-color:#2b303b;">
-<code class="language-c" data-lang="c"><span style="color:#c0c5ce;">private </span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">performDexOptLI</span><span style="color:#c0c5ce;">(PackageParser.</span><span style="color:#bf616a;">Package pkg</span><span style="color:#c0c5ce;">, boolean </span><span style="color:#bf616a;">forceDex</span><span style="color:#c0c5ce;">, boolean </span><span style="color:#bf616a;">defer</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- boolean performed = </span><span style="color:#d08770;">false</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">((pkg.</span><span style="color:#bf616a;">applicationInfo</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">flags</span><span style="color:#c0c5ce;">&amp;ApplicationInfo.</span><span style="color:#bf616a;">FLAG_HAS_CODE</span><span style="color:#c0c5ce;">) != </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- String path = pkg.</span><span style="color:#bf616a;">mScanPath</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;"> ret = </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- try {</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(forceDex || dalvik.</span><span style="color:#bf616a;">system</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">DexFile</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">isDexOptNeeded</span><span style="color:#c0c5ce;">(path)) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(!forceDex &amp;&amp; defer) {</span><span style="color:#c0c5ce;">
- mDeferredDexOpt.</span><span style="color:#bf616a;">add</span><span style="color:#c0c5ce;">(pkg);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> DEX_OPT_DEFERRED;</span><span style="color:#c0c5ce;">
- } </span><span style="color:#b48ead;">else </span><span style="color:#c0c5ce;">{</span><span style="color:#c0c5ce;">
- Log.</span><span style="color:#bf616a;">i</span><span style="color:#c0c5ce;">(TAG, &quot;</span><span style="color:#a3be8c;">Running dexopt on: </span><span style="color:#c0c5ce;">&quot; + pkg.</span><span style="color:#bf616a;">applicationInfo</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">packageName</span><span style="color:#c0c5ce;">);</span><span style="color:#c0c5ce;">
- final </span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;"> sharedGid = UserHandle.</span><span style="color:#bf616a;">getSharedAppGid</span><span style="color:#c0c5ce;">(pkg.</span><span style="color:#bf616a;">applicationInfo</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">uid</span><span style="color:#c0c5ce;">);</span><span style="color:#c0c5ce;">
- ret = mInstaller.</span><span style="color:#bf616a;">dexopt</span><span style="color:#c0c5ce;">(path, sharedGid, !</span><span style="color:#bf616a;">isForwardLocked</span><span style="color:#c0c5ce;">(pkg));</span><span style="color:#c0c5ce;">
- pkg.</span><span style="color:#bf616a;">mDidDexOpt </span><span style="color:#c0c5ce;">= </span><span style="color:#d08770;">true</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- performed = </span><span style="color:#d08770;">true</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- } </span><span style="color:#bf616a;">catch </span><span style="color:#c0c5ce;">(FileNotFoundException e) {</span><span style="color:#c0c5ce;">
- Slog.</span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;">(TAG, &quot;</span><span style="color:#a3be8c;">Apk not found for dexopt: </span><span style="color:#c0c5ce;">&quot; + path);</span><span style="color:#c0c5ce;">
- ret = -</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- } </span><span style="color:#bf616a;">catch </span><span style="color:#c0c5ce;">(IOException e) {</span><span style="color:#c0c5ce;">
- Slog.</span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;">(TAG, &quot;</span><span style="color:#a3be8c;">IOException reading apk: </span><span style="color:#c0c5ce;">&quot; + path, e);</span><span style="color:#c0c5ce;">
- ret = -</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- } </span><span style="color:#bf616a;">catch </span><span style="color:#c0c5ce;">(dalvik.</span><span style="color:#bf616a;">system</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">StaleDexCacheError</span><span style="color:#c0c5ce;"> e) {</span><span style="color:#c0c5ce;">
- Slog.</span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;">(TAG, &quot;</span><span style="color:#a3be8c;">StaleDexCacheError when reading apk: </span><span style="color:#c0c5ce;">&quot; + path, e);</span><span style="color:#c0c5ce;">
- ret = -</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- } </span><span style="color:#bf616a;">catch </span><span style="color:#c0c5ce;">(Exception e) {</span><span style="color:#c0c5ce;">
- Slog.</span><span style="color:#bf616a;">w</span><span style="color:#c0c5ce;">(TAG, &quot;</span><span style="color:#a3be8c;">Exception when doing dexopt : </span><span style="color:#c0c5ce;">&quot;, e);</span><span style="color:#c0c5ce;">
- ret = -</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(ret &lt; </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#65737e;">//error from installer</span><span style="color:#65737e;">
- </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> DEX_OPT_FAILED;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> performed ? DEX_OPT_PERFORMED : DEX_OPT_SKIPPED;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span>private </span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">performDexOptLI</span><span>(PackageParser.</span><span style="color:#bf616a;">Package pkg</span><span>, boolean </span><span style="color:#bf616a;">forceDex</span><span>, boolean </span><span style="color:#bf616a;">defer</span><span>) {</span><span>
+</span><span> boolean performed = </span><span style="color:#d08770;">false</span><span>;</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>((pkg.</span><span style="color:#bf616a;">applicationInfo</span><span>.</span><span style="color:#bf616a;">flags</span><span>&amp;ApplicationInfo.</span><span style="color:#bf616a;">FLAG_HAS_CODE</span><span>) != </span><span style="color:#d08770;">0</span><span>) {</span><span>
+</span><span> String path = pkg.</span><span style="color:#bf616a;">mScanPath</span><span>;</span><span>
+</span><span> </span><span style="color:#b48ead;">int</span><span> ret = </span><span style="color:#d08770;">0</span><span>;</span><span>
+</span><span> try {</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(forceDex || dalvik.</span><span style="color:#bf616a;">system</span><span>.</span><span style="color:#bf616a;">DexFile</span><span>.</span><span style="color:#bf616a;">isDexOptNeeded</span><span>(path)) {</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(!forceDex &amp;&amp; defer) {</span><span>
+</span><span> mDeferredDexOpt.</span><span style="color:#bf616a;">add</span><span>(pkg);</span><span>
+</span><span> </span><span style="color:#b48ead;">return</span><span> DEX_OPT_DEFERRED;</span><span>
+</span><span> } </span><span style="color:#b48ead;">else </span><span>{</span><span>
+</span><span> Log.</span><span style="color:#bf616a;">i</span><span>(TAG, &quot;</span><span style="color:#a3be8c;">Running dexopt on: </span><span>&quot; + pkg.</span><span style="color:#bf616a;">applicationInfo</span><span>.</span><span style="color:#bf616a;">packageName</span><span>);</span><span>
+</span><span> final </span><span style="color:#b48ead;">int</span><span> sharedGid = UserHandle.</span><span style="color:#bf616a;">getSharedAppGid</span><span>(pkg.</span><span style="color:#bf616a;">applicationInfo</span><span>.</span><span style="color:#bf616a;">uid</span><span>);</span><span>
+</span><span> ret = mInstaller.</span><span style="color:#bf616a;">dexopt</span><span>(path, sharedGid, !</span><span style="color:#bf616a;">isForwardLocked</span><span>(pkg));</span><span>
+</span><span> pkg.</span><span style="color:#bf616a;">mDidDexOpt </span><span>= </span><span style="color:#d08770;">true</span><span>;</span><span>
+</span><span> performed = </span><span style="color:#d08770;">true</span><span>;</span><span>
+</span><span> }</span><span>
+</span><span> }</span><span>
+</span><span> } </span><span style="color:#bf616a;">catch </span><span>(FileNotFoundException e) {</span><span>
+</span><span> Slog.</span><span style="color:#bf616a;">w</span><span>(TAG, &quot;</span><span style="color:#a3be8c;">Apk not found for dexopt: </span><span>&quot; + path);</span><span>
+</span><span> ret = -</span><span style="color:#d08770;">1</span><span>;</span><span>
+</span><span> } </span><span style="color:#bf616a;">catch </span><span>(IOException e) {</span><span>
+</span><span> Slog.</span><span style="color:#bf616a;">w</span><span>(TAG, &quot;</span><span style="color:#a3be8c;">IOException reading apk: </span><span>&quot; + path, e);</span><span>
+</span><span> ret = -</span><span style="color:#d08770;">1</span><span>;</span><span>
+</span><span> } </span><span style="color:#bf616a;">catch </span><span>(dalvik.</span><span style="color:#bf616a;">system</span><span>.</span><span style="color:#bf616a;">StaleDexCacheError</span><span> e) {</span><span>
+</span><span> Slog.</span><span style="color:#bf616a;">w</span><span>(TAG, &quot;</span><span style="color:#a3be8c;">StaleDexCacheError when reading apk: </span><span>&quot; + path, e);</span><span>
+</span><span> ret = -</span><span style="color:#d08770;">1</span><span>;</span><span>
+</span><span> } </span><span style="color:#bf616a;">catch </span><span>(Exception e) {</span><span>
+</span><span> Slog.</span><span style="color:#bf616a;">w</span><span>(TAG, &quot;</span><span style="color:#a3be8c;">Exception when doing dexopt : </span><span>&quot;, e);</span><span>
+</span><span> ret = -</span><span style="color:#d08770;">1</span><span>;</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(ret &lt; </span><span style="color:#d08770;">0</span><span>) {</span><span>
+</span><span> </span><span style="color:#65737e;">//error from installer</span><span style="color:#65737e;">
+</span><span> </span><span style="color:#b48ead;">return</span><span> DEX_OPT_FAILED;</span><span>
+</span><span> }</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#b48ead;">return</span><span> performed ? DEX_OPT_PERFORMED : DEX_OPT_SKIPPED;</span><span>
+</span><span> }</span><span>
 </span></code></pre>
 <p>mInstaller.dexopt() 终于也找出来了<br />
 PackageManagerService通过socket访问installd的服务进程，而installd的服务是在init进程里被启动的。继续看
 frameworks/base/cmds/installd/installd.c</p>
-<pre style="background-color:#2b303b;">
-<code class="language-c" data-lang="c"><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">main</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">const int </span><span style="color:#bf616a;">argc</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">const char </span><span style="color:#c0c5ce;">*</span><span style="color:#bf616a;">argv</span><span style="color:#c0c5ce;">[]) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">char</span><span style="color:#c0c5ce;"> buf[BUFFER_MAX];</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">struct</span><span style="color:#c0c5ce;"> sockaddr addr;</span><span style="color:#c0c5ce;">
- socklen_t alen;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;"> lsocket, s, count;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">initialize_globals</span><span style="color:#c0c5ce;">() &lt; </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGE</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">Could not initialize globals; exiting.</span><span style="color:#96b5b4;">\n</span><span style="color:#c0c5ce;">&quot;);</span><span style="color:#c0c5ce;">
- </span><span style="color:#96b5b4;">exit</span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">);</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">initialize_directories</span><span style="color:#c0c5ce;">() &lt; </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGE</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">Could not create directories; exiting.</span><span style="color:#96b5b4;">\n</span><span style="color:#c0c5ce;">&quot;);</span><span style="color:#c0c5ce;">
- </span><span style="color:#96b5b4;">exit</span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">);</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- lsocket = </span><span style="color:#bf616a;">android_get_control_socket</span><span style="color:#c0c5ce;">(SOCKET_PATH);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(lsocket &lt; </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGE</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">Failed to get socket from environment: </span><span style="color:#d08770;">%s</span><span style="color:#96b5b4;">\n</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#96b5b4;">strerror</span><span style="color:#c0c5ce;">(errno));</span><span style="color:#c0c5ce;">
- </span><span style="color:#96b5b4;">exit</span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">);</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">listen</span><span style="color:#c0c5ce;">(lsocket, </span><span style="color:#d08770;">5</span><span style="color:#c0c5ce;">)) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGE</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">Listen on socket failed: </span><span style="color:#d08770;">%s</span><span style="color:#96b5b4;">\n</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#96b5b4;">strerror</span><span style="color:#c0c5ce;">(errno));</span><span style="color:#c0c5ce;">
- </span><span style="color:#96b5b4;">exit</span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">);</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">fcntl</span><span style="color:#c0c5ce;">(lsocket, F_SETFD, FD_CLOEXEC);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">(;;) {</span><span style="color:#c0c5ce;">
- alen = sizeof(addr);</span><span style="color:#c0c5ce;">
- s = </span><span style="color:#bf616a;">accept</span><span style="color:#c0c5ce;">(lsocket, &amp;addr, &amp;alen);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(s &lt; </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGE</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">Accept failed: </span><span style="color:#d08770;">%s</span><span style="color:#96b5b4;">\n</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#96b5b4;">strerror</span><span style="color:#c0c5ce;">(errno));</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">continue</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">fcntl</span><span style="color:#c0c5ce;">(s, F_SETFD, FD_CLOEXEC);</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGI</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">new connection</span><span style="color:#96b5b4;">\n</span><span style="color:#c0c5ce;">&quot;);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">(;;) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">unsigned short</span><span style="color:#c0c5ce;"> count;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">readx</span><span style="color:#c0c5ce;">(s, &amp;count, sizeof(count))) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGE</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">failed to read size</span><span style="color:#96b5b4;">\n</span><span style="color:#c0c5ce;">&quot;);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">break</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">((count &lt; </span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">) || (count &gt;= BUFFER_MAX)) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGE</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">invalid size </span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span style="color:#c0c5ce;">&quot;, count);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">break</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">readx</span><span style="color:#c0c5ce;">(s, buf, count)) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGE</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">failed to read command</span><span style="color:#96b5b4;">\n</span><span style="color:#c0c5ce;">&quot;);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">break</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- buf[count] = </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">execute</span><span style="color:#c0c5ce;">(s, buf)) </span><span style="color:#b48ead;">break</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGI</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">closing connection</span><span style="color:#96b5b4;">\n</span><span style="color:#c0c5ce;">&quot;);</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">close</span><span style="color:#c0c5ce;">(s);</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
-}</span><span style="color:#c0c5ce;">
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">main</span><span>(</span><span style="color:#b48ead;">const int </span><span style="color:#bf616a;">argc</span><span>, </span><span style="color:#b48ead;">const char </span><span>*</span><span style="color:#bf616a;">argv</span><span>[]) {</span><span>
+</span><span> </span><span style="color:#b48ead;">char</span><span> buf[BUFFER_MAX];</span><span>
+</span><span> </span><span style="color:#b48ead;">struct</span><span> sockaddr addr;</span><span>
+</span><span> socklen_t alen;</span><span>
+</span><span> </span><span style="color:#b48ead;">int</span><span> lsocket, s, count;</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">initialize_globals</span><span>() &lt; </span><span style="color:#d08770;">0</span><span>) {</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGE</span><span>(&quot;</span><span style="color:#a3be8c;">Could not initialize globals; exiting.</span><span style="color:#96b5b4;">\n</span><span>&quot;);</span><span>
+</span><span> </span><span style="color:#96b5b4;">exit</span><span>(</span><span style="color:#d08770;">1</span><span>);</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">initialize_directories</span><span>() &lt; </span><span style="color:#d08770;">0</span><span>) {</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGE</span><span>(&quot;</span><span style="color:#a3be8c;">Could not create directories; exiting.</span><span style="color:#96b5b4;">\n</span><span>&quot;);</span><span>
+</span><span> </span><span style="color:#96b5b4;">exit</span><span>(</span><span style="color:#d08770;">1</span><span>);</span><span>
+</span><span> }</span><span>
+</span><span> lsocket = </span><span style="color:#bf616a;">android_get_control_socket</span><span>(SOCKET_PATH);</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(lsocket &lt; </span><span style="color:#d08770;">0</span><span>) {</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGE</span><span>(&quot;</span><span style="color:#a3be8c;">Failed to get socket from environment: </span><span style="color:#d08770;">%s</span><span style="color:#96b5b4;">\n</span><span>&quot;, </span><span style="color:#96b5b4;">strerror</span><span>(errno));</span><span>
+</span><span> </span><span style="color:#96b5b4;">exit</span><span>(</span><span style="color:#d08770;">1</span><span>);</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">listen</span><span>(lsocket, </span><span style="color:#d08770;">5</span><span>)) {</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGE</span><span>(&quot;</span><span style="color:#a3be8c;">Listen on socket failed: </span><span style="color:#d08770;">%s</span><span style="color:#96b5b4;">\n</span><span>&quot;, </span><span style="color:#96b5b4;">strerror</span><span>(errno));</span><span>
+</span><span> </span><span style="color:#96b5b4;">exit</span><span>(</span><span style="color:#d08770;">1</span><span>);</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#bf616a;">fcntl</span><span>(lsocket, F_SETFD, FD_CLOEXEC);</span><span>
+</span><span> </span><span style="color:#b48ead;">for </span><span>(;;) {</span><span>
+</span><span> alen = sizeof(addr);</span><span>
+</span><span> s = </span><span style="color:#bf616a;">accept</span><span>(lsocket, &amp;addr, &amp;alen);</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(s &lt; </span><span style="color:#d08770;">0</span><span>) {</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGE</span><span>(&quot;</span><span style="color:#a3be8c;">Accept failed: </span><span style="color:#d08770;">%s</span><span style="color:#96b5b4;">\n</span><span>&quot;, </span><span style="color:#96b5b4;">strerror</span><span>(errno));</span><span>
+</span><span> </span><span style="color:#b48ead;">continue</span><span>;</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#bf616a;">fcntl</span><span>(s, F_SETFD, FD_CLOEXEC);</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGI</span><span>(&quot;</span><span style="color:#a3be8c;">new connection</span><span style="color:#96b5b4;">\n</span><span>&quot;);</span><span>
+</span><span> </span><span style="color:#b48ead;">for </span><span>(;;) {</span><span>
+</span><span> </span><span style="color:#b48ead;">unsigned short</span><span> count;</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">readx</span><span>(s, &amp;count, sizeof(count))) {</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGE</span><span>(&quot;</span><span style="color:#a3be8c;">failed to read size</span><span style="color:#96b5b4;">\n</span><span>&quot;);</span><span>
+</span><span> </span><span style="color:#b48ead;">break</span><span>;</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>((count &lt; </span><span style="color:#d08770;">1</span><span>) || (count &gt;= BUFFER_MAX)) {</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGE</span><span>(&quot;</span><span style="color:#a3be8c;">invalid size </span><span style="color:#d08770;">%d</span><span style="color:#96b5b4;">\n</span><span>&quot;, count);</span><span>
+</span><span> </span><span style="color:#b48ead;">break</span><span>;</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">readx</span><span>(s, buf, count)) {</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGE</span><span>(&quot;</span><span style="color:#a3be8c;">failed to read command</span><span style="color:#96b5b4;">\n</span><span>&quot;);</span><span>
+</span><span> </span><span style="color:#b48ead;">break</span><span>;</span><span>
+</span><span> }</span><span>
+</span><span> buf[count] = </span><span style="color:#d08770;">0</span><span>;</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">execute</span><span>(s, buf)) </span><span style="color:#b48ead;">break</span><span>;</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGI</span><span>(&quot;</span><span style="color:#a3be8c;">closing connection</span><span style="color:#96b5b4;">\n</span><span>&quot;);</span><span>
+</span><span> </span><span style="color:#bf616a;">close</span><span>(s);</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">0</span><span>;</span><span>
+</span><span>}</span><span>
 </span></code></pre>
 <p>接收的命令: </p>
-<pre style="background-color:#2b303b;">
-<code class="language-c" data-lang="c"><span style="color:#b48ead;">struct </span><span style="color:#c0c5ce;">cmdinfo {</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">const char </span><span style="color:#c0c5ce;">*name;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">unsigned</span><span style="color:#c0c5ce;"> numargs;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">int </span><span style="color:#c0c5ce;">(*func)(</span><span style="color:#b48ead;">char </span><span style="color:#c0c5ce;">**arg, </span><span style="color:#b48ead;">char</span><span style="color:#c0c5ce;"> reply[REPLY_MAX]);</span><span style="color:#c0c5ce;">
-};</span><span style="color:#c0c5ce;">
-</span><span style="color:#b48ead;">struct</span><span style="color:#c0c5ce;"> cmdinfo cmds[] = {</span><span style="color:#c0c5ce;">
- { &quot;</span><span style="color:#a3be8c;">ping</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, do_ping },</span><span style="color:#c0c5ce;">
- { &quot;</span><span style="color:#a3be8c;">install</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#d08770;">3</span><span style="color:#c0c5ce;">, do_install },</span><span style="color:#c0c5ce;">
- { &quot;</span><span style="color:#a3be8c;">dexopt</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#d08770;">3</span><span style="color:#c0c5ce;">, do_dexopt },</span><span style="color:#c0c5ce;">
- { &quot;</span><span style="color:#a3be8c;">movedex</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">, do_move_dex },</span><span style="color:#c0c5ce;">
- { &quot;</span><span style="color:#a3be8c;">rmdex</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">, do_rm_dex },</span><span style="color:#c0c5ce;">
- { &quot;</span><span style="color:#a3be8c;">remove</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">, do_remove },</span><span style="color:#c0c5ce;">
- { &quot;</span><span style="color:#a3be8c;">rename</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">, do_rename },</span><span style="color:#c0c5ce;">
- { &quot;</span><span style="color:#a3be8c;">freecache</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">, do_free_cache },</span><span style="color:#c0c5ce;">
- { &quot;</span><span style="color:#a3be8c;">rmcache</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">, do_rm_cache },</span><span style="color:#c0c5ce;">
- { &quot;</span><span style="color:#a3be8c;">protect</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">, do_protect },</span><span style="color:#c0c5ce;">
- { &quot;</span><span style="color:#a3be8c;">getsize</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#d08770;">4</span><span style="color:#c0c5ce;">, do_get_size },</span><span style="color:#c0c5ce;">
- { &quot;</span><span style="color:#a3be8c;">rmuserdata</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">, do_rm_user_data },</span><span style="color:#c0c5ce;">
- { &quot;</span><span style="color:#a3be8c;">movefiles</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, do_movefiles },</span><span style="color:#c0c5ce;">
- { &quot;</span><span style="color:#a3be8c;">linklib</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">, do_linklib },</span><span style="color:#c0c5ce;">
- { &quot;</span><span style="color:#a3be8c;">unlinklib</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">, do_unlinklib },</span><span style="color:#c0c5ce;">
- { &quot;</span><span style="color:#a3be8c;">mkuserdata</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#d08770;">3</span><span style="color:#c0c5ce;">, do_mk_user_data },</span><span style="color:#c0c5ce;">
- { &quot;</span><span style="color:#a3be8c;">rmuser</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">, do_rm_user },</span><span style="color:#c0c5ce;">
- { &quot;</span><span style="color:#a3be8c;">cloneuserdata</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#d08770;">3</span><span style="color:#c0c5ce;">, do_clone_user_data },</span><span style="color:#c0c5ce;">
-};</span><span style="color:#c0c5ce;">
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#b48ead;">struct </span><span>cmdinfo {</span><span>
+</span><span> </span><span style="color:#b48ead;">const char </span><span>*name;</span><span>
+</span><span> </span><span style="color:#b48ead;">unsigned</span><span> numargs;</span><span>
+</span><span> </span><span style="color:#b48ead;">int </span><span>(*func)(</span><span style="color:#b48ead;">char </span><span>**arg, </span><span style="color:#b48ead;">char</span><span> reply[REPLY_MAX]);</span><span>
+</span><span>};</span><span>
+</span><span style="color:#b48ead;">struct</span><span> cmdinfo cmds[] = {</span><span>
+</span><span> { &quot;</span><span style="color:#a3be8c;">ping</span><span>&quot;, </span><span style="color:#d08770;">0</span><span>, do_ping },</span><span>
+</span><span> { &quot;</span><span style="color:#a3be8c;">install</span><span>&quot;, </span><span style="color:#d08770;">3</span><span>, do_install },</span><span>
+</span><span> { &quot;</span><span style="color:#a3be8c;">dexopt</span><span>&quot;, </span><span style="color:#d08770;">3</span><span>, do_dexopt },</span><span>
+</span><span> { &quot;</span><span style="color:#a3be8c;">movedex</span><span>&quot;, </span><span style="color:#d08770;">2</span><span>, do_move_dex },</span><span>
+</span><span> { &quot;</span><span style="color:#a3be8c;">rmdex</span><span>&quot;, </span><span style="color:#d08770;">1</span><span>, do_rm_dex },</span><span>
+</span><span> { &quot;</span><span style="color:#a3be8c;">remove</span><span>&quot;, </span><span style="color:#d08770;">2</span><span>, do_remove },</span><span>
+</span><span> { &quot;</span><span style="color:#a3be8c;">rename</span><span>&quot;, </span><span style="color:#d08770;">2</span><span>, do_rename },</span><span>
+</span><span> { &quot;</span><span style="color:#a3be8c;">freecache</span><span>&quot;, </span><span style="color:#d08770;">1</span><span>, do_free_cache },</span><span>
+</span><span> { &quot;</span><span style="color:#a3be8c;">rmcache</span><span>&quot;, </span><span style="color:#d08770;">1</span><span>, do_rm_cache },</span><span>
+</span><span> { &quot;</span><span style="color:#a3be8c;">protect</span><span>&quot;, </span><span style="color:#d08770;">2</span><span>, do_protect },</span><span>
+</span><span> { &quot;</span><span style="color:#a3be8c;">getsize</span><span>&quot;, </span><span style="color:#d08770;">4</span><span>, do_get_size },</span><span>
+</span><span> { &quot;</span><span style="color:#a3be8c;">rmuserdata</span><span>&quot;, </span><span style="color:#d08770;">2</span><span>, do_rm_user_data },</span><span>
+</span><span> { &quot;</span><span style="color:#a3be8c;">movefiles</span><span>&quot;, </span><span style="color:#d08770;">0</span><span>, do_movefiles },</span><span>
+</span><span> { &quot;</span><span style="color:#a3be8c;">linklib</span><span>&quot;, </span><span style="color:#d08770;">2</span><span>, do_linklib },</span><span>
+</span><span> { &quot;</span><span style="color:#a3be8c;">unlinklib</span><span>&quot;, </span><span style="color:#d08770;">1</span><span>, do_unlinklib },</span><span>
+</span><span> { &quot;</span><span style="color:#a3be8c;">mkuserdata</span><span>&quot;, </span><span style="color:#d08770;">3</span><span>, do_mk_user_data },</span><span>
+</span><span> { &quot;</span><span style="color:#a3be8c;">rmuser</span><span>&quot;, </span><span style="color:#d08770;">1</span><span>, do_rm_user },</span><span>
+</span><span> { &quot;</span><span style="color:#a3be8c;">cloneuserdata</span><span>&quot;, </span><span style="color:#d08770;">3</span><span>, do_clone_user_data },</span><span>
+</span><span>};</span><span>
 </span></code></pre>
 <p>比如</p>
-<pre style="background-color:#2b303b;">
-<code class="language-c" data-lang="c"><span style="color:#b48ead;">static int </span><span style="color:#8fa1b3;">do_install</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">char </span><span style="color:#c0c5ce;">**</span><span style="color:#bf616a;">arg</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">char </span><span style="color:#bf616a;">reply</span><span style="color:#c0c5ce;">[REPLY_MAX])</span><span style="color:#c0c5ce;">
-{</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">install</span><span style="color:#c0c5ce;">(arg[</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">], </span><span style="color:#96b5b4;">atoi</span><span style="color:#c0c5ce;">(arg[</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">]), </span><span style="color:#96b5b4;">atoi</span><span style="color:#c0c5ce;">(arg[</span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">])); </span><span style="color:#65737e;">/* pkgname, uid, gid */</span><span style="color:#c0c5ce;">
-}</span><span style="color:#c0c5ce;">
-</span><span style="color:#b48ead;">static int </span><span style="color:#8fa1b3;">do_dexopt</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">char </span><span style="color:#c0c5ce;">**</span><span style="color:#bf616a;">arg</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">char </span><span style="color:#bf616a;">reply</span><span style="color:#c0c5ce;">[REPLY_MAX])</span><span style="color:#c0c5ce;">
-{</span><span style="color:#c0c5ce;">
- </span><span style="color:#65737e;">/* apk_path, uid, is_public */</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">dexopt</span><span style="color:#c0c5ce;">(arg[</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">], </span><span style="color:#96b5b4;">atoi</span><span style="color:#c0c5ce;">(arg[</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">]), </span><span style="color:#96b5b4;">atoi</span><span style="color:#c0c5ce;">(arg[</span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">]));</span><span style="color:#c0c5ce;">
-}</span><span style="color:#c0c5ce;">
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#b48ead;">static int </span><span style="color:#8fa1b3;">do_install</span><span>(</span><span style="color:#b48ead;">char </span><span>**</span><span style="color:#bf616a;">arg</span><span>, </span><span style="color:#b48ead;">char </span><span style="color:#bf616a;">reply</span><span>[REPLY_MAX])</span><span>
+</span><span>{</span><span>
+</span><span> </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">install</span><span>(arg[</span><span style="color:#d08770;">0</span><span>], </span><span style="color:#96b5b4;">atoi</span><span>(arg[</span><span style="color:#d08770;">1</span><span>]), </span><span style="color:#96b5b4;">atoi</span><span>(arg[</span><span style="color:#d08770;">2</span><span>])); </span><span style="color:#65737e;">/* pkgname, uid, gid */</span><span>
+</span><span>}</span><span>
+</span><span style="color:#b48ead;">static int </span><span style="color:#8fa1b3;">do_dexopt</span><span>(</span><span style="color:#b48ead;">char </span><span>**</span><span style="color:#bf616a;">arg</span><span>, </span><span style="color:#b48ead;">char </span><span style="color:#bf616a;">reply</span><span>[REPLY_MAX])</span><span>
+</span><span>{</span><span>
+</span><span> </span><span style="color:#65737e;">/* apk_path, uid, is_public */</span><span>
+</span><span> </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">dexopt</span><span>(arg[</span><span style="color:#d08770;">0</span><span>], </span><span style="color:#96b5b4;">atoi</span><span>(arg[</span><span style="color:#d08770;">1</span><span>]), </span><span style="color:#96b5b4;">atoi</span><span>(arg[</span><span style="color:#d08770;">2</span><span>]));</span><span>
+</span><span>}</span><span>
 </span></code></pre>
 <p>frameworks/base/cmds/installd/commands.c</p>
-<pre style="background-color:#2b303b;">
-<code class="language-c" data-lang="c"><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">install</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">const char </span><span style="color:#c0c5ce;">*</span><span style="color:#bf616a;">pkgname</span><span style="color:#c0c5ce;">, uid_t </span><span style="color:#bf616a;">uid</span><span style="color:#c0c5ce;">, gid_t </span><span style="color:#bf616a;">gid</span><span style="color:#c0c5ce;">)</span><span style="color:#c0c5ce;">
-{</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">char</span><span style="color:#c0c5ce;"> pkgdir[PKG_PATH_MAX];</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">char</span><span style="color:#c0c5ce;"> libdir[PKG_PATH_MAX];</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">((uid &lt; AID_SYSTEM) || (gid &lt; AID_SYSTEM)) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGE</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">invalid uid/gid: </span><span style="color:#d08770;">%d %d</span><span style="color:#96b5b4;">\n</span><span style="color:#c0c5ce;">&quot;, uid, gid);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">return </span><span style="color:#c0c5ce;">-</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">create_pkg_path</span><span style="color:#c0c5ce;">(pkgdir, pkgname, PKG_DIR_POSTFIX, </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">)) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGE</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">cannot create package path</span><span style="color:#96b5b4;">\n</span><span style="color:#c0c5ce;">&quot;);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">return </span><span style="color:#c0c5ce;">-</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">create_pkg_path</span><span style="color:#c0c5ce;">(libdir, pkgname, PKG_LIB_POSTFIX, </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">)) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGE</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">cannot create package lib path</span><span style="color:#96b5b4;">\n</span><span style="color:#c0c5ce;">&quot;);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">return </span><span style="color:#c0c5ce;">-</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">mkdir</span><span style="color:#c0c5ce;">(pkgdir, </span><span style="color:#d08770;">0751</span><span style="color:#c0c5ce;">) &lt; </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGE</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">cannot create dir &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39;: </span><span style="color:#d08770;">%s</span><span style="color:#96b5b4;">\n</span><span style="color:#c0c5ce;">&quot;, pkgdir, </span><span style="color:#96b5b4;">strerror</span><span style="color:#c0c5ce;">(errno));</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">return </span><span style="color:#c0c5ce;">-errno;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">chmod</span><span style="color:#c0c5ce;">(pkgdir, </span><span style="color:#d08770;">0751</span><span style="color:#c0c5ce;">) &lt; </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGE</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">cannot chmod dir &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39;: </span><span style="color:#d08770;">%s</span><span style="color:#96b5b4;">\n</span><span style="color:#c0c5ce;">&quot;, pkgdir, </span><span style="color:#96b5b4;">strerror</span><span style="color:#c0c5ce;">(errno));</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">unlink</span><span style="color:#c0c5ce;">(pkgdir);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">return </span><span style="color:#c0c5ce;">-errno;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">chown</span><span style="color:#c0c5ce;">(pkgdir, uid, gid) &lt; </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGE</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">cannot chown dir &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39;: </span><span style="color:#d08770;">%s</span><span style="color:#96b5b4;">\n</span><span style="color:#c0c5ce;">&quot;, pkgdir, </span><span style="color:#96b5b4;">strerror</span><span style="color:#c0c5ce;">(errno));</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">unlink</span><span style="color:#c0c5ce;">(pkgdir);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">return </span><span style="color:#c0c5ce;">-errno;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">mkdir</span><span style="color:#c0c5ce;">(libdir, </span><span style="color:#d08770;">0755</span><span style="color:#c0c5ce;">) &lt; </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGE</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">cannot create dir &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39;: </span><span style="color:#d08770;">%s</span><span style="color:#96b5b4;">\n</span><span style="color:#c0c5ce;">&quot;, libdir, </span><span style="color:#96b5b4;">strerror</span><span style="color:#c0c5ce;">(errno));</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">unlink</span><span style="color:#c0c5ce;">(pkgdir);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">return </span><span style="color:#c0c5ce;">-errno;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">chmod</span><span style="color:#c0c5ce;">(libdir, </span><span style="color:#d08770;">0755</span><span style="color:#c0c5ce;">) &lt; </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGE</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">cannot chmod dir &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39;: </span><span style="color:#d08770;">%s</span><span style="color:#96b5b4;">\n</span><span style="color:#c0c5ce;">&quot;, libdir, </span><span style="color:#96b5b4;">strerror</span><span style="color:#c0c5ce;">(errno));</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">unlink</span><span style="color:#c0c5ce;">(libdir);</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">unlink</span><span style="color:#c0c5ce;">(pkgdir);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">return </span><span style="color:#c0c5ce;">-errno;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">chown</span><span style="color:#c0c5ce;">(libdir, AID_SYSTEM, AID_SYSTEM) &lt; </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGE</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">cannot chown dir &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39;: </span><span style="color:#d08770;">%s</span><span style="color:#96b5b4;">\n</span><span style="color:#c0c5ce;">&quot;, libdir, </span><span style="color:#96b5b4;">strerror</span><span style="color:#c0c5ce;">(errno));</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">unlink</span><span style="color:#c0c5ce;">(libdir);</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">unlink</span><span style="color:#c0c5ce;">(pkgdir);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">return </span><span style="color:#c0c5ce;">-errno;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
-}</span><span style="color:#c0c5ce;">
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">install</span><span>(</span><span style="color:#b48ead;">const char </span><span>*</span><span style="color:#bf616a;">pkgname</span><span>, uid_t </span><span style="color:#bf616a;">uid</span><span>, gid_t </span><span style="color:#bf616a;">gid</span><span>)</span><span>
+</span><span>{</span><span>
+</span><span> </span><span style="color:#b48ead;">char</span><span> pkgdir[PKG_PATH_MAX];</span><span>
+</span><span> </span><span style="color:#b48ead;">char</span><span> libdir[PKG_PATH_MAX];</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>((uid &lt; AID_SYSTEM) || (gid &lt; AID_SYSTEM)) {</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGE</span><span>(&quot;</span><span style="color:#a3be8c;">invalid uid/gid: </span><span style="color:#d08770;">%d %d</span><span style="color:#96b5b4;">\n</span><span>&quot;, uid, gid);</span><span>
+</span><span> </span><span style="color:#b48ead;">return </span><span>-</span><span style="color:#d08770;">1</span><span>;</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">create_pkg_path</span><span>(pkgdir, pkgname, PKG_DIR_POSTFIX, </span><span style="color:#d08770;">0</span><span>)) {</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGE</span><span>(&quot;</span><span style="color:#a3be8c;">cannot create package path</span><span style="color:#96b5b4;">\n</span><span>&quot;);</span><span>
+</span><span> </span><span style="color:#b48ead;">return </span><span>-</span><span style="color:#d08770;">1</span><span>;</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">create_pkg_path</span><span>(libdir, pkgname, PKG_LIB_POSTFIX, </span><span style="color:#d08770;">0</span><span>)) {</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGE</span><span>(&quot;</span><span style="color:#a3be8c;">cannot create package lib path</span><span style="color:#96b5b4;">\n</span><span>&quot;);</span><span>
+</span><span> </span><span style="color:#b48ead;">return </span><span>-</span><span style="color:#d08770;">1</span><span>;</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">mkdir</span><span>(pkgdir, </span><span style="color:#d08770;">0751</span><span>) &lt; </span><span style="color:#d08770;">0</span><span>) {</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGE</span><span>(&quot;</span><span style="color:#a3be8c;">cannot create dir &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39;: </span><span style="color:#d08770;">%s</span><span style="color:#96b5b4;">\n</span><span>&quot;, pkgdir, </span><span style="color:#96b5b4;">strerror</span><span>(errno));</span><span>
+</span><span> </span><span style="color:#b48ead;">return </span><span>-errno;</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">chmod</span><span>(pkgdir, </span><span style="color:#d08770;">0751</span><span>) &lt; </span><span style="color:#d08770;">0</span><span>) {</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGE</span><span>(&quot;</span><span style="color:#a3be8c;">cannot chmod dir &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39;: </span><span style="color:#d08770;">%s</span><span style="color:#96b5b4;">\n</span><span>&quot;, pkgdir, </span><span style="color:#96b5b4;">strerror</span><span>(errno));</span><span>
+</span><span> </span><span style="color:#bf616a;">unlink</span><span>(pkgdir);</span><span>
+</span><span> </span><span style="color:#b48ead;">return </span><span>-errno;</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">chown</span><span>(pkgdir, uid, gid) &lt; </span><span style="color:#d08770;">0</span><span>) {</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGE</span><span>(&quot;</span><span style="color:#a3be8c;">cannot chown dir &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39;: </span><span style="color:#d08770;">%s</span><span style="color:#96b5b4;">\n</span><span>&quot;, pkgdir, </span><span style="color:#96b5b4;">strerror</span><span>(errno));</span><span>
+</span><span> </span><span style="color:#bf616a;">unlink</span><span>(pkgdir);</span><span>
+</span><span> </span><span style="color:#b48ead;">return </span><span>-errno;</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">mkdir</span><span>(libdir, </span><span style="color:#d08770;">0755</span><span>) &lt; </span><span style="color:#d08770;">0</span><span>) {</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGE</span><span>(&quot;</span><span style="color:#a3be8c;">cannot create dir &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39;: </span><span style="color:#d08770;">%s</span><span style="color:#96b5b4;">\n</span><span>&quot;, libdir, </span><span style="color:#96b5b4;">strerror</span><span>(errno));</span><span>
+</span><span> </span><span style="color:#bf616a;">unlink</span><span>(pkgdir);</span><span>
+</span><span> </span><span style="color:#b48ead;">return </span><span>-errno;</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">chmod</span><span>(libdir, </span><span style="color:#d08770;">0755</span><span>) &lt; </span><span style="color:#d08770;">0</span><span>) {</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGE</span><span>(&quot;</span><span style="color:#a3be8c;">cannot chmod dir &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39;: </span><span style="color:#d08770;">%s</span><span style="color:#96b5b4;">\n</span><span>&quot;, libdir, </span><span style="color:#96b5b4;">strerror</span><span>(errno));</span><span>
+</span><span> </span><span style="color:#bf616a;">unlink</span><span>(libdir);</span><span>
+</span><span> </span><span style="color:#bf616a;">unlink</span><span>(pkgdir);</span><span>
+</span><span> </span><span style="color:#b48ead;">return </span><span>-errno;</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">chown</span><span>(libdir, AID_SYSTEM, AID_SYSTEM) &lt; </span><span style="color:#d08770;">0</span><span>) {</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGE</span><span>(&quot;</span><span style="color:#a3be8c;">cannot chown dir &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39;: </span><span style="color:#d08770;">%s</span><span style="color:#96b5b4;">\n</span><span>&quot;, libdir, </span><span style="color:#96b5b4;">strerror</span><span>(errno));</span><span>
+</span><span> </span><span style="color:#bf616a;">unlink</span><span>(libdir);</span><span>
+</span><span> </span><span style="color:#bf616a;">unlink</span><span>(pkgdir);</span><span>
+</span><span> </span><span style="color:#b48ead;">return </span><span>-errno;</span><span>
+</span><span> }</span><span style="color:#d08770;">2</span><span>
+</span><span> </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">0</span><span>;</span><span>
+</span><span>}</span><span>
 </span></code></pre>
 <p>adb pm -r install xxx.apk 的流程跟踪结束。</p>
 <p><strong>再来看看MultiDex.install（）的流程：</strong> </p>
@@ -409,381 +401,375 @@ android.support.multidex.MultiDex.V14#makeDexElements();<br />
 通过反射调用了DexPathList 的makeDexElements()<br />
 该方法就是调用dex = loadDexFile(file, optimizedDirectory);<br />
 看看 loadDexFile </p>
-<pre style="background-color:#2b303b;">
-<code class="language-c" data-lang="c"><span style="color:#65737e;">/**</span><span style="color:#65737e;">
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#65737e;">/**</span><span style="color:#65737e;">
 </span><span style="color:#65737e;">* Constructs a {@code DexFile} instance, as appropriate depending</span><span style="color:#65737e;">
 </span><span style="color:#65737e;">* on whether {@code optimizedDirectory} is {@code null}.</span><span style="color:#65737e;">
-</span><span style="color:#65737e;">*/</span><span style="color:#c0c5ce;">
-</span><span style="color:#c0c5ce;">private </span><span style="color:#b48ead;">static</span><span style="color:#c0c5ce;"> DexFile </span><span style="color:#8fa1b3;">loadDexFile</span><span style="color:#c0c5ce;">(File </span><span style="color:#bf616a;">file</span><span style="color:#c0c5ce;">, File </span><span style="color:#bf616a;">optimizedDirectory</span><span style="color:#c0c5ce;">)</span><span style="color:#c0c5ce;">
-</span><span style="color:#c0c5ce;">throws IOException {</span><span style="color:#c0c5ce;">
-</span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(optimizedDirectory == null) {</span><span style="color:#c0c5ce;">
-</span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> new </span><span style="color:#bf616a;">DexFile</span><span style="color:#c0c5ce;">(file);</span><span style="color:#c0c5ce;">
-</span><span style="color:#c0c5ce;">} </span><span style="color:#b48ead;">else </span><span style="color:#c0c5ce;">{</span><span style="color:#c0c5ce;">
-</span><span style="color:#c0c5ce;">String optimizedPath = </span><span style="color:#bf616a;">optimizedPathFor</span><span style="color:#c0c5ce;">(file, optimizedDirectory);</span><span style="color:#c0c5ce;">
-</span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> DexFile.</span><span style="color:#bf616a;">loadDex</span><span style="color:#c0c5ce;">(file.</span><span style="color:#bf616a;">getPath</span><span style="color:#c0c5ce;">(), optimizedPath, </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">);</span><span style="color:#c0c5ce;">
-</span><span style="color:#c0c5ce;">}</span><span style="color:#c0c5ce;">
-</span><span style="color:#c0c5ce;">}</span><span style="color:#c0c5ce;">
+</span><span style="color:#65737e;">*/</span><span>
+</span><span>private </span><span style="color:#b48ead;">static</span><span> DexFile </span><span style="color:#8fa1b3;">loadDexFile</span><span>(File </span><span style="color:#bf616a;">file</span><span>, File </span><span style="color:#bf616a;">optimizedDirectory</span><span>)</span><span>
+</span><span>throws IOException {</span><span>
+</span><span style="color:#b48ead;">if </span><span>(optimizedDirectory == null) {</span><span>
+</span><span style="color:#b48ead;">return</span><span> new </span><span style="color:#bf616a;">DexFile</span><span>(file);</span><span>
+</span><span>} </span><span style="color:#b48ead;">else </span><span>{</span><span>
+</span><span>String optimizedPath = </span><span style="color:#bf616a;">optimizedPathFor</span><span>(file, optimizedDirectory);</span><span>
+</span><span style="color:#b48ead;">return</span><span> DexFile.</span><span style="color:#bf616a;">loadDex</span><span>(file.</span><span style="color:#bf616a;">getPath</span><span>(), optimizedPath, </span><span style="color:#d08770;">0</span><span>);</span><span>
+</span><span>}</span><span>
+</span><span>}</span><span>
 </span></code></pre>
 <p>第一次load dex文件的时候  是 optimizedDirectory 空的 。
 进入 return new DexFile(file); 的分支。</p>
-<pre style="background-color:#2b303b;">
-<code class="language-c" data-lang="c"><span style="color:#65737e;">/*</span><span style="color:#65737e;">
-* Open a DEX file. The value returned is a magic VM cookie. On</span><span style="color:#65737e;">
-* failure, an IOException is thrown.</span><span style="color:#65737e;">
-*/</span><span style="color:#c0c5ce;">
-native private </span><span style="color:#b48ead;">static int </span><span style="color:#8fa1b3;">openDexFile</span><span style="color:#c0c5ce;">(String </span><span style="color:#bf616a;">sourceName</span><span style="color:#c0c5ce;">, String </span><span style="color:#bf616a;">outputName</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
-</span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">flags</span><span style="color:#c0c5ce;">) throws IOException;</span><span style="color:#c0c5ce;">
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#65737e;">/*</span><span style="color:#65737e;">
+</span><span style="color:#65737e;">* Open a DEX file. The value returned is a magic VM cookie. On</span><span style="color:#65737e;">
+</span><span style="color:#65737e;">* failure, an IOException is thrown.</span><span style="color:#65737e;">
+</span><span style="color:#65737e;">*/</span><span>
+</span><span>native private </span><span style="color:#b48ead;">static int </span><span style="color:#8fa1b3;">openDexFile</span><span>(String </span><span style="color:#bf616a;">sourceName</span><span>, String </span><span style="color:#bf616a;">outputName</span><span>,</span><span>
+</span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">flags</span><span>) throws IOException;</span><span>
 </span></code></pre>
 <p>进入native层代码openDexFile()</p>
-<pre style="background-color:#2b303b;">
-<code class="language-c" data-lang="c"><span style="color:#b48ead;">static void </span><span style="color:#8fa1b3;">Dalvik_dalvik_system_DexFile_openDexFile</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">const</span><span style="color:#c0c5ce;"> u4* </span><span style="color:#bf616a;">args</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
-JValue* </span><span style="color:#bf616a;">pResult</span><span style="color:#c0c5ce;">)</span><span style="color:#c0c5ce;">
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#b48ead;">static void </span><span style="color:#8fa1b3;">Dalvik_dalvik_system_DexFile_openDexFile</span><span>(</span><span style="color:#b48ead;">const</span><span> u4* </span><span style="color:#bf616a;">args</span><span>,</span><span>
+</span><span>JValue* </span><span style="color:#bf616a;">pResult</span><span>)</span><span>
 </span></code></pre>
 <p>该方法比较长 主要是调用了dvmJarFileOpen()方法，在 android/dalvik/vm/JarFile.cpp</p>
-<pre style="background-color:#2b303b;">
-<code class="language-c" data-lang="c"><span style="color:#65737e;">/*</span><span style="color:#65737e;">
- * Open a Jar file. It&#39;s okay if it&#39;s just a Zip archive without all of</span><span style="color:#65737e;">
- * the Jar trimmings, but we do insist on finding &quot;classes.dex&quot; inside</span><span style="color:#65737e;">
- * or an appropriately-named &quot;.odex&quot; file alongside.</span><span style="color:#65737e;">
- *</span><span style="color:#65737e;">
- * If &quot;isBootstrap&quot; is not set, the optimizer/verifier regards this DEX as</span><span style="color:#65737e;">
- * being part of a different class loader.</span><span style="color:#65737e;">
- */</span><span style="color:#c0c5ce;">
-</span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">dvmJarFileOpen</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">const char</span><span style="color:#c0c5ce;">* </span><span style="color:#bf616a;">fileName</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">const char</span><span style="color:#c0c5ce;">* </span><span style="color:#bf616a;">odexOutputName</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
- JarFile** </span><span style="color:#bf616a;">ppJarFile</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">bool </span><span style="color:#bf616a;">isBootstrap</span><span style="color:#c0c5ce;">)</span><span style="color:#c0c5ce;">
-{</span><span style="color:#c0c5ce;">
- </span><span style="color:#65737e;">/*</span><span style="color:#65737e;">
- * TODO: This function has been duplicated and modified to become</span><span style="color:#65737e;">
- * dvmRawDexFileOpen() in RawDexFile.c. This should be refactored.</span><span style="color:#65737e;">
- */</span><span style="color:#c0c5ce;">
- ZipArchive archive;</span><span style="color:#c0c5ce;">
- DvmDex* pDvmDex = </span><span style="color:#d08770;">NULL</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">char</span><span style="color:#c0c5ce;">* cachedName = </span><span style="color:#d08770;">NULL</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">bool</span><span style="color:#c0c5ce;"> archiveOpen = </span><span style="color:#d08770;">false</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">bool</span><span style="color:#c0c5ce;"> locked = </span><span style="color:#d08770;">false</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;"> fd = -</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;"> result = -</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- </span><span style="color:#65737e;">/* Even if we&#39;re not going to look at the archive, we need to</span><span style="color:#65737e;">
- * open it so we can stuff it into ppJarFile.</span><span style="color:#65737e;">
- */</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">dexZipOpenArchive</span><span style="color:#c0c5ce;">(fileName, &amp;archive) != </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">)</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">goto</span><span style="color:#c0c5ce;"> bail;</span><span style="color:#c0c5ce;">
- archiveOpen = </span><span style="color:#d08770;">true</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- </span><span style="color:#65737e;">/* If we fork/exec into dexopt, don&#39;t let it inherit the archive&#39;s fd.</span><span style="color:#65737e;">
- */</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">dvmSetCloseOnExec</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">dexZipGetArchiveFd</span><span style="color:#c0c5ce;">(&amp;archive));</span><span style="color:#c0c5ce;">
- </span><span style="color:#65737e;">/* First, look for a &quot;.odex&quot; alongside the jar file. It will</span><span style="color:#65737e;">
- * have the same name/path except for the extension.</span><span style="color:#65737e;">
- */</span><span style="color:#c0c5ce;">
- fd = </span><span style="color:#bf616a;">openAlternateSuffix</span><span style="color:#c0c5ce;">(fileName, &quot;</span><span style="color:#a3be8c;">odex</span><span style="color:#c0c5ce;">&quot;, O_RDONLY, &amp;cachedName);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(fd &gt;= </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGV</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">Using alternate file (odex) for </span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;"> ...</span><span style="color:#c0c5ce;">&quot;, fileName);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(!</span><span style="color:#bf616a;">dvmCheckOptHeaderAndDependencies</span><span style="color:#c0c5ce;">(fd, </span><span style="color:#d08770;">false</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">true</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">true</span><span style="color:#c0c5ce;">)) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGE</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;"> odex has stale dependencies</span><span style="color:#c0c5ce;">&quot;, fileName);</span><span style="color:#c0c5ce;">
- </span><span style="color:#96b5b4;">free</span><span style="color:#c0c5ce;">(cachedName);</span><span style="color:#c0c5ce;">
- cachedName = </span><span style="color:#d08770;">NULL</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">close</span><span style="color:#c0c5ce;">(fd);</span><span style="color:#c0c5ce;">
- fd = -</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">goto</span><span style="color:#c0c5ce;"> tryArchive;</span><span style="color:#c0c5ce;">
- } </span><span style="color:#b48ead;">else </span><span style="color:#c0c5ce;">{</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGV</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;"> odex has good dependencies</span><span style="color:#c0c5ce;">&quot;, fileName);</span><span style="color:#c0c5ce;">
- </span><span style="color:#65737e;">//TODO: make sure that the .odex actually corresponds</span><span style="color:#65737e;">
- // to the classes.dex inside the archive (if present).</span><span style="color:#65737e;">
- // For typical use there will be no classes.dex.</span><span style="color:#65737e;">
- </span><span style="color:#c0c5ce;">}</span><span style="color:#c0c5ce;">
- } </span><span style="color:#b48ead;">else </span><span style="color:#c0c5ce;">{</span><span style="color:#c0c5ce;">
- ZipEntry entry;</span><span style="color:#c0c5ce;">
-tryArchive:</span><span style="color:#c0c5ce;">
- </span><span style="color:#65737e;">/*</span><span style="color:#65737e;">
- * Pre-created .odex absent or stale. Look inside the jar for a</span><span style="color:#65737e;">
- * &quot;classes.dex&quot;.</span><span style="color:#65737e;">
- */</span><span style="color:#c0c5ce;">
- entry = </span><span style="color:#bf616a;">dexZipFindEntry</span><span style="color:#c0c5ce;">(&amp;archive, </span><span style="color:#d08770;">kDexInJarName</span><span style="color:#c0c5ce;">);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(entry != </span><span style="color:#d08770;">NULL</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">bool</span><span style="color:#c0c5ce;"> newFile = </span><span style="color:#d08770;">false</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- </span><span style="color:#65737e;">/*</span><span style="color:#65737e;">
- * We&#39;ve found the one we want. See if there&#39;s an up-to-date copy</span><span style="color:#65737e;">
- * in the cache.</span><span style="color:#65737e;">
- *</span><span style="color:#65737e;">
- * On return, &quot;fd&quot; will be seeked just past the &quot;opt&quot; header.</span><span style="color:#65737e;">
- *</span><span style="color:#65737e;">
- * If a stale .odex file is present and classes.dex exists in</span><span style="color:#65737e;">
- * the archive, this will *not* return an fd pointing to the</span><span style="color:#65737e;">
- * .odex file; the fd will point into dalvik-cache like any</span><span style="color:#65737e;">
- * other jar.</span><span style="color:#65737e;">
- */</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(odexOutputName == </span><span style="color:#d08770;">NULL</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- cachedName = </span><span style="color:#bf616a;">dexOptGenerateCacheFileName</span><span style="color:#c0c5ce;">(fileName,</span><span style="color:#c0c5ce;">
- </span><span style="color:#d08770;">kDexInJarName</span><span style="color:#c0c5ce;">);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(cachedName == </span><span style="color:#d08770;">NULL</span><span style="color:#c0c5ce;">)</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">goto</span><span style="color:#c0c5ce;"> bail;</span><span style="color:#c0c5ce;">
- } </span><span style="color:#b48ead;">else </span><span style="color:#c0c5ce;">{</span><span style="color:#c0c5ce;">
- cachedName = </span><span style="color:#bf616a;">strdup</span><span style="color:#c0c5ce;">(odexOutputName);</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGV</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">dvmJarFileOpen: Checking cache for </span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;"> (</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">)</span><span style="color:#c0c5ce;">&quot;,</span><span style="color:#c0c5ce;">
- fileName, cachedName);</span><span style="color:#c0c5ce;">
- fd = </span><span style="color:#bf616a;">dvmOpenCachedDexFile</span><span style="color:#c0c5ce;">(fileName, cachedName,</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">dexGetZipEntryModTime</span><span style="color:#c0c5ce;">(&amp;archive, entry),</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">dexGetZipEntryCrc32</span><span style="color:#c0c5ce;">(&amp;archive, entry),</span><span style="color:#c0c5ce;">
- isBootstrap, &amp;newFile, </span><span style="color:#65737e;">/*createIfMissing=*/</span><span style="color:#d08770;">true</span><span style="color:#c0c5ce;">);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(fd &lt; </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGI</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">Unable to open or create cache for </span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;"> (</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">)</span><span style="color:#c0c5ce;">&quot;,</span><span style="color:#c0c5ce;">
- fileName, cachedName);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">goto</span><span style="color:#c0c5ce;"> bail;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- locked = </span><span style="color:#d08770;">true</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- </span><span style="color:#65737e;">/*</span><span style="color:#65737e;">
- * If fd points to a new file (because there was no cached version,</span><span style="color:#65737e;">
- * or the cached version was stale), generate the optimized DEX.</span><span style="color:#65737e;">
- * The file descriptor returned is still locked, and is positioned</span><span style="color:#65737e;">
- * just past the optimization header.</span><span style="color:#65737e;">
- */</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(newFile) {</span><span style="color:#c0c5ce;">
- u8 startWhen, extractWhen, endWhen;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">bool</span><span style="color:#c0c5ce;"> result;</span><span style="color:#c0c5ce;">
- off_t dexOffset;</span><span style="color:#c0c5ce;">
- dexOffset = </span><span style="color:#bf616a;">lseek</span><span style="color:#c0c5ce;">(fd, </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, SEEK_CUR);</span><span style="color:#c0c5ce;">
- result = (dexOffset &gt; </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(result) {</span><span style="color:#c0c5ce;">
- startWhen = </span><span style="color:#bf616a;">dvmGetRelativeTimeUsec</span><span style="color:#c0c5ce;">();</span><span style="color:#c0c5ce;">
- result = </span><span style="color:#bf616a;">dexZipExtractEntryToFile</span><span style="color:#c0c5ce;">(&amp;archive, entry, fd) == </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- extractWhen = </span><span style="color:#bf616a;">dvmGetRelativeTimeUsec</span><span style="color:#c0c5ce;">();</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(result) {</span><span style="color:#c0c5ce;">
- result = </span><span style="color:#bf616a;">dvmOptimizeDexFile</span><span style="color:#c0c5ce;">(fd, dexOffset,</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">dexGetZipEntryUncompLen</span><span style="color:#c0c5ce;">(&amp;archive, entry),</span><span style="color:#c0c5ce;">
- fileName,</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">dexGetZipEntryModTime</span><span style="color:#c0c5ce;">(&amp;archive, entry),</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">dexGetZipEntryCrc32</span><span style="color:#c0c5ce;">(&amp;archive, entry),</span><span style="color:#c0c5ce;">
- isBootstrap);</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(!result) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGE</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">Unable to extract+optimize DEX from &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39;</span><span style="color:#c0c5ce;">&quot;,</span><span style="color:#c0c5ce;">
- fileName);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">goto</span><span style="color:#c0c5ce;"> bail;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- endWhen = </span><span style="color:#bf616a;">dvmGetRelativeTimeUsec</span><span style="color:#c0c5ce;">();</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGD</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">DEX prep &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39;: unzip in </span><span style="color:#d08770;">%d</span><span style="color:#a3be8c;">ms, rewrite </span><span style="color:#d08770;">%d</span><span style="color:#a3be8c;">ms</span><span style="color:#c0c5ce;">&quot;,</span><span style="color:#c0c5ce;">
- fileName,</span><span style="color:#c0c5ce;">
- (</span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;">) (extractWhen - startWhen) / </span><span style="color:#d08770;">1000</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
- (</span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;">) (endWhen - extractWhen) / </span><span style="color:#d08770;">1000</span><span style="color:#c0c5ce;">);</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- } </span><span style="color:#b48ead;">else </span><span style="color:#c0c5ce;">{</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGI</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">Zip is good, but no </span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;"> inside, and no valid .odex </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#c0c5ce;">
- &quot;</span><span style="color:#a3be8c;">file in the same directory</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#d08770;">kDexInJarName</span><span style="color:#c0c5ce;">);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">goto</span><span style="color:#c0c5ce;"> bail;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#65737e;">/*</span><span style="color:#65737e;">
- * Map the cached version. This immediately rewinds the fd, so it</span><span style="color:#65737e;">
- * doesn&#39;t have to be seeked anywhere in particular.</span><span style="color:#65737e;">
- */</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">dvmDexFileOpenFromFd</span><span style="color:#c0c5ce;">(fd, &amp;pDvmDex) != </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGI</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">Unable to map </span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;"> in </span><span style="color:#d08770;">%s</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#d08770;">kDexInJarName</span><span style="color:#c0c5ce;">, fileName);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">goto</span><span style="color:#c0c5ce;"> bail;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(locked) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#65737e;">/* unlock the fd */</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(!</span><span style="color:#bf616a;">dvmUnlockCachedDexFile</span><span style="color:#c0c5ce;">(fd)) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#65737e;">/* uh oh -- this process needs to exit or we&#39;ll wedge the system */</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGE</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">Unable to unlock DEX file</span><span style="color:#c0c5ce;">&quot;);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">goto</span><span style="color:#c0c5ce;"> bail;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- locked = </span><span style="color:#d08770;">false</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGV</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">Successfully opened &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39; in &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39;</span><span style="color:#c0c5ce;">&quot;, </span><span style="color:#d08770;">kDexInJarName</span><span style="color:#c0c5ce;">, fileName);</span><span style="color:#c0c5ce;">
- *ppJarFile = (JarFile*) </span><span style="color:#96b5b4;">calloc</span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">, sizeof(JarFile));</span><span style="color:#c0c5ce;">
- (*ppJarFile)-&gt;archive = archive;</span><span style="color:#c0c5ce;">
- (*ppJarFile)-&gt;cacheFileName = cachedName;</span><span style="color:#c0c5ce;">
- (*ppJarFile)-&gt;pDvmDex = pDvmDex;</span><span style="color:#c0c5ce;">
- cachedName = </span><span style="color:#d08770;">NULL</span><span style="color:#c0c5ce;">; </span><span style="color:#65737e;">// don&#39;t free it below</span><span style="color:#65737e;">
-</span><span style="color:#c0c5ce;"> result = </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
-bail:</span><span style="color:#c0c5ce;">
- </span><span style="color:#65737e;">/* clean up, closing the open file */</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(archiveOpen &amp;&amp; result != </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">)</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">dexZipCloseArchive</span><span style="color:#c0c5ce;">(&amp;archive);</span><span style="color:#c0c5ce;">
- </span><span style="color:#96b5b4;">free</span><span style="color:#c0c5ce;">(cachedName);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(fd &gt;= </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(locked)</span><span style="color:#c0c5ce;">
- (</span><span style="color:#b48ead;">void</span><span style="color:#c0c5ce;">) </span><span style="color:#bf616a;">dvmUnlockCachedDexFile</span><span style="color:#c0c5ce;">(fd);</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">close</span><span style="color:#c0c5ce;">(fd);</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> result;</span><span style="color:#c0c5ce;">
-}</span><span style="color:#c0c5ce;">
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#65737e;">/*</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * Open a Jar file. It&#39;s okay if it&#39;s just a Zip archive without all of</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * the Jar trimmings, but we do insist on finding &quot;classes.dex&quot; inside</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * or an appropriately-named &quot;.odex&quot; file alongside.</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> *</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * If &quot;isBootstrap&quot; is not set, the optimizer/verifier regards this DEX as</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * being part of a different class loader.</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> */</span><span>
+</span><span style="color:#b48ead;">int </span><span style="color:#8fa1b3;">dvmJarFileOpen</span><span>(</span><span style="color:#b48ead;">const char</span><span>* </span><span style="color:#bf616a;">fileName</span><span>, </span><span style="color:#b48ead;">const char</span><span>* </span><span style="color:#bf616a;">odexOutputName</span><span>,</span><span>
+</span><span> JarFile** </span><span style="color:#bf616a;">ppJarFile</span><span>, </span><span style="color:#b48ead;">bool </span><span style="color:#bf616a;">isBootstrap</span><span>)</span><span>
+</span><span>{</span><span>
+</span><span> </span><span style="color:#65737e;">/*</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * TODO: This function has been duplicated and modified to become</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * dvmRawDexFileOpen() in RawDexFile.c. This should be refactored.</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> */</span><span>
+</span><span> ZipArchive archive;</span><span>
+</span><span> DvmDex* pDvmDex = </span><span style="color:#d08770;">NULL</span><span>;</span><span>
+</span><span> </span><span style="color:#b48ead;">char</span><span>* cachedName = </span><span style="color:#d08770;">NULL</span><span>;</span><span>
+</span><span> </span><span style="color:#b48ead;">bool</span><span> archiveOpen = </span><span style="color:#d08770;">false</span><span>;</span><span>
+</span><span> </span><span style="color:#b48ead;">bool</span><span> locked = </span><span style="color:#d08770;">false</span><span>;</span><span>
+</span><span> </span><span style="color:#b48ead;">int</span><span> fd = -</span><span style="color:#d08770;">1</span><span>;</span><span>
+</span><span> </span><span style="color:#b48ead;">int</span><span> result = -</span><span style="color:#d08770;">1</span><span>;</span><span>
+</span><span> </span><span style="color:#65737e;">/* Even if we&#39;re not going to look at the archive, we need to</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * open it so we can stuff it into ppJarFile.</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> */</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">dexZipOpenArchive</span><span>(fileName, &amp;archive) != </span><span style="color:#d08770;">0</span><span>)</span><span>
+</span><span> </span><span style="color:#b48ead;">goto</span><span> bail;</span><span>
+</span><span> archiveOpen = </span><span style="color:#d08770;">true</span><span>;</span><span>
+</span><span> </span><span style="color:#65737e;">/* If we fork/exec into dexopt, don&#39;t let it inherit the archive&#39;s fd.</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> */</span><span>
+</span><span> </span><span style="color:#bf616a;">dvmSetCloseOnExec</span><span>(</span><span style="color:#bf616a;">dexZipGetArchiveFd</span><span>(&amp;archive));</span><span>
+</span><span> </span><span style="color:#65737e;">/* First, look for a &quot;.odex&quot; alongside the jar file. It will</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * have the same name/path except for the extension.</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> */</span><span>
+</span><span> fd = </span><span style="color:#bf616a;">openAlternateSuffix</span><span>(fileName, &quot;</span><span style="color:#a3be8c;">odex</span><span>&quot;, O_RDONLY, &amp;cachedName);</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(fd &gt;= </span><span style="color:#d08770;">0</span><span>) {</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGV</span><span>(&quot;</span><span style="color:#a3be8c;">Using alternate file (odex) for </span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;"> ...</span><span>&quot;, fileName);</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(!</span><span style="color:#bf616a;">dvmCheckOptHeaderAndDependencies</span><span>(fd, </span><span style="color:#d08770;">false</span><span>, </span><span style="color:#d08770;">0</span><span>, </span><span style="color:#d08770;">0</span><span>, </span><span style="color:#d08770;">true</span><span>, </span><span style="color:#d08770;">true</span><span>)) {</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGE</span><span>(&quot;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;"> odex has stale dependencies</span><span>&quot;, fileName);</span><span>
+</span><span> </span><span style="color:#96b5b4;">free</span><span>(cachedName);</span><span>
+</span><span> cachedName = </span><span style="color:#d08770;">NULL</span><span>;</span><span>
+</span><span> </span><span style="color:#bf616a;">close</span><span>(fd);</span><span>
+</span><span> fd = -</span><span style="color:#d08770;">1</span><span>;</span><span>
+</span><span> </span><span style="color:#b48ead;">goto</span><span> tryArchive;</span><span>
+</span><span> } </span><span style="color:#b48ead;">else </span><span>{</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGV</span><span>(&quot;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;"> odex has good dependencies</span><span>&quot;, fileName);</span><span>
+</span><span> </span><span style="color:#65737e;">//TODO: make sure that the .odex actually corresponds</span><span style="color:#65737e;">
+</span><span> </span><span style="color:#65737e;">// to the classes.dex inside the archive (if present).</span><span style="color:#65737e;">
+</span><span> </span><span style="color:#65737e;">// For typical use there will be no classes.dex.</span><span style="color:#65737e;">
+</span><span> }</span><span>
+</span><span> } </span><span style="color:#b48ead;">else </span><span>{</span><span>
+</span><span> ZipEntry entry;</span><span>
+</span><span>tryArchive:</span><span>
+</span><span> </span><span style="color:#65737e;">/*</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * Pre-created .odex absent or stale. Look inside the jar for a</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * &quot;classes.dex&quot;.</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> */</span><span>
+</span><span> entry = </span><span style="color:#bf616a;">dexZipFindEntry</span><span>(&amp;archive, </span><span style="color:#d08770;">kDexInJarName</span><span>);</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(entry != </span><span style="color:#d08770;">NULL</span><span>) {</span><span>
+</span><span> </span><span style="color:#b48ead;">bool</span><span> newFile = </span><span style="color:#d08770;">false</span><span>;</span><span>
+</span><span> </span><span style="color:#65737e;">/*</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * We&#39;ve found the one we want. See if there&#39;s an up-to-date copy</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * in the cache.</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> *</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * On return, &quot;fd&quot; will be seeked just past the &quot;opt&quot; header.</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> *</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * If a stale .odex file is present and classes.dex exists in</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * the archive, this will *not* return an fd pointing to the</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * .odex file; the fd will point into dalvik-cache like any</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * other jar.</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> */</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(odexOutputName == </span><span style="color:#d08770;">NULL</span><span>) {</span><span>
+</span><span> cachedName = </span><span style="color:#bf616a;">dexOptGenerateCacheFileName</span><span>(fileName,</span><span>
+</span><span> </span><span style="color:#d08770;">kDexInJarName</span><span>);</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(cachedName == </span><span style="color:#d08770;">NULL</span><span>)</span><span>
+</span><span> </span><span style="color:#b48ead;">goto</span><span> bail;</span><span>
+</span><span> } </span><span style="color:#b48ead;">else </span><span>{</span><span>
+</span><span> cachedName = </span><span style="color:#bf616a;">strdup</span><span>(odexOutputName);</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGV</span><span>(&quot;</span><span style="color:#a3be8c;">dvmJarFileOpen: Checking cache for </span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;"> (</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">)</span><span>&quot;,</span><span>
+</span><span> fileName, cachedName);</span><span>
+</span><span> fd = </span><span style="color:#bf616a;">dvmOpenCachedDexFile</span><span>(fileName, cachedName,</span><span>
+</span><span> </span><span style="color:#bf616a;">dexGetZipEntryModTime</span><span>(&amp;archive, entry),</span><span>
+</span><span> </span><span style="color:#bf616a;">dexGetZipEntryCrc32</span><span>(&amp;archive, entry),</span><span>
+</span><span> isBootstrap, &amp;newFile, </span><span style="color:#65737e;">/*createIfMissing=*/</span><span style="color:#d08770;">true</span><span>);</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(fd &lt; </span><span style="color:#d08770;">0</span><span>) {</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGI</span><span>(&quot;</span><span style="color:#a3be8c;">Unable to open or create cache for </span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;"> (</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">)</span><span>&quot;,</span><span>
+</span><span> fileName, cachedName);</span><span>
+</span><span> </span><span style="color:#b48ead;">goto</span><span> bail;</span><span>
+</span><span> }</span><span>
+</span><span> locked = </span><span style="color:#d08770;">true</span><span>;</span><span>
+</span><span> </span><span style="color:#65737e;">/*</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * If fd points to a new file (because there was no cached version,</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * or the cached version was stale), generate the optimized DEX.</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * The file descriptor returned is still locked, and is positioned</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * just past the optimization header.</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> */</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(newFile) {</span><span>
+</span><span> u8 startWhen, extractWhen, endWhen;</span><span>
+</span><span> </span><span style="color:#b48ead;">bool</span><span> result;</span><span>
+</span><span> off_t dexOffset;</span><span>
+</span><span> dexOffset = </span><span style="color:#bf616a;">lseek</span><span>(fd, </span><span style="color:#d08770;">0</span><span>, SEEK_CUR);</span><span>
+</span><span> result = (dexOffset &gt; </span><span style="color:#d08770;">0</span><span>);</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(result) {</span><span>
+</span><span> startWhen = </span><span style="color:#bf616a;">dvmGetRelativeTimeUsec</span><span>();</span><span>
+</span><span> result = </span><span style="color:#bf616a;">dexZipExtractEntryToFile</span><span>(&amp;archive, entry, fd) == </span><span style="color:#d08770;">0</span><span>;</span><span>
+</span><span> extractWhen = </span><span style="color:#bf616a;">dvmGetRelativeTimeUsec</span><span>();</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(result) {</span><span>
+</span><span> result = </span><span style="color:#bf616a;">dvmOptimizeDexFile</span><span>(fd, dexOffset,</span><span>
+</span><span> </span><span style="color:#bf616a;">dexGetZipEntryUncompLen</span><span>(&amp;archive, entry),</span><span>
+</span><span> fileName,</span><span>
+</span><span> </span><span style="color:#bf616a;">dexGetZipEntryModTime</span><span>(&amp;archive, entry),</span><span>
+</span><span> </span><span style="color:#bf616a;">dexGetZipEntryCrc32</span><span>(&amp;archive, entry),</span><span>
+</span><span> isBootstrap);</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(!result) {</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGE</span><span>(&quot;</span><span style="color:#a3be8c;">Unable to extract+optimize DEX from &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39;</span><span>&quot;,</span><span>
+</span><span> fileName);</span><span>
+</span><span> </span><span style="color:#b48ead;">goto</span><span> bail;</span><span>
+</span><span> }</span><span>
+</span><span> endWhen = </span><span style="color:#bf616a;">dvmGetRelativeTimeUsec</span><span>();</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGD</span><span>(&quot;</span><span style="color:#a3be8c;">DEX prep &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39;: unzip in </span><span style="color:#d08770;">%d</span><span style="color:#a3be8c;">ms, rewrite </span><span style="color:#d08770;">%d</span><span style="color:#a3be8c;">ms</span><span>&quot;,</span><span>
+</span><span> fileName,</span><span>
+</span><span> (</span><span style="color:#b48ead;">int</span><span>) (extractWhen - startWhen) / </span><span style="color:#d08770;">1000</span><span>,</span><span>
+</span><span> (</span><span style="color:#b48ead;">int</span><span>) (endWhen - extractWhen) / </span><span style="color:#d08770;">1000</span><span>);</span><span>
+</span><span> }</span><span>
+</span><span> } </span><span style="color:#b48ead;">else </span><span>{</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGI</span><span>(&quot;</span><span style="color:#a3be8c;">Zip is good, but no </span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;"> inside, and no valid .odex </span><span>&quot;</span><span>
+</span><span> &quot;</span><span style="color:#a3be8c;">file in the same directory</span><span>&quot;, </span><span style="color:#d08770;">kDexInJarName</span><span>);</span><span>
+</span><span> </span><span style="color:#b48ead;">goto</span><span> bail;</span><span>
+</span><span> }</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#65737e;">/*</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * Map the cached version. This immediately rewinds the fd, so it</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * doesn&#39;t have to be seeked anywhere in particular.</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> */</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">dvmDexFileOpenFromFd</span><span>(fd, &amp;pDvmDex) != </span><span style="color:#d08770;">0</span><span>) {</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGI</span><span>(&quot;</span><span style="color:#a3be8c;">Unable to map </span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;"> in </span><span style="color:#d08770;">%s</span><span>&quot;, </span><span style="color:#d08770;">kDexInJarName</span><span>, fileName);</span><span>
+</span><span> </span><span style="color:#b48ead;">goto</span><span> bail;</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(locked) {</span><span>
+</span><span> </span><span style="color:#65737e;">/* unlock the fd */</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(!</span><span style="color:#bf616a;">dvmUnlockCachedDexFile</span><span>(fd)) {</span><span>
+</span><span> </span><span style="color:#65737e;">/* uh oh -- this process needs to exit or we&#39;ll wedge the system */</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGE</span><span>(&quot;</span><span style="color:#a3be8c;">Unable to unlock DEX file</span><span>&quot;);</span><span>
+</span><span> </span><span style="color:#b48ead;">goto</span><span> bail;</span><span>
+</span><span> }</span><span>
+</span><span> locked = </span><span style="color:#d08770;">false</span><span>;</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGV</span><span>(&quot;</span><span style="color:#a3be8c;">Successfully opened &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39; in &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39;</span><span>&quot;, </span><span style="color:#d08770;">kDexInJarName</span><span>, fileName);</span><span>
+</span><span> *ppJarFile = (JarFile*) </span><span style="color:#96b5b4;">calloc</span><span>(</span><span style="color:#d08770;">1</span><span>, sizeof(JarFile));</span><span>
+</span><span> (*ppJarFile)-&gt;archive = archive;</span><span>
+</span><span> (*ppJarFile)-&gt;cacheFileName = cachedName;</span><span>
+</span><span> (*ppJarFile)-&gt;pDvmDex = pDvmDex;</span><span>
+</span><span> cachedName = </span><span style="color:#d08770;">NULL</span><span>; </span><span style="color:#65737e;">// don&#39;t free it below</span><span style="color:#65737e;">
+</span><span> result = </span><span style="color:#d08770;">0</span><span>;</span><span>
+</span><span>bail:</span><span>
+</span><span> </span><span style="color:#65737e;">/* clean up, closing the open file */</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(archiveOpen &amp;&amp; result != </span><span style="color:#d08770;">0</span><span>)</span><span>
+</span><span> </span><span style="color:#bf616a;">dexZipCloseArchive</span><span>(&amp;archive);</span><span>
+</span><span> </span><span style="color:#96b5b4;">free</span><span>(cachedName);</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(fd &gt;= </span><span style="color:#d08770;">0</span><span>) {</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(locked)</span><span>
+</span><span> (</span><span style="color:#b48ead;">void</span><span>) </span><span style="color:#bf616a;">dvmUnlockCachedDexFile</span><span>(fd);</span><span>
+</span><span> </span><span style="color:#bf616a;">close</span><span>(fd);</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#b48ead;">return</span><span> result;</span><span>
+</span><span>}</span><span>
 </span></code></pre>
 <p>其中 , 执行了dvmOpenCachedDexFile（）后 newFile 为true 。 会执行</p>
-<pre style="background-color:#2b303b;">
-<code class="language-c" data-lang="c"><span style="color:#c0c5ce;">result = </span><span style="color:#bf616a;">dvmOptimizeDexFile</span><span style="color:#c0c5ce;">(fd, dexOffset,</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">dexGetZipEntryUncompLen</span><span style="color:#c0c5ce;">(&amp;archive, entry),</span><span style="color:#c0c5ce;">
- fileName,</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">dexGetZipEntryModTime</span><span style="color:#c0c5ce;">(&amp;archive, entry),</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">dexGetZipEntryCrc32</span><span style="color:#c0c5ce;">(&amp;archive, entry),</span><span style="color:#c0c5ce;">
- isBootstrap);</span><span style="color:#c0c5ce;">
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span>result = </span><span style="color:#bf616a;">dvmOptimizeDexFile</span><span>(fd, dexOffset,</span><span>
+</span><span> </span><span style="color:#bf616a;">dexGetZipEntryUncompLen</span><span>(&amp;archive, entry),</span><span>
+</span><span> fileName,</span><span>
+</span><span> </span><span style="color:#bf616a;">dexGetZipEntryModTime</span><span>(&amp;archive, entry),</span><span>
+</span><span> </span><span style="color:#bf616a;">dexGetZipEntryCrc32</span><span>(&amp;archive, entry),</span><span>
+</span><span> isBootstrap);</span><span>
 </span></code></pre>
 <p>这里调用了 /dalvik/vm/RawDexFile.cpp  中的 dvmOptimizeDexFile()方法</p>
-<pre style="background-color:#2b303b;">
-<code class="language-c" data-lang="c"><span style="color:#65737e;">/*</span><span style="color:#65737e;">
- * Given a descriptor for a file with DEX data in it, produce an</span><span style="color:#65737e;">
- * optimized version.</span><span style="color:#65737e;">
- *</span><span style="color:#65737e;">
- * The file pointed to by &quot;fd&quot; is expected to be a locked shared resource</span><span style="color:#65737e;">
- * (or private); we make no efforts to enforce multi-process correctness</span><span style="color:#65737e;">
- * here.</span><span style="color:#65737e;">
- *</span><span style="color:#65737e;">
- * &quot;fileName&quot; is only used for debug output. &quot;modWhen&quot; and &quot;crc&quot; are stored</span><span style="color:#65737e;">
- * in the dependency set.</span><span style="color:#65737e;">
- *</span><span style="color:#65737e;">
- * The &quot;isBootstrap&quot; flag determines how the optimizer and verifier handle</span><span style="color:#65737e;">
- * package-scope access checks. When optimizing, we only load the bootstrap</span><span style="color:#65737e;">
- * class DEX files and the target DEX, so the flag determines whether the</span><span style="color:#65737e;">
- * target DEX classes are given a (synthetic) non-NULL classLoader pointer.</span><span style="color:#65737e;">
- * This only really matters if the target DEX contains classes that claim to</span><span style="color:#65737e;">
- * be in the same package as bootstrap classes.</span><span style="color:#65737e;">
- *</span><span style="color:#65737e;">
- * The optimizer will need to load every class in the target DEX file.</span><span style="color:#65737e;">
- * This is generally undesirable, so we start a subprocess to do the</span><span style="color:#65737e;">
- * work and wait for it to complete.</span><span style="color:#65737e;">
- *</span><span style="color:#65737e;">
- * Returns &quot;true&quot; on success. All data will have been written to &quot;fd&quot;.</span><span style="color:#65737e;">
- */</span><span style="color:#c0c5ce;">
-</span><span style="color:#b48ead;">bool </span><span style="color:#8fa1b3;">dvmOptimizeDexFile</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">fd</span><span style="color:#c0c5ce;">, off_t </span><span style="color:#bf616a;">dexOffset</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">long </span><span style="color:#bf616a;">dexLength</span><span style="color:#c0c5ce;">,</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">const char</span><span style="color:#c0c5ce;">* </span><span style="color:#bf616a;">fileName</span><span style="color:#c0c5ce;">, u4 </span><span style="color:#bf616a;">modWhen</span><span style="color:#c0c5ce;">, u4 </span><span style="color:#bf616a;">crc</span><span style="color:#c0c5ce;">, </span><span style="color:#b48ead;">bool </span><span style="color:#bf616a;">isBootstrap</span><span style="color:#c0c5ce;">)</span><span style="color:#c0c5ce;">
-{</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">const char</span><span style="color:#c0c5ce;">* lastPart = </span><span style="color:#96b5b4;">strrchr</span><span style="color:#c0c5ce;">(fileName, &#39;</span><span style="color:#a3be8c;">/</span><span style="color:#c0c5ce;">&#39;);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(lastPart != </span><span style="color:#d08770;">NULL</span><span style="color:#c0c5ce;">)</span><span style="color:#c0c5ce;">
- lastPart++;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">else</span><span style="color:#c0c5ce;">
- lastPart = fileName;</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGD</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">DexOpt: --- BEGIN &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39; (bootstrap=</span><span style="color:#d08770;">%d</span><span style="color:#a3be8c;">) ---</span><span style="color:#c0c5ce;">&quot;, lastPart, isBootstrap);</span><span style="color:#c0c5ce;">
- pid_t pid;</span><span style="color:#c0c5ce;">
- </span><span style="color:#65737e;">/*</span><span style="color:#65737e;">
- * This could happen if something in our bootclasspath, which we thought</span><span style="color:#65737e;">
- * was all optimized, got rejected.</span><span style="color:#65737e;">
- */</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">gDvm</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">optimizing</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGW</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">Rejecting recursive optimization attempt on &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39;</span><span style="color:#c0c5ce;">&quot;, fileName);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">false</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- pid = </span><span style="color:#bf616a;">fork</span><span style="color:#c0c5ce;">();</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(pid == </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">static const int </span><span style="color:#d08770;">kUseValgrind </span><span style="color:#c0c5ce;">= </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">static const char</span><span style="color:#c0c5ce;">* </span><span style="color:#d08770;">kDexOptBin </span><span style="color:#c0c5ce;">= &quot;</span><span style="color:#a3be8c;">/bin/dexopt</span><span style="color:#c0c5ce;">&quot;;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">static const char</span><span style="color:#c0c5ce;">* </span><span style="color:#d08770;">kValgrinder </span><span style="color:#c0c5ce;">= &quot;</span><span style="color:#a3be8c;">/usr/bin/valgrind</span><span style="color:#c0c5ce;">&quot;;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">static const int </span><span style="color:#d08770;">kFixedArgCount </span><span style="color:#c0c5ce;">= </span><span style="color:#d08770;">10</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">static const int </span><span style="color:#d08770;">kValgrindArgCount </span><span style="color:#c0c5ce;">= </span><span style="color:#d08770;">5</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">static const int </span><span style="color:#d08770;">kMaxIntLen </span><span style="color:#c0c5ce;">= </span><span style="color:#d08770;">12</span><span style="color:#c0c5ce;">; </span><span style="color:#65737e;">// &#39;-&#39;+10dig+&#39;\0&#39; -OR- 0x+8dig</span><span style="color:#65737e;">
- </span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;"> bcpSize = </span><span style="color:#bf616a;">dvmGetBootPathSize</span><span style="color:#c0c5ce;">();</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;"> argc = </span><span style="color:#d08770;">kFixedArgCount </span><span style="color:#c0c5ce;">+ bcpSize</span><span style="color:#c0c5ce;">
- + (</span><span style="color:#d08770;">kValgrindArgCount </span><span style="color:#c0c5ce;">* </span><span style="color:#d08770;">kUseValgrind</span><span style="color:#c0c5ce;">);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">const char</span><span style="color:#c0c5ce;">* argv[argc+</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">]; </span><span style="color:#65737e;">// last entry is NULL</span><span style="color:#65737e;">
- </span><span style="color:#b48ead;">char</span><span style="color:#c0c5ce;"> values [argc][</span><span style="color:#d08770;">kMaxIntLen</span><span style="color:#c0c5ce;">];</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">char</span><span style="color:#c0c5ce;">* execFile;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">const char</span><span style="color:#c0c5ce;">* androidRoot;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;"> flags;</span><span style="color:#c0c5ce;">
- </span><span style="color:#65737e;">/* change process groups, so we don&#39;t clash with ProcessManager */</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">setpgid</span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">, </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">);</span><span style="color:#c0c5ce;">
- </span><span style="color:#65737e;">/* full path to optimizer */</span><span style="color:#c0c5ce;">
- androidRoot = </span><span style="color:#96b5b4;">getenv</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">ANDROID_ROOT</span><span style="color:#c0c5ce;">&quot;);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(androidRoot == </span><span style="color:#d08770;">NULL</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGW</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">ANDROID_ROOT not set, defaulting to /system</span><span style="color:#c0c5ce;">&quot;);</span><span style="color:#c0c5ce;">
- androidRoot = &quot;</span><span style="color:#a3be8c;">/system</span><span style="color:#c0c5ce;">&quot;;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- execFile = (</span><span style="color:#b48ead;">char</span><span style="color:#c0c5ce;">*)</span><span style="color:#bf616a;">alloca</span><span style="color:#c0c5ce;">(</span><span style="color:#96b5b4;">strlen</span><span style="color:#c0c5ce;">(androidRoot) + </span><span style="color:#96b5b4;">strlen</span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">kDexOptBin</span><span style="color:#c0c5ce;">) + </span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">);</span><span style="color:#c0c5ce;">
- </span><span style="color:#96b5b4;">strcpy</span><span style="color:#c0c5ce;">(execFile, androidRoot);</span><span style="color:#c0c5ce;">
- </span><span style="color:#96b5b4;">strcat</span><span style="color:#c0c5ce;">(execFile, </span><span style="color:#d08770;">kDexOptBin</span><span style="color:#c0c5ce;">);</span><span style="color:#c0c5ce;">
- </span><span style="color:#65737e;">/*</span><span style="color:#65737e;">
- * Create arg vector.</span><span style="color:#65737e;">
- */</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;"> curArg = </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">kUseValgrind</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#65737e;">/* probably shouldn&#39;t ship the hard-coded path */</span><span style="color:#c0c5ce;">
- argv[curArg++] = (</span><span style="color:#b48ead;">char</span><span style="color:#c0c5ce;">*)</span><span style="color:#d08770;">kValgrinder</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- argv[curArg++] = &quot;</span><span style="color:#a3be8c;">--tool=memcheck</span><span style="color:#c0c5ce;">&quot;;</span><span style="color:#c0c5ce;">
- argv[curArg++] = &quot;</span><span style="color:#a3be8c;">--leak-check=yes</span><span style="color:#c0c5ce;">&quot;; </span><span style="color:#65737e;">// check for leaks too</span><span style="color:#65737e;">
-</span><span style="color:#c0c5ce;"> argv[curArg++] = &quot;</span><span style="color:#a3be8c;">--leak-resolution=med</span><span style="color:#c0c5ce;">&quot;; </span><span style="color:#65737e;">// increase from 2 to 4</span><span style="color:#65737e;">
-</span><span style="color:#c0c5ce;"> argv[curArg++] = &quot;</span><span style="color:#a3be8c;">--num-callers=16</span><span style="color:#c0c5ce;">&quot;; </span><span style="color:#65737e;">// default is 12</span><span style="color:#65737e;">
- </span><span style="color:#96b5b4;">assert</span><span style="color:#c0c5ce;">(curArg == </span><span style="color:#d08770;">kValgrindArgCount</span><span style="color:#c0c5ce;">);</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- argv[curArg++] = execFile;</span><span style="color:#c0c5ce;">
- argv[curArg++] = &quot;</span><span style="color:#a3be8c;">--dex</span><span style="color:#c0c5ce;">&quot;;</span><span style="color:#c0c5ce;">
- </span><span style="color:#96b5b4;">sprintf</span><span style="color:#c0c5ce;">(values[</span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">], &quot;</span><span style="color:#d08770;">%d</span><span style="color:#c0c5ce;">&quot;, DALVIK_VM_BUILD);</span><span style="color:#c0c5ce;">
- argv[curArg++] = values[</span><span style="color:#d08770;">2</span><span style="color:#c0c5ce;">];</span><span style="color:#c0c5ce;">
- </span><span style="color:#96b5b4;">sprintf</span><span style="color:#c0c5ce;">(values[</span><span style="color:#d08770;">3</span><span style="color:#c0c5ce;">], &quot;</span><span style="color:#d08770;">%d</span><span style="color:#c0c5ce;">&quot;, fd);</span><span style="color:#c0c5ce;">
- argv[curArg++] = values[</span><span style="color:#d08770;">3</span><span style="color:#c0c5ce;">];</span><span style="color:#c0c5ce;">
- </span><span style="color:#96b5b4;">sprintf</span><span style="color:#c0c5ce;">(values[</span><span style="color:#d08770;">4</span><span style="color:#c0c5ce;">], &quot;</span><span style="color:#d08770;">%d</span><span style="color:#c0c5ce;">&quot;, (</span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;">) dexOffset);</span><span style="color:#c0c5ce;">
- argv[curArg++] = values[</span><span style="color:#d08770;">4</span><span style="color:#c0c5ce;">];</span><span style="color:#c0c5ce;">
- </span><span style="color:#96b5b4;">sprintf</span><span style="color:#c0c5ce;">(values[</span><span style="color:#d08770;">5</span><span style="color:#c0c5ce;">], &quot;</span><span style="color:#d08770;">%d</span><span style="color:#c0c5ce;">&quot;, (</span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;">) dexLength);</span><span style="color:#c0c5ce;">
- argv[curArg++] = values[</span><span style="color:#d08770;">5</span><span style="color:#c0c5ce;">];</span><span style="color:#c0c5ce;">
- argv[curArg++] = (</span><span style="color:#b48ead;">char</span><span style="color:#c0c5ce;">*)fileName;</span><span style="color:#c0c5ce;">
- </span><span style="color:#96b5b4;">sprintf</span><span style="color:#c0c5ce;">(values[</span><span style="color:#d08770;">7</span><span style="color:#c0c5ce;">], &quot;</span><span style="color:#d08770;">%d</span><span style="color:#c0c5ce;">&quot;, (</span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;">) modWhen);</span><span style="color:#c0c5ce;">
- argv[curArg++] = values[</span><span style="color:#d08770;">7</span><span style="color:#c0c5ce;">];</span><span style="color:#c0c5ce;">
- </span><span style="color:#96b5b4;">sprintf</span><span style="color:#c0c5ce;">(values[</span><span style="color:#d08770;">8</span><span style="color:#c0c5ce;">], &quot;</span><span style="color:#d08770;">%d</span><span style="color:#c0c5ce;">&quot;, (</span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;">) crc);</span><span style="color:#c0c5ce;">
- argv[curArg++] = values[</span><span style="color:#d08770;">8</span><span style="color:#c0c5ce;">];</span><span style="color:#c0c5ce;">
- flags = </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">gDvm</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">dexOptMode </span><span style="color:#c0c5ce;">!= OPTIMIZE_MODE_NONE) {</span><span style="color:#c0c5ce;">
- flags |= DEXOPT_OPT_ENABLED;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">gDvm</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">dexOptMode </span><span style="color:#c0c5ce;">== OPTIMIZE_MODE_ALL)</span><span style="color:#c0c5ce;">
- flags |= DEXOPT_OPT_ALL;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">gDvm</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">classVerifyMode </span><span style="color:#c0c5ce;">!= VERIFY_MODE_NONE) {</span><span style="color:#c0c5ce;">
- flags |= DEXOPT_VERIFY_ENABLED;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">gDvm</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">classVerifyMode </span><span style="color:#c0c5ce;">== VERIFY_MODE_ALL)</span><span style="color:#c0c5ce;">
- flags |= DEXOPT_VERIFY_ALL;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(isBootstrap)</span><span style="color:#c0c5ce;">
- flags |= DEXOPT_IS_BOOTSTRAP;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">gDvm</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">generateRegisterMaps</span><span style="color:#c0c5ce;">)</span><span style="color:#c0c5ce;">
- flags |= DEXOPT_GEN_REGISTER_MAPS;</span><span style="color:#c0c5ce;">
- </span><span style="color:#96b5b4;">sprintf</span><span style="color:#c0c5ce;">(values[</span><span style="color:#d08770;">9</span><span style="color:#c0c5ce;">], &quot;</span><span style="color:#d08770;">%d</span><span style="color:#c0c5ce;">&quot;, flags);</span><span style="color:#c0c5ce;">
- argv[curArg++] = values[</span><span style="color:#d08770;">9</span><span style="color:#c0c5ce;">];</span><span style="color:#c0c5ce;">
- </span><span style="color:#96b5b4;">assert</span><span style="color:#c0c5ce;">(((!</span><span style="color:#d08770;">kUseValgrind </span><span style="color:#c0c5ce;">&amp;&amp; curArg == </span><span style="color:#d08770;">kFixedArgCount</span><span style="color:#c0c5ce;">) ||</span><span style="color:#c0c5ce;">
- ((</span><span style="color:#d08770;">kUseValgrind </span><span style="color:#c0c5ce;">&amp;&amp; curArg == </span><span style="color:#d08770;">kFixedArgCount</span><span style="color:#c0c5ce;">+</span><span style="color:#d08770;">kValgrindArgCount</span><span style="color:#c0c5ce;">))));</span><span style="color:#c0c5ce;">
- ClassPathEntry* cpe;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">(cpe = </span><span style="color:#bf616a;">gDvm</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">bootClassPath</span><span style="color:#c0c5ce;">; cpe-&gt;ptr != </span><span style="color:#d08770;">NULL</span><span style="color:#c0c5ce;">; cpe++) {</span><span style="color:#c0c5ce;">
- argv[curArg++] = cpe-&gt;fileName;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#96b5b4;">assert</span><span style="color:#c0c5ce;">(curArg == argc);</span><span style="color:#c0c5ce;">
- argv[curArg] = </span><span style="color:#d08770;">NULL</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">kUseValgrind</span><span style="color:#c0c5ce;">)</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">execv</span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">kValgrinder</span><span style="color:#c0c5ce;">, const_cast&lt;</span><span style="color:#b48ead;">char</span><span style="color:#c0c5ce;">**&gt;(argv));</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">else</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">execv</span><span style="color:#c0c5ce;">(execFile, const_cast&lt;</span><span style="color:#b48ead;">char</span><span style="color:#c0c5ce;">**&gt;(argv));</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGE</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">execv &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;"> failed: </span><span style="color:#d08770;">%s</span><span style="color:#c0c5ce;">&quot;, execFile,</span><span style="color:#c0c5ce;">
- </span><span style="color:#d08770;">kUseValgrind </span><span style="color:#c0c5ce;">? &quot;</span><span style="color:#a3be8c;"> [valgrind]</span><span style="color:#c0c5ce;">&quot; : &quot;&quot;, </span><span style="color:#96b5b4;">strerror</span><span style="color:#c0c5ce;">(errno));</span><span style="color:#c0c5ce;">
- </span><span style="color:#96b5b4;">exit</span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">1</span><span style="color:#c0c5ce;">);</span><span style="color:#c0c5ce;">
- } </span><span style="color:#b48ead;">else </span><span style="color:#c0c5ce;">{</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGV</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">DexOpt: waiting for verify+opt, pid=</span><span style="color:#d08770;">%d</span><span style="color:#c0c5ce;">&quot;, (</span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;">) pid);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;"> status;</span><span style="color:#c0c5ce;">
- pid_t gotPid;</span><span style="color:#c0c5ce;">
- </span><span style="color:#65737e;">/*</span><span style="color:#65737e;">
- * Wait for the optimization process to finish. We go into VMWAIT</span><span style="color:#65737e;">
- * mode here so GC suspension won&#39;t have to wait for us.</span><span style="color:#65737e;">
- */</span><span style="color:#c0c5ce;">
- ThreadStatus oldStatus = </span><span style="color:#bf616a;">dvmChangeStatus</span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">NULL</span><span style="color:#c0c5ce;">, THREAD_VMWAIT);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">while </span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">true</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- gotPid = </span><span style="color:#bf616a;">waitpid</span><span style="color:#c0c5ce;">(pid, &amp;status, </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(gotPid == -</span><span style="color:#d08770;">1 </span><span style="color:#c0c5ce;">&amp;&amp; errno == EINTR) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGD</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">waitpid interrupted, retrying</span><span style="color:#c0c5ce;">&quot;);</span><span style="color:#c0c5ce;">
- } </span><span style="color:#b48ead;">else </span><span style="color:#c0c5ce;">{</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">break</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">dvmChangeStatus</span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">NULL</span><span style="color:#c0c5ce;">, oldStatus);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(gotPid != pid) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGE</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">waitpid failed: wanted </span><span style="color:#d08770;">%d</span><span style="color:#a3be8c;">, got </span><span style="color:#d08770;">%d</span><span style="color:#a3be8c;">: </span><span style="color:#d08770;">%s</span><span style="color:#c0c5ce;">&quot;,</span><span style="color:#c0c5ce;">
- (</span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;">) pid, (</span><span style="color:#b48ead;">int</span><span style="color:#c0c5ce;">) gotPid, </span><span style="color:#96b5b4;">strerror</span><span style="color:#c0c5ce;">(errno));</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">false</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">WIFEXITED</span><span style="color:#c0c5ce;">(status) &amp;&amp; </span><span style="color:#bf616a;">WEXITSTATUS</span><span style="color:#c0c5ce;">(status) == </span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">) {</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGD</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">DexOpt: --- END &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39; (success) ---</span><span style="color:#c0c5ce;">&quot;, lastPart);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">true</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- } </span><span style="color:#b48ead;">else </span><span style="color:#c0c5ce;">{</span><span style="color:#c0c5ce;">
- </span><span style="color:#bf616a;">ALOGW</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">DexOpt: --- END &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39; --- status=0x</span><span style="color:#d08770;">%04x</span><span style="color:#a3be8c;">, process failed</span><span style="color:#c0c5ce;">&quot;,</span><span style="color:#c0c5ce;">
- lastPart, status);</span><span style="color:#c0c5ce;">
- </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">false</span><span style="color:#c0c5ce;">;</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
- }</span><span style="color:#c0c5ce;">
-}</span><span style="color:#c0c5ce;">
+<pre data-lang="c" style="background-color:#2b303b;color:#c0c5ce;" class="language-c "><code class="language-c" data-lang="c"><span style="color:#65737e;">/*</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * Given a descriptor for a file with DEX data in it, produce an</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * optimized version.</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> *</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * The file pointed to by &quot;fd&quot; is expected to be a locked shared resource</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * (or private); we make no efforts to enforce multi-process correctness</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * here.</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> *</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * &quot;fileName&quot; is only used for debug output. &quot;modWhen&quot; and &quot;crc&quot; are stored</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * in the dependency set.</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> *</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * The &quot;isBootstrap&quot; flag determines how the optimizer and verifier handle</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * package-scope access checks. When optimizing, we only load the bootstrap</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * class DEX files and the target DEX, so the flag determines whether the</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * target DEX classes are given a (synthetic) non-NULL classLoader pointer.</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * This only really matters if the target DEX contains classes that claim to</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * be in the same package as bootstrap classes.</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> *</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * The optimizer will need to load every class in the target DEX file.</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * This is generally undesirable, so we start a subprocess to do the</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * work and wait for it to complete.</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> *</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * Returns &quot;true&quot; on success. All data will have been written to &quot;fd&quot;.</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> */</span><span>
+</span><span style="color:#b48ead;">bool </span><span style="color:#8fa1b3;">dvmOptimizeDexFile</span><span>(</span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">fd</span><span>, off_t </span><span style="color:#bf616a;">dexOffset</span><span>, </span><span style="color:#b48ead;">long </span><span style="color:#bf616a;">dexLength</span><span>,</span><span>
+</span><span> </span><span style="color:#b48ead;">const char</span><span>* </span><span style="color:#bf616a;">fileName</span><span>, u4 </span><span style="color:#bf616a;">modWhen</span><span>, u4 </span><span style="color:#bf616a;">crc</span><span>, </span><span style="color:#b48ead;">bool </span><span style="color:#bf616a;">isBootstrap</span><span>)</span><span>
+</span><span>{</span><span>
+</span><span> </span><span style="color:#b48ead;">const char</span><span>* lastPart = </span><span style="color:#96b5b4;">strrchr</span><span>(fileName, &#39;</span><span style="color:#a3be8c;">/</span><span>&#39;);</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(lastPart != </span><span style="color:#d08770;">NULL</span><span>)</span><span>
+</span><span> lastPart++;</span><span>
+</span><span> </span><span style="color:#b48ead;">else</span><span>
+</span><span> lastPart = fileName;</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGD</span><span>(&quot;</span><span style="color:#a3be8c;">DexOpt: --- BEGIN &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39; (bootstrap=</span><span style="color:#d08770;">%d</span><span style="color:#a3be8c;">) ---</span><span>&quot;, lastPart, isBootstrap);</span><span>
+</span><span> pid_t pid;</span><span>
+</span><span> </span><span style="color:#65737e;">/*</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * This could happen if something in our bootclasspath, which we thought</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * was all optimized, got rejected.</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> */</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">gDvm</span><span>.</span><span style="color:#bf616a;">optimizing</span><span>) {</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGW</span><span>(&quot;</span><span style="color:#a3be8c;">Rejecting recursive optimization attempt on &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39;</span><span>&quot;, fileName);</span><span>
+</span><span> </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">false</span><span>;</span><span>
+</span><span> }</span><span>
+</span><span> pid = </span><span style="color:#bf616a;">fork</span><span>();</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(pid == </span><span style="color:#d08770;">0</span><span>) {</span><span>
+</span><span> </span><span style="color:#b48ead;">static const int </span><span style="color:#d08770;">kUseValgrind </span><span>= </span><span style="color:#d08770;">0</span><span>;</span><span>
+</span><span> </span><span style="color:#b48ead;">static const char</span><span>* </span><span style="color:#d08770;">kDexOptBin </span><span>= &quot;</span><span style="color:#a3be8c;">/bin/dexopt</span><span>&quot;;</span><span>
+</span><span> </span><span style="color:#b48ead;">static const char</span><span>* </span><span style="color:#d08770;">kValgrinder </span><span>= &quot;</span><span style="color:#a3be8c;">/usr/bin/valgrind</span><span>&quot;;</span><span>
+</span><span> </span><span style="color:#b48ead;">static const int </span><span style="color:#d08770;">kFixedArgCount </span><span>= </span><span style="color:#d08770;">10</span><span>;</span><span>
+</span><span> </span><span style="color:#b48ead;">static const int </span><span style="color:#d08770;">kValgrindArgCount </span><span>= </span><span style="color:#d08770;">5</span><span>;</span><span>
+</span><span> </span><span style="color:#b48ead;">static const int </span><span style="color:#d08770;">kMaxIntLen </span><span>= </span><span style="color:#d08770;">12</span><span>; </span><span style="color:#65737e;">// &#39;-&#39;+10dig+&#39;\0&#39; -OR- 0x+8dig</span><span style="color:#65737e;">
+</span><span> </span><span style="color:#b48ead;">int</span><span> bcpSize = </span><span style="color:#bf616a;">dvmGetBootPathSize</span><span>();</span><span>
+</span><span> </span><span style="color:#b48ead;">int</span><span> argc = </span><span style="color:#d08770;">kFixedArgCount </span><span>+ bcpSize</span><span>
+</span><span> + (</span><span style="color:#d08770;">kValgrindArgCount </span><span>* </span><span style="color:#d08770;">kUseValgrind</span><span>);</span><span>
+</span><span> </span><span style="color:#b48ead;">const char</span><span>* argv[argc+</span><span style="color:#d08770;">1</span><span>]; </span><span style="color:#65737e;">// last entry is NULL</span><span style="color:#65737e;">
+</span><span> </span><span style="color:#b48ead;">char</span><span> values [argc][</span><span style="color:#d08770;">kMaxIntLen</span><span>];</span><span>
+</span><span> </span><span style="color:#b48ead;">char</span><span>* execFile;</span><span>
+</span><span> </span><span style="color:#b48ead;">const char</span><span>* androidRoot;</span><span>
+</span><span> </span><span style="color:#b48ead;">int</span><span> flags;</span><span>
+</span><span> </span><span style="color:#65737e;">/* change process groups, so we don&#39;t clash with ProcessManager */</span><span>
+</span><span> </span><span style="color:#bf616a;">setpgid</span><span>(</span><span style="color:#d08770;">0</span><span>, </span><span style="color:#d08770;">0</span><span>);</span><span>
+</span><span> </span><span style="color:#65737e;">/* full path to optimizer */</span><span>
+</span><span> androidRoot = </span><span style="color:#96b5b4;">getenv</span><span>(&quot;</span><span style="color:#a3be8c;">ANDROID_ROOT</span><span>&quot;);</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(androidRoot == </span><span style="color:#d08770;">NULL</span><span>) {</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGW</span><span>(&quot;</span><span style="color:#a3be8c;">ANDROID_ROOT not set, defaulting to /system</span><span>&quot;);</span><span>
+</span><span> androidRoot = &quot;</span><span style="color:#a3be8c;">/system</span><span>&quot;;</span><span>
+</span><span> }</span><span>
+</span><span> execFile = (</span><span style="color:#b48ead;">char</span><span>*)</span><span style="color:#bf616a;">alloca</span><span>(</span><span style="color:#96b5b4;">strlen</span><span>(androidRoot) + </span><span style="color:#96b5b4;">strlen</span><span>(</span><span style="color:#d08770;">kDexOptBin</span><span>) + </span><span style="color:#d08770;">1</span><span>);</span><span>
+</span><span> </span><span style="color:#96b5b4;">strcpy</span><span>(execFile, androidRoot);</span><span>
+</span><span> </span><span style="color:#96b5b4;">strcat</span><span>(execFile, </span><span style="color:#d08770;">kDexOptBin</span><span>);</span><span>
+</span><span> </span><span style="color:#65737e;">/*</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * Create arg vector.</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> */</span><span>
+</span><span> </span><span style="color:#b48ead;">int</span><span> curArg = </span><span style="color:#d08770;">0</span><span>;</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#d08770;">kUseValgrind</span><span>) {</span><span>
+</span><span> </span><span style="color:#65737e;">/* probably shouldn&#39;t ship the hard-coded path */</span><span>
+</span><span> argv[curArg++] = (</span><span style="color:#b48ead;">char</span><span>*)</span><span style="color:#d08770;">kValgrinder</span><span>;</span><span>
+</span><span> argv[curArg++] = &quot;</span><span style="color:#a3be8c;">--tool=memcheck</span><span>&quot;;</span><span>
+</span><span> argv[curArg++] = &quot;</span><span style="color:#a3be8c;">--leak-check=yes</span><span>&quot;; </span><span style="color:#65737e;">// check for leaks too</span><span style="color:#65737e;">
+</span><span> argv[curArg++] = &quot;</span><span style="color:#a3be8c;">--leak-resolution=med</span><span>&quot;; </span><span style="color:#65737e;">// increase from 2 to 4</span><span style="color:#65737e;">
+</span><span> argv[curArg++] = &quot;</span><span style="color:#a3be8c;">--num-callers=16</span><span>&quot;; </span><span style="color:#65737e;">// default is 12</span><span style="color:#65737e;">
+</span><span> </span><span style="color:#96b5b4;">assert</span><span>(curArg == </span><span style="color:#d08770;">kValgrindArgCount</span><span>);</span><span>
+</span><span> }</span><span>
+</span><span> argv[curArg++] = execFile;</span><span>
+</span><span> argv[curArg++] = &quot;</span><span style="color:#a3be8c;">--dex</span><span>&quot;;</span><span>
+</span><span> </span><span style="color:#96b5b4;">sprintf</span><span>(values[</span><span style="color:#d08770;">2</span><span>], &quot;</span><span style="color:#d08770;">%d</span><span>&quot;, DALVIK_VM_BUILD);</span><span>
+</span><span> argv[curArg++] = values[</span><span style="color:#d08770;">2</span><span>];</span><span>
+</span><span> </span><span style="color:#96b5b4;">sprintf</span><span>(values[</span><span style="color:#d08770;">3</span><span>], &quot;</span><span style="color:#d08770;">%d</span><span>&quot;, fd);</span><span>
+</span><span> argv[curArg++] = values[</span><span style="color:#d08770;">3</span><span>];</span><span>
+</span><span> </span><span style="color:#96b5b4;">sprintf</span><span>(values[</span><span style="color:#d08770;">4</span><span>], &quot;</span><span style="color:#d08770;">%d</span><span>&quot;, (</span><span style="color:#b48ead;">int</span><span>) dexOffset);</span><span>
+</span><span> argv[curArg++] = values[</span><span style="color:#d08770;">4</span><span>];</span><span>
+</span><span> </span><span style="color:#96b5b4;">sprintf</span><span>(values[</span><span style="color:#d08770;">5</span><span>], &quot;</span><span style="color:#d08770;">%d</span><span>&quot;, (</span><span style="color:#b48ead;">int</span><span>) dexLength);</span><span>
+</span><span> argv[curArg++] = values[</span><span style="color:#d08770;">5</span><span>];</span><span>
+</span><span> argv[curArg++] = (</span><span style="color:#b48ead;">char</span><span>*)fileName;</span><span>
+</span><span> </span><span style="color:#96b5b4;">sprintf</span><span>(values[</span><span style="color:#d08770;">7</span><span>], &quot;</span><span style="color:#d08770;">%d</span><span>&quot;, (</span><span style="color:#b48ead;">int</span><span>) modWhen);</span><span>
+</span><span> argv[curArg++] = values[</span><span style="color:#d08770;">7</span><span>];</span><span>
+</span><span> </span><span style="color:#96b5b4;">sprintf</span><span>(values[</span><span style="color:#d08770;">8</span><span>], &quot;</span><span style="color:#d08770;">%d</span><span>&quot;, (</span><span style="color:#b48ead;">int</span><span>) crc);</span><span>
+</span><span> argv[curArg++] = values[</span><span style="color:#d08770;">8</span><span>];</span><span>
+</span><span> flags = </span><span style="color:#d08770;">0</span><span>;</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">gDvm</span><span>.</span><span style="color:#bf616a;">dexOptMode </span><span>!= OPTIMIZE_MODE_NONE) {</span><span>
+</span><span> flags |= DEXOPT_OPT_ENABLED;</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">gDvm</span><span>.</span><span style="color:#bf616a;">dexOptMode </span><span>== OPTIMIZE_MODE_ALL)</span><span>
+</span><span> flags |= DEXOPT_OPT_ALL;</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">gDvm</span><span>.</span><span style="color:#bf616a;">classVerifyMode </span><span>!= VERIFY_MODE_NONE) {</span><span>
+</span><span> flags |= DEXOPT_VERIFY_ENABLED;</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">gDvm</span><span>.</span><span style="color:#bf616a;">classVerifyMode </span><span>== VERIFY_MODE_ALL)</span><span>
+</span><span> flags |= DEXOPT_VERIFY_ALL;</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(isBootstrap)</span><span>
+</span><span> flags |= DEXOPT_IS_BOOTSTRAP;</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">gDvm</span><span>.</span><span style="color:#bf616a;">generateRegisterMaps</span><span>)</span><span>
+</span><span> flags |= DEXOPT_GEN_REGISTER_MAPS;</span><span>
+</span><span> </span><span style="color:#96b5b4;">sprintf</span><span>(values[</span><span style="color:#d08770;">9</span><span>], &quot;</span><span style="color:#d08770;">%d</span><span>&quot;, flags);</span><span>
+</span><span> argv[curArg++] = values[</span><span style="color:#d08770;">9</span><span>];</span><span>
+</span><span> </span><span style="color:#96b5b4;">assert</span><span>(((!</span><span style="color:#d08770;">kUseValgrind </span><span>&amp;&amp; curArg == </span><span style="color:#d08770;">kFixedArgCount</span><span>) ||</span><span>
+</span><span> ((</span><span style="color:#d08770;">kUseValgrind </span><span>&amp;&amp; curArg == </span><span style="color:#d08770;">kFixedArgCount</span><span>+</span><span style="color:#d08770;">kValgrindArgCount</span><span>))));</span><span>
+</span><span> ClassPathEntry* cpe;</span><span>
+</span><span> </span><span style="color:#b48ead;">for </span><span>(cpe = </span><span style="color:#bf616a;">gDvm</span><span>.</span><span style="color:#bf616a;">bootClassPath</span><span>; cpe-&gt;ptr != </span><span style="color:#d08770;">NULL</span><span>; cpe++) {</span><span>
+</span><span> argv[curArg++] = cpe-&gt;fileName;</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#96b5b4;">assert</span><span>(curArg == argc);</span><span>
+</span><span> argv[curArg] = </span><span style="color:#d08770;">NULL</span><span>;</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#d08770;">kUseValgrind</span><span>)</span><span>
+</span><span> </span><span style="color:#bf616a;">execv</span><span>(</span><span style="color:#d08770;">kValgrinder</span><span>, const_cast&lt;</span><span style="color:#b48ead;">char</span><span>**&gt;(argv));</span><span>
+</span><span> </span><span style="color:#b48ead;">else</span><span>
+</span><span> </span><span style="color:#bf616a;">execv</span><span>(execFile, const_cast&lt;</span><span style="color:#b48ead;">char</span><span>**&gt;(argv));</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGE</span><span>(&quot;</span><span style="color:#a3be8c;">execv &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;"> failed: </span><span style="color:#d08770;">%s</span><span>&quot;, execFile,</span><span>
+</span><span> </span><span style="color:#d08770;">kUseValgrind </span><span>? &quot;</span><span style="color:#a3be8c;"> [valgrind]</span><span>&quot; : &quot;&quot;, </span><span style="color:#96b5b4;">strerror</span><span>(errno));</span><span>
+</span><span> </span><span style="color:#96b5b4;">exit</span><span>(</span><span style="color:#d08770;">1</span><span>);</span><span>
+</span><span> } </span><span style="color:#b48ead;">else </span><span>{</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGV</span><span>(&quot;</span><span style="color:#a3be8c;">DexOpt: waiting for verify+opt, pid=</span><span style="color:#d08770;">%d</span><span>&quot;, (</span><span style="color:#b48ead;">int</span><span>) pid);</span><span>
+</span><span> </span><span style="color:#b48ead;">int</span><span> status;</span><span>
+</span><span> pid_t gotPid;</span><span>
+</span><span> </span><span style="color:#65737e;">/*</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * Wait for the optimization process to finish. We go into VMWAIT</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> * mode here so GC suspension won&#39;t have to wait for us.</span><span style="color:#65737e;">
+</span><span style="color:#65737e;"> */</span><span>
+</span><span> ThreadStatus oldStatus = </span><span style="color:#bf616a;">dvmChangeStatus</span><span>(</span><span style="color:#d08770;">NULL</span><span>, THREAD_VMWAIT);</span><span>
+</span><span> </span><span style="color:#b48ead;">while </span><span>(</span><span style="color:#d08770;">true</span><span>) {</span><span>
+</span><span> gotPid = </span><span style="color:#bf616a;">waitpid</span><span>(pid, &amp;status, </span><span style="color:#d08770;">0</span><span>);</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(gotPid == -</span><span style="color:#d08770;">1 </span><span>&amp;&amp; errno == EINTR) {</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGD</span><span>(&quot;</span><span style="color:#a3be8c;">waitpid interrupted, retrying</span><span>&quot;);</span><span>
+</span><span> } </span><span style="color:#b48ead;">else </span><span>{</span><span>
+</span><span> </span><span style="color:#b48ead;">break</span><span>;</span><span>
+</span><span> }</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#bf616a;">dvmChangeStatus</span><span>(</span><span style="color:#d08770;">NULL</span><span>, oldStatus);</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(gotPid != pid) {</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGE</span><span>(&quot;</span><span style="color:#a3be8c;">waitpid failed: wanted </span><span style="color:#d08770;">%d</span><span style="color:#a3be8c;">, got </span><span style="color:#d08770;">%d</span><span style="color:#a3be8c;">: </span><span style="color:#d08770;">%s</span><span>&quot;,</span><span>
+</span><span> (</span><span style="color:#b48ead;">int</span><span>) pid, (</span><span style="color:#b48ead;">int</span><span>) gotPid, </span><span style="color:#96b5b4;">strerror</span><span>(errno));</span><span>
+</span><span> </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">false</span><span>;</span><span>
+</span><span> }</span><span>
+</span><span> </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#bf616a;">WIFEXITED</span><span>(status) &amp;&amp; </span><span style="color:#bf616a;">WEXITSTATUS</span><span>(status) == </span><span style="color:#d08770;">0</span><span>) {</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGD</span><span>(&quot;</span><span style="color:#a3be8c;">DexOpt: --- END &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39; (success) ---</span><span>&quot;, lastPart);</span><span>
+</span><span> </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">true</span><span>;</span><span>
+</span><span> } </span><span style="color:#b48ead;">else </span><span>{</span><span>
+</span><span> </span><span style="color:#bf616a;">ALOGW</span><span>(&quot;</span><span style="color:#a3be8c;">DexOpt: --- END &#39;</span><span style="color:#d08770;">%s</span><span style="color:#a3be8c;">&#39; --- status=0x</span><span style="color:#d08770;">%04x</span><span style="color:#a3be8c;">, process failed</span><span>&quot;,</span><span>
+</span><span> lastPart, status);</span><span>
+</span><span> </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">false</span><span>;</span><span>
+</span><span> }</span><span>
+</span><span> }</span><span>
+</span><span>}</span><span>
 </span></code></pre>
 <p>终于找到 ALOGD(&quot;DexOpt: --- BEGIN '%s' (bootstrap=%d) ---&quot;, lastPart, isBootstrap); 这句日志的出处了！</p>
 <p>该方法的注释写的也比较详细了，其中pid=fork(); 表明dexopt确实开启了新的进程来完成，而且当前进程是使用while循环等待这个子进程返回结果的。</p>

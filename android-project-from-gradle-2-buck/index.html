@@ -9,7 +9,7 @@
         <title>Android工程构建</title>
         <meta name="description" content="">
 
-        <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
+        <link rel="stylesheet" href="https://blog.zongwu233.com/main.css">
 
         
         <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
@@ -27,6 +27,16 @@
           gtag('js', new Date());
 
           gtag('config', 'UA-68155231-1');
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZF40590PZW"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+            gtag('config', 'G-ZF40590PZW');
         </script>
         
     </head>
@@ -115,87 +125,84 @@
 <p>在脚本里要指定 final_r_name = 'R2'</p>
 <h5 id="jiao-ben-bian-xie">脚本编写</h5>
 <p>我们的工程是multi-project的，为了支持跨工程依赖，在总工程的setting.gradle里面配置：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-groovy" data-lang="groovy"><span style="color:#c0c5ce;">  include(&#39;</span><span style="color:#a3be8c;">:core</span><span style="color:#c0c5ce;">&#39;)
-  project(&#39;</span><span style="color:#a3be8c;">:core</span><span style="color:#c0c5ce;">&#39;).projectDir = </span><span style="color:#b48ead;">new File</span><span style="color:#c0c5ce;">(&#39;</span><span style="color:#a3be8c;">../sdk/core</span><span style="color:#c0c5ce;">&#39;)
+<pre data-lang="groovy" style="background-color:#2b303b;color:#c0c5ce;" class="language-groovy "><code class="language-groovy" data-lang="groovy"><span>  include(&#39;</span><span style="color:#a3be8c;">:core</span><span>&#39;)
+</span><span>  project(&#39;</span><span style="color:#a3be8c;">:core</span><span>&#39;).projectDir = </span><span style="color:#b48ead;">new File</span><span>(&#39;</span><span style="color:#a3be8c;">../sdk/core</span><span>&#39;)
 </span></code></pre>
 <p>就可以在其他模块里配置依赖':core' 模块了。 </p>
 <p>buck也支持类似的功能：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-python" data-lang="python"><span style="color:#65737e;"># .buckconfig
-</span><span style="color:#c0c5ce;">[repositories]
-  core = ../sdk/core
+<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#65737e;"># .buckconfig
+</span><span>[repositories]
+</span><span>  core = ../sdk/core
 </span><span style="color:#65737e;"># ../sdk/core/lib/BUCK
-
-</span><span style="color:#bf616a;">android_library</span><span style="color:#c0c5ce;">(
-  </span><span style="color:#bf616a;">name </span><span style="color:#c0c5ce;">= &#39;</span><span style="color:#a3be8c;">lib</span><span style="color:#c0c5ce;">&#39;,
-  </span><span style="color:#d08770;">...
-</span><span style="color:#c0c5ce;">)
+</span><span>
+</span><span style="color:#bf616a;">android_library</span><span>(
+</span><span>  </span><span style="color:#bf616a;">name </span><span>= &#39;</span><span style="color:#a3be8c;">lib</span><span>&#39;,
+</span><span>  </span><span style="color:#d08770;">...
+</span><span>)
 </span><span style="color:#65737e;"># BUCK
-
-</span><span style="color:#bf616a;">android_binary</span><span style="color:#c0c5ce;">(
-  </span><span style="color:#bf616a;">name </span><span style="color:#c0c5ce;">= &#39;</span><span style="color:#a3be8c;">MyApp</span><span style="color:#c0c5ce;">&#39;,
-  </span><span style="color:#bf616a;">deps </span><span style="color:#c0c5ce;">= core//lib:lib
-  </span><span style="color:#d08770;">...
-</span><span style="color:#c0c5ce;">)
+</span><span>
+</span><span style="color:#bf616a;">android_binary</span><span>(
+</span><span>  </span><span style="color:#bf616a;">name </span><span>= &#39;</span><span style="color:#a3be8c;">MyApp</span><span>&#39;,
+</span><span>  </span><span style="color:#bf616a;">deps </span><span>= core//lib:lib
+</span><span>  </span><span style="color:#d08770;">...
+</span><span>)
 </span></code></pre>
 <p>​	工程的gradle脚本也比较多， 逐个写太耗费时间，网上有个okbuck的开源库可以提供从gradle脚本生成buck脚本。尝试了一下，会有些错误，比如对依赖的jar生成存在问题，需要自己修复。</p>
 <p>buck与gradle很大的不同点在于buck没有使用maven那一套依赖管理，而是全部指定本地文件的依赖。不过buck提供了一个下载远程文件的rule：remote_file()，可以指定http url 或者mvn坐标。</p>
 <p>另一个问题是buck里没有依赖传递。如果工程使用maven管理，通常配置pom文件声明依赖关系，比如A依赖B ，如果B依赖了C，那么A是间接依赖C的不需要特别声明。构建A的时候B和C都会被下载到本地maven库参与编译。对于buck需要在A里显示配置依赖B和C。这点优缺点都很明显，不过我个人还是比较喜欢支持依赖传递。对于多模块项目的第三方依赖jar/aar，比较推荐的方式是放到一个公共的目录下。</p>
 <p>对于需要apt处理的库，比如依赖了dagger，butterKnife，按照下面的配置：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-python" data-lang="python"><span style="color:#bf616a;">java_library</span><span style="color:#c0c5ce;">(
-	</span><span style="color:#bf616a;">name </span><span style="color:#c0c5ce;">= &#39;</span><span style="color:#a3be8c;">apt_jar_productDebug</span><span style="color:#c0c5ce;">&#39;,
-	</span><span style="color:#bf616a;">deps </span><span style="color:#c0c5ce;">= [
-		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.google.guava.guava-18.0.jar</span><span style="color:#c0c5ce;">&#39;,
-		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.squareup.dagger.dagger-1.2.2.jar</span><span style="color:#c0c5ce;">&#39;,
-		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.squareup.dagger.dagger-compiler-1.2.2.jar</span><span style="color:#c0c5ce;">&#39;,
-		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.squareup.javawriter-2.5.0.jar</span><span style="color:#c0c5ce;">&#39;,
-		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:javax.inject.javax.inject-1.jar</span><span style="color:#c0c5ce;">&#39;,
-		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.google.auto.auto-common-0.6.jar</span><span style="color:#c0c5ce;">&#39;,
-		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.google.auto.service.auto-service-1.0-rc2.jar</span><span style="color:#c0c5ce;">&#39;,
-		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.jakewharton.butterknife-8.2.0.aar</span><span style="color:#c0c5ce;">&#39;,
-		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.jakewharton.butterknife-annotations-8.2.0.jar</span><span style="color:#c0c5ce;">&#39;,
-		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.jakewharton.butterknife-compiler-8.2.0.jar</span><span style="color:#c0c5ce;">&#39;,
-		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.squareup.javapoet-1.7.0.jar</span><span style="color:#c0c5ce;">&#39;,
-	],
-)
-
-</span></code></pre><pre style="background-color:#2b303b;">
-<code class="language-python" data-lang="python"><span style="color:#bf616a;">android_library</span><span style="color:#c0c5ce;">(
-	</span><span style="color:#bf616a;">name </span><span style="color:#c0c5ce;">= &#39;</span><span style="color:#a3be8c;">src_productDebug</span><span style="color:#c0c5ce;">&#39;,
-	</span><span style="color:#bf616a;">srcs </span><span style="color:#c0c5ce;">= </span><span style="color:#bf616a;">glob</span><span style="color:#c0c5ce;">([
-		&#39;</span><span style="color:#a3be8c;">src/main/java/**/*.java</span><span style="color:#c0c5ce;">&#39;,
-	], </span><span style="color:#bf616a;">excludes </span><span style="color:#c0c5ce;">= [</span><span style="color:#bf616a;">APP_CLASS_SOURCE</span><span style="color:#c0c5ce;">]),
-	</span><span style="color:#bf616a;">manifest </span><span style="color:#c0c5ce;">= &#39;</span><span style="color:#a3be8c;">src/main/AndroidManifest.xml</span><span style="color:#c0c5ce;">&#39;,
-	</span><span style="color:#bf616a;">annotation_processors </span><span style="color:#c0c5ce;">= [
-		&#39;</span><span style="color:#a3be8c;">dagger.internal.codegen.ValidationProcessor</span><span style="color:#c0c5ce;">&#39;,
-		&#39;</span><span style="color:#a3be8c;">dagger.internal.codegen.InjectAdapterProcessor</span><span style="color:#c0c5ce;">&#39;,
-		&#39;</span><span style="color:#a3be8c;">dagger.internal.codegen.ModuleAdapterProcessor</span><span style="color:#c0c5ce;">&#39;,
-		&#39;</span><span style="color:#a3be8c;">dagger.internal.codegen.GraphAnalysisProcessor</span><span style="color:#c0c5ce;">&#39;,
-		&#39;</span><span style="color:#a3be8c;">butterknife.compiler.ButterKnifeProcessor</span><span style="color:#c0c5ce;">&#39;,
-		&#39;</span><span style="color:#a3be8c;">com.google.auto.service.processor.AutoServiceProcessor</span><span style="color:#c0c5ce;">&#39;,
-		
-	],
-	</span><span style="color:#bf616a;">annotation_processor_deps </span><span style="color:#c0c5ce;">= [
-		&#39;</span><span style="color:#a3be8c;">:apt_jar_productDebug</span><span style="color:#c0c5ce;">&#39;,
-	],
-	</span><span style="color:#bf616a;">final_r_name </span><span style="color:#c0c5ce;">= &#39;</span><span style="color:#a3be8c;">R2</span><span style="color:#c0c5ce;">&#39;,
-	</span><span style="color:#bf616a;">source </span><span style="color:#c0c5ce;">= &#39;</span><span style="color:#a3be8c;">7</span><span style="color:#c0c5ce;">&#39;,
-	</span><span style="color:#bf616a;">target </span><span style="color:#c0c5ce;">= &#39;</span><span style="color:#a3be8c;">7</span><span style="color:#c0c5ce;">&#39;,
-	</span><span style="color:#bf616a;">deps </span><span style="color:#c0c5ce;">= [
-		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.google.guava.guava-18.0.jar</span><span style="color:#c0c5ce;">&#39;,	   
-		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.squareup.dagger.dagger-1.2.2.jar</span><span style="color:#c0c5ce;">&#39;,	 
-		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:javax.inject.javax.inject-1.jar</span><span style="color:#c0c5ce;">&#39;,
-		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:org.javassist.javassist-3.18.1-GA.jar</span><span style="color:#c0c5ce;">&#39;,
-		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.jakewharton.butterknife-8.2.0.aar</span><span style="color:#c0c5ce;">&#39;,
-		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:buck-android-support.jar</span><span style="color:#c0c5ce;">&#39;,
-		&#39;</span><span style="color:#a3be8c;">:res_productDebug</span><span style="color:#c0c5ce;">&#39;,
-	],
-	</span><span style="color:#bf616a;">visibility </span><span style="color:#c0c5ce;">= [
-		&#39;</span><span style="color:#a3be8c;">PUBLIC</span><span style="color:#c0c5ce;">&#39;,
-	],
-)
+<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#bf616a;">java_library</span><span>(
+</span><span>	</span><span style="color:#bf616a;">name </span><span>= &#39;</span><span style="color:#a3be8c;">apt_jar_productDebug</span><span>&#39;,
+</span><span>	</span><span style="color:#bf616a;">deps </span><span>= [
+</span><span>		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.google.guava.guava-18.0.jar</span><span>&#39;,
+</span><span>		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.squareup.dagger.dagger-1.2.2.jar</span><span>&#39;,
+</span><span>		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.squareup.dagger.dagger-compiler-1.2.2.jar</span><span>&#39;,
+</span><span>		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.squareup.javawriter-2.5.0.jar</span><span>&#39;,
+</span><span>		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:javax.inject.javax.inject-1.jar</span><span>&#39;,
+</span><span>		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.google.auto.auto-common-0.6.jar</span><span>&#39;,
+</span><span>		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.google.auto.service.auto-service-1.0-rc2.jar</span><span>&#39;,
+</span><span>		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.jakewharton.butterknife-8.2.0.aar</span><span>&#39;,
+</span><span>		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.jakewharton.butterknife-annotations-8.2.0.jar</span><span>&#39;,
+</span><span>		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.jakewharton.butterknife-compiler-8.2.0.jar</span><span>&#39;,
+</span><span>		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.squareup.javapoet-1.7.0.jar</span><span>&#39;,
+</span><span>	],
+</span><span>)
+</span><span>
+</span></code></pre>
+<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#bf616a;">android_library</span><span>(
+</span><span>	</span><span style="color:#bf616a;">name </span><span>= &#39;</span><span style="color:#a3be8c;">src_productDebug</span><span>&#39;,
+</span><span>	</span><span style="color:#bf616a;">srcs </span><span>= </span><span style="color:#bf616a;">glob</span><span>([
+</span><span>		&#39;</span><span style="color:#a3be8c;">src/main/java/**/*.java</span><span>&#39;,
+</span><span>	], </span><span style="color:#bf616a;">excludes </span><span>= [</span><span style="color:#bf616a;">APP_CLASS_SOURCE</span><span>]),
+</span><span>	</span><span style="color:#bf616a;">manifest </span><span>= &#39;</span><span style="color:#a3be8c;">src/main/AndroidManifest.xml</span><span>&#39;,
+</span><span>	</span><span style="color:#bf616a;">annotation_processors </span><span>= [
+</span><span>		&#39;</span><span style="color:#a3be8c;">dagger.internal.codegen.ValidationProcessor</span><span>&#39;,
+</span><span>		&#39;</span><span style="color:#a3be8c;">dagger.internal.codegen.InjectAdapterProcessor</span><span>&#39;,
+</span><span>		&#39;</span><span style="color:#a3be8c;">dagger.internal.codegen.ModuleAdapterProcessor</span><span>&#39;,
+</span><span>		&#39;</span><span style="color:#a3be8c;">dagger.internal.codegen.GraphAnalysisProcessor</span><span>&#39;,
+</span><span>		&#39;</span><span style="color:#a3be8c;">butterknife.compiler.ButterKnifeProcessor</span><span>&#39;,
+</span><span>		&#39;</span><span style="color:#a3be8c;">com.google.auto.service.processor.AutoServiceProcessor</span><span>&#39;,
+</span><span>		
+</span><span>	],
+</span><span>	</span><span style="color:#bf616a;">annotation_processor_deps </span><span>= [
+</span><span>		&#39;</span><span style="color:#a3be8c;">:apt_jar_productDebug</span><span>&#39;,
+</span><span>	],
+</span><span>	</span><span style="color:#bf616a;">final_r_name </span><span>= &#39;</span><span style="color:#a3be8c;">R2</span><span>&#39;,
+</span><span>	</span><span style="color:#bf616a;">source </span><span>= &#39;</span><span style="color:#a3be8c;">7</span><span>&#39;,
+</span><span>	</span><span style="color:#bf616a;">target </span><span>= &#39;</span><span style="color:#a3be8c;">7</span><span>&#39;,
+</span><span>	</span><span style="color:#bf616a;">deps </span><span>= [
+</span><span>		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.google.guava.guava-18.0.jar</span><span>&#39;,	   
+</span><span>		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.squareup.dagger.dagger-1.2.2.jar</span><span>&#39;,	 
+</span><span>		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:javax.inject.javax.inject-1.jar</span><span>&#39;,
+</span><span>		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:org.javassist.javassist-3.18.1-GA.jar</span><span>&#39;,
+</span><span>		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:com.jakewharton.butterknife-8.2.0.aar</span><span>&#39;,
+</span><span>		&#39;</span><span style="color:#a3be8c;">//.okbuck/cache:buck-android-support.jar</span><span>&#39;,
+</span><span>		&#39;</span><span style="color:#a3be8c;">:res_productDebug</span><span>&#39;,
+</span><span>	],
+</span><span>	</span><span style="color:#bf616a;">visibility </span><span>= [
+</span><span>		&#39;</span><span style="color:#a3be8c;">PUBLIC</span><span>&#39;,
+</span><span>	],
+</span><span>)
 </span></code></pre>
 <p>脚本的内容比较容易理解：</p>
 <p>annotation_processors指定注解处理器，</p>

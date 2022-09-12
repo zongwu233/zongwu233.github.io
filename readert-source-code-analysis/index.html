@@ -9,7 +9,7 @@
         <title>ReaderT 相关源码分析 </title>
         <meta name="description" content="">
 
-        <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
+        <link rel="stylesheet" href="https://blog.zongwu233.com/main.css">
 
         
         <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
@@ -27,6 +27,16 @@
           gtag('js', new Date());
 
           gtag('config', 'UA-68155231-1');
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZF40590PZW"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+            gtag('config', 'G-ZF40590PZW');
         </script>
         
     </head>
@@ -68,254 +78,237 @@
     </header>
     <div class="content">
         <p><code>ReaderT</code>是<code>Haskell</code>里很常见的一种模式。比如读取环境配置：</p>
-<span id="continue-reading"></span><pre style="background-color:#2b303b;">
-<code class="language-haskell" data-lang="haskell"><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Control.Monad.Trans.Reader
-</span><span style="color:#b48ead;">import qualified </span><span style="color:#c0c5ce;">Data.Map.Lazy </span><span style="color:#b48ead;">as </span><span style="color:#c0c5ce;">Map
-</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Text.Read (</span><span style="color:#8fa1b3;">readMaybe</span><span style="color:#c0c5ce;">)
-</span><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Text.Printf (</span><span style="color:#8fa1b3;">printf</span><span style="color:#c0c5ce;">)
-
-</span><span style="color:#b48ead;">type </span><span style="color:#d08770;">Config </span><span style="color:#c0c5ce;">= </span><span style="color:#d08770;">Map</span><span style="color:#c0c5ce;">.</span><span style="color:#d08770;">Map String String
-
+<span id="continue-reading"></span><pre data-lang="haskell" style="background-color:#2b303b;color:#c0c5ce;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span style="color:#b48ead;">import </span><span>Control.Monad.Trans.Reader
+</span><span style="color:#b48ead;">import qualified </span><span>Data.Map.Lazy </span><span style="color:#b48ead;">as </span><span>Map
+</span><span style="color:#b48ead;">import </span><span>Text.Read (</span><span style="color:#8fa1b3;">readMaybe</span><span>)
+</span><span style="color:#b48ead;">import </span><span>Text.Printf (</span><span style="color:#8fa1b3;">printf</span><span>)
+</span><span>
+</span><span style="color:#b48ead;">type </span><span style="color:#d08770;">Config </span><span>= </span><span style="color:#d08770;">Map</span><span>.</span><span style="color:#d08770;">Map String String
+</span><span>
 </span><span style="color:#8fa1b3;">envConfig </span><span style="color:#b48ead;">:: Config
-</span><span style="color:#c0c5ce;">envConfig = </span><span style="color:#d08770;">Map</span><span style="color:#c0c5ce;">.fromList [(&quot;</span><span style="color:#a3be8c;">host</span><span style="color:#c0c5ce;">&quot;, &quot;</span><span style="color:#a3be8c;">localhost</span><span style="color:#c0c5ce;">&quot;), (&quot;</span><span style="color:#a3be8c;">port</span><span style="color:#c0c5ce;">&quot;, &quot;</span><span style="color:#a3be8c;">7654</span><span style="color:#c0c5ce;">&quot;)]
-
-</span><span style="color:#8fa1b3;">getHost </span><span style="color:#b48ead;">::  Monad </span><span style="color:#bf616a;">m </span><span style="color:#b48ead;">=&gt; ReaderT Config </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Maybe String</span><span style="color:#c0c5ce;">)
-getHost = </span><span style="color:#b48ead;">do
-</span><span style="color:#c0c5ce;">    config &lt;- ask
-    return (</span><span style="color:#d08770;">Map</span><span style="color:#c0c5ce;">.lookup &quot;</span><span style="color:#a3be8c;">host</span><span style="color:#c0c5ce;">&quot; config)
-
-</span><span style="color:#8fa1b3;">getPort </span><span style="color:#b48ead;">::  Monad </span><span style="color:#bf616a;">m </span><span style="color:#b48ead;">=&gt; ReaderT Config </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Maybe Int</span><span style="color:#c0c5ce;">)
-getPort = </span><span style="color:#b48ead;">do
-</span><span style="color:#c0c5ce;">    config &lt;- ask
-    return (</span><span style="color:#d08770;">Map</span><span style="color:#c0c5ce;">.lookup &quot;</span><span style="color:#a3be8c;">port</span><span style="color:#c0c5ce;">&quot; config &gt;&gt;= readMaybe)
-
-</span><span style="color:#8fa1b3;">localModify </span><span style="color:#b48ead;">:: Monad </span><span style="color:#bf616a;">m </span><span style="color:#b48ead;">=&gt; ReaderT Config </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Maybe String</span><span style="color:#c0c5ce;">)
-localModify = local(\c -&gt; </span><span style="color:#d08770;">Map</span><span style="color:#c0c5ce;">.insert &quot;</span><span style="color:#a3be8c;">host</span><span style="color:#c0c5ce;">&quot; &quot;</span><span style="color:#a3be8c;">127.0.0.1</span><span style="color:#c0c5ce;">&quot; c) getHost
-
-</span><span style="color:#8fa1b3;">main </span><span style="color:#b48ead;">:: IO </span><span style="color:#c0c5ce;">()
-main = </span><span style="color:#b48ead;">do
-    </span><span style="color:#65737e;">-- 读取环境配置信息
-</span><span style="color:#c0c5ce;">    hostM &lt;- runReaderT getHost envConfig
-    portM &lt;- runReaderT getPort envConfig
-    </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> host = maybe &quot;</span><span style="color:#a3be8c;">-</span><span style="color:#c0c5ce;">&quot; id hostM
-    </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> port = maybe &quot;</span><span style="color:#a3be8c;">-</span><span style="color:#c0c5ce;">&quot; show portM
-    putStrLn (printf &quot;</span><span style="color:#a3be8c;">host: %s</span><span style="color:#c0c5ce;">&quot; host)
-    putStrLn (printf &quot;</span><span style="color:#a3be8c;">port: %s</span><span style="color:#c0c5ce;">&quot; port)
-
-    </span><span style="color:#65737e;">-- 临时修改环境配置
-</span><span style="color:#c0c5ce;">    hostM&#39; &lt;- runReaderT localModify envConfig
-    </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> host&#39; = maybe &quot;</span><span style="color:#a3be8c;">-</span><span style="color:#c0c5ce;">&quot; id hostM&#39;
-    putStrLn (printf &quot;</span><span style="color:#a3be8c;">local host: %s</span><span style="color:#c0c5ce;">&quot; host&#39;)
-
-    </span><span style="color:#65737e;">-- 读取环境配置信息
-</span><span style="color:#c0c5ce;">    hostM&#39;&#39; &lt;- runReaderT getHost envConfig
-    </span><span style="color:#b48ead;">let</span><span style="color:#c0c5ce;"> host&#39;&#39; = maybe &quot;</span><span style="color:#a3be8c;">-</span><span style="color:#c0c5ce;">&quot; id hostM&#39;&#39;
-    putStrLn (printf &quot;</span><span style="color:#a3be8c;">host: %s</span><span style="color:#c0c5ce;">&quot; host&#39;&#39;)
-
+</span><span>envConfig = </span><span style="color:#d08770;">Map</span><span>.fromList [(&quot;</span><span style="color:#a3be8c;">host</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">localhost</span><span>&quot;), (&quot;</span><span style="color:#a3be8c;">port</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">7654</span><span>&quot;)]
+</span><span>
+</span><span style="color:#8fa1b3;">getHost </span><span style="color:#b48ead;">::  Monad </span><span style="color:#bf616a;">m </span><span style="color:#b48ead;">=&gt; ReaderT Config </span><span style="color:#bf616a;">m</span><span> (</span><span style="color:#b48ead;">Maybe String</span><span>)
+</span><span>getHost = </span><span style="color:#b48ead;">do
+</span><span>    config &lt;- ask
+</span><span>    return (</span><span style="color:#d08770;">Map</span><span>.lookup &quot;</span><span style="color:#a3be8c;">host</span><span>&quot; config)
+</span><span>
+</span><span style="color:#8fa1b3;">getPort </span><span style="color:#b48ead;">::  Monad </span><span style="color:#bf616a;">m </span><span style="color:#b48ead;">=&gt; ReaderT Config </span><span style="color:#bf616a;">m</span><span> (</span><span style="color:#b48ead;">Maybe Int</span><span>)
+</span><span>getPort = </span><span style="color:#b48ead;">do
+</span><span>    config &lt;- ask
+</span><span>    return (</span><span style="color:#d08770;">Map</span><span>.lookup &quot;</span><span style="color:#a3be8c;">port</span><span>&quot; config &gt;&gt;= readMaybe)
+</span><span>
+</span><span style="color:#8fa1b3;">localModify </span><span style="color:#b48ead;">:: Monad </span><span style="color:#bf616a;">m </span><span style="color:#b48ead;">=&gt; ReaderT Config </span><span style="color:#bf616a;">m</span><span> (</span><span style="color:#b48ead;">Maybe String</span><span>)
+</span><span>localModify = local(\c -&gt; </span><span style="color:#d08770;">Map</span><span>.insert &quot;</span><span style="color:#a3be8c;">host</span><span>&quot; &quot;</span><span style="color:#a3be8c;">127.0.0.1</span><span>&quot; c) getHost
+</span><span>
+</span><span style="color:#8fa1b3;">main </span><span style="color:#b48ead;">:: IO </span><span>()
+</span><span>main = </span><span style="color:#b48ead;">do
+</span><span>    </span><span style="color:#65737e;">-- 读取环境配置信息
+</span><span>    hostM &lt;- runReaderT getHost envConfig
+</span><span>    portM &lt;- runReaderT getPort envConfig
+</span><span>    </span><span style="color:#b48ead;">let</span><span> host = maybe &quot;</span><span style="color:#a3be8c;">-</span><span>&quot; id hostM
+</span><span>    </span><span style="color:#b48ead;">let</span><span> port = maybe &quot;</span><span style="color:#a3be8c;">-</span><span>&quot; show portM
+</span><span>    putStrLn (printf &quot;</span><span style="color:#a3be8c;">host: %s</span><span>&quot; host)
+</span><span>    putStrLn (printf &quot;</span><span style="color:#a3be8c;">port: %s</span><span>&quot; port)
+</span><span>
+</span><span>    </span><span style="color:#65737e;">-- 临时修改环境配置
+</span><span>    hostM&#39; &lt;- runReaderT localModify envConfig
+</span><span>    </span><span style="color:#b48ead;">let</span><span> host&#39; = maybe &quot;</span><span style="color:#a3be8c;">-</span><span>&quot; id hostM&#39;
+</span><span>    putStrLn (printf &quot;</span><span style="color:#a3be8c;">local host: %s</span><span>&quot; host&#39;)
+</span><span>
+</span><span>    </span><span style="color:#65737e;">-- 读取环境配置信息
+</span><span>    hostM&#39;&#39; &lt;- runReaderT getHost envConfig
+</span><span>    </span><span style="color:#b48ead;">let</span><span> host&#39;&#39; = maybe &quot;</span><span style="color:#a3be8c;">-</span><span>&quot; id hostM&#39;&#39;
+</span><span>    putStrLn (printf &quot;</span><span style="color:#a3be8c;">host: %s</span><span>&quot; host&#39;&#39;)
+</span><span>
 </span></code></pre>
 <p>执行的结果：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-haskell" data-lang="haskell"><span style="color:#c0c5ce;">host: localhost
-port: </span><span style="color:#d08770;">7654
-</span><span style="color:#c0c5ce;">local host: </span><span style="color:#d08770;">127.0</span><span style="color:#c0c5ce;">.</span><span style="color:#d08770;">0.1
-</span><span style="color:#c0c5ce;">host: localhost
+<pre data-lang="haskell" style="background-color:#2b303b;color:#c0c5ce;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span>host: localhost
+</span><span>port: </span><span style="color:#d08770;">7654
+</span><span>local host: </span><span style="color:#d08770;">127.0</span><span>.</span><span style="color:#d08770;">0.1
+</span><span>host: localhost
 </span></code></pre>
 <p>从源码层面分析一下<code>ReaderT</code>。</p>
 <h2 id="readert-ding-yi"><code>ReaderT </code>定义</h2>
 <p>在<code>Control.Monad.Trans.Reader.class </code> 模块里：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- | The reader monad transformer,
--- which adds a read-only environment to the given monad.
-</span><span style="color:#b48ead;">newtype </span><span style="color:#d08770;">ReaderT</span><span style="color:#c0c5ce;"> r m a = </span><span style="color:#d08770;">ReaderT</span><span style="color:#c0c5ce;"> { runReaderT :: r -&gt; m a }
-
-</span><span style="color:#b48ead;">instance</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Functor </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">=&gt; Functor</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">ReaderT </span><span style="color:#bf616a;">r m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">where
-	</span><span style="color:#c0c5ce;">...
-
-</span><span style="color:#b48ead;">instance</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Applicative </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">=&gt; Applicative</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">ReaderT </span><span style="color:#bf616a;">r m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">where
-	</span><span style="color:#c0c5ce;">...
-	
-</span><span style="color:#b48ead;">instance</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Monad </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">=&gt; Monad</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">ReaderT </span><span style="color:#bf616a;">r m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">where
-</span><span style="color:#c0c5ce;">    return   = lift . return
-    m &gt;&gt;= k  = </span><span style="color:#d08770;">ReaderT </span><span style="color:#c0c5ce;">$ \ r -&gt; </span><span style="color:#b48ead;">do
-</span><span style="color:#c0c5ce;">        a &lt;- runReaderT m r
-        runReaderT (k a) r
+<pre data-lang="haskell" style="background-color:#2b303b;color:#c0c5ce;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- | The reader monad transformer,
+</span><span style="color:#65737e;">-- which adds a read-only environment to the given monad.
+</span><span style="color:#b48ead;">newtype </span><span style="color:#d08770;">ReaderT</span><span> r m a = </span><span style="color:#d08770;">ReaderT</span><span> { runReaderT :: r -&gt; m a }
+</span><span>
+</span><span style="color:#b48ead;">instance</span><span> (</span><span style="color:#b48ead;">Functor </span><span style="color:#bf616a;">m</span><span>) </span><span style="color:#b48ead;">=&gt; Functor</span><span> (</span><span style="color:#b48ead;">ReaderT </span><span style="color:#bf616a;">r m</span><span>) </span><span style="color:#b48ead;">where
+</span><span>	...
+</span><span>
+</span><span style="color:#b48ead;">instance</span><span> (</span><span style="color:#b48ead;">Applicative </span><span style="color:#bf616a;">m</span><span>) </span><span style="color:#b48ead;">=&gt; Applicative</span><span> (</span><span style="color:#b48ead;">ReaderT </span><span style="color:#bf616a;">r m</span><span>) </span><span style="color:#b48ead;">where
+</span><span>	...
+</span><span>	
+</span><span style="color:#b48ead;">instance</span><span> (</span><span style="color:#b48ead;">Monad </span><span style="color:#bf616a;">m</span><span>) </span><span style="color:#b48ead;">=&gt; Monad</span><span> (</span><span style="color:#b48ead;">ReaderT </span><span style="color:#bf616a;">r m</span><span>) </span><span style="color:#b48ead;">where
+</span><span>    return   = lift . return
+</span><span>    m &gt;&gt;= k  = </span><span style="color:#d08770;">ReaderT </span><span>$ \ r -&gt; </span><span style="color:#b48ead;">do
+</span><span>        a &lt;- runReaderT m r
+</span><span>        runReaderT (k a) r
 </span></code></pre>
 <p>看定义，可以直观认为<code>ReaderT r m a </code>就是封装了<code>r -&gt; m a</code>函数。</p>
 <p>重点来看一看 <code>Monad (ReaderT r m) </code> 的实现。</p>
 <p>关于 <code>return = lift . return</code>: 等号右边的<code>lift</code>定义实际上来自于 <code>import Control.Monad.Trans.Class</code> </p>
-<pre style="background-color:#2b303b;">
-<code class="language-haskell" data-lang="haskell"><span style="color:#b48ead;">class </span><span style="color:#a3be8c;">MonadTrans </span><span style="color:#bf616a;">t </span><span style="color:#b48ead;">where
-    </span><span style="color:#65737e;">-- | Lift a computation from the argument monad to the constructed monad.
-    </span><span style="color:#8fa1b3;">lift </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Monad </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#bf616a;">m a </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">t m a
+<pre data-lang="haskell" style="background-color:#2b303b;color:#c0c5ce;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span style="color:#b48ead;">class </span><span style="color:#a3be8c;">MonadTrans </span><span style="color:#bf616a;">t </span><span style="color:#b48ead;">where
+</span><span>    </span><span style="color:#65737e;">-- | Lift a computation from the argument monad to the constructed monad.
+</span><span>    </span><span style="color:#8fa1b3;">lift </span><span style="color:#b48ead;">::</span><span> (</span><span style="color:#b48ead;">Monad </span><span style="color:#bf616a;">m</span><span>) </span><span style="color:#b48ead;">=&gt; </span><span style="color:#bf616a;">m a </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">t m a
 </span></code></pre>
 <p>对于等号右边的<code>retrun</code>就是<code>Monad m</code> 基本的定义 <code>retrun:: m a</code> 刚好是 <code>m a</code>类型。</p>
 <p>于是可以得到<code>Monad (ReaderT r m) </code> 的<code>return:: ReaderT r m a</code>，注意这里要有意识地把 <code>(ReaderT r m)</code>当作<code>Monad m</code>里的<code>m</code> 。</p>
 <p>关于<code>m &gt;&gt;= k</code> 的定义就有点晦涩。理解的关键点是<strong>不要被符号<code>m</code>迷惑</strong>，这里的<code>m</code> 是<code>Monad m</code>吗？</p>
 <p>当然不是。回忆一下简单版<code>Monad m</code>关于<code>&gt;&gt;=</code> 的定义：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-haskell" data-lang="haskell"><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">Monad </span><span style="color:#bf616a;">m </span><span style="color:#b48ead;">where
-  </span><span style="color:#8fa1b3;">(&gt;&gt;=) </span><span style="color:#b48ead;">:: </span><span style="color:#bf616a;">m a </span><span style="color:#b48ead;">-&gt;</span><span style="color:#c0c5ce;"> (</span><span style="color:#bf616a;">a </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m b</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m b
-  </span><span style="color:#8fa1b3;">(&gt;&gt;) </span><span style="color:#b48ead;">:: </span><span style="color:#bf616a;">m a </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m b </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m b
-  </span><span style="color:#8fa1b3;">return </span><span style="color:#b48ead;">:: </span><span style="color:#bf616a;">a </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m a
+<pre data-lang="haskell" style="background-color:#2b303b;color:#c0c5ce;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">Monad </span><span style="color:#bf616a;">m </span><span style="color:#b48ead;">where
+</span><span>  </span><span style="color:#8fa1b3;">(&gt;&gt;=) </span><span style="color:#b48ead;">:: </span><span style="color:#bf616a;">m a </span><span style="color:#b48ead;">-&gt;</span><span> (</span><span style="color:#bf616a;">a </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m b</span><span>) </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m b
+</span><span>  </span><span style="color:#8fa1b3;">(&gt;&gt;) </span><span style="color:#b48ead;">:: </span><span style="color:#bf616a;">m a </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m b </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m b
+</span><span>  </span><span style="color:#8fa1b3;">return </span><span style="color:#b48ead;">:: </span><span style="color:#bf616a;">a </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m a
 </span></code></pre>
 <p><code>&gt;&gt;=</code>的两个参数的类型分别是<code>m a</code> 和<code>(a -&gt; m b)</code> ，结果类型是<code>m b</code>。</p>
 <p>刚才说过把 <code>(ReaderT r m)</code>当作<code>Monad m</code>里的<code>m</code> 。于是<code>Monad (ReaderT r m)</code> 的<code>&gt;&gt;=</code>定义实质上是：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-haskell" data-lang="haskell"><span style="color:#8fa1b3;">(&gt;&gt;=) </span><span style="color:#b48ead;">:: ReaderT </span><span style="color:#bf616a;">r m a </span><span style="color:#b48ead;">-&gt;</span><span style="color:#c0c5ce;"> (</span><span style="color:#bf616a;">a </span><span style="color:#b48ead;">-&gt; ReaderT </span><span style="color:#bf616a;">r m b</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">-&gt; ReaderT </span><span style="color:#bf616a;">r m b
+<pre data-lang="haskell" style="background-color:#2b303b;color:#c0c5ce;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span style="color:#8fa1b3;">(&gt;&gt;=) </span><span style="color:#b48ead;">:: ReaderT </span><span style="color:#bf616a;">r m a </span><span style="color:#b48ead;">-&gt;</span><span> (</span><span style="color:#bf616a;">a </span><span style="color:#b48ead;">-&gt; ReaderT </span><span style="color:#bf616a;">r m b</span><span>) </span><span style="color:#b48ead;">-&gt; ReaderT </span><span style="color:#bf616a;">r m b
 </span></code></pre>
 <p>我们把晦涩的<code>m,k</code>用其他符号替换掉，</p>
-<pre style="background-color:#2b303b;">
-<code class="language-haskell" data-lang="haskell"><span style="color:#c0c5ce;">g &gt;&gt;= h = </span><span style="color:#d08770;">ReaderT </span><span style="color:#c0c5ce;">$ \r -&gt; </span><span style="color:#b48ead;">do
-</span><span style="color:#c0c5ce;">	a &lt;- runReaderT g r
-	runReaderT (h a) r
+<pre data-lang="haskell" style="background-color:#2b303b;color:#c0c5ce;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span>g &gt;&gt;= h = </span><span style="color:#d08770;">ReaderT </span><span>$ \r -&gt; </span><span style="color:#b48ead;">do
+</span><span>	a &lt;- runReaderT g r
+</span><span>	runReaderT (h a) r
 </span></code></pre>
 <p>我们知道 <code>runReaderT::ReaderT r m a -&gt;r -&gt; m a </code> ，同时<code>g:: ReaderT r m a</code>，那么<code> runReaderT g r:: m a</code>。<code>&lt;-</code>会取出<code>a</code> 。</p>
 <p><code>h::a -&gt; ReaderT r m b</code> ，那么<code>	runReaderT (h a) r::m b</code>。</p>
 <p>于是得到了 <code>ReaderT $ \r -&gt; m b</code>这刚好又是<code>ReaderT </code>的构造函数最终得到<code>ReaderT r m b</code>。</p>
 <h2 id="reader">Reader</h2>
 <p>看完<code>ReaderT</code>就可以看看<code>Reader</code>类型了（ 在同一个文件内定义）。</p>
-<pre style="background-color:#2b303b;">
-<code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- | The parameterizable reader monad.
---
--- Computations are functions of a shared environment.
---
--- The &#39;return&#39; function ignores the environment, while @&gt;&gt;=@ passes
--- the inherited environment to both subcomputations.
-</span><span style="color:#b48ead;">type </span><span style="color:#d08770;">Reader</span><span style="color:#c0c5ce;"> r = </span><span style="color:#d08770;">ReaderT</span><span style="color:#c0c5ce;"> r </span><span style="color:#d08770;">Identity
+<pre data-lang="haskell" style="background-color:#2b303b;color:#c0c5ce;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- | The parameterizable reader monad.
+</span><span style="color:#65737e;">--
+</span><span style="color:#65737e;">-- Computations are functions of a shared environment.
+</span><span style="color:#65737e;">--
+</span><span style="color:#65737e;">-- The &#39;return&#39; function ignores the environment, while @&gt;&gt;=@ passes
+</span><span style="color:#65737e;">-- the inherited environment to both subcomputations.
+</span><span style="color:#b48ead;">type </span><span style="color:#d08770;">Reader</span><span> r = </span><span style="color:#d08770;">ReaderT</span><span> r </span><span style="color:#d08770;">Identity
 </span></code></pre>
 <p><code>type</code>关键字定义别名，类型与别名可以通用。 <code>Reader r</code>只是把<code>ReaderT r m </code>类型的<code>m</code>替换为<code>Identity</code>。</p>
 <p>于是可以认为<code>Reader r</code>封装了<code>r -&gt; a</code>函数。</p>
 <p>用于<code>ReaderT r m</code>的方法，都适用于<code>Reader r</code>。</p>
 <p>一些常用的方法：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- | Constructor for computations in the reader monad (equivalent to &#39;asks&#39;).
-</span><span style="color:#8fa1b3;">reader </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Monad </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">=&gt;</span><span style="color:#c0c5ce;"> (</span><span style="color:#bf616a;">r </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">a</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">-&gt; ReaderT </span><span style="color:#bf616a;">r m a
-</span><span style="color:#c0c5ce;">reader f = </span><span style="color:#d08770;">ReaderT</span><span style="color:#c0c5ce;"> (return . f)
-
+<pre data-lang="haskell" style="background-color:#2b303b;color:#c0c5ce;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- | Constructor for computations in the reader monad (equivalent to &#39;asks&#39;).
+</span><span style="color:#8fa1b3;">reader </span><span style="color:#b48ead;">::</span><span> (</span><span style="color:#b48ead;">Monad </span><span style="color:#bf616a;">m</span><span>) </span><span style="color:#b48ead;">=&gt;</span><span> (</span><span style="color:#bf616a;">r </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">a</span><span>) </span><span style="color:#b48ead;">-&gt; ReaderT </span><span style="color:#bf616a;">r m a
+</span><span>reader f = </span><span style="color:#d08770;">ReaderT</span><span> (return . f)
+</span><span>
 </span><span style="color:#65737e;">-- | Runs a @Reader@ and extracts the final value from it.
--- (The inverse of &#39;reader&#39;.)
-</span><span style="color:#8fa1b3;">runReader
-    </span><span style="color:#b48ead;">:: Reader </span><span style="color:#bf616a;">r a       </span><span style="color:#65737e;">-- ^ A @Reader@ to run.
-    </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">r                </span><span style="color:#65737e;">-- ^ An initial environment.
-    </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">a
-</span><span style="color:#c0c5ce;">runReader m = runIdentity . runReaderT m
-
-
+</span><span style="color:#65737e;">-- (The inverse of &#39;reader&#39;.)
+</span><span>runReader
+</span><span>    :: </span><span style="color:#d08770;">Reader</span><span> r a       </span><span style="color:#65737e;">-- ^ A @Reader@ to run.
+</span><span>    -&gt; r                </span><span style="color:#65737e;">-- ^ An initial environment.
+</span><span>    -&gt; a
+</span><span>runReader m = runIdentity . runReaderT m
+</span><span>
+</span><span>
 </span><span style="color:#65737e;">-- | Transform the value returned by a @Reader@.
---
--- * @&#39;runReader&#39; (&#39;mapReader&#39; f m) = f . &#39;runReader&#39; m@
-</span><span style="color:#8fa1b3;">mapReader </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#bf616a;">a </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">b</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">-&gt; Reader </span><span style="color:#bf616a;">r a </span><span style="color:#b48ead;">-&gt; Reader </span><span style="color:#bf616a;">r b
-</span><span style="color:#c0c5ce;">mapReader f = mapReaderT (</span><span style="color:#d08770;">Identity </span><span style="color:#c0c5ce;">. f . runIdentity)
-{-# </span><span style="color:#b48ead;">INLINE</span><span style="color:#c0c5ce;"> mapReader #-}
-
+</span><span style="color:#65737e;">--
+</span><span style="color:#65737e;">-- * @&#39;runReader&#39; (&#39;mapReader&#39; f m) = f . &#39;runReader&#39; m@
+</span><span style="color:#8fa1b3;">mapReader </span><span style="color:#b48ead;">::</span><span> (</span><span style="color:#bf616a;">a </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">b</span><span>) </span><span style="color:#b48ead;">-&gt; Reader </span><span style="color:#bf616a;">r a </span><span style="color:#b48ead;">-&gt; Reader </span><span style="color:#bf616a;">r b
+</span><span>mapReader f = mapReaderT (</span><span style="color:#d08770;">Identity </span><span>. f . runIdentity)
+</span><span>{-# </span><span style="color:#b48ead;">INLINE</span><span> mapReader #-}
+</span><span>
 </span><span style="color:#65737e;">-- | Execute a computation in a modified environment
--- (a specialization of &#39;withReaderT&#39;).
---
--- * @&#39;runReader&#39; (&#39;withReader&#39; f m) = &#39;runReader&#39; m . f@
-</span><span style="color:#8fa1b3;">withReader
-    </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#bf616a;">r</span><span style="color:#c0c5ce;">&#39; </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">r</span><span style="color:#c0c5ce;">)        </span><span style="color:#65737e;">-- ^ The function to modify the environment.
-    </span><span style="color:#b48ead;">-&gt; Reader </span><span style="color:#bf616a;">r a       </span><span style="color:#65737e;">-- ^ Computation to run in the modified environment.
-    </span><span style="color:#b48ead;">-&gt; Reader </span><span style="color:#bf616a;">r</span><span style="color:#c0c5ce;">&#39; </span><span style="color:#bf616a;">a
-</span><span style="color:#c0c5ce;">withReader = withReaderT
-</span></code></pre><h2 id="readertde-typeclass-monadreader"><code>ReaderT</code>的<code>typeclass</code>: <code>MonadReader</code></h2>
+</span><span style="color:#65737e;">-- (a specialization of &#39;withReaderT&#39;).
+</span><span style="color:#65737e;">--
+</span><span style="color:#65737e;">-- * @&#39;runReader&#39; (&#39;withReader&#39; f m) = &#39;runReader&#39; m . f@
+</span><span>withReader
+</span><span>    :: (r&#39; -&gt; r)        </span><span style="color:#65737e;">-- ^ The function to modify the environment.
+</span><span>    -&gt; </span><span style="color:#d08770;">Reader</span><span> r a       </span><span style="color:#65737e;">-- ^ Computation to run in the modified environment.
+</span><span>    -&gt; </span><span style="color:#d08770;">Reader</span><span> r&#39; a
+</span><span>withReader = withReaderT
+</span></code></pre>
+<h2 id="readertde-typeclass-monadreader"><code>ReaderT</code>的<code>typeclass</code>: <code>MonadReader</code></h2>
 <p>在<code>Control.Monad.Reader.Class</code>模块里定义了：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-haskell" data-lang="haskell"><span style="color:#b48ead;">instance Monad </span><span style="color:#bf616a;">m </span><span style="color:#b48ead;">=&gt; MonadReader </span><span style="color:#bf616a;">r</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">ReaderT </span><span style="color:#bf616a;">r m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">where
-</span><span style="color:#c0c5ce;">    ask = </span><span style="color:#d08770;">ReaderT</span><span style="color:#c0c5ce;">.ask
-    local = </span><span style="color:#d08770;">ReaderT</span><span style="color:#c0c5ce;">.local
-    reader = </span><span style="color:#d08770;">ReaderT</span><span style="color:#c0c5ce;">.reader
+<pre data-lang="haskell" style="background-color:#2b303b;color:#c0c5ce;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span style="color:#b48ead;">instance Monad </span><span style="color:#bf616a;">m </span><span style="color:#b48ead;">=&gt; MonadReader </span><span style="color:#bf616a;">r</span><span> (</span><span style="color:#b48ead;">ReaderT </span><span style="color:#bf616a;">r m</span><span>) </span><span style="color:#b48ead;">where
+</span><span>    ask = </span><span style="color:#d08770;">ReaderT</span><span>.ask
+</span><span>    local = </span><span style="color:#d08770;">ReaderT</span><span>.local
+</span><span>    reader = </span><span style="color:#d08770;">ReaderT</span><span>.reader
 </span></code></pre>
 <p>先看<code>MonadReader</code> 的定义</p>
-<pre style="background-color:#2b303b;">
-<code class="language-haskell" data-lang="haskell"><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">Monad </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;"> =&gt; </span><span style="color:#a3be8c;">MonadReader </span><span style="color:#bf616a;">r m</span><span style="color:#c0c5ce;"> | </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;"> -&gt; </span><span style="color:#bf616a;">r </span><span style="color:#b48ead;">where
-    </span><span style="color:#8fa1b3;">ask   </span><span style="color:#b48ead;">:: </span><span style="color:#bf616a;">m r
-</span><span style="color:#c0c5ce;">    ask = reader id
-
-    </span><span style="color:#65737e;">-- | Executes a computation in a modified environment.
-    </span><span style="color:#8fa1b3;">local </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#bf616a;">r </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">r</span><span style="color:#c0c5ce;">) </span><span style="color:#65737e;">-- ^ The function to modify the environment.
-          </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m a      </span><span style="color:#65737e;">-- ^ @Reader@ to run in the modified environment.
-          </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m a
-
-    </span><span style="color:#65737e;">-- | Retrieves a function of the current environment.
-    </span><span style="color:#8fa1b3;">reader </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#bf616a;">r </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">a</span><span style="color:#c0c5ce;">) </span><span style="color:#65737e;">-- ^ The selector function to apply to the environment.
-           </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m a
-</span><span style="color:#c0c5ce;">    reader f = </span><span style="color:#b48ead;">do
-</span><span style="color:#c0c5ce;">      r &lt;- ask
-      return (f r)
-
+<pre data-lang="haskell" style="background-color:#2b303b;color:#c0c5ce;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span style="color:#b48ead;">class </span><span style="color:#ebcb8b;">Monad </span><span style="color:#bf616a;">m</span><span> =&gt; </span><span style="color:#a3be8c;">MonadReader </span><span style="color:#bf616a;">r m</span><span> | </span><span style="color:#bf616a;">m</span><span> -&gt; </span><span style="color:#bf616a;">r </span><span style="color:#b48ead;">where
+</span><span>    </span><span style="color:#8fa1b3;">ask   </span><span style="color:#b48ead;">:: </span><span style="color:#bf616a;">m r
+</span><span>    ask = reader id
+</span><span>
+</span><span>    </span><span style="color:#65737e;">-- | Executes a computation in a modified environment.
+</span><span>    </span><span style="color:#8fa1b3;">local </span><span style="color:#b48ead;">::</span><span> (</span><span style="color:#bf616a;">r </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">r</span><span>) </span><span style="color:#65737e;">-- ^ The function to modify the environment.
+</span><span>          </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m a      </span><span style="color:#65737e;">-- ^ @Reader@ to run in the modified environment.
+</span><span>          </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m a
+</span><span>
+</span><span>    </span><span style="color:#65737e;">-- | Retrieves a function of the current environment.
+</span><span>    </span><span style="color:#8fa1b3;">reader </span><span style="color:#b48ead;">::</span><span> (</span><span style="color:#bf616a;">r </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">a</span><span>) </span><span style="color:#65737e;">-- ^ The selector function to apply to the environment.
+</span><span>           </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m a
+</span><span>    reader f = </span><span style="color:#b48ead;">do
+</span><span>      r &lt;- ask
+</span><span>      return (f r)
+</span><span>
 </span><span style="color:#65737e;">-- | Retrieves a function of the current environment.
 </span><span style="color:#8fa1b3;">asks </span><span style="color:#b48ead;">:: MonadReader </span><span style="color:#bf616a;">r m
-    </span><span style="color:#b48ead;">=&gt;</span><span style="color:#c0c5ce;"> (</span><span style="color:#bf616a;">r </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">a</span><span style="color:#c0c5ce;">) </span><span style="color:#65737e;">-- ^ The selector function to apply to the environment.
-    </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m a
-</span><span style="color:#c0c5ce;">asks = reader
+</span><span>    </span><span style="color:#b48ead;">=&gt;</span><span> (</span><span style="color:#bf616a;">r </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">a</span><span>) </span><span style="color:#65737e;">-- ^ The selector function to apply to the environment.
+</span><span>    </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">m a
+</span><span>asks = reader
 </span></code></pre>
 <p>上面的定义中，<code>ask</code> <code>reader</code>两个方法<code>Mutual recursion</code> 相互递归定义。重点看<code>reader</code></p>
-<pre style="background-color:#2b303b;">
-<code class="language-haskell" data-lang="haskell"><span style="color:#c0c5ce;">     reader f = </span><span style="color:#b48ead;">do
-</span><span style="color:#c0c5ce;">      r &lt;- ask
-      return (f r)
+<pre data-lang="haskell" style="background-color:#2b303b;color:#c0c5ce;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span>     reader f = </span><span style="color:#b48ead;">do
+</span><span>      r &lt;- ask
+</span><span>      return (f r)
 </span></code></pre>
 <p>改成去掉<code>do</code>的写法：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-haskell" data-lang="haskell"><span style="color:#c0c5ce;">reader f = ask &gt;&gt;= \r -&gt; return(f r)
+<pre data-lang="haskell" style="background-color:#2b303b;color:#c0c5ce;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span>reader f = ask &gt;&gt;= \r -&gt; return(f r)
 </span></code></pre>
 <p>从上面的声明可以知道，<code>ask:: m a</code>，这里注意<code>MonadReader r m</code>不是<code>Monad</code>，只有<code>Monad m</code>。</p>
 <p>那么<code>&gt;&gt;=</code>是<code>Monad m</code>的方法。</p>
-<pre style="background-color:#2b303b;">
-<code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- ask:: m a 
--- \r -&gt; retrun(f r) ::  r -&gt; m a
-</span><span style="color:#c0c5ce;">ask &gt;&gt;= \r -&gt; return(f r)
+<pre data-lang="haskell" style="background-color:#2b303b;color:#c0c5ce;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- ask:: m a 
+</span><span style="color:#65737e;">-- \r -&gt; retrun(f r) ::  r -&gt; m a
+</span><span>ask &gt;&gt;= \r -&gt; return(f r)
 </span></code></pre>
 <p>刚好得到<code>reader f :: m a</code>。</p>
 <p>回到<code>instance</code>的定义：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-haskell" data-lang="haskell"><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Control.Monad.Trans.Reader (</span><span style="color:#b48ead;">ReaderT</span><span style="color:#c0c5ce;">)
-</span><span style="color:#b48ead;">import qualified </span><span style="color:#c0c5ce;">Control.Monad.Trans.Reader </span><span style="color:#b48ead;">as </span><span style="color:#c0c5ce;">ReaderT (</span><span style="color:#8fa1b3;">ask</span><span style="color:#c0c5ce;">, </span><span style="color:#8fa1b3;">local</span><span style="color:#c0c5ce;">, </span><span style="color:#8fa1b3;">reader</span><span style="color:#c0c5ce;">)
-...
-
-</span><span style="color:#b48ead;">instance Monad </span><span style="color:#bf616a;">m </span><span style="color:#b48ead;">=&gt; MonadReader </span><span style="color:#bf616a;">r</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">ReaderT </span><span style="color:#bf616a;">r m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">where
-</span><span style="color:#c0c5ce;">    ask = </span><span style="color:#d08770;">ReaderT</span><span style="color:#c0c5ce;">.ask
-    local = </span><span style="color:#d08770;">ReaderT</span><span style="color:#c0c5ce;">.local
-    reader = </span><span style="color:#d08770;">ReaderT</span><span style="color:#c0c5ce;">.reader
+<pre data-lang="haskell" style="background-color:#2b303b;color:#c0c5ce;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span style="color:#b48ead;">import </span><span>Control.Monad.Trans.Reader (</span><span style="color:#b48ead;">ReaderT</span><span>)
+</span><span style="color:#b48ead;">import qualified </span><span>Control.Monad.Trans.Reader </span><span style="color:#b48ead;">as </span><span>ReaderT (</span><span style="color:#8fa1b3;">ask</span><span>, </span><span style="color:#8fa1b3;">local</span><span>, </span><span style="color:#8fa1b3;">reader</span><span>)
+</span><span>...
+</span><span>
+</span><span style="color:#b48ead;">instance Monad </span><span style="color:#bf616a;">m </span><span style="color:#b48ead;">=&gt; MonadReader </span><span style="color:#bf616a;">r</span><span> (</span><span style="color:#b48ead;">ReaderT </span><span style="color:#bf616a;">r m</span><span>) </span><span style="color:#b48ead;">where
+</span><span>    ask = </span><span style="color:#d08770;">ReaderT</span><span>.ask
+</span><span>    local = </span><span style="color:#d08770;">ReaderT</span><span>.local
+</span><span>    reader = </span><span style="color:#d08770;">ReaderT</span><span>.reader
 </span></code></pre>
 <p>从<code>MonadReader r m</code>的定义里，我们知道<code>ask:: m r</code>，依据上面<code>instance</code>的定义，（<code>ReaderT r m</code>就是<code>MonadReader r m</code>中的<code>m</code>）那么 <code>ask:: ReaderT r m r</code>。<code>local</code>，<code>reader </code>的类型也类似。</p>
 <p>现在可以看看<code>ReaderT</code>里对应的方法的定义。</p>
-<pre style="background-color:#2b303b;">
-<code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- | Fetch the value of the environment.
-</span><span style="color:#8fa1b3;">ask </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Monad </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">) </span><span style="color:#b48ead;">=&gt; ReaderT </span><span style="color:#bf616a;">r m r
-</span><span style="color:#c0c5ce;">ask = </span><span style="color:#d08770;">ReaderT</span><span style="color:#c0c5ce;"> return
-
+<pre data-lang="haskell" style="background-color:#2b303b;color:#c0c5ce;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- | Fetch the value of the environment.
+</span><span style="color:#8fa1b3;">ask </span><span style="color:#b48ead;">::</span><span> (</span><span style="color:#b48ead;">Monad </span><span style="color:#bf616a;">m</span><span>) </span><span style="color:#b48ead;">=&gt; ReaderT </span><span style="color:#bf616a;">r m r
+</span><span>ask = </span><span style="color:#d08770;">ReaderT</span><span> return
+</span><span>
 </span><span style="color:#65737e;">-- | Execute a computation in a modified environment
--- (a specialization of &#39;withReaderT&#39;).
---
--- * @&#39;runReaderT&#39; (&#39;local&#39; f m) = &#39;runReaderT&#39; m . f@
-</span><span style="color:#8fa1b3;">local
-    </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#bf616a;">r </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">r</span><span style="color:#c0c5ce;">)         </span><span style="color:#65737e;">-- ^ The function to modify the environment.
-    </span><span style="color:#b48ead;">-&gt; ReaderT </span><span style="color:#bf616a;">r m a    </span><span style="color:#65737e;">-- ^ Computation to run in the modified environment.
-    </span><span style="color:#b48ead;">-&gt; ReaderT </span><span style="color:#bf616a;">r m a
-</span><span style="color:#c0c5ce;">local = withReaderT
-
+</span><span style="color:#65737e;">-- (a specialization of &#39;withReaderT&#39;).
+</span><span style="color:#65737e;">--
+</span><span style="color:#65737e;">-- * @&#39;runReaderT&#39; (&#39;local&#39; f m) = &#39;runReaderT&#39; m . f@
+</span><span>local
+</span><span>    :: (r -&gt; r)         </span><span style="color:#65737e;">-- ^ The function to modify the environment.
+</span><span>    -&gt; </span><span style="color:#d08770;">ReaderT</span><span> r m a    </span><span style="color:#65737e;">-- ^ Computation to run in the modified environment.
+</span><span>    -&gt; </span><span style="color:#d08770;">ReaderT</span><span> r m a
+</span><span>local = withReaderT
+</span><span>
 </span><span style="color:#65737e;">-- | Retrieve a function of the current environment.
---
--- * @&#39;asks&#39; f = &#39;liftM&#39; f &#39;ask&#39;@
-</span><span style="color:#8fa1b3;">asks </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Monad </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">)
-    </span><span style="color:#b48ead;">=&gt;</span><span style="color:#c0c5ce;"> (</span><span style="color:#bf616a;">r </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">a</span><span style="color:#c0c5ce;">)         </span><span style="color:#65737e;">-- ^ The selector function to apply to the environment.
-    </span><span style="color:#b48ead;">-&gt; ReaderT </span><span style="color:#bf616a;">r m a
-</span><span style="color:#c0c5ce;">asks f = </span><span style="color:#d08770;">ReaderT</span><span style="color:#c0c5ce;"> (return . f)
-</span></code></pre><h3 id="ask">ask</h3>
+</span><span style="color:#65737e;">--
+</span><span style="color:#65737e;">-- * @&#39;asks&#39; f = &#39;liftM&#39; f &#39;ask&#39;@
+</span><span style="color:#8fa1b3;">asks </span><span style="color:#b48ead;">::</span><span> (</span><span style="color:#b48ead;">Monad </span><span style="color:#bf616a;">m</span><span>)
+</span><span>    </span><span style="color:#b48ead;">=&gt;</span><span> (</span><span style="color:#bf616a;">r </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">a</span><span>)         </span><span style="color:#65737e;">-- ^ The selector function to apply to the environment.
+</span><span>    </span><span style="color:#b48ead;">-&gt; ReaderT </span><span style="color:#bf616a;">r m a
+</span><span>asks f = </span><span style="color:#d08770;">ReaderT</span><span> (return . f)
+</span></code></pre>
+<h3 id="ask">ask</h3>
 <p><code>ask</code>的注释解释了，该函数用于获取环境的值。（实际上就是 r） ，它的实现：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-haskell" data-lang="haskell"><span style="color:#c0c5ce;">ask = </span><span style="color:#d08770;">ReaderT</span><span style="color:#c0c5ce;"> return
+<pre data-lang="haskell" style="background-color:#2b303b;color:#c0c5ce;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span>ask = </span><span style="color:#d08770;">ReaderT</span><span> return
 </span></code></pre>
 <p>有点迷糊，<code>ReaderT</code>的类型是什么？</p>
 <p>这里的<code>ReaderT</code>显然是值构造子（value Constructor，有时候也叫 data constructor），给它一个函数可以构造一个 <code>ReaderT r m  a</code>。可以得知：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-haskell" data-lang="haskell"><span style="color:#d08770;">ReaderT </span><span style="color:#c0c5ce;">:: (r -&gt; m a) -&gt; </span><span style="color:#d08770;">ReaderT</span><span style="color:#c0c5ce;"> r m a
+<pre data-lang="haskell" style="background-color:#2b303b;color:#c0c5ce;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span style="color:#d08770;">ReaderT </span><span>:: (r -&gt; m a) -&gt; </span><span style="color:#d08770;">ReaderT</span><span> r m a
 </span></code></pre>
 <p><code>return</code>是哪个模块定义的<code>return</code>? 是刚刚分析的<code>Monad (ReaderT r m) </code>的<code>return</code>么？不是。</p>
 <p>文件开头<code>import</code>的</p>
-<pre style="background-color:#2b303b;">
-<code class="language-haskell" data-lang="haskell"><span style="color:#b48ead;">import </span><span style="color:#c0c5ce;">Control.Monad
+<pre data-lang="haskell" style="background-color:#2b303b;color:#c0c5ce;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span style="color:#b48ead;">import </span><span>Control.Monad
 </span></code></pre>
 <p>是<code>Monad</code>的<code>return :: a -&gt; m a</code></p>
 <p>把<code>ReaderT return</code> 放在一起分析：</p>
@@ -324,27 +317,25 @@ port: </span><span style="color:#d08770;">7654
 <p>于是<code>ReaderT return :: ReaderT r m r</code>。</p>
 <h3 id="local">local</h3>
 <p><code>local = withReaderT</code>，看看<code>withReaderT</code>的定义：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- | Execute a computation in a modified environment
--- (a more general version of &#39;local&#39;).
---
--- * @&#39;runReaderT&#39; (&#39;withReaderT&#39; f m) = &#39;runReaderT&#39; m . f@
-</span><span style="color:#8fa1b3;">withReaderT
-    </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#bf616a;">r</span><span style="color:#c0c5ce;">&#39; </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">r</span><span style="color:#c0c5ce;">)        </span><span style="color:#65737e;">-- ^ The function to modify the environment.
-    </span><span style="color:#b48ead;">-&gt; ReaderT </span><span style="color:#bf616a;">r m a    </span><span style="color:#65737e;">-- ^ Computation to run in the modified environment.
-    </span><span style="color:#b48ead;">-&gt; ReaderT </span><span style="color:#bf616a;">r</span><span style="color:#c0c5ce;">&#39; </span><span style="color:#bf616a;">m a
-</span><span style="color:#c0c5ce;">withReaderT f m = </span><span style="color:#d08770;">ReaderT </span><span style="color:#c0c5ce;">$ runReaderT m . f
+<pre data-lang="haskell" style="background-color:#2b303b;color:#c0c5ce;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- | Execute a computation in a modified environment
+</span><span style="color:#65737e;">-- (a more general version of &#39;local&#39;).
+</span><span style="color:#65737e;">--
+</span><span style="color:#65737e;">-- * @&#39;runReaderT&#39; (&#39;withReaderT&#39; f m) = &#39;runReaderT&#39; m . f@
+</span><span>withReaderT
+</span><span>    :: (r&#39; -&gt; r)        </span><span style="color:#65737e;">-- ^ The function to modify the environment.
+</span><span>    -&gt; </span><span style="color:#d08770;">ReaderT</span><span> r m a    </span><span style="color:#65737e;">-- ^ Computation to run in the modified environment.
+</span><span>    -&gt; </span><span style="color:#d08770;">ReaderT</span><span> r&#39; m a
+</span><span>withReaderT f m = </span><span style="color:#d08770;">ReaderT </span><span>$ runReaderT m . f
 </span></code></pre>
 <p>这里只需要注意<code>withReaderT f m</code> 里的<code>m::ReaderT r m a</code>。</p>
 <h3 id="asks">asks</h3>
-<pre style="background-color:#2b303b;">
-<code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- | Retrieve a function of the current environment.
---
--- * @&#39;asks&#39; f = &#39;liftM&#39; f &#39;ask&#39;@
-</span><span style="color:#8fa1b3;">asks </span><span style="color:#b48ead;">::</span><span style="color:#c0c5ce;"> (</span><span style="color:#b48ead;">Monad </span><span style="color:#bf616a;">m</span><span style="color:#c0c5ce;">)
-    </span><span style="color:#b48ead;">=&gt;</span><span style="color:#c0c5ce;"> (</span><span style="color:#bf616a;">r </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">a</span><span style="color:#c0c5ce;">)         </span><span style="color:#65737e;">-- ^ The selector function to apply to the environment.
-    </span><span style="color:#b48ead;">-&gt; ReaderT </span><span style="color:#bf616a;">r m a
-</span><span style="color:#c0c5ce;">asks f = </span><span style="color:#d08770;">ReaderT</span><span style="color:#c0c5ce;"> (return . f)
+<pre data-lang="haskell" style="background-color:#2b303b;color:#c0c5ce;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span style="color:#65737e;">-- | Retrieve a function of the current environment.
+</span><span style="color:#65737e;">--
+</span><span style="color:#65737e;">-- * @&#39;asks&#39; f = &#39;liftM&#39; f &#39;ask&#39;@
+</span><span style="color:#8fa1b3;">asks </span><span style="color:#b48ead;">::</span><span> (</span><span style="color:#b48ead;">Monad </span><span style="color:#bf616a;">m</span><span>)
+</span><span>    </span><span style="color:#b48ead;">=&gt;</span><span> (</span><span style="color:#bf616a;">r </span><span style="color:#b48ead;">-&gt; </span><span style="color:#bf616a;">a</span><span>)         </span><span style="color:#65737e;">-- ^ The selector function to apply to the environment.
+</span><span>    </span><span style="color:#b48ead;">-&gt; ReaderT </span><span style="color:#bf616a;">r m a
+</span><span>asks f = </span><span style="color:#d08770;">ReaderT</span><span> (return . f)
 </span></code></pre>
 <p>比较直观，不需要解释。</p>
 <h2 id="can-kao">参考</h2>

@@ -9,7 +9,7 @@
         <title>更新配置自动化工具</title>
         <meta name="description" content="">
 
-        <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
+        <link rel="stylesheet" href="https://blog.zongwu233.com/main.css">
 
         
         <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
@@ -27,6 +27,16 @@
           gtag('js', new Date());
 
           gtag('config', 'UA-68155231-1');
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZF40590PZW"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+            gtag('config', 'G-ZF40590PZW');
         </script>
         
     </head>
@@ -84,224 +94,217 @@
 <p>核心逻辑就是，获取当前公司ip，存储下来，每隔N分钟，再次获取公司当前ip，与之前记录对比，如果不同，则调用阿里云api，更新安全组白名单IP，最后存储新IP。否则什么也不做。</p>
 <p>于是我创建了一个SpringBoot应用，为什么要创建一个java web应用？首先因为最熟悉java，其次是工程创建快速，使用简单，之前我实现了一个模版工程，可以快速创建SpringBoot应用，而且配置了常用的类库，非常方便。</p>
 <p>一些核心功能实现：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-java" data-lang="java"><span style="color:#c0c5ce;">@</span><span style="color:#bf616a;">Component
+<pre data-lang="java" style="background-color:#2b303b;color:#c0c5ce;" class="language-java "><code class="language-java" data-lang="java"><span>@</span><span style="color:#bf616a;">Component
 </span><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">ScheduleComp </span><span style="color:#eff1f5;">{
-
-    </span><span style="color:#ebcb8b;">Logger </span><span style="color:#eff1f5;">logger </span><span style="color:#c0c5ce;">= </span><span style="color:#ebcb8b;">LoggerFactory</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">getLogger</span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">ScheduleComp</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">class</span><span style="color:#eff1f5;">);
-
-    @</span><span style="color:#bf616a;">Autowired
-    </span><span style="color:#ebcb8b;">RefreshSecurityRulService </span><span style="color:#eff1f5;">securityRulService;
-
-    </span><span style="color:#65737e;">/**
-     * 每隔3分钟检查一下
-     */
-    @Scheduled(cron = &quot;0 */</span><span style="color:#d08770;">3</span><span style="color:#eff1f5;"> * * * ?&quot;)
-    </span><span style="color:#b48ead;">public void </span><span style="color:#8fa1b3;">cornJob</span><span style="color:#eff1f5;">() {
-        logger.</span><span style="color:#bf616a;">warn</span><span style="color:#eff1f5;">(</span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;"> &gt;&gt;cron执行....</span><span style="color:#c0c5ce;">&quot;</span><span style="color:#eff1f5;">);
-        securityRulService.</span><span style="color:#bf616a;">refreshAll</span><span style="color:#eff1f5;">(</span><span style="color:#d08770;">false</span><span style="color:#eff1f5;">);
-    }
-}
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">    </span><span style="color:#ebcb8b;">Logger </span><span style="color:#eff1f5;">logger </span><span>= </span><span style="color:#ebcb8b;">LoggerFactory</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">getLogger</span><span style="color:#eff1f5;">(</span><span style="color:#ebcb8b;">ScheduleComp</span><span style="color:#eff1f5;">.</span><span style="color:#bf616a;">class</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">    @</span><span style="color:#bf616a;">Autowired
+</span><span style="color:#eff1f5;">    </span><span style="color:#ebcb8b;">RefreshSecurityRulService </span><span style="color:#eff1f5;">securityRulService;
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">    </span><span style="color:#65737e;">/**
+</span><span style="color:#65737e;">     * 每隔3分钟检查一下
+</span><span style="color:#65737e;">     */
+</span><span style="color:#65737e;">    @Scheduled(cron = &quot;0 */</span><span style="color:#d08770;">3</span><span style="color:#eff1f5;"> * * * ?&quot;)
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">public void </span><span style="color:#8fa1b3;">cornJob</span><span style="color:#eff1f5;">() {
+</span><span style="color:#eff1f5;">        logger.</span><span style="color:#bf616a;">warn</span><span style="color:#eff1f5;">(</span><span>&quot;</span><span style="color:#a3be8c;"> &gt;&gt;cron执行....</span><span>&quot;</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        securityRulService.</span><span style="color:#bf616a;">refreshAll</span><span style="color:#eff1f5;">(</span><span style="color:#d08770;">false</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">}
 </span></code></pre>
 <p><code>securityRulService 的refreshAll()方法</code></p>
-<pre style="background-color:#2b303b;">
-<code class="language-java" data-lang="java"><span style="color:#b48ead;">public</span><span style="color:#c0c5ce;"> void </span><span style="color:#bf616a;">refreshAll</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">boolean</span><span style="color:#c0c5ce;"> force) {
-        </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> nowIp = </span><span style="color:#bf616a;">getLocalIp</span><span style="color:#c0c5ce;">();
-        </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">StringUtils</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">isEmpty</span><span style="color:#c0c5ce;">(nowIp)) {
-            logger.</span><span style="color:#bf616a;">error</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">get current ip is empty! try next time...</span><span style="color:#c0c5ce;">&quot;);
-            </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;">;
-        }
-        </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> oldIp = </span><span style="color:#bf616a;">getCurrentIp</span><span style="color:#c0c5ce;">();
-        </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">StringUtils</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">isEmpty</span><span style="color:#c0c5ce;">(oldIp)) {
-            </span><span style="color:#b48ead;">throw new </span><span style="color:#ebcb8b;">RuntimeException</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">current ip data is empty!</span><span style="color:#c0c5ce;">&quot;);
-        }
-        </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">StringUtils</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">equals</span><span style="color:#c0c5ce;">(nowIp, oldIp) &amp;&amp; !force) {
-            logger.</span><span style="color:#bf616a;">warn</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">same ip, nothing todo</span><span style="color:#c0c5ce;">&quot;);
-            </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;">;
-        }
-        ecsRefreshSecurityRuleService.</span><span style="color:#bf616a;">refreshAll</span><span style="color:#c0c5ce;">(nowIp, oldIp);
-
-        </span><span style="color:#bf616a;">updateCurrentIp</span><span style="color:#c0c5ce;">(nowIp);
-    }
+<pre data-lang="java" style="background-color:#2b303b;color:#c0c5ce;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#b48ead;">public</span><span> void </span><span style="color:#bf616a;">refreshAll</span><span>(</span><span style="color:#b48ead;">boolean</span><span> force) {
+</span><span>        </span><span style="color:#ebcb8b;">String</span><span> nowIp = </span><span style="color:#bf616a;">getLocalIp</span><span>();
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#ebcb8b;">StringUtils</span><span>.</span><span style="color:#bf616a;">isEmpty</span><span>(nowIp)) {
+</span><span>            logger.</span><span style="color:#bf616a;">error</span><span>(&quot;</span><span style="color:#a3be8c;">get current ip is empty! try next time...</span><span>&quot;);
+</span><span>            </span><span style="color:#b48ead;">return</span><span>;
+</span><span>        }
+</span><span>        </span><span style="color:#ebcb8b;">String</span><span> oldIp = </span><span style="color:#bf616a;">getCurrentIp</span><span>();
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#ebcb8b;">StringUtils</span><span>.</span><span style="color:#bf616a;">isEmpty</span><span>(oldIp)) {
+</span><span>            </span><span style="color:#b48ead;">throw new </span><span style="color:#ebcb8b;">RuntimeException</span><span>(&quot;</span><span style="color:#a3be8c;">current ip data is empty!</span><span>&quot;);
+</span><span>        }
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#ebcb8b;">StringUtils</span><span>.</span><span style="color:#bf616a;">equals</span><span>(nowIp, oldIp) &amp;&amp; !force) {
+</span><span>            logger.</span><span style="color:#bf616a;">warn</span><span>(&quot;</span><span style="color:#a3be8c;">same ip, nothing todo</span><span>&quot;);
+</span><span>            </span><span style="color:#b48ead;">return</span><span>;
+</span><span>        }
+</span><span>        ecsRefreshSecurityRuleService.</span><span style="color:#bf616a;">refreshAll</span><span>(nowIp, oldIp);
+</span><span>
+</span><span>        </span><span style="color:#bf616a;">updateCurrentIp</span><span>(nowIp);
+</span><span>    }
 </span></code></pre>
 <p><code>getLocalIp()</code>的实现：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-java" data-lang="java"><span style="color:#b48ead;">public static </span><span style="color:#ebcb8b;">String </span><span style="color:#bf616a;">getLocalIp</span><span style="color:#c0c5ce;">() {
-        </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> ip = </span><span style="color:#bf616a;">getIpCN</span><span style="color:#c0c5ce;">();
-  			...
-          
-        </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> ip;
-    }
-
-</span><span style="color:#b48ead;">public static </span><span style="color:#ebcb8b;">String </span><span style="color:#bf616a;">getIpCN</span><span style="color:#c0c5ce;">() {
-        </span><span style="color:#65737e;">//&lt;p&gt;您现在的 IP：&lt;code&gt;114.0.1.2&lt;/code&gt;
-        </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">getLocalIp</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">http://ip.cn</span><span style="color:#c0c5ce;">&quot;, &quot;</span><span style="color:#a3be8c;">&lt;p&gt;您现在的 IP：&lt;code&gt;</span><span style="color:#c0c5ce;">&quot;);
-    }
-
-
-</span><span style="color:#b48ead;">public static </span><span style="color:#ebcb8b;">String </span><span style="color:#bf616a;">getLocalIp</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> url, </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> prefix) {
-        </span><span style="color:#ebcb8b;">Request</span><span style="color:#c0c5ce;"> request = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">Request</span><span style="color:#c0c5ce;">.</span><span style="color:#ebcb8b;">Builder</span><span style="color:#c0c5ce;">()
-                .</span><span style="color:#bf616a;">get</span><span style="color:#c0c5ce;">()
-                .</span><span style="color:#bf616a;">url</span><span style="color:#c0c5ce;">(url)
-                .</span><span style="color:#bf616a;">build</span><span style="color:#c0c5ce;">();
-        </span><span style="color:#b48ead;">try </span><span style="color:#c0c5ce;">{
-            </span><span style="color:#ebcb8b;">Response</span><span style="color:#c0c5ce;"> response = okHttpClient.</span><span style="color:#bf616a;">newCall</span><span style="color:#c0c5ce;">(request).</span><span style="color:#bf616a;">execute</span><span style="color:#c0c5ce;">();
-            </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(response.</span><span style="color:#bf616a;">isSuccessful</span><span style="color:#c0c5ce;">()) {
-                </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> regexPatten = prefix + &quot;</span><span style="color:#a3be8c;">((?:(?:25[0-5]|2[0-4]</span><span style="color:#96b5b4;">\\</span><span style="color:#a3be8c;">d|((1</span><span style="color:#96b5b4;">\\</span><span style="color:#a3be8c;">d{2})|([1-9]?</span><span style="color:#96b5b4;">\\</span><span style="color:#a3be8c;">d))).){3}(?:25[0-5]|2[0-4]</span><span style="color:#96b5b4;">\\</span><span style="color:#a3be8c;">d|((1</span><span style="color:#96b5b4;">\\</span><span style="color:#a3be8c;">d{2})|([1-9]?</span><span style="color:#96b5b4;">\\</span><span style="color:#a3be8c;">d))))</span><span style="color:#c0c5ce;">&quot;;
-                </span><span style="color:#ebcb8b;">Pattern</span><span style="color:#c0c5ce;"> pattern = </span><span style="color:#ebcb8b;">Pattern</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">compile</span><span style="color:#c0c5ce;">(regexPatten);
-                </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> resp = response.</span><span style="color:#bf616a;">body</span><span style="color:#c0c5ce;">().</span><span style="color:#bf616a;">string</span><span style="color:#c0c5ce;">();
-                </span><span style="color:#ebcb8b;">Matcher</span><span style="color:#c0c5ce;"> matcher = pattern.</span><span style="color:#bf616a;">matcher</span><span style="color:#c0c5ce;">(resp);
-                </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(matcher.</span><span style="color:#bf616a;">find</span><span style="color:#c0c5ce;">()) {
-                    </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> matchStr = matcher.</span><span style="color:#bf616a;">group</span><span style="color:#c0c5ce;">(</span><span style="color:#d08770;">0</span><span style="color:#c0c5ce;">);
-                    </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> matchStr.</span><span style="color:#bf616a;">replace</span><span style="color:#c0c5ce;">(prefix, &quot;&quot;);
-                }
-            }
-            response.</span><span style="color:#bf616a;">close</span><span style="color:#c0c5ce;">();
-        } </span><span style="color:#b48ead;">catch </span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">IOException </span><span style="color:#bf616a;">e</span><span style="color:#c0c5ce;">) {
-            e.</span><span style="color:#bf616a;">printStackTrace</span><span style="color:#c0c5ce;">();
-        }
-        </span><span style="color:#b48ead;">return </span><span style="color:#c0c5ce;">&quot;&quot;;
-    }
+<pre data-lang="java" style="background-color:#2b303b;color:#c0c5ce;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#b48ead;">public static </span><span style="color:#ebcb8b;">String </span><span style="color:#bf616a;">getLocalIp</span><span>() {
+</span><span>        </span><span style="color:#ebcb8b;">String</span><span> ip = </span><span style="color:#bf616a;">getIpCN</span><span>();
+</span><span>  			...
+</span><span>          
+</span><span>        </span><span style="color:#b48ead;">return</span><span> ip;
+</span><span>    }
+</span><span>
+</span><span style="color:#b48ead;">public static </span><span style="color:#ebcb8b;">String </span><span style="color:#bf616a;">getIpCN</span><span>() {
+</span><span>        </span><span style="color:#65737e;">//&lt;p&gt;您现在的 IP：&lt;code&gt;114.0.1.2&lt;/code&gt;
+</span><span>        </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">getLocalIp</span><span>(&quot;</span><span style="color:#a3be8c;">http://ip.cn</span><span>&quot;, &quot;</span><span style="color:#a3be8c;">&lt;p&gt;您现在的 IP：&lt;code&gt;</span><span>&quot;);
+</span><span>    }
+</span><span>
+</span><span>
+</span><span style="color:#b48ead;">public static </span><span style="color:#ebcb8b;">String </span><span style="color:#bf616a;">getLocalIp</span><span>(</span><span style="color:#ebcb8b;">String</span><span> url, </span><span style="color:#ebcb8b;">String</span><span> prefix) {
+</span><span>        </span><span style="color:#ebcb8b;">Request</span><span> request = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">Request</span><span>.</span><span style="color:#ebcb8b;">Builder</span><span>()
+</span><span>                .</span><span style="color:#bf616a;">get</span><span>()
+</span><span>                .</span><span style="color:#bf616a;">url</span><span>(url)
+</span><span>                .</span><span style="color:#bf616a;">build</span><span>();
+</span><span>        </span><span style="color:#b48ead;">try </span><span>{
+</span><span>            </span><span style="color:#ebcb8b;">Response</span><span> response = okHttpClient.</span><span style="color:#bf616a;">newCall</span><span>(request).</span><span style="color:#bf616a;">execute</span><span>();
+</span><span>            </span><span style="color:#b48ead;">if </span><span>(response.</span><span style="color:#bf616a;">isSuccessful</span><span>()) {
+</span><span>                </span><span style="color:#ebcb8b;">String</span><span> regexPatten = prefix + &quot;</span><span style="color:#a3be8c;">((?:(?:25[0-5]|2[0-4]</span><span style="color:#96b5b4;">\\</span><span style="color:#a3be8c;">d|((1</span><span style="color:#96b5b4;">\\</span><span style="color:#a3be8c;">d{2})|([1-9]?</span><span style="color:#96b5b4;">\\</span><span style="color:#a3be8c;">d))).){3}(?:25[0-5]|2[0-4]</span><span style="color:#96b5b4;">\\</span><span style="color:#a3be8c;">d|((1</span><span style="color:#96b5b4;">\\</span><span style="color:#a3be8c;">d{2})|([1-9]?</span><span style="color:#96b5b4;">\\</span><span style="color:#a3be8c;">d))))</span><span>&quot;;
+</span><span>                </span><span style="color:#ebcb8b;">Pattern</span><span> pattern = </span><span style="color:#ebcb8b;">Pattern</span><span>.</span><span style="color:#bf616a;">compile</span><span>(regexPatten);
+</span><span>                </span><span style="color:#ebcb8b;">String</span><span> resp = response.</span><span style="color:#bf616a;">body</span><span>().</span><span style="color:#bf616a;">string</span><span>();
+</span><span>                </span><span style="color:#ebcb8b;">Matcher</span><span> matcher = pattern.</span><span style="color:#bf616a;">matcher</span><span>(resp);
+</span><span>                </span><span style="color:#b48ead;">if </span><span>(matcher.</span><span style="color:#bf616a;">find</span><span>()) {
+</span><span>                    </span><span style="color:#ebcb8b;">String</span><span> matchStr = matcher.</span><span style="color:#bf616a;">group</span><span>(</span><span style="color:#d08770;">0</span><span>);
+</span><span>                    </span><span style="color:#b48ead;">return</span><span> matchStr.</span><span style="color:#bf616a;">replace</span><span>(prefix, &quot;&quot;);
+</span><span>                }
+</span><span>            }
+</span><span>            response.</span><span style="color:#bf616a;">close</span><span>();
+</span><span>        } </span><span style="color:#b48ead;">catch </span><span>(</span><span style="color:#ebcb8b;">IOException </span><span style="color:#bf616a;">e</span><span>) {
+</span><span>            e.</span><span style="color:#bf616a;">printStackTrace</span><span>();
+</span><span>        }
+</span><span>        </span><span style="color:#b48ead;">return </span><span>&quot;&quot;;
+</span><span>    }
 </span></code></pre>
 <p>这里通过 ip.cn 获取本机的公网地址。</p>
 <p>还可以配置其他网站，防止ip.cn挂掉而导致服务失败。</p>
 <p><code>getCurrentIp</code> 的实现很简单，从本地文件读取上次记录的ip地址。</p>
-<pre style="background-color:#2b303b;">
-<code class="language-java" data-lang="java"><span style="color:#b48ead;">public </span><span style="color:#ebcb8b;">String </span><span style="color:#bf616a;">getCurrentIp</span><span style="color:#c0c5ce;">() {
-        </span><span style="color:#ebcb8b;">File</span><span style="color:#c0c5ce;"> file = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">File</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">ip.txt</span><span style="color:#c0c5ce;">&quot;);
-        </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(!file.</span><span style="color:#bf616a;">exists</span><span style="color:#c0c5ce;">()) {
-            </span><span style="color:#b48ead;">throw new </span><span style="color:#ebcb8b;">RuntimeException</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">cannot find ip data!</span><span style="color:#c0c5ce;">&quot;);
-        }
-        </span><span style="color:#b48ead;">try </span><span style="color:#c0c5ce;">{
-            </span><span style="color:#ebcb8b;">BufferedReader</span><span style="color:#c0c5ce;"> bufferedReader =
-                    </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">BufferedReader</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">InputStreamReader</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">FileInputStream</span><span style="color:#c0c5ce;">(file)));
-            </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> strLine = bufferedReader.</span><span style="color:#bf616a;">readLine</span><span style="color:#c0c5ce;">();
-            bufferedReader.</span><span style="color:#bf616a;">close</span><span style="color:#c0c5ce;">();
-            </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> strLine.</span><span style="color:#bf616a;">trim</span><span style="color:#c0c5ce;">();
-        } </span><span style="color:#b48ead;">catch </span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">Exception </span><span style="color:#bf616a;">e</span><span style="color:#c0c5ce;">) {
-            e.</span><span style="color:#bf616a;">printStackTrace</span><span style="color:#c0c5ce;">();
-        }
-        </span><span style="color:#b48ead;">return </span><span style="color:#c0c5ce;">&quot;&quot;;
-    }
+<pre data-lang="java" style="background-color:#2b303b;color:#c0c5ce;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#b48ead;">public </span><span style="color:#ebcb8b;">String </span><span style="color:#bf616a;">getCurrentIp</span><span>() {
+</span><span>        </span><span style="color:#ebcb8b;">File</span><span> file = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">File</span><span>(&quot;</span><span style="color:#a3be8c;">ip.txt</span><span>&quot;);
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(!file.</span><span style="color:#bf616a;">exists</span><span>()) {
+</span><span>            </span><span style="color:#b48ead;">throw new </span><span style="color:#ebcb8b;">RuntimeException</span><span>(&quot;</span><span style="color:#a3be8c;">cannot find ip data!</span><span>&quot;);
+</span><span>        }
+</span><span>        </span><span style="color:#b48ead;">try </span><span>{
+</span><span>            </span><span style="color:#ebcb8b;">BufferedReader</span><span> bufferedReader =
+</span><span>                    </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">BufferedReader</span><span>(</span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">InputStreamReader</span><span>(</span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">FileInputStream</span><span>(file)));
+</span><span>            </span><span style="color:#ebcb8b;">String</span><span> strLine = bufferedReader.</span><span style="color:#bf616a;">readLine</span><span>();
+</span><span>            bufferedReader.</span><span style="color:#bf616a;">close</span><span>();
+</span><span>            </span><span style="color:#b48ead;">return</span><span> strLine.</span><span style="color:#bf616a;">trim</span><span>();
+</span><span>        } </span><span style="color:#b48ead;">catch </span><span>(</span><span style="color:#ebcb8b;">Exception </span><span style="color:#bf616a;">e</span><span>) {
+</span><span>            e.</span><span style="color:#bf616a;">printStackTrace</span><span>();
+</span><span>        }
+</span><span>        </span><span style="color:#b48ead;">return </span><span>&quot;&quot;;
+</span><span>    }
 </span></code></pre>
 <p>采用文件存储是最简单直接的方式。更新文件内容的代码：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-java" data-lang="java"><span style="color:#b48ead;">private</span><span style="color:#c0c5ce;"> void </span><span style="color:#bf616a;">updateCurrentIp</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> ip) {
-        </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">StringUtils</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">isEmpty</span><span style="color:#c0c5ce;">(ip))
-            </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;">;
-        </span><span style="color:#ebcb8b;">File</span><span style="color:#c0c5ce;"> file = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">File</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">ip.txt</span><span style="color:#c0c5ce;">&quot;);
-        file.</span><span style="color:#bf616a;">delete</span><span style="color:#c0c5ce;">();
-        </span><span style="color:#b48ead;">try </span><span style="color:#c0c5ce;">{
-            file.</span><span style="color:#bf616a;">createNewFile</span><span style="color:#c0c5ce;">();
-            </span><span style="color:#ebcb8b;">BufferedWriter</span><span style="color:#c0c5ce;"> bufferedWriter =
-                    </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">BufferedWriter</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">OutputStreamWriter</span><span style="color:#c0c5ce;">(</span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">FileOutputStream</span><span style="color:#c0c5ce;">(file)));
-            bufferedWriter.</span><span style="color:#bf616a;">write</span><span style="color:#c0c5ce;">(ip.</span><span style="color:#bf616a;">trim</span><span style="color:#c0c5ce;">());
-            bufferedWriter.</span><span style="color:#bf616a;">close</span><span style="color:#c0c5ce;">();
-        } </span><span style="color:#b48ead;">catch </span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">Exception </span><span style="color:#bf616a;">e</span><span style="color:#c0c5ce;">) {
-            e.</span><span style="color:#bf616a;">printStackTrace</span><span style="color:#c0c5ce;">();
-        }
-    }
+<pre data-lang="java" style="background-color:#2b303b;color:#c0c5ce;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#b48ead;">private</span><span> void </span><span style="color:#bf616a;">updateCurrentIp</span><span>(</span><span style="color:#ebcb8b;">String</span><span> ip) {
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(</span><span style="color:#ebcb8b;">StringUtils</span><span>.</span><span style="color:#bf616a;">isEmpty</span><span>(ip))
+</span><span>            </span><span style="color:#b48ead;">return</span><span>;
+</span><span>        </span><span style="color:#ebcb8b;">File</span><span> file = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">File</span><span>(&quot;</span><span style="color:#a3be8c;">ip.txt</span><span>&quot;);
+</span><span>        file.</span><span style="color:#bf616a;">delete</span><span>();
+</span><span>        </span><span style="color:#b48ead;">try </span><span>{
+</span><span>            file.</span><span style="color:#bf616a;">createNewFile</span><span>();
+</span><span>            </span><span style="color:#ebcb8b;">BufferedWriter</span><span> bufferedWriter =
+</span><span>                    </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">BufferedWriter</span><span>(</span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">OutputStreamWriter</span><span>(</span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">FileOutputStream</span><span>(file)));
+</span><span>            bufferedWriter.</span><span style="color:#bf616a;">write</span><span>(ip.</span><span style="color:#bf616a;">trim</span><span>());
+</span><span>            bufferedWriter.</span><span style="color:#bf616a;">close</span><span>();
+</span><span>        } </span><span style="color:#b48ead;">catch </span><span>(</span><span style="color:#ebcb8b;">Exception </span><span style="color:#bf616a;">e</span><span>) {
+</span><span>            e.</span><span style="color:#bf616a;">printStackTrace</span><span>();
+</span><span>        }
+</span><span>    }
 </span></code></pre>
 <p>刷新阿里云安全组配置的逻辑：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-java" data-lang="java"><span style="color:#b48ead;">public</span><span style="color:#c0c5ce;"> void </span><span style="color:#bf616a;">refreshAll</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> nowIp, </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> oldIp) {
-
-        </span><span style="color:#ebcb8b;">List</span><span style="color:#c0c5ce;">&lt;</span><span style="color:#ebcb8b;">SecurityRuleDO</span><span style="color:#c0c5ce;">&gt; newSecurityRuleDOList = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">ArrayList</span><span style="color:#c0c5ce;">&lt;&gt;(</span><span style="color:#bf616a;">testServer</span><span style="color:#c0c5ce;">(nowIp));
-        </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">SecurityRuleDO</span><span style="color:#c0c5ce;"> securityRuleDO : newSecurityRuleDOList) {
-            </span><span style="color:#bf616a;">refresh</span><span style="color:#c0c5ce;">(securityRuleDO);
-
-        }
-
-        </span><span style="color:#b48ead;">if </span><span style="color:#c0c5ce;">(!</span><span style="color:#ebcb8b;">StringUtils</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">equals</span><span style="color:#c0c5ce;">(nowIp, oldIp)) {
-            </span><span style="color:#ebcb8b;">List</span><span style="color:#c0c5ce;">&lt;</span><span style="color:#ebcb8b;">SecurityRuleDO</span><span style="color:#c0c5ce;">&gt; oldSecurityRuleDOList = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">ArrayList</span><span style="color:#c0c5ce;">&lt;&gt;();
-            oldSecurityRuleDOList.</span><span style="color:#bf616a;">addAll</span><span style="color:#c0c5ce;">(</span><span style="color:#bf616a;">testServer</span><span style="color:#c0c5ce;">(oldIp));
-            </span><span style="color:#b48ead;">for </span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">SecurityRuleDO</span><span style="color:#c0c5ce;"> securityRuleDO : oldSecurityRuleDOList) {
-                </span><span style="color:#bf616a;">deleteOld</span><span style="color:#c0c5ce;">(securityRuleDO);
-            }
-
-        }
-    }
-
-</span><span style="color:#b48ead;">private </span><span style="color:#ebcb8b;">List</span><span style="color:#c0c5ce;">&lt;</span><span style="color:#ebcb8b;">SecurityRuleDO</span><span style="color:#c0c5ce;">&gt; </span><span style="color:#bf616a;">testServer</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> ip) {
-        </span><span style="color:#ebcb8b;">List</span><span style="color:#c0c5ce;">&lt;</span><span style="color:#ebcb8b;">SecurityRuleDO</span><span style="color:#c0c5ce;">&gt; securityRuleDOList = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">ArrayList</span><span style="color:#c0c5ce;">&lt;&gt;();
-        </span><span style="color:#ebcb8b;">SecurityRuleDO</span><span style="color:#c0c5ce;"> securityRuleDO = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">SecurityRuleDO</span><span style="color:#c0c5ce;">();
-        securityRuleDO.sourceIp = ip;
-        securityRuleDO.groupId = &quot;</span><span style="color:#a3be8c;">YourECSGroupId</span><span style="color:#c0c5ce;">&quot;;
-        securityRuleDO.ipProtocol = &quot;</span><span style="color:#a3be8c;">tcp</span><span style="color:#c0c5ce;">&quot;;
-        securityRuleDO.portRange = &quot;</span><span style="color:#a3be8c;">yourPort/yourPort</span><span style="color:#c0c5ce;">&quot;;
-        securityRuleDOList.</span><span style="color:#bf616a;">add</span><span style="color:#c0c5ce;">(securityRuleDO);
-				...
-        </span><span style="color:#b48ead;">return</span><span style="color:#c0c5ce;"> securityRuleDOList;
-    }
-
-
-</span><span style="color:#b48ead;">public boolean </span><span style="color:#bf616a;">refresh</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">SecurityRuleDO</span><span style="color:#c0c5ce;"> securityRuleDO) {
-        </span><span style="color:#ebcb8b;">AuthorizeSecurityGroupRequest</span><span style="color:#c0c5ce;"> request =
-                </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">AuthorizeSecurityGroupRequest</span><span style="color:#c0c5ce;">();
-        request.</span><span style="color:#bf616a;">setSecurityGroupId</span><span style="color:#c0c5ce;">(securityRuleDO.groupId);
-        request.</span><span style="color:#bf616a;">setIpProtocol</span><span style="color:#c0c5ce;">(securityRuleDO.ipProtocol);
-        request.</span><span style="color:#bf616a;">setPortRange</span><span style="color:#c0c5ce;">(securityRuleDO.portRange);
-        request.</span><span style="color:#bf616a;">setNicType</span><span style="color:#c0c5ce;">(securityRuleDO.nicType);
-        request.</span><span style="color:#bf616a;">setPolicy</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">accept</span><span style="color:#c0c5ce;">&quot;);
-        request.</span><span style="color:#bf616a;">setSourceCidrIp</span><span style="color:#c0c5ce;">(securityRuleDO.sourceIp);
-
-        </span><span style="color:#b48ead;">try </span><span style="color:#c0c5ce;">{
-            </span><span style="color:#ebcb8b;">AuthorizeSecurityGroupResponse</span><span style="color:#c0c5ce;"> response = client.</span><span style="color:#bf616a;">getAcsResponse</span><span style="color:#c0c5ce;">(request);
-            </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> requestId = response.</span><span style="color:#bf616a;">getRequestId</span><span style="color:#c0c5ce;">();
-            </span><span style="color:#ebcb8b;">System</span><span style="color:#c0c5ce;">.out.</span><span style="color:#bf616a;">println</span><span style="color:#c0c5ce;">(requestId);
-            </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">true</span><span style="color:#c0c5ce;">;
-        } </span><span style="color:#b48ead;">catch </span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">ClientException </span><span style="color:#bf616a;">e</span><span style="color:#c0c5ce;">) {
-            e.</span><span style="color:#bf616a;">printStackTrace</span><span style="color:#c0c5ce;">();
-            </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">false</span><span style="color:#c0c5ce;">;
-        }
-    }
-
-</span><span style="color:#b48ead;">public boolean </span><span style="color:#bf616a;">deleteOld</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">SecurityRuleDO</span><span style="color:#c0c5ce;"> securityRuleDO) {
-        </span><span style="color:#ebcb8b;">RevokeSecurityGroupRequest</span><span style="color:#c0c5ce;"> request = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">RevokeSecurityGroupRequest</span><span style="color:#c0c5ce;">();
-        request.</span><span style="color:#bf616a;">setSecurityGroupId</span><span style="color:#c0c5ce;">(securityRuleDO.groupId);
-        request.</span><span style="color:#bf616a;">setIpProtocol</span><span style="color:#c0c5ce;">(securityRuleDO.ipProtocol);
-        request.</span><span style="color:#bf616a;">setPortRange</span><span style="color:#c0c5ce;">(securityRuleDO.portRange);
-        request.</span><span style="color:#bf616a;">setNicType</span><span style="color:#c0c5ce;">(securityRuleDO.nicType);
-        request.</span><span style="color:#bf616a;">setPolicy</span><span style="color:#c0c5ce;">(&quot;</span><span style="color:#a3be8c;">accept</span><span style="color:#c0c5ce;">&quot;);
-        request.</span><span style="color:#bf616a;">setSourceCidrIp</span><span style="color:#c0c5ce;">(securityRuleDO.sourceIp);
-
-        </span><span style="color:#b48ead;">try </span><span style="color:#c0c5ce;">{
-            </span><span style="color:#ebcb8b;">RevokeSecurityGroupResponse</span><span style="color:#c0c5ce;"> response = client.</span><span style="color:#bf616a;">getAcsResponse</span><span style="color:#c0c5ce;">(request);
-            </span><span style="color:#ebcb8b;">String</span><span style="color:#c0c5ce;"> requestId = response.</span><span style="color:#bf616a;">getRequestId</span><span style="color:#c0c5ce;">();
-            </span><span style="color:#ebcb8b;">System</span><span style="color:#c0c5ce;">.out.</span><span style="color:#bf616a;">println</span><span style="color:#c0c5ce;">(requestId);
-            </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">true</span><span style="color:#c0c5ce;">;
-        } </span><span style="color:#b48ead;">catch </span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">Exception </span><span style="color:#bf616a;">e</span><span style="color:#c0c5ce;">) {
-            e.</span><span style="color:#bf616a;">printStackTrace</span><span style="color:#c0c5ce;">();
-            </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">false</span><span style="color:#c0c5ce;">;
-        }
-    }
-
+<pre data-lang="java" style="background-color:#2b303b;color:#c0c5ce;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#b48ead;">public</span><span> void </span><span style="color:#bf616a;">refreshAll</span><span>(</span><span style="color:#ebcb8b;">String</span><span> nowIp, </span><span style="color:#ebcb8b;">String</span><span> oldIp) {
+</span><span>
+</span><span>        </span><span style="color:#ebcb8b;">List</span><span>&lt;</span><span style="color:#ebcb8b;">SecurityRuleDO</span><span>&gt; newSecurityRuleDOList = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">ArrayList</span><span>&lt;&gt;(</span><span style="color:#bf616a;">testServer</span><span>(nowIp));
+</span><span>        </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#ebcb8b;">SecurityRuleDO</span><span> securityRuleDO : newSecurityRuleDOList) {
+</span><span>            </span><span style="color:#bf616a;">refresh</span><span>(securityRuleDO);
+</span><span>
+</span><span>        }
+</span><span>
+</span><span>        </span><span style="color:#b48ead;">if </span><span>(!</span><span style="color:#ebcb8b;">StringUtils</span><span>.</span><span style="color:#bf616a;">equals</span><span>(nowIp, oldIp)) {
+</span><span>            </span><span style="color:#ebcb8b;">List</span><span>&lt;</span><span style="color:#ebcb8b;">SecurityRuleDO</span><span>&gt; oldSecurityRuleDOList = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">ArrayList</span><span>&lt;&gt;();
+</span><span>            oldSecurityRuleDOList.</span><span style="color:#bf616a;">addAll</span><span>(</span><span style="color:#bf616a;">testServer</span><span>(oldIp));
+</span><span>            </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#ebcb8b;">SecurityRuleDO</span><span> securityRuleDO : oldSecurityRuleDOList) {
+</span><span>                </span><span style="color:#bf616a;">deleteOld</span><span>(securityRuleDO);
+</span><span>            }
+</span><span>
+</span><span>        }
+</span><span>    }
+</span><span>
+</span><span style="color:#b48ead;">private </span><span style="color:#ebcb8b;">List</span><span>&lt;</span><span style="color:#ebcb8b;">SecurityRuleDO</span><span>&gt; </span><span style="color:#bf616a;">testServer</span><span>(</span><span style="color:#ebcb8b;">String</span><span> ip) {
+</span><span>        </span><span style="color:#ebcb8b;">List</span><span>&lt;</span><span style="color:#ebcb8b;">SecurityRuleDO</span><span>&gt; securityRuleDOList = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">ArrayList</span><span>&lt;&gt;();
+</span><span>        </span><span style="color:#ebcb8b;">SecurityRuleDO</span><span> securityRuleDO = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">SecurityRuleDO</span><span>();
+</span><span>        securityRuleDO.sourceIp = ip;
+</span><span>        securityRuleDO.groupId = &quot;</span><span style="color:#a3be8c;">YourECSGroupId</span><span>&quot;;
+</span><span>        securityRuleDO.ipProtocol = &quot;</span><span style="color:#a3be8c;">tcp</span><span>&quot;;
+</span><span>        securityRuleDO.portRange = &quot;</span><span style="color:#a3be8c;">yourPort/yourPort</span><span>&quot;;
+</span><span>        securityRuleDOList.</span><span style="color:#bf616a;">add</span><span>(securityRuleDO);
+</span><span>				...
+</span><span>        </span><span style="color:#b48ead;">return</span><span> securityRuleDOList;
+</span><span>    }
+</span><span>
+</span><span>
+</span><span style="color:#b48ead;">public boolean </span><span style="color:#bf616a;">refresh</span><span>(</span><span style="color:#ebcb8b;">SecurityRuleDO</span><span> securityRuleDO) {
+</span><span>        </span><span style="color:#ebcb8b;">AuthorizeSecurityGroupRequest</span><span> request =
+</span><span>                </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">AuthorizeSecurityGroupRequest</span><span>();
+</span><span>        request.</span><span style="color:#bf616a;">setSecurityGroupId</span><span>(securityRuleDO.groupId);
+</span><span>        request.</span><span style="color:#bf616a;">setIpProtocol</span><span>(securityRuleDO.ipProtocol);
+</span><span>        request.</span><span style="color:#bf616a;">setPortRange</span><span>(securityRuleDO.portRange);
+</span><span>        request.</span><span style="color:#bf616a;">setNicType</span><span>(securityRuleDO.nicType);
+</span><span>        request.</span><span style="color:#bf616a;">setPolicy</span><span>(&quot;</span><span style="color:#a3be8c;">accept</span><span>&quot;);
+</span><span>        request.</span><span style="color:#bf616a;">setSourceCidrIp</span><span>(securityRuleDO.sourceIp);
+</span><span>
+</span><span>        </span><span style="color:#b48ead;">try </span><span>{
+</span><span>            </span><span style="color:#ebcb8b;">AuthorizeSecurityGroupResponse</span><span> response = client.</span><span style="color:#bf616a;">getAcsResponse</span><span>(request);
+</span><span>            </span><span style="color:#ebcb8b;">String</span><span> requestId = response.</span><span style="color:#bf616a;">getRequestId</span><span>();
+</span><span>            </span><span style="color:#ebcb8b;">System</span><span>.out.</span><span style="color:#bf616a;">println</span><span>(requestId);
+</span><span>            </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">true</span><span>;
+</span><span>        } </span><span style="color:#b48ead;">catch </span><span>(</span><span style="color:#ebcb8b;">ClientException </span><span style="color:#bf616a;">e</span><span>) {
+</span><span>            e.</span><span style="color:#bf616a;">printStackTrace</span><span>();
+</span><span>            </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">false</span><span>;
+</span><span>        }
+</span><span>    }
+</span><span>
+</span><span style="color:#b48ead;">public boolean </span><span style="color:#bf616a;">deleteOld</span><span>(</span><span style="color:#ebcb8b;">SecurityRuleDO</span><span> securityRuleDO) {
+</span><span>        </span><span style="color:#ebcb8b;">RevokeSecurityGroupRequest</span><span> request = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">RevokeSecurityGroupRequest</span><span>();
+</span><span>        request.</span><span style="color:#bf616a;">setSecurityGroupId</span><span>(securityRuleDO.groupId);
+</span><span>        request.</span><span style="color:#bf616a;">setIpProtocol</span><span>(securityRuleDO.ipProtocol);
+</span><span>        request.</span><span style="color:#bf616a;">setPortRange</span><span>(securityRuleDO.portRange);
+</span><span>        request.</span><span style="color:#bf616a;">setNicType</span><span>(securityRuleDO.nicType);
+</span><span>        request.</span><span style="color:#bf616a;">setPolicy</span><span>(&quot;</span><span style="color:#a3be8c;">accept</span><span>&quot;);
+</span><span>        request.</span><span style="color:#bf616a;">setSourceCidrIp</span><span>(securityRuleDO.sourceIp);
+</span><span>
+</span><span>        </span><span style="color:#b48ead;">try </span><span>{
+</span><span>            </span><span style="color:#ebcb8b;">RevokeSecurityGroupResponse</span><span> response = client.</span><span style="color:#bf616a;">getAcsResponse</span><span>(request);
+</span><span>            </span><span style="color:#ebcb8b;">String</span><span> requestId = response.</span><span style="color:#bf616a;">getRequestId</span><span>();
+</span><span>            </span><span style="color:#ebcb8b;">System</span><span>.out.</span><span style="color:#bf616a;">println</span><span>(requestId);
+</span><span>            </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">true</span><span>;
+</span><span>        } </span><span style="color:#b48ead;">catch </span><span>(</span><span style="color:#ebcb8b;">Exception </span><span style="color:#bf616a;">e</span><span>) {
+</span><span>            e.</span><span style="color:#bf616a;">printStackTrace</span><span>();
+</span><span>            </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">false</span><span>;
+</span><span>        }
+</span><span>    }
+</span><span>
 </span></code></pre>
 <p>其中client的初始化：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-java" data-lang="java"><span style="color:#ebcb8b;">DefaultProfile</span><span style="color:#c0c5ce;"> profile = </span><span style="color:#ebcb8b;">DefaultProfile</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">getProfile</span><span style="color:#c0c5ce;">(reginId, appkey, secret);
-                    client = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">DefaultAcsClient</span><span style="color:#c0c5ce;">(profile);
-
-</span></code></pre><h2 id="xiao-wen-ti">小问题</h2>
+<pre data-lang="java" style="background-color:#2b303b;color:#c0c5ce;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#ebcb8b;">DefaultProfile</span><span> profile = </span><span style="color:#ebcb8b;">DefaultProfile</span><span>.</span><span style="color:#bf616a;">getProfile</span><span>(reginId, appkey, secret);
+</span><span>                    client = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">DefaultAcsClient</span><span>(profile);
+</span><span>
+</span></code></pre>
+<h2 id="xiao-wen-ti">小问题</h2>
 <p>定时3分钟刷新有个小问题，就是有极小的概率，发生IP变更但是还没有及时刷新安全组的配置。怎么办，再加一个主动刷新的接口呗：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-java" data-lang="java"><span style="color:#c0c5ce;">@</span><span style="color:#bf616a;">RestController
+<pre data-lang="java" style="background-color:#2b303b;color:#c0c5ce;" class="language-java "><code class="language-java" data-lang="java"><span>@</span><span style="color:#bf616a;">RestController
 </span><span style="color:#b48ead;">public class </span><span style="color:#ebcb8b;">RefreshSecurityRuleController </span><span style="color:#eff1f5;">{
-    @</span><span style="color:#bf616a;">Autowired
-    </span><span style="color:#ebcb8b;">RefreshSecurityRulService </span><span style="color:#eff1f5;">securityRulService;
-
-    @</span><span style="color:#bf616a;">GetMapping</span><span style="color:#eff1f5;">(</span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">/ip</span><span style="color:#c0c5ce;">&quot;</span><span style="color:#eff1f5;">)
-    </span><span style="color:#b48ead;">public </span><span style="color:#ebcb8b;">String </span><span style="color:#8fa1b3;">getMyIp</span><span style="color:#eff1f5;">() {
-        </span><span style="color:#b48ead;">return</span><span style="color:#eff1f5;"> securityRulService.</span><span style="color:#bf616a;">getLocalIp</span><span style="color:#eff1f5;">();
-    }
-
-    @</span><span style="color:#bf616a;">GetMapping</span><span style="color:#eff1f5;">(</span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">/fresh</span><span style="color:#c0c5ce;">&quot;</span><span style="color:#eff1f5;">)
-    </span><span style="color:#b48ead;">public </span><span style="color:#ebcb8b;">String </span><span style="color:#8fa1b3;">forceFresh</span><span style="color:#eff1f5;">() {
-        securityRulService.</span><span style="color:#bf616a;">refreshAll</span><span style="color:#eff1f5;">(</span><span style="color:#d08770;">true</span><span style="color:#eff1f5;">);
-        </span><span style="color:#b48ead;">return </span><span style="color:#c0c5ce;">&quot;</span><span style="color:#a3be8c;">done!</span><span style="color:#c0c5ce;">&quot;</span><span style="color:#eff1f5;">;
-    }
-
-}
+</span><span style="color:#eff1f5;">    @</span><span style="color:#bf616a;">Autowired
+</span><span style="color:#eff1f5;">    </span><span style="color:#ebcb8b;">RefreshSecurityRulService </span><span style="color:#eff1f5;">securityRulService;
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">    @</span><span style="color:#bf616a;">GetMapping</span><span style="color:#eff1f5;">(</span><span>&quot;</span><span style="color:#a3be8c;">/ip</span><span>&quot;</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">public </span><span style="color:#ebcb8b;">String </span><span style="color:#8fa1b3;">getMyIp</span><span style="color:#eff1f5;">() {
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return</span><span style="color:#eff1f5;"> securityRulService.</span><span style="color:#bf616a;">getLocalIp</span><span style="color:#eff1f5;">();
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">    @</span><span style="color:#bf616a;">GetMapping</span><span style="color:#eff1f5;">(</span><span>&quot;</span><span style="color:#a3be8c;">/fresh</span><span>&quot;</span><span style="color:#eff1f5;">)
+</span><span style="color:#eff1f5;">    </span><span style="color:#b48ead;">public </span><span style="color:#ebcb8b;">String </span><span style="color:#8fa1b3;">forceFresh</span><span style="color:#eff1f5;">() {
+</span><span style="color:#eff1f5;">        securityRulService.</span><span style="color:#bf616a;">refreshAll</span><span style="color:#eff1f5;">(</span><span style="color:#d08770;">true</span><span style="color:#eff1f5;">);
+</span><span style="color:#eff1f5;">        </span><span style="color:#b48ead;">return </span><span>&quot;</span><span style="color:#a3be8c;">done!</span><span>&quot;</span><span style="color:#eff1f5;">;
+</span><span style="color:#eff1f5;">    }
+</span><span style="color:#eff1f5;">
+</span><span style="color:#eff1f5;">}
 </span></code></pre>
 <p>其中的<code>/fresh</code>强制刷新IP。还附赠了一个接口，获取公司当前的IP。</p>
 <p>这个小应用部署在公司局域网内，一直工作的很好，再也不用烦心IP变动这些琐事。</p>

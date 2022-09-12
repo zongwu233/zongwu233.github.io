@@ -9,7 +9,7 @@
         <title>Git协议代理配置</title>
         <meta name="description" content="">
 
-        <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
+        <link rel="stylesheet" href="https://blog.zongwu233.com/main.css">
 
         
         <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
@@ -27,6 +27,16 @@
           gtag('js', new Date());
 
           gtag('config', 'UA-68155231-1');
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZF40590PZW"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+            gtag('config', 'G-ZF40590PZW');
         </script>
         
     </head>
@@ -73,37 +83,32 @@
 <p>以下是在<code>MacOS</code>环境的配置。</p>
 <h2 id="zhun-bei">准备</h2>
 <p>先安装<code>nmap</code>库，<code>macOS</code>下也可以安装<code>netcat</code>，但是该库版本太低而且相对于<code>Linux</code>下的<code>netcat</code>，功能太弱。</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">brew install nmap
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>brew install nmap
 </span></code></pre>
 <p>等下会用到<code>nmap</code>的<code>ncat</code>命令。</p>
 <p>一个可用的<code>socks5</code>服务。我这里是 socks5://127.0.0.1:1080</p>
 <h2 id="sshxie-yi-dai-li">SSH协议代理</h2>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">vim  ~/.ssh/config
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>vim  ~/.ssh/config
 </span></code></pre>
 <p>写入以下内容：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">Host github.com
-    User    git
-    Hostname     github.com
-    Port    22
-    ProxyCommand ncat --proxy-type socks5  --proxy 127.0.0.1:1080 %h %p
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>Host github.com
+</span><span>    User    git
+</span><span>    Hostname     github.com
+</span><span>    Port    22
+</span><span>    ProxyCommand ncat --proxy-type socks5  --proxy 127.0.0.1:1080 %h %p
 </span></code></pre>
 <p><code>User</code>设置是<code>git</code>，不是<code>github</code>上的账号名。</p>
 <p>ProxyCommand ncat --proxy-type socks5  --proxy 127.0.0.1:1080 %h %p：</p>
 <p>是调用<code>ncat</code> 将传入的%h %p （host 和port） 代理到 --proxy 127.0.0.1:1080  ，代理协议由--proxy-type socks5 指定。</p>
 <p>127.0.0.1:1080 可根据实际情况更换成自己的ss服务设置。</p>
 <h2 id="httpsxie-yi-dai-li">HTTPS协议代理</h2>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">vim ~/.gitconfig
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>vim ~/.gitconfig
 </span></code></pre>
 <p>编辑<code>git</code>的全局配置文件，写入以下内容：</p>
-<pre style="background-color:#2b303b;">
-<code class="language-shell" data-lang="shell"><span style="color:#c0c5ce;">[http]
-proxy = socks5://127.0.0.1:1080
-[https]
-proxy = socks5://127.0.0.1:1080
+<pre data-lang="shell" style="background-color:#2b303b;color:#c0c5ce;" class="language-shell "><code class="language-shell" data-lang="shell"><span>[http]
+</span><span>proxy = socks5://127.0.0.1:1080
+</span><span>[https]
+</span><span>proxy = socks5://127.0.0.1:1080
 </span></code></pre>
 <p>OK了，从<code>GitHub</code>下载再也不是8Kb的速度了。</p>
 

@@ -9,7 +9,7 @@
         <title>不规范的HTTP 204 响应格式</title>
         <meta name="description" content="">
 
-        <link rel="stylesheet" href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;main.css">
+        <link rel="stylesheet" href="https://blog.zongwu233.com/main.css">
 
         
         <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
@@ -27,6 +27,16 @@
           gtag('js', new Date());
 
           gtag('config', 'UA-68155231-1');
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZF40590PZW"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+            gtag('config', 'G-ZF40590PZW');
         </script>
         
     </head>
@@ -69,13 +79,12 @@
     <div class="content">
         <p>总悟君这次要说的是最近遇到的关于Http返回异常格式的问题。</p>
 <p>起因是这个:</p>
-<pre style="background-color:#2b303b;">
-<code class="language-java" data-lang="java"><span style="color:#ebcb8b;">SyncNetworkPerformer</span><span style="color:#c0c5ce;">.execute: 
-</span><span style="color:#ebcb8b;">Unhandled</span><span style="color:#c0c5ce;"> exception com.zongwu.common.http.volley.</span><span style="color:#ebcb8b;">NoConnectionError</span><span style="color:#c0c5ce;">: java.net.</span><span style="color:#ebcb8b;">ProtocolException</span><span style="color:#c0c5ce;">: 
-</span><span style="color:#ebcb8b;">Unexpected</span><span style="color:#c0c5ce;"> status line: nullHTTP/</span><span style="color:#d08770;">1.1 200 OK   
-</span><span style="color:#c0c5ce;">com.zongwu.common.http.volley.</span><span style="color:#ebcb8b;">NoConnectionError</span><span style="color:#c0c5ce;">: java.net.</span><span style="color:#ebcb8b;">ProtocolException</span><span style="color:#c0c5ce;">: </span><span style="color:#ebcb8b;">Unexpected</span><span style="color:#c0c5ce;"> status line: nullHTTP/</span><span style="color:#d08770;">1.1 200 OK           
-</span><span style="color:#c0c5ce;">at com.zongwu.common.http.volley.toolbox.</span><span style="color:#ebcb8b;">BasicNetwork</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">performRequest</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">BasicNetwork</span><span style="color:#c0c5ce;">.java:</span><span style="color:#d08770;">163</span><span style="color:#c0c5ce;">)  
-at com.zongwu.common.http.volley.</span><span style="color:#ebcb8b;">SyncNetworkPerformer</span><span style="color:#c0c5ce;">.</span><span style="color:#bf616a;">execute</span><span style="color:#c0c5ce;">(</span><span style="color:#ebcb8b;">SyncNetworkPerformer</span><span style="color:#c0c5ce;">.java:</span><span style="color:#d08770;">64</span><span style="color:#c0c5ce;">)
+<pre data-lang="java" style="background-color:#2b303b;color:#c0c5ce;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#ebcb8b;">SyncNetworkPerformer</span><span>.execute: 
+</span><span style="color:#ebcb8b;">Unhandled</span><span> exception com.zongwu.common.http.volley.</span><span style="color:#ebcb8b;">NoConnectionError</span><span>: java.net.</span><span style="color:#ebcb8b;">ProtocolException</span><span>: 
+</span><span style="color:#ebcb8b;">Unexpected</span><span> status line: nullHTTP/</span><span style="color:#d08770;">1.1 200 OK   
+</span><span>com.zongwu.common.http.volley.</span><span style="color:#ebcb8b;">NoConnectionError</span><span>: java.net.</span><span style="color:#ebcb8b;">ProtocolException</span><span>: </span><span style="color:#ebcb8b;">Unexpected</span><span> status line: nullHTTP/</span><span style="color:#d08770;">1.1 200 OK           
+</span><span>at com.zongwu.common.http.volley.toolbox.</span><span style="color:#ebcb8b;">BasicNetwork</span><span>.</span><span style="color:#bf616a;">performRequest</span><span>(</span><span style="color:#ebcb8b;">BasicNetwork</span><span>.java:</span><span style="color:#d08770;">163</span><span>)  
+</span><span>at com.zongwu.common.http.volley.</span><span style="color:#ebcb8b;">SyncNetworkPerformer</span><span>.</span><span style="color:#bf616a;">execute</span><span>(</span><span style="color:#ebcb8b;">SyncNetworkPerformer</span><span>.java:</span><span style="color:#d08770;">64</span><span>)
 </span></code></pre>
 <p>什么情况，服务端居然返回给我错误的http头部？？但是现在还不能找服务端的童鞋~~撕x~~理论，因为还有几个疑点我还回答不上来。</p>
 <ol>
@@ -84,10 +93,9 @@ at com.zongwu.common.http.volley.</span><span style="color:#ebcb8b;">SyncNetwork
 总悟君很快就必现了bug：反复调用该方法，HTTP返回204之后的下一次一定出现该问题。那新问题又出现了，<strong>HTTP是无状态的请求</strong>，为何上一次的请求可以影响下一个请求呢？答案是TCP通道的复用。<a href="http://tools.ietf.org/html/rfc2616#section-8.1.2">html rfc2616#8.1.2</a> 介绍了HTTP1.1默认开启持久化连接。
 仔细查看线上版本的代码发现每一次Http请求完成后都调用了shutdown()方法。</li>
 </ol>
-<pre style="background-color:#2b303b;">
-<code class="language-java" data-lang="java"><span style="color:#ebcb8b;">DefaultHttpClient</span><span style="color:#c0c5ce;"> client = </span><span style="color:#bf616a;">getHttpClient</span><span style="color:#c0c5ce;">(httpPost.</span><span style="color:#bf616a;">getURI</span><span style="color:#c0c5ce;">().</span><span style="color:#bf616a;">toString</span><span style="color:#c0c5ce;">());
-  ...
-  client.</span><span style="color:#bf616a;">getConnectionManager</span><span style="color:#c0c5ce;">().</span><span style="color:#bf616a;">shutdown</span><span style="color:#c0c5ce;">();
+<pre data-lang="java" style="background-color:#2b303b;color:#c0c5ce;" class="language-java "><code class="language-java" data-lang="java"><span style="color:#ebcb8b;">DefaultHttpClient</span><span> client = </span><span style="color:#bf616a;">getHttpClient</span><span>(httpPost.</span><span style="color:#bf616a;">getURI</span><span>().</span><span style="color:#bf616a;">toString</span><span>());
+</span><span>  ...
+</span><span>  client.</span><span style="color:#bf616a;">getConnectionManager</span><span>().</span><span style="color:#bf616a;">shutdown</span><span>();
 </span></code></pre>
 <p>这个当然是关闭了TCP通道的链接。
 两个疑点都搞定，但是这个null到底是什么时候塞进来的呢？总悟君祭出大杀器<strong>WireShark</strong> 。(幽默风趣的<a href="http://weibo.com/linpeiman">林沛满</a>为WireShark写了一本很有意思的入门<a href="https://book.douban.com/subject/26268767">书籍</a>推荐读一读)
