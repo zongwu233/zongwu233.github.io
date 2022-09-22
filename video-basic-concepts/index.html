@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="referrer" content="no-referrer-when-downgrade">
+
+        <title>视频基础概念 </title>
+        <meta name="description" content="">
+
+        <link rel="stylesheet" href="https://blog.zongwu233.com/main.css">
+
+        
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
+        
+
+        
+        
+        
+        
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-68155231-1"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'UA-68155231-1');
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZF40590PZW"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+            gtag('config', 'G-ZF40590PZW');
+        </script>
+        
+    </head>
+    <body>
+
+      <a class="skip-main" href="#main">Skip to content</a>
+        <div class="container">
+            <header> 
+                <h1 class="site-header">
+                    <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
+                </h1>
+                <nav>
+                    
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
+                    
+                    
+                    <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
+                    
+                    
+                </nav>
+            </header>
+            <main id="main" tabindex="-1">
+                
+
+<article class="post">
+    <header>
+        <h1>视频基础概念 </h1>
+    </header>
+    <div class="content">
+        <p>最近经常会遇到视频相关的概念，比如 AVI、MP4、RMVB、MKV、FLV以及m3u8、H.264、H.265等等，这些格式都是做什么的？它们之间到底都是什么关系，今天梳理一下。</p>
+<span id="continue-reading"></span><h2 id="shi-pin-feng-zhuang-ge-shi">视频封装格式</h2>
+<p>视频封装格式对应的英文是<code>video container format</code>，就是容器格式。因为视频文件通常会包括图像、音频，以及一些配置信息，这些内容需要按照一定的规则组织，方便后续的播放。封装格式就是定义如何组织这些内容。</p>
+<p>常见的视频封装格式：</p>
+<table><thead><tr><th>封装格式</th><th>英文全称</th><th>文件格式</th><th>说明</th></tr></thead><tbody>
+<tr><td>AVI</td><td>Audio Video Interleaved</td><td>.AVI</td><td>音频视频交错格式，微软公司开发</td></tr>
+<tr><td>QTFF</td><td>QuickTime File Format</td><td>.MOV .QT</td><td>Apple公司开发</td></tr>
+<tr><td>MPEG-1</td><td>MPEG-1</td><td>.MPEG  .MPG</td><td>已成为世界上兼容最广泛的有损音频/视频格式，并被大量产品和技术使用</td></tr>
+<tr><td>MPEG program stream (PS)</td><td>MPEG program stream</td><td>.M2P  .PS</td><td>属于MPEG-2标准的一部分，MPEG-PS 节目流，主要应用于存储的具有固定时长的节目</td></tr>
+<tr><td>MPEG transport stream (TS)</td><td>MPEG transport stream</td><td>.TS</td><td>属于MPEG-2标准的一部分，MPEG-TS 传输流，主要应用于实时传送的节目</td></tr>
+<tr><td>MPEG-4</td><td>MPEG-4 Part 14</td><td>.MP4</td><td>MPEG-4 格式基于QuickTime 格式制定</td></tr>
+<tr><td>WMV</td><td>Windows Media Video</td><td>.WMV</td><td>微软公司推出</td></tr>
+<tr><td>RealMedia</td><td>Real Media</td><td>.RM  .RMVB</td><td>Real Networks公司开发</td></tr>
+<tr><td>Flash video</td><td>Flash video</td><td>.FLV</td><td>Adobe 公司开发</td></tr>
+<tr><td>Matroska</td><td>Matroska Multimedia Container</td><td>.MKV .MK3D</td><td></td></tr>
+<tr><td>Ogg</td><td>Ogg</td><td>.OGG .OGV .OGX</td><td>由 Xiph.Org 基金会维护</td></tr>
+<tr><td></td><td></td><td></td><td></td></tr>
+</tbody></table>
+<h2 id="shi-pin-bian-ma-ge-shi">视频编码格式</h2>
+<p>视频视频编码格式的英文是<code>video coding fomat</code>，有时候也称为视频压缩格式（<code>video compression format</code>）。原始的视频内容体积很大，必须经过压缩得到更小的文件，才方便分发。播放的时候，有需要解压还原其中的内容，对视频文件的压缩和解压操作更精确的术语是对视频数据进行编码(<code>coding</code>)和解码(<code>decoding</code>)。编解码格式定义编码、解码的规则，本质上就是一种压缩标准。不同的编解码格式，影响视频的压缩的性能、效率、内容质量等等。对于这些视频编码格式，进行规范化描述，甚至标准化，就产生了视频编码标准。</p>
+<p>常见的编码格式：</p>
+<table><thead><tr><th>编码格式</th><th>说明</th></tr></thead><tbody>
+<tr><td>MPEG-1</td><td>VCD的编码格式，MP3是MPEG-1音频Layer 3部分</td></tr>
+<tr><td>MPEG-2</td><td>通常用来为广播信号提供视频和音频编码，包括卫星电视、有线电视等。DVD的编码格式</td></tr>
+<tr><td>MPEG-4</td><td>较为常用的格式。MPEG-4支持MPEG-1、MPEG-2中大多数功能</td></tr>
+<tr><td>H.261</td><td>早期用于视频会议，H.261适用于ISDN、DDN线路</td></tr>
+<tr><td>H.262</td><td>H.262在技术内容上和MPEG-2一致</td></tr>
+<tr><td>H.263</td><td>用于视频会议的低码率影像编码标准</td></tr>
+<tr><td>H.264/AVC</td><td>同时也是 MPEG-4 的第10部分，即 MPEG-4 AVC。是一种面向块的基于运动补偿的编解码器标准，是目前最常用编解码格式之一</td></tr>
+<tr><td>H.265/HEVC</td><td>同时也是 MPEG-H 的第二部分。是 H.264/AVC 的下一代标准。同等画质，达到 H.264/AVC 两倍压缩率，最高清晰度 8K</td></tr>
+<tr><td>Apple Pro Res</td><td>Apple公司MOV视频封装格式的专用编码</td></tr>
+<tr><td>AOMedia Video 1（AV1）</td><td>基于谷歌的 VP9 格式，由 AOMedia 开发，用于通过 Internet 进行视频传输，性能与H.265/HEVC 大致相当</td></tr>
+<tr><td>RealVideo</td><td>RealNetworks 公司开发，一开始基于 H.263 格式，直到 RealVideo 8，该公司切换到专有视频格式</td></tr>
+</tbody></table>
+<p>可以看到 MPEG 系列既是一种视频封装格式，又指代同名的视频编码格式。</p>
+<p>还有一些不常用编码格式：AMV，AVS，Indeo Video，Theora，VP3，VP6，VP7，VP8，VP9 ，WMV等等。 </p>
+<p>主流的视频编解码标准就是 MPEG 系列和 H.26x 系列，是因为视频编解码器的标准主要由两个组织制定：</p>
+<ol>
+<li>国际标准化组织（ISO）和国际电工委员会（IEC）下属的动态图像专家小组（Moving Picture Experts Group,MPEG）</li>
+<li>国际电信联盟电信标准化部门(ITU-T)的标准研究群组下的视频编码专家组(Video Coding Experts Group,VCEG)</li>
+</ol>
+<p>H.264和H.265由 VCEG 和 MPEG 合作共同发布的标准。</p>
+<p>特定的视频封装格式一般都会支持多种视频编码格式，但并给定一个视频封装格式，并不是支持任意的视频编码格式。以下是封装格式不支持的编码格式：</p>
+<table><thead><tr><th>格式</th><th>AVI</th><th>QTFF</th><th>MPEG-4</th><th>WMV</th><th>Real Media</th><th>Flash video</th><th>Matroska</th><th>Ogg</th><th>MPEG-2 PS，TS</th></tr></thead><tbody>
+<tr><td>MPEG-1</td><td></td><td></td><td></td><td></td><td>No</td><td>No</td><td></td><td>No</td><td></td></tr>
+<tr><td>MPEG-2</td><td></td><td></td><td></td><td></td><td>No</td><td>No</td><td></td><td>No</td><td></td></tr>
+<tr><td>MPEG-4</td><td></td><td></td><td></td><td></td><td>No</td><td></td><td></td><td></td><td></td></tr>
+<tr><td>H.261</td><td></td><td></td><td></td><td></td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+<tr><td>H.262</td><td></td><td></td><td></td><td></td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+<tr><td>H.263</td><td></td><td></td><td></td><td></td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+<tr><td>H.264/AVC</td><td></td><td></td><td></td><td></td><td>No</td><td></td><td></td><td>No</td><td></td></tr>
+<tr><td>H.265/HEVC</td><td></td><td></td><td></td><td></td><td>No</td><td>No</td><td></td><td>No</td><td></td></tr>
+<tr><td>Apple Pro Res</td><td></td><td></td><td></td><td></td><td>No</td><td>No</td><td></td><td>No</td><td></td></tr>
+<tr><td>AOMedia Video 1（AV1）</td><td>No</td><td>No</td><td></td><td>No</td><td>No</td><td>No</td><td></td><td>No</td><td></td></tr>
+<tr><td>RealVideo</td><td></td><td>NO</td><td></td><td>No</td><td></td><td>No</td><td></td><td>No</td><td>No</td></tr>
+</tbody></table>
+<h2 id="bian-jie-ma-qi">编解码器</h2>
+<p>能够对特定视频编码格式进行压缩或解压缩的特定软件或硬件实现称为视频编解码器。对于每一种编码格式比如H.264，存在许多编解码器实现其规范要求。</p>
+<p>于是导致有时候，一些编码格式也被称为编解码器。但是要注意，编码格式或者编码规范，并不等同于编解码器，两者之间的差异是标准规范与实际实现的差异。</p>
+<h2 id="liu-mei-ti">流媒体</h2>
+<p>流媒体（Streaming Media）是将音视频编码之后，以流的方式在网络中实时传输的技术。</p>
+<p>上面讲的视频封装格式，主要是面向文件形式为主，不适合流媒体传输（类似于 MPEG-TS 传输流，Real Media 能够很好地支持流媒体传输）。</p>
+<p>流媒体传输技术主要有两种方式：</p>
+<ol>
+<li>顺序流式传输( progressive streaming)</li>
+<li>实时流式传输( real time streaming)</li>
+</ol>
+<h3 id="liu-mei-ti-chuan-shu-wang-luo-xie-yi">流媒体传输网络协议</h3>
+<p>常见的流媒体传输协议：</p>
+<h4 id="rtsp-real-time-streaming-protocol"><strong>RTSP</strong>（Real Time Streaming Protocol）</h4>
+<p>是由Real Network和Netscape共同提出的如何有效地在IP网络上传输流媒体数据的应用层协议。RTSP协议本身并不负责数据传输，通常（非必须）是通过 RTP 配合 RTCP 完成数据流和控制命令（同步、QOS管理等）的传输。</p>
+<ol>
+<li>RTP (Real-time Transport Protocol)：真正用来传输音频视频的协议，一般是建立在 UDP 协议的基础上，特别需要注意的是，它使用偶数端口。</li>
+<li>RTCP (Real-time Control Protocol)：控制协议，通过周期性发送统计信息，提供服务质量（QoS）的反馈，它使用的端口是奇数，而且就是 RTP 端口 +1。</li>
+</ol>
+<h4 id="real-time-messaging-protocol-rtmp">Real-Time Messaging Protocol (RTMP)</h4>
+<p>RTMP被设计用来对基于底层传输协议（如TCP）的多媒体传输流（如音频、视频和交互数据）进行复用和分包。RTMP 协议延迟非常低，但由于需要使用因安全问题被淘汰的 Flash 插件，不建议使用该协议。RTMP 主要用于提取 stream。</p>
+<h4 id="dynamic-adaptive-streaming-over-http-mpeg-dash">Dynamic Adaptive Streaming over HTTP (MPEG-DASH)</h4>
+<p>是最新的协议之一。尽管未被广泛使用，几乎支持所有编解码器，支持加密媒体扩展（Encrpted Media Extensions，EME）和媒体扩展源（Media Source Extension，MSE），而且支持码率自适应。</p>
+<h4 id="http-live-streaming-hls">HTTP Live Streaming (HLS)</h4>
+<p>HLS 是 Apple 公司推出的，目前使用最广泛的协议，且功能强大。支持码率自适应，支持最新的 H.265 解编码器。HLS 缺点一直是高延迟。最新的解决方案可以将延迟从8秒降低到1至2秒。</p>
+<p>HLS 协议基于 Http 协议，规定视频封装格式为 MPEG-TS ，视频的编码格式为 H.264（最新支持H.265）, 音频编码格式为 MP3 、 AAC 或者 AC-3 。</p>
+<p><code>m3u8</code>，是 <code>HLS</code> 协议定义的索引文件。实质上是一个播放列表（playlist）</p>
+<p><code>HLS</code> 基本实现原理为将一个大的媒体文件进行分片，将该分片文件资源路径记录于 m3u8 文件内，并附带一些额外描述（比如该资源的多带宽信息）用于提供给客户端。客户端依据该 m3u8 文件即可获取对应的媒体资源，进行播放。客户端获取 HLS 流文件，主要就是对 m3u8 文件进行解析操作。</p>
+<h3 id="liu-mei-ti-chang-yong-feng-zhuang-ge-shi-yu-bian-ma-ge-shi">流媒体常用封装格式与编码格式</h3>
+<p>封装格式：MPEG-TS，fragmented MP4（分段Mp4格式），当前新的标准： The Common Media Application Format (CMAF)。</p>
+<p>编码格式：H.264/AVC，H.265/HEVC 。</p>
+
+    </div>
+
+    
+    <div class="article-info">
+        
+        <div class="article-date">2022-09-22</div>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/ji-ben-gai-nian/">#基本概念</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/shi-pin/">#视频</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/shi-pin-ge-shi/">#视频格式</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/shi-pin-liu/">#视频流</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+</article>
+
+
+            </main>
+            <footer>
+                <p>
+                © zongwu&#x27;s blog 2015 - 2022<br>
+                </p>
+                <p>
+                
+                
+                </p>
+            </footer>
+        </div>
+</body>
+</html>
