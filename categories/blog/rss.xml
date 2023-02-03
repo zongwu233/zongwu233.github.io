@@ -2,18 +2,18 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title></title>
-        <link>https%3A//blog.zongwu233.com</link>
+        <link>https%3A//blog.zongwu233.xyz</link>
         <description></description>
         <generator>Zola</generator>
         <language>en</language>
-        <atom:link href="https%3A//blog.zongwu233.com/categories/blog/rss.xml" rel="self" type="application/rss+xml"/>
+        <atom:link href="https%3A//blog.zongwu233.xyz/categories/blog/rss.xml" rel="self" type="application/rss+xml"/>
         <lastBuildDate>Wed, 09 Dec 2020 00:00:00 +0000</lastBuildDate>
         
             <item>
                 <title>至今我们仍未得知那些平行宇宙里的小白鼠们是否懂得信息论</title>
                 <pubDate>Wed, 09 Dec 2020 00:00:00 +0000</pubDate>
-                <link>https%3A//blog.zongwu233.com/so-far-we-still-dont-know-if-the-mice-in-the-parallel-universe-understand-information-theory/</link>
-                <guid>https%3A//blog.zongwu233.com/so-far-we-still-dont-know-if-the-mice-in-the-parallel-universe-understand-information-theory/</guid>
+                <link>https%3A//blog.zongwu233.xyz/so-far-we-still-dont-know-if-the-mice-in-the-parallel-universe-understand-information-theory/</link>
+                <guid>https%3A//blog.zongwu233.xyz/so-far-we-still-dont-know-if-the-mice-in-the-parallel-universe-understand-information-theory/</guid>
                 <description>&lt;!-- Math rendering --&gt;
 &lt;script src=&#x27;https:&#x2F;&#x2F;cdnjs.cloudflare.com&#x2F;ajax&#x2F;libs&#x2F;mathjax&#x2F;2.7.5&#x2F;latest.js?config=TeX-MML-AM_CHTML&#x27; async&gt;&lt;&#x2F;script&gt;
 &lt;script type=&quot;text&#x2F;x-mathjax-config&quot;&gt;
@@ -30,8 +30,8 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
             <item>
                 <title>REST 以及 RESTful 辨析</title>
                 <pubDate>Wed, 09 Dec 2020 00:00:00 +0000</pubDate>
-                <link>https%3A//blog.zongwu233.com/what-exactly-is-rest-and-restful/</link>
-                <guid>https%3A//blog.zongwu233.com/what-exactly-is-rest-and-restful/</guid>
+                <link>https%3A//blog.zongwu233.xyz/what-exactly-is-rest-and-restful/</link>
+                <guid>https%3A//blog.zongwu233.xyz/what-exactly-is-rest-and-restful/</guid>
                 <description>&lt;p&gt;从&lt;code&gt;REST&lt;&#x2F;code&gt;概念提出到现在已经20年了，业界的主流实践采纳借鉴了其部分原则，但与其最核心的架构设计渐行渐远。&lt;&#x2F;p&gt;
 &lt;p&gt;实际上那个去中心化的、面向全世界开放的万维网时代正在落幕，构建在其基础之上的&lt;code&gt;REST&lt;&#x2F;code&gt;架构思想，也无可避免地被冷落或者被误解。&lt;&#x2F;p&gt;
 </description>
@@ -40,8 +40,8 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
             <item>
                 <title>让我们聊一聊Rust的所有权系统</title>
                 <pubDate>Tue, 24 Nov 2020 00:00:00 +0000</pubDate>
-                <link>https%3A//blog.zongwu233.com/talk-about-rust-ownership/</link>
-                <guid>https%3A//blog.zongwu233.com/talk-about-rust-ownership/</guid>
+                <link>https%3A//blog.zongwu233.xyz/talk-about-rust-ownership/</link>
+                <guid>https%3A//blog.zongwu233.xyz/talk-about-rust-ownership/</guid>
                 <description>&lt;p&gt;所有权（ownership）系统是 Rust 最与众不同的特性，让Rust实现了&lt;strong&gt;既要&lt;&#x2F;strong&gt;保障内存安全&lt;strong&gt;又要&lt;&#x2F;strong&gt;无GC，运行时高性能的目标。&lt;&#x2F;p&gt;
 </description>
             </item>
@@ -49,8 +49,8 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
             <item>
                 <title>adsf-vm </title>
                 <pubDate>Tue, 10 Nov 2020 00:00:00 +0000</pubDate>
-                <link>https%3A//blog.zongwu233.com/asdf-vm-intro/</link>
-                <guid>https%3A//blog.zongwu233.com/asdf-vm-intro/</guid>
+                <link>https%3A//blog.zongwu233.xyz/asdf-vm-intro/</link>
+                <guid>https%3A//blog.zongwu233.xyz/asdf-vm-intro/</guid>
                 <description>&lt;p&gt;官方给出的定义是：&lt;&#x2F;p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Manage multiple runtime versions with a single CLI tool&lt;&#x2F;p&gt;
@@ -62,8 +62,8 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
             <item>
                 <title>Git协议代理配置</title>
                 <pubDate>Sat, 17 Oct 2020 00:00:00 +0000</pubDate>
-                <link>https%3A//blog.zongwu233.com/git-proxy-config/</link>
-                <guid>https%3A//blog.zongwu233.com/git-proxy-config/</guid>
+                <link>https%3A//blog.zongwu233.xyz/git-proxy-config/</link>
+                <guid>https%3A//blog.zongwu233.xyz/git-proxy-config/</guid>
                 <description>&lt;p&gt;&lt;code&gt;Git&lt;&#x2F;code&gt;使用四种主要的协议来传输资料：本地协议（Local），HTTP 协议，SSH（Secure Shell）协议及 Git 协议。&lt;&#x2F;p&gt;
 &lt;p&gt;为了能够顺畅使用&lt;code&gt;GitHub&lt;&#x2F;code&gt; ，我们需要为 &lt;code&gt;HTTPS&lt;&#x2F;code&gt; &lt;code&gt;SSH&lt;&#x2F;code&gt;配置代理。&lt;&#x2F;p&gt;
 </description>
@@ -72,8 +72,8 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
             <item>
                 <title>一致性模型</title>
                 <pubDate>Tue, 22 Sep 2020 00:00:00 +0000</pubDate>
-                <link>https%3A//blog.zongwu233.com/consistency-models/</link>
-                <guid>https%3A//blog.zongwu233.com/consistency-models/</guid>
+                <link>https%3A//blog.zongwu233.xyz/consistency-models/</link>
+                <guid>https%3A//blog.zongwu233.xyz/consistency-models/</guid>
                 <description>&lt;h2 id=&quot;ji-ben-gai-nian&quot;&gt;基本概念&lt;&#x2F;h2&gt;
 &lt;h3 id=&quot;zheng-que-xing-correctness&quot;&gt;正确性（Correctness）&lt;&#x2F;h3&gt;
 &lt;p&gt;&lt;strong&gt;一个系统是由一个状态和一些转换该状态的操作组成的&lt;&#x2F;strong&gt;。当系统运行时，它通过一些操作记录从一个状态转换到另一个状态。&lt;&#x2F;p&gt;
@@ -83,8 +83,8 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
             <item>
                 <title>OpenStack 管理</title>
                 <pubDate>Sun, 16 Aug 2020 00:00:00 +0000</pubDate>
-                <link>https%3A//blog.zongwu233.com/openstack-management/</link>
-                <guid>https%3A//blog.zongwu233.com/openstack-management/</guid>
+                <link>https%3A//blog.zongwu233.xyz/openstack-management/</link>
+                <guid>https%3A//blog.zongwu233.xyz/openstack-management/</guid>
                 <description>&lt;h2 id=&quot;pei-zhi-wai-bu-wang-luo&quot;&gt;配置外部网络&lt;&#x2F;h2&gt;
 &lt;p&gt;前提，本机双网卡，用于管理地址的 IP 地址为10.0.0.104，用于联网的 IP 地址为 192.168.1.100。&lt;&#x2F;p&gt;
 &lt;p&gt;在后台管理界面进入 管理员 -&amp;gt; 网络 -&amp;gt; 网络&lt;&#x2F;p&gt;
@@ -172,8 +172,8 @@ service ssh restart
             <item>
                 <title>kolla-ansible 部署 all-in-one 模式 OpenStack stein版</title>
                 <pubDate>Sat, 15 Aug 2020 00:00:00 +0000</pubDate>
-                <link>https%3A//blog.zongwu233.com/kolla-ansible-deploy-all-in-one-mode-openstack-stein-version/</link>
-                <guid>https%3A//blog.zongwu233.com/kolla-ansible-deploy-all-in-one-mode-openstack-stein-version/</guid>
+                <link>https%3A//blog.zongwu233.xyz/kolla-ansible-deploy-all-in-one-mode-openstack-stein-version/</link>
+                <guid>https%3A//blog.zongwu233.xyz/kolla-ansible-deploy-all-in-one-mode-openstack-stein-version/</guid>
                 <description>&lt;h2 id=&quot;qian-qi-zhun-bei&quot;&gt;前期准备&lt;&#x2F;h2&gt;
 &lt;h3 id=&quot;ji-qi-pei-zhi&quot;&gt;机器配置&lt;&#x2F;h3&gt;
 &lt;p&gt;20Core  50G Memory  3.6 T Storage&lt;&#x2F;p&gt;
@@ -367,8 +367,8 @@ export OS_AUTH_PLUGIN=password
             <item>
                 <title>Rust mio库源码情景分析</title>
                 <pubDate>Wed, 30 Oct 2019 00:00:00 +0000</pubDate>
-                <link>https%3A//blog.zongwu233.com/rust-mio-source-scenario-analysis/</link>
-                <guid>https%3A//blog.zongwu233.com/rust-mio-source-scenario-analysis/</guid>
+                <link>https%3A//blog.zongwu233.xyz/rust-mio-source-scenario-analysis/</link>
+                <guid>https%3A//blog.zongwu233.xyz/rust-mio-source-scenario-analysis/</guid>
                 <description>&lt;p&gt;mio 是 Metal IO，Rust语言生态比较底层的I&#x2F;O库，官网的介绍：&lt;&#x2F;p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Mio is a lightweight I&#x2F;O library for Rust with a focus on adding as little overhead as possible over the OS abstractions.&lt;&#x2F;p&gt;
@@ -381,8 +381,8 @@ export OS_AUTH_PLUGIN=password
             <item>
                 <title>如何放大你的个人能力（一）</title>
                 <pubDate>Fri, 11 Oct 2019 00:00:00 +0000</pubDate>
-                <link>https%3A//blog.zongwu233.com/enlarge-your-personal-ability-1/</link>
-                <guid>https%3A//blog.zongwu233.com/enlarge-your-personal-ability-1/</guid>
+                <link>https%3A//blog.zongwu233.xyz/enlarge-your-personal-ability-1/</link>
+                <guid>https%3A//blog.zongwu233.xyz/enlarge-your-personal-ability-1/</guid>
                 <description>&lt;!-- Math rendering --&gt;
 &lt;script src=&#x27;https:&#x2F;&#x2F;cdnjs.cloudflare.com&#x2F;ajax&#x2F;libs&#x2F;mathjax&#x2F;2.7.5&#x2F;latest.js?config=TeX-MML-AM_CHTML&#x27; async&gt;&lt;&#x2F;script&gt;
 &lt;script type=&quot;text&#x2F;x-mathjax-config&quot;&gt;

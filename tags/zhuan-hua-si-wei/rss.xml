@@ -2,18 +2,18 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title></title>
-        <link>https%3A//blog.zongwu233.com</link>
+        <link>https%3A//blog.zongwu233.xyz</link>
         <description></description>
         <generator>Zola</generator>
         <language>en</language>
-        <atom:link href="https%3A//blog.zongwu233.com/tags/zhuan-hua-si-wei/rss.xml" rel="self" type="application/rss+xml"/>
+        <atom:link href="https%3A//blog.zongwu233.xyz/tags/zhuan-hua-si-wei/rss.xml" rel="self" type="application/rss+xml"/>
         <lastBuildDate>Wed, 09 Dec 2020 00:00:00 +0000</lastBuildDate>
         
             <item>
                 <title>至今我们仍未得知那些平行宇宙里的小白鼠们是否懂得信息论</title>
                 <pubDate>Wed, 09 Dec 2020 00:00:00 +0000</pubDate>
-                <link>https%3A//blog.zongwu233.com/so-far-we-still-dont-know-if-the-mice-in-the-parallel-universe-understand-information-theory/</link>
-                <guid>https%3A//blog.zongwu233.com/so-far-we-still-dont-know-if-the-mice-in-the-parallel-universe-understand-information-theory/</guid>
+                <link>https%3A//blog.zongwu233.xyz/so-far-we-still-dont-know-if-the-mice-in-the-parallel-universe-understand-information-theory/</link>
+                <guid>https%3A//blog.zongwu233.xyz/so-far-we-still-dont-know-if-the-mice-in-the-parallel-universe-understand-information-theory/</guid>
                 <description>&lt;!-- Math rendering --&gt;
 &lt;script src=&#x27;https:&#x2F;&#x2F;cdnjs.cloudflare.com&#x2F;ajax&#x2F;libs&#x2F;mathjax&#x2F;2.7.5&#x2F;latest.js?config=TeX-MML-AM_CHTML&#x27; async&gt;&lt;&#x2F;script&gt;
 &lt;script type=&quot;text&#x2F;x-mathjax-config&quot;&gt;

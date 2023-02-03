@@ -2,18 +2,18 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title></title>
-        <link>https%3A//blog.zongwu233.com</link>
+        <link>https%3A//blog.zongwu233.xyz</link>
         <description></description>
         <generator>Zola</generator>
         <language>en</language>
-        <atom:link href="https%3A//blog.zongwu233.com/tags/stein/rss.xml" rel="self" type="application/rss+xml"/>
+        <atom:link href="https%3A//blog.zongwu233.xyz/tags/stein/rss.xml" rel="self" type="application/rss+xml"/>
         <lastBuildDate>Sun, 16 Aug 2020 00:00:00 +0000</lastBuildDate>
         
             <item>
                 <title>OpenStack 管理</title>
                 <pubDate>Sun, 16 Aug 2020 00:00:00 +0000</pubDate>
-                <link>https%3A//blog.zongwu233.com/openstack-management/</link>
-                <guid>https%3A//blog.zongwu233.com/openstack-management/</guid>
+                <link>https%3A//blog.zongwu233.xyz/openstack-management/</link>
+                <guid>https%3A//blog.zongwu233.xyz/openstack-management/</guid>
                 <description>&lt;h2 id=&quot;pei-zhi-wai-bu-wang-luo&quot;&gt;配置外部网络&lt;&#x2F;h2&gt;
 &lt;p&gt;前提，本机双网卡，用于管理地址的 IP 地址为10.0.0.104，用于联网的 IP 地址为 192.168.1.100。&lt;&#x2F;p&gt;
 &lt;p&gt;在后台管理界面进入 管理员 -&amp;gt; 网络 -&amp;gt; 网络&lt;&#x2F;p&gt;

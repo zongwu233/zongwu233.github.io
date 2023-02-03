@@ -2,18 +2,18 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title></title>
-        <link>https%3A//blog.zongwu233.com</link>
+        <link>https%3A//blog.zongwu233.xyz</link>
         <description></description>
         <generator>Zola</generator>
         <language>en</language>
-        <atom:link href="https%3A//blog.zongwu233.com/tags/bian-cheng-yu-yan/rss.xml" rel="self" type="application/rss+xml"/>
+        <atom:link href="https%3A//blog.zongwu233.xyz/tags/bian-cheng-yu-yan/rss.xml" rel="self" type="application/rss+xml"/>
         <lastBuildDate>Tue, 24 Nov 2020 00:00:00 +0000</lastBuildDate>
         
             <item>
                 <title>让我们聊一聊Rust的所有权系统</title>
                 <pubDate>Tue, 24 Nov 2020 00:00:00 +0000</pubDate>
-                <link>https%3A//blog.zongwu233.com/talk-about-rust-ownership/</link>
-                <guid>https%3A//blog.zongwu233.com/talk-about-rust-ownership/</guid>
+                <link>https%3A//blog.zongwu233.xyz/talk-about-rust-ownership/</link>
+                <guid>https%3A//blog.zongwu233.xyz/talk-about-rust-ownership/</guid>
                 <description>&lt;p&gt;所有权（ownership）系统是 Rust 最与众不同的特性，让Rust实现了&lt;strong&gt;既要&lt;&#x2F;strong&gt;保障内存安全&lt;strong&gt;又要&lt;&#x2F;strong&gt;无GC，运行时高性能的目标。&lt;&#x2F;p&gt;
 </description>
             </item>

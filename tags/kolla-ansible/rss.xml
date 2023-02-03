@@ -2,18 +2,18 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title></title>
-        <link>https%3A//blog.zongwu233.com</link>
+        <link>https%3A//blog.zongwu233.xyz</link>
         <description></description>
         <generator>Zola</generator>
         <language>en</language>
-        <atom:link href="https%3A//blog.zongwu233.com/tags/kolla-ansible/rss.xml" rel="self" type="application/rss+xml"/>
+        <atom:link href="https%3A//blog.zongwu233.xyz/tags/kolla-ansible/rss.xml" rel="self" type="application/rss+xml"/>
         <lastBuildDate>Sat, 15 Aug 2020 00:00:00 +0000</lastBuildDate>
         
             <item>
                 <title>kolla-ansible 部署 all-in-one 模式 OpenStack stein版</title>
                 <pubDate>Sat, 15 Aug 2020 00:00:00 +0000</pubDate>
-                <link>https%3A//blog.zongwu233.com/kolla-ansible-deploy-all-in-one-mode-openstack-stein-version/</link>
-                <guid>https%3A//blog.zongwu233.com/kolla-ansible-deploy-all-in-one-mode-openstack-stein-version/</guid>
+                <link>https%3A//blog.zongwu233.xyz/kolla-ansible-deploy-all-in-one-mode-openstack-stein-version/</link>
+                <guid>https%3A//blog.zongwu233.xyz/kolla-ansible-deploy-all-in-one-mode-openstack-stein-version/</guid>
                 <description>&lt;h2 id=&quot;qian-qi-zhun-bei&quot;&gt;前期准备&lt;&#x2F;h2&gt;
 &lt;h3 id=&quot;ji-qi-pei-zhi&quot;&gt;机器配置&lt;&#x2F;h3&gt;
 &lt;p&gt;20Core  50G Memory  3.6 T Storage&lt;&#x2F;p&gt;

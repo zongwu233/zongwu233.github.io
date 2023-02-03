@@ -2,18 +2,18 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
         <title></title>
-        <link>https%3A//blog.zongwu233.com</link>
+        <link>https%3A//blog.zongwu233.xyz</link>
         <description></description>
         <generator>Zola</generator>
         <language>en</language>
-        <atom:link href="https%3A//blog.zongwu233.com/tags/cli/rss.xml" rel="self" type="application/rss+xml"/>
+        <atom:link href="https%3A//blog.zongwu233.xyz/tags/cli/rss.xml" rel="self" type="application/rss+xml"/>
         <lastBuildDate>Tue, 10 Nov 2020 00:00:00 +0000</lastBuildDate>
         
             <item>
                 <title>adsf-vm </title>
                 <pubDate>Tue, 10 Nov 2020 00:00:00 +0000</pubDate>
-                <link>https%3A//blog.zongwu233.com/asdf-vm-intro/</link>
-                <guid>https%3A//blog.zongwu233.com/asdf-vm-intro/</guid>
+                <link>https%3A//blog.zongwu233.xyz/asdf-vm-intro/</link>
+                <guid>https%3A//blog.zongwu233.xyz/asdf-vm-intro/</guid>
                 <description>&lt;p&gt;官方给出的定义是：&lt;&#x2F;p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Manage multiple runtime versions with a single CLI tool&lt;&#x2F;p&gt;
