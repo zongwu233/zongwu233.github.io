@@ -1,543 +1,543 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>https://blog.zongwu233.com/</loc>
+        <loc>https://blog.zongwu233.xyz/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/about/</loc>
+        <loc>https://blog.zongwu233.xyz/about/</loc>
         <lastmod>2018-04-20</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/android-project-ci-jenkins/</loc>
+        <loc>https://blog.zongwu233.xyz/android-project-ci-jenkins/</loc>
         <lastmod>2017-06-11</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/android-project-from-gradle-2-buck/</loc>
+        <loc>https://blog.zongwu233.xyz/android-project-from-gradle-2-buck/</loc>
         <lastmod>2016-08-19</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/architecture-evolution/</loc>
+        <loc>https://blog.zongwu233.xyz/architecture-evolution/</loc>
         <lastmod>2018-12-23</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/asdf-vm-intro/</loc>
+        <loc>https://blog.zongwu233.xyz/asdf-vm-intro/</loc>
         <lastmod>2020-11-10</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/categories/</loc>
+        <loc>https://blog.zongwu233.xyz/categories/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/categories/blog/</loc>
+        <loc>https://blog.zongwu233.xyz/categories/blog/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/categories/blog/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/categories/blog/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/categories/blog/page/2/</loc>
+        <loc>https://blog.zongwu233.xyz/categories/blog/page/2/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/categories/blog/page/3/</loc>
+        <loc>https://blog.zongwu233.xyz/categories/blog/page/3/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/categories/blog/page/4/</loc>
+        <loc>https://blog.zongwu233.xyz/categories/blog/page/4/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/categories/mental/</loc>
+        <loc>https://blog.zongwu233.xyz/categories/mental/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/categories/mental/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/categories/mental/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/consistency-models/</loc>
+        <loc>https://blog.zongwu233.xyz/consistency-models/</loc>
         <lastmod>2020-09-22</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/consul-registrator-nginx/</loc>
+        <loc>https://blog.zongwu233.xyz/consul-registrator-nginx/</loc>
         <lastmod>2018-12-20</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/data-abstract/</loc>
+        <loc>https://blog.zongwu233.xyz/data-abstract/</loc>
         <lastmod>2016-04-09</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/dexopt-process/</loc>
+        <loc>https://blog.zongwu233.xyz/dexopt-process/</loc>
         <lastmod>2015-09-27</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/enlarge-your-personal-ability-1/</loc>
+        <loc>https://blog.zongwu233.xyz/enlarge-your-personal-ability-1/</loc>
         <lastmod>2019-10-11</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/genymotion-with-xposed/</loc>
+        <loc>https://blog.zongwu233.xyz/genymotion-with-xposed/</loc>
         <lastmod>2017-06-17</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/git-proxy-config/</loc>
+        <loc>https://blog.zongwu233.xyz/git-proxy-config/</loc>
         <lastmod>2020-10-17</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/gradle-build-springboot-dockerimage/</loc>
+        <loc>https://blog.zongwu233.xyz/gradle-build-springboot-dockerimage/</loc>
         <lastmod>2018-10-24</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/hanlp-vs-ltp/</loc>
+        <loc>https://blog.zongwu233.xyz/hanlp-vs-ltp/</loc>
         <lastmod>2018-03-28</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/high-performance-olap/</loc>
+        <loc>https://blog.zongwu233.xyz/high-performance-olap/</loc>
         <lastmod>2018-07-29</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/inventing-on-principle/</loc>
+        <loc>https://blog.zongwu233.xyz/inventing-on-principle/</loc>
         <lastmod>2020-12-20</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/kolla-ansible-deploy-all-in-one-mode-openstack-stein-version/</loc>
+        <loc>https://blog.zongwu233.xyz/kolla-ansible-deploy-all-in-one-mode-openstack-stein-version/</loc>
         <lastmod>2020-08-15</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/linux-usb3-driver/</loc>
+        <loc>https://blog.zongwu233.xyz/linux-usb3-driver/</loc>
         <lastmod>2021-08-07</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/module-protocol-design-think/</loc>
+        <loc>https://blog.zongwu233.xyz/module-protocol-design-think/</loc>
         <lastmod>2016-03-27</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/nonstandard-204-response/</loc>
+        <loc>https://blog.zongwu233.xyz/nonstandard-204-response/</loc>
         <lastmod>2015-09-30</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/oneplus3t-root/</loc>
+        <loc>https://blog.zongwu233.xyz/oneplus3t-root/</loc>
         <lastmod>2017-07-03</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/openstack-management/</loc>
+        <loc>https://blog.zongwu233.xyz/openstack-management/</loc>
         <lastmod>2020-08-16</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/page/2/</loc>
+        <loc>https://blog.zongwu233.xyz/page/2/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/page/3/</loc>
+        <loc>https://blog.zongwu233.xyz/page/3/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/page/4/</loc>
+        <loc>https://blog.zongwu233.xyz/page/4/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/readert-design-pattern/</loc>
+        <loc>https://blog.zongwu233.xyz/readert-design-pattern/</loc>
         <lastmod>2021-08-14</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/readert-source-code-analysis/</loc>
+        <loc>https://blog.zongwu233.xyz/readert-source-code-analysis/</loc>
         <lastmod>2021-08-15</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/rust-mio-source-scenario-analysis/</loc>
+        <loc>https://blog.zongwu233.xyz/rust-mio-source-scenario-analysis/</loc>
         <lastmod>2019-10-30</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/rust-string-relations/</loc>
+        <loc>https://blog.zongwu233.xyz/rust-string-relations/</loc>
         <lastmod>2020-12-26</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/severe-info-reading/</loc>
+        <loc>https://blog.zongwu233.xyz/severe-info-reading/</loc>
         <lastmod>2017-05-11</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/so-far-we-still-dont-know-if-the-mice-in-the-parallel-universe-understand-information-theory/</loc>
+        <loc>https://blog.zongwu233.xyz/so-far-we-still-dont-know-if-the-mice-in-the-parallel-universe-understand-information-theory/</loc>
         <lastmod>2020-12-09</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/ansible/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/ansible/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/ansible/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/ansible/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/api/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/api/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/api/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/api/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/bian-cheng-yu-yan/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/bian-cheng-yu-yan/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/bian-cheng-yu-yan/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/bian-cheng-yu-yan/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/chars/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/chars/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/chars/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/chars/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/cli/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/cli/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/cli/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/cli/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/consul/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/consul/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/consul/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/consul/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/duo-ban-ben-guan-li/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/duo-ban-ben-guan-li/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/duo-ban-ben-guan-li/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/duo-ban-ben-guan-li/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/fan-yi/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/fan-yi/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/fan-yi/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/fan-yi/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/fen-bu-shi-xi-tong/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/fen-bu-shi-xi-tong/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/fen-bu-shi-xi-tong/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/fen-bu-shi-xi-tong/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/git/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/git/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/git/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/git/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/gong-ju/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/gong-ju/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/gong-ju/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/gong-ju/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/haskell/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/haskell/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/haskell/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/haskell/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/hei-xiang-xi-tong/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/hei-xiang-xi-tong/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/hei-xiang-xi-tong/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/hei-xiang-xi-tong/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/ji-ben-gai-nian/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/ji-ben-gai-nian/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/ji-ben-gai-nian/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/ji-ben-gai-nian/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/ji-chu-ku/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/ji-chu-ku/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/ji-chu-ku/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/ji-chu-ku/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/ji-shi-fan-kui/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/ji-shi-fan-kui/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/ji-shi-fan-kui/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/ji-shi-fan-kui/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/jia-gou-feng-ge/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/jia-gou-feng-ge/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/jia-gou-feng-ge/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/jia-gou-feng-ge/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/jia-gou/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/jia-gou/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/jia-gou/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/jia-gou/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/ke-shi-hua/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/ke-shi-hua/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/ke-shi-hua/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/ke-shi-hua/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/ke-xue-fang-fa-lun/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/ke-xue-fang-fa-lun/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/ke-xue-fang-fa-lun/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/ke-xue-fang-fa-lun/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/ke-xue-shang-wang/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/ke-xue-shang-wang/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/ke-xue-shang-wang/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/ke-xue-shang-wang/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/kolla-ansible/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/kolla-ansible/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/kolla-ansible/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/kolla-ansible/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/linux/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/linux/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/linux/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/linux/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/linuxqu-dong/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/linuxqu-dong/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/linuxqu-dong/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/linuxqu-dong/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/macos/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/macos/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/macos/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/macos/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/mio/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/mio/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/mio/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/mio/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/nei-cun-guan-li/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/nei-cun-guan-li/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/nei-cun-guan-li/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/nei-cun-guan-li/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/openstack/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/openstack/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/openstack/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/openstack/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/proxy/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/proxy/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/proxy/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/proxy/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/rest/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/rest/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/rest/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/rest/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/restful/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/restful/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/restful/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/restful/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/rockpi/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/rockpi/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/rockpi/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/rockpi/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/ruan-jian-gong-cheng/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/ruan-jian-gong-cheng/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/ruan-jian-gong-cheng/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/ruan-jian-gong-cheng/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/ruan-jian-she-ji/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/ruan-jian-she-ji/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/ruan-jian-she-ji/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/ruan-jian-she-ji/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/ruan-jian/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/ruan-jian/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/ruan-jian/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/ruan-jian/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/rust/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/rust/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/rust/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/rust/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/she-ji-mo-shi/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/she-ji-mo-shi/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/she-ji-mo-shi/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/she-ji-mo-shi/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/shi-jie-guan/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/shi-jie-guan/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/shi-jie-guan/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/shi-jie-guan/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/shi-pin-ge-shi/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/shi-pin-ge-shi/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/shi-pin-ge-shi/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/shi-pin-ge-shi/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/shi-pin-liu/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/shi-pin-liu/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/shi-pin-liu/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/shi-pin-liu/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/shi-pin/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/shi-pin/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/shi-pin/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/shi-pin/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/shi-yong/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/shi-yong/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/shi-yong/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/shi-yong/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/slice/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/slice/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/slice/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/slice/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/ssh/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/ssh/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/ssh/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/ssh/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/stein/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/stein/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/stein/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/stein/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/suo-you-quan/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/suo-you-quan/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/suo-you-quan/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/suo-you-quan/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/webfu-wu-jia-gou/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/webfu-wu-jia-gou/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/webfu-wu-jia-gou/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/webfu-wu-jia-gou/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/wei-fu-wu/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/wei-fu-wu/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/wei-fu-wu/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/wei-fu-wu/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/xiang-fa/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/xiang-fa/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/xiang-fa/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/xiang-fa/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/xin-xi-lun/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/xin-xi-lun/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/xin-xi-lun/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/xin-xi-lun/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/xin-xi-shang/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/xin-xi-shang/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/xin-xi-shang/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/xin-xi-shang/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/yi-nan-wen-ti/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/yi-nan-wen-ti/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/yi-nan-wen-ti/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/yi-nan-wen-ti/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/yi-zhi-xing/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/yi-zhi-xing/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/yi-zhi-xing/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/yi-zhi-xing/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/yuan-li/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/yuan-li/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/yuan-li/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/yuan-li/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/yuan-ma/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/yuan-ma/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/yuan-ma/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/yuan-ma/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/yuan-ze/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/yuan-ze/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/yuan-ze/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/yuan-ze/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/zhuan-hua-si-wei/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/zhuan-hua-si-wei/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/tags/zhuan-hua-si-wei/page/1/</loc>
+        <loc>https://blog.zongwu233.xyz/tags/zhuan-hua-si-wei/page/1/</loc>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/talk-about-rust-ownership/</loc>
+        <loc>https://blog.zongwu233.xyz/talk-about-rust-ownership/</loc>
         <lastmod>2020-11-24</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/the-handicraft-software-age/</loc>
+        <loc>https://blog.zongwu233.xyz/the-handicraft-software-age/</loc>
         <lastmod>2018-05-24</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/the-simplest-navigation-website/</loc>
+        <loc>https://blog.zongwu233.xyz/the-simplest-navigation-website/</loc>
         <lastmod>2019-01-26</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/the-starter/</loc>
+        <loc>https://blog.zongwu233.xyz/the-starter/</loc>
         <lastmod>2020-01-01</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/the-touble-of-multidex/</loc>
+        <loc>https://blog.zongwu233.xyz/the-touble-of-multidex/</loc>
         <lastmod>2015-09-26</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/update-config-automated-tool/</loc>
+        <loc>https://blog.zongwu233.xyz/update-config-automated-tool/</loc>
         <lastmod>2018-11-03</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/video-basic-concepts/</loc>
+        <loc>https://blog.zongwu233.xyz/video-basic-concepts/</loc>
         <lastmod>2022-09-22</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/what-exactly-is-rest-and-restful/</loc>
+        <loc>https://blog.zongwu233.xyz/what-exactly-is-rest-and-restful/</loc>
         <lastmod>2020-12-09</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/whose-all-in/</loc>
+        <loc>https://blog.zongwu233.xyz/whose-all-in/</loc>
         <lastmod>2018-06-14</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/writert-source-code-analysis/</loc>
+        <loc>https://blog.zongwu233.xyz/writert-source-code-analysis/</loc>
         <lastmod>2021-08-24</lastmod>
     </url>
     <url>
-        <loc>https://blog.zongwu233.com/zerotoone-reading-notes/</loc>
+        <loc>https://blog.zongwu233.xyz/zerotoone-reading-notes/</loc>
         <lastmod>2018-09-09</lastmod>
     </url>
 </urlset>

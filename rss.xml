@@ -2,25 +2,25 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
       <title>zongwu&#x27;s blog</title>
-        <link>https://blog.zongwu233.com</link>
+        <link>https://blog.zongwu233.xyz</link>
         <description></description>
         <generator>Zola</generator>
         <language>en</language>
-        <atom:link href="https://blog.zongwu233.com/rss.xml" rel="self" type="application/rss+xml"/>
+        <atom:link href="https://blog.zongwu233.xyz/rss.xml" rel="self" type="application/rss+xml"/>
         <lastBuildDate>Thu, 22 Sep 2022 00:00:00 +0000</lastBuildDate>
         <item>
             <title>视频基础概念 </title>
             <pubDate>Thu, 22 Sep 2022 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/video-basic-concepts/</link>
-            <guid>https://blog.zongwu233.com/video-basic-concepts/</guid>
+            <link>https://blog.zongwu233.xyz/video-basic-concepts/</link>
+            <guid>https://blog.zongwu233.xyz/video-basic-concepts/</guid>
             <description>&lt;p&gt;最近经常会遇到视频相关的概念，比如 AVI、MP4、RMVB、MKV、FLV以及m3u8、H.264、H.265等等，这些格式都是做什么的？它们之间到底都是什么关系，今天梳理一下。&lt;&#x2F;p&gt;
 </description>
         </item>
         <item>
             <title>WriterT 相关源码分析 </title>
             <pubDate>Tue, 24 Aug 2021 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/writert-source-code-analysis/</link>
-            <guid>https://blog.zongwu233.com/writert-source-code-analysis/</guid>
+            <link>https://blog.zongwu233.xyz/writert-source-code-analysis/</link>
+            <guid>https://blog.zongwu233.xyz/writert-source-code-analysis/</guid>
             <description>&lt;p&gt;看完&lt;code&gt;ReaderT&lt;&#x2F;code&gt;的&lt;a href=&quot;&#x2F;readert-source-code-analysis&quot;&gt;源码&lt;&#x2F;a&gt;，接着来分析&lt;code&gt;WriterT&lt;&#x2F;code&gt;的源码。&lt;&#x2F;p&gt;
 &lt;h2 id=&quot;shi-li&quot;&gt;示例&lt;&#x2F;h2&gt;
 &lt;p&gt;先看一个超级简单的例子：&lt;&#x2F;p&gt;
@@ -48,16 +48,16 @@
         <item>
             <title>ReaderT 相关源码分析 </title>
             <pubDate>Sun, 15 Aug 2021 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/readert-source-code-analysis/</link>
-            <guid>https://blog.zongwu233.com/readert-source-code-analysis/</guid>
+            <link>https://blog.zongwu233.xyz/readert-source-code-analysis/</link>
+            <guid>https://blog.zongwu233.xyz/readert-source-code-analysis/</guid>
             <description>&lt;p&gt;&lt;code&gt;ReaderT&lt;&#x2F;code&gt;是&lt;code&gt;Haskell&lt;&#x2F;code&gt;里很常见的一种模式。比如读取环境配置：&lt;&#x2F;p&gt;
 </description>
         </item>
         <item>
             <title>[翻译]ReaderT 设计模式 </title>
             <pubDate>Sat, 14 Aug 2021 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/readert-design-pattern/</link>
-            <guid>https://blog.zongwu233.com/readert-design-pattern/</guid>
+            <link>https://blog.zongwu233.xyz/readert-design-pattern/</link>
+            <guid>https://blog.zongwu233.xyz/readert-design-pattern/</guid>
             <description>&lt;blockquote&gt;
 &lt;p&gt;讲解工程实践中为什么需要 ReaderT 模式比较清晰的文章，就翻译了一下。原文见&lt;a href=&quot;https:&#x2F;&#x2F;www.fpcomplete.com&#x2F;blog&#x2F;2017&#x2F;06&#x2F;readert-design-pattern&#x2F;&quot;&gt;这里&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
 &lt;&#x2F;blockquote&gt;
@@ -69,8 +69,8 @@
         <item>
             <title>Linux USB3.0 接移动硬盘频繁卡死问题解决方法 </title>
             <pubDate>Sat, 07 Aug 2021 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/linux-usb3-driver/</link>
-            <guid>https://blog.zongwu233.com/linux-usb3-driver/</guid>
+            <link>https://blog.zongwu233.xyz/linux-usb3-driver/</link>
+            <guid>https://blog.zongwu233.xyz/linux-usb3-driver/</guid>
             <description>&lt;h2 id=&quot;wen-ti&quot;&gt;问题&lt;&#x2F;h2&gt;
 &lt;p&gt;在 &lt;code&gt;rockpi&lt;&#x2F;code&gt; (系统 &lt;code&gt;ubuntu 20.4&lt;&#x2F;code&gt;)上通过USB3.0连接大容量硬盘，读取数据的时候，会频繁导致系统卡死，只能重启机器。&lt;&#x2F;p&gt;
 </description>
@@ -78,8 +78,8 @@
         <item>
             <title>Rust Chars</title>
             <pubDate>Sat, 26 Dec 2020 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/rust-string-relations/</link>
-            <guid>https://blog.zongwu233.com/rust-string-relations/</guid>
+            <link>https://blog.zongwu233.xyz/rust-string-relations/</link>
+            <guid>https://blog.zongwu233.xyz/rust-string-relations/</guid>
             <description>&lt;h2 id=&quot;lian-xi-ti&quot;&gt;练习题&lt;&#x2F;h2&gt;
 &lt;p&gt;&lt;code&gt;codewars&lt;&#x2F;code&gt;上有一道题：&lt;&#x2F;p&gt;
 &lt;blockquote&gt;
@@ -195,8 +195,8 @@
         <item>
             <title>[翻译]发明原则(inventing on principle)</title>
             <pubDate>Sun, 20 Dec 2020 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/inventing-on-principle/</link>
-            <guid>https://blog.zongwu233.com/inventing-on-principle/</guid>
+            <link>https://blog.zongwu233.xyz/inventing-on-principle/</link>
+            <guid>https://blog.zongwu233.xyz/inventing-on-principle/</guid>
             <description>&lt;blockquote&gt;
 &lt;p&gt;找到并遵循你自己的原则。&lt;&#x2F;p&gt;
 &lt;p&gt;持续地去解决工作生活中违背这些原则的事情，优秀的工具或者产品，不过是这个过程的副作用。&lt;&#x2F;p&gt;
@@ -208,8 +208,8 @@
         <item>
             <title>至今我们仍未得知那些平行宇宙里的小白鼠们是否懂得信息论</title>
             <pubDate>Wed, 09 Dec 2020 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/so-far-we-still-dont-know-if-the-mice-in-the-parallel-universe-understand-information-theory/</link>
-            <guid>https://blog.zongwu233.com/so-far-we-still-dont-know-if-the-mice-in-the-parallel-universe-understand-information-theory/</guid>
+            <link>https://blog.zongwu233.xyz/so-far-we-still-dont-know-if-the-mice-in-the-parallel-universe-understand-information-theory/</link>
+            <guid>https://blog.zongwu233.xyz/so-far-we-still-dont-know-if-the-mice-in-the-parallel-universe-understand-information-theory/</guid>
             <description>&lt;!-- Math rendering --&gt;
 &lt;script src=&#x27;https:&#x2F;&#x2F;cdnjs.cloudflare.com&#x2F;ajax&#x2F;libs&#x2F;mathjax&#x2F;2.7.5&#x2F;latest.js?config=TeX-MML-AM_CHTML&#x27; async&gt;&lt;&#x2F;script&gt;
 &lt;script type=&quot;text&#x2F;x-mathjax-config&quot;&gt;
@@ -225,8 +225,8 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
         <item>
             <title>REST 以及 RESTful 辨析</title>
             <pubDate>Wed, 09 Dec 2020 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/what-exactly-is-rest-and-restful/</link>
-            <guid>https://blog.zongwu233.com/what-exactly-is-rest-and-restful/</guid>
+            <link>https://blog.zongwu233.xyz/what-exactly-is-rest-and-restful/</link>
+            <guid>https://blog.zongwu233.xyz/what-exactly-is-rest-and-restful/</guid>
             <description>&lt;p&gt;从&lt;code&gt;REST&lt;&#x2F;code&gt;概念提出到现在已经20年了，业界的主流实践采纳借鉴了其部分原则，但与其最核心的架构设计渐行渐远。&lt;&#x2F;p&gt;
 &lt;p&gt;实际上那个去中心化的、面向全世界开放的万维网时代正在落幕，构建在其基础之上的&lt;code&gt;REST&lt;&#x2F;code&gt;架构思想，也无可避免地被冷落或者被误解。&lt;&#x2F;p&gt;
 </description>
@@ -234,16 +234,16 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
         <item>
             <title>让我们聊一聊Rust的所有权系统</title>
             <pubDate>Tue, 24 Nov 2020 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/talk-about-rust-ownership/</link>
-            <guid>https://blog.zongwu233.com/talk-about-rust-ownership/</guid>
+            <link>https://blog.zongwu233.xyz/talk-about-rust-ownership/</link>
+            <guid>https://blog.zongwu233.xyz/talk-about-rust-ownership/</guid>
             <description>&lt;p&gt;所有权（ownership）系统是 Rust 最与众不同的特性，让Rust实现了&lt;strong&gt;既要&lt;&#x2F;strong&gt;保障内存安全&lt;strong&gt;又要&lt;&#x2F;strong&gt;无GC，运行时高性能的目标。&lt;&#x2F;p&gt;
 </description>
         </item>
         <item>
             <title>adsf-vm </title>
             <pubDate>Tue, 10 Nov 2020 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/asdf-vm-intro/</link>
-            <guid>https://blog.zongwu233.com/asdf-vm-intro/</guid>
+            <link>https://blog.zongwu233.xyz/asdf-vm-intro/</link>
+            <guid>https://blog.zongwu233.xyz/asdf-vm-intro/</guid>
             <description>&lt;p&gt;官方给出的定义是：&lt;&#x2F;p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Manage multiple runtime versions with a single CLI tool&lt;&#x2F;p&gt;
@@ -254,8 +254,8 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
         <item>
             <title>Git协议代理配置</title>
             <pubDate>Sat, 17 Oct 2020 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/git-proxy-config/</link>
-            <guid>https://blog.zongwu233.com/git-proxy-config/</guid>
+            <link>https://blog.zongwu233.xyz/git-proxy-config/</link>
+            <guid>https://blog.zongwu233.xyz/git-proxy-config/</guid>
             <description>&lt;p&gt;&lt;code&gt;Git&lt;&#x2F;code&gt;使用四种主要的协议来传输资料：本地协议（Local），HTTP 协议，SSH（Secure Shell）协议及 Git 协议。&lt;&#x2F;p&gt;
 &lt;p&gt;为了能够顺畅使用&lt;code&gt;GitHub&lt;&#x2F;code&gt; ，我们需要为 &lt;code&gt;HTTPS&lt;&#x2F;code&gt; &lt;code&gt;SSH&lt;&#x2F;code&gt;配置代理。&lt;&#x2F;p&gt;
 </description>
@@ -263,8 +263,8 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
         <item>
             <title>一致性模型</title>
             <pubDate>Tue, 22 Sep 2020 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/consistency-models/</link>
-            <guid>https://blog.zongwu233.com/consistency-models/</guid>
+            <link>https://blog.zongwu233.xyz/consistency-models/</link>
+            <guid>https://blog.zongwu233.xyz/consistency-models/</guid>
             <description>&lt;h2 id=&quot;ji-ben-gai-nian&quot;&gt;基本概念&lt;&#x2F;h2&gt;
 &lt;h3 id=&quot;zheng-que-xing-correctness&quot;&gt;正确性（Correctness）&lt;&#x2F;h3&gt;
 &lt;p&gt;&lt;strong&gt;一个系统是由一个状态和一些转换该状态的操作组成的&lt;&#x2F;strong&gt;。当系统运行时，它通过一些操作记录从一个状态转换到另一个状态。&lt;&#x2F;p&gt;
@@ -273,8 +273,8 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
         <item>
             <title>OpenStack 管理</title>
             <pubDate>Sun, 16 Aug 2020 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/openstack-management/</link>
-            <guid>https://blog.zongwu233.com/openstack-management/</guid>
+            <link>https://blog.zongwu233.xyz/openstack-management/</link>
+            <guid>https://blog.zongwu233.xyz/openstack-management/</guid>
             <description>&lt;h2 id=&quot;pei-zhi-wai-bu-wang-luo&quot;&gt;配置外部网络&lt;&#x2F;h2&gt;
 &lt;p&gt;前提，本机双网卡，用于管理地址的 IP 地址为10.0.0.104，用于联网的 IP 地址为 192.168.1.100。&lt;&#x2F;p&gt;
 &lt;p&gt;在后台管理界面进入 管理员 -&amp;gt; 网络 -&amp;gt; 网络&lt;&#x2F;p&gt;
@@ -358,8 +358,8 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
         <item>
             <title>kolla-ansible 部署 all-in-one 模式 OpenStack stein版</title>
             <pubDate>Sat, 15 Aug 2020 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/kolla-ansible-deploy-all-in-one-mode-openstack-stein-version/</link>
-            <guid>https://blog.zongwu233.com/kolla-ansible-deploy-all-in-one-mode-openstack-stein-version/</guid>
+            <link>https://blog.zongwu233.xyz/kolla-ansible-deploy-all-in-one-mode-openstack-stein-version/</link>
+            <guid>https://blog.zongwu233.xyz/kolla-ansible-deploy-all-in-one-mode-openstack-stein-version/</guid>
             <description>&lt;h2 id=&quot;qian-qi-zhun-bei&quot;&gt;前期准备&lt;&#x2F;h2&gt;
 &lt;h3 id=&quot;ji-qi-pei-zhi&quot;&gt;机器配置&lt;&#x2F;h3&gt;
 &lt;p&gt;20Core  50G Memory  3.6 T Storage&lt;&#x2F;p&gt;
@@ -537,8 +537,8 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
         <item>
             <title>The Starter</title>
             <pubDate>Wed, 01 Jan 2020 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/the-starter/</link>
-            <guid>https://blog.zongwu233.com/the-starter/</guid>
+            <link>https://blog.zongwu233.xyz/the-starter/</link>
+            <guid>https://blog.zongwu233.xyz/the-starter/</guid>
             <description>&lt;p&gt;You must really master the concept of：&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;code&gt;HTTP&lt;&#x2F;code&gt; &lt;code&gt;HTTPS&lt;&#x2F;code&gt; &lt;code&gt;TLS&lt;&#x2F;code&gt; &lt;code&gt;RSA&lt;&#x2F;code&gt; &lt;code&gt;AES&lt;&#x2F;code&gt;&lt;&#x2F;p&gt;
 </description>
@@ -546,8 +546,8 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
         <item>
             <title>Rust mio库源码情景分析</title>
             <pubDate>Wed, 30 Oct 2019 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/rust-mio-source-scenario-analysis/</link>
-            <guid>https://blog.zongwu233.com/rust-mio-source-scenario-analysis/</guid>
+            <link>https://blog.zongwu233.xyz/rust-mio-source-scenario-analysis/</link>
+            <guid>https://blog.zongwu233.xyz/rust-mio-source-scenario-analysis/</guid>
             <description>&lt;p&gt;mio 是 Metal IO，Rust语言生态比较底层的I&#x2F;O库，官网的介绍：&lt;&#x2F;p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Mio is a lightweight I&#x2F;O library for Rust with a focus on adding as little overhead as possible over the OS abstractions.&lt;&#x2F;p&gt;
@@ -559,8 +559,8 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
         <item>
             <title>如何放大你的个人能力（一）</title>
             <pubDate>Fri, 11 Oct 2019 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/enlarge-your-personal-ability-1/</link>
-            <guid>https://blog.zongwu233.com/enlarge-your-personal-ability-1/</guid>
+            <link>https://blog.zongwu233.xyz/enlarge-your-personal-ability-1/</link>
+            <guid>https://blog.zongwu233.xyz/enlarge-your-personal-ability-1/</guid>
             <description>&lt;!-- Math rendering --&gt;
 &lt;script src=&#x27;https:&#x2F;&#x2F;cdnjs.cloudflare.com&#x2F;ajax&#x2F;libs&#x2F;mathjax&#x2F;2.7.5&#x2F;latest.js?config=TeX-MML-AM_CHTML&#x27; async&gt;&lt;&#x2F;script&gt;
 &lt;script type=&quot;text&#x2F;x-mathjax-config&quot;&gt;
@@ -573,8 +573,8 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
         <item>
             <title>最简单的内网导航网站</title>
             <pubDate>Sat, 26 Jan 2019 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/the-simplest-navigation-website/</link>
-            <guid>https://blog.zongwu233.com/the-simplest-navigation-website/</guid>
+            <link>https://blog.zongwu233.xyz/the-simplest-navigation-website/</link>
+            <guid>https://blog.zongwu233.xyz/the-simplest-navigation-website/</guid>
             <description>&lt;p&gt;随着业务系统的增长，运维工具的增多，我们经常需要访问监控页面、ssh登录机器，需要记住很多常用信息，但是这些信息不值得占用宝贵的大脑资源，只需要存储下来用的时候访问即可。
 我们需要一个超简单的导航网站。&lt;&#x2F;p&gt;
 &lt;p&gt;如何最简单地实现一个静态的网站？不要任何多余的东西。&lt;&#x2F;p&gt;
@@ -584,8 +584,8 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
         <item>
             <title>服务端架构演进</title>
             <pubDate>Sun, 23 Dec 2018 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/architecture-evolution/</link>
-            <guid>https://blog.zongwu233.com/architecture-evolution/</guid>
+            <link>https://blog.zongwu233.xyz/architecture-evolution/</link>
+            <guid>https://blog.zongwu233.xyz/architecture-evolution/</guid>
             <description>&lt;h2 id=&quot;fu-wu-duan-jia-gou-v1-0&quot;&gt;服务端架构v1.0&lt;&#x2F;h2&gt;
 &lt;p&gt;先来看一看服务端架构的1.0版本：&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2019&#x2F;04&#x2F;28&#x2F;5cc576ce0976d.png&quot;&gt;&lt;img src=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2019&#x2F;04&#x2F;28&#x2F;5cc576ce0976d.png&quot; alt=&quot;架构1_0.png&quot; &#x2F;&gt;&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
@@ -669,16 +669,16 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
         <item>
             <title>Consul+Registrator+Nginx方案的部署</title>
             <pubDate>Thu, 20 Dec 2018 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/consul-registrator-nginx/</link>
-            <guid>https://blog.zongwu233.com/consul-registrator-nginx/</guid>
+            <link>https://blog.zongwu233.xyz/consul-registrator-nginx/</link>
+            <guid>https://blog.zongwu233.xyz/consul-registrator-nginx/</guid>
             <description>&lt;p&gt;详细介绍Consul+Registrator+Nginx方案的部署细节。&lt;&#x2F;p&gt;
 </description>
         </item>
         <item>
             <title>更新配置自动化工具</title>
             <pubDate>Sat, 03 Nov 2018 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/update-config-automated-tool/</link>
-            <guid>https://blog.zongwu233.com/update-config-automated-tool/</guid>
+            <link>https://blog.zongwu233.xyz/update-config-automated-tool/</link>
+            <guid>https://blog.zongwu233.xyz/update-config-automated-tool/</guid>
             <description>&lt;h2 id=&quot;yuan-qi&quot;&gt;缘起&lt;&#x2F;h2&gt;
 &lt;p&gt;  我们小创业公司使用的宽带是个人家庭宽带（申请企业宽带的成本很高，每月几千块），公网IP过一段时间就会变动，平时使用都没有什么影响，只有一点，阿里云上的服务都配置了安全组，只允许阿里云内网或者白名单IP访问，从而保障公司服务安全性。公司公网IP会动态变更，每一次变更之后都要修改安全组的ip配置，十分麻烦。&lt;&#x2F;p&gt;
 &lt;p&gt;  来自攻城师的思考：每一次IP变动都打断了大家专心工作的心流（Flow）状态，而且登录阿里云控制台修改也很繁琐，修改安全组配置的IP名单，能不能自动化？&lt;&#x2F;p&gt;
@@ -917,8 +917,8 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
         <item>
             <title>使用Gradle 构建SpringBoot应用的Docker镜像</title>
             <pubDate>Wed, 24 Oct 2018 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/gradle-build-springboot-dockerimage/</link>
-            <guid>https://blog.zongwu233.com/gradle-build-springboot-dockerimage/</guid>
+            <link>https://blog.zongwu233.xyz/gradle-build-springboot-dockerimage/</link>
+            <guid>https://blog.zongwu233.xyz/gradle-build-springboot-dockerimage/</guid>
             <description>&lt;h2 id=&quot;ying-yong-fa-bu-liu-cheng&quot;&gt;应用发布流程&lt;&#x2F;h2&gt;
 &lt;p&gt;通过结合docker容器，目前我们应用的发布流程大致如下：&lt;&#x2F;p&gt;
 &lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;i.loli.net&#x2F;2019&#x2F;04&#x2F;28&#x2F;5cc5177f1c1a9.png&quot; alt=&quot;应用发布流程.png&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
@@ -1062,8 +1062,8 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
         <item>
             <title>《从0到1》读书笔记</title>
             <pubDate>Sun, 09 Sep 2018 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/zerotoone-reading-notes/</link>
-            <guid>https://blog.zongwu233.com/zerotoone-reading-notes/</guid>
+            <link>https://blog.zongwu233.xyz/zerotoone-reading-notes/</link>
+            <guid>https://blog.zongwu233.xyz/zerotoone-reading-notes/</guid>
             <description>&lt;p&gt;市面上大把的书教你如何变得优秀：如何成为优秀的人，如何创立优秀的公司。&lt;&#x2F;p&gt;
 &lt;p&gt;这本书谈的是卓越。&lt;&#x2F;p&gt;
 &lt;p&gt;优秀是大众看得到的，显而易见的好，但卓越一开始是反直觉的，而且很难，直到最后的结果太强大，大家不得不接受。&lt;&#x2F;p&gt;
@@ -1078,16 +1078,16 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
         <item>
             <title>高性能OLAP调研</title>
             <pubDate>Sun, 29 Jul 2018 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/high-performance-olap/</link>
-            <guid>https://blog.zongwu233.com/high-performance-olap/</guid>
+            <link>https://blog.zongwu233.xyz/high-performance-olap/</link>
+            <guid>https://blog.zongwu233.xyz/high-performance-olap/</guid>
             <description>&lt;p&gt;业界有没有面向亿级数据多维度组合查询能够亚秒级响应的系统？&lt;&#x2F;p&gt;
 </description>
         </item>
         <item>
             <title>到底是谁的All In</title>
             <pubDate>Thu, 14 Jun 2018 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/whose-all-in/</link>
-            <guid>https://blog.zongwu233.com/whose-all-in/</guid>
+            <link>https://blog.zongwu233.xyz/whose-all-in/</link>
+            <guid>https://blog.zongwu233.xyz/whose-all-in/</guid>
             <description>&lt;p&gt;3周了，朋友圈还是陆续有创业者转发这篇文章。&lt;&#x2F;p&gt;
 &lt;p&gt;https:&#x2F;&#x2F;mp.weixin.qq.com&#x2F;s&#x2F;-PZ-NtXAfg2jNEmvKN5OBQ &lt;&#x2F;p&gt;
 &lt;p&gt;很可惜这篇文章出现了严重的定位错误。&lt;&#x2F;p&gt;
@@ -1098,8 +1098,8 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
         <item>
             <title>软件工程的手工艺时代</title>
             <pubDate>Thu, 24 May 2018 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/the-handicraft-software-age/</link>
-            <guid>https://blog.zongwu233.com/the-handicraft-software-age/</guid>
+            <link>https://blog.zongwu233.xyz/the-handicraft-software-age/</link>
+            <guid>https://blog.zongwu233.xyz/the-handicraft-software-age/</guid>
             <description>&lt;p&gt;目前的软件设计&#x2F;软件架构非常依赖个人经验。&lt;&#x2F;p&gt;
 &lt;p&gt;基本上是从个人经验出发定义问题，分析问题抽象模型然后做决策，不具备普适性更不能形式化证明，不能流程化，没有坚实的系统化的理论指导。&lt;&#x2F;p&gt;
 &lt;p&gt;很多人喜欢谈架构，在架构设计上争高低，但大部分都是谈论基于自己经验的认知甚至都没有对当前问题做统一定义。&lt;&#x2F;p&gt;
@@ -1108,8 +1108,8 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
         <item>
             <title></title>
             <pubDate>Fri, 20 Apr 2018 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/about/</link>
-            <guid>https://blog.zongwu233.com/about/</guid>
+            <link>https://blog.zongwu233.xyz/about/</link>
+            <guid>https://blog.zongwu233.xyz/about/</guid>
             <description>&lt;h2 id=&quot;about&quot;&gt;About&lt;&#x2F;h2&gt;
 &lt;p&gt;2011年毕业于岳麓山管理处附属学院，计算机科学与技术硕士。&lt;&#x2F;p&gt;
 &lt;p&gt;2011 - 2015就职于杭州某大型互联网公司。&lt;&#x2F;p&gt;
@@ -1120,8 +1120,8 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
         <item>
             <title>HanLP vs LTP 对比</title>
             <pubDate>Wed, 28 Mar 2018 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/hanlp-vs-ltp/</link>
-            <guid>https://blog.zongwu233.com/hanlp-vs-ltp/</guid>
+            <link>https://blog.zongwu233.xyz/hanlp-vs-ltp/</link>
+            <guid>https://blog.zongwu233.xyz/hanlp-vs-ltp/</guid>
             <description>&lt;p&gt;两个NLP库对比&lt;&#x2F;p&gt;
 &lt;p&gt;HanLP https:&#x2F;&#x2F;github.com&#x2F;hankcs&#x2F;HanLP 自然语言处理库。&lt;&#x2F;p&gt;
 &lt;p&gt;LTP https:&#x2F;&#x2F;github.com&#x2F;HIT-SCIR&#x2F;ltp  哈工大 语言技术平台(Language Technology Platform，LTP)。&lt;&#x2F;p&gt;
@@ -1130,8 +1130,8 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
         <item>
             <title>一加3T Root</title>
             <pubDate>Mon, 03 Jul 2017 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/oneplus3t-root/</link>
-            <guid>https://blog.zongwu233.com/oneplus3t-root/</guid>
+            <link>https://blog.zongwu233.xyz/oneplus3t-root/</link>
+            <guid>https://blog.zongwu233.xyz/oneplus3t-root/</guid>
             <description>&lt;h5 id=&quot;yu-bei&quot;&gt;预备&lt;&#x2F;h5&gt;
 &lt;p&gt;安装adb，直接安装 android sdk 即可。配置adb所在目录到环境变量&lt;&#x2F;p&gt;
 &lt;p&gt;下载TWRP的 recoveryhttps:&#x2F;&#x2F;dl.twrp.me&#x2F;oneplus3t&#x2F;twrp-3.1.1-2-oneplus3t.img.html 保存为 twrp-oneplus3.img&lt;&#x2F;p&gt;
@@ -1142,8 +1142,8 @@ MathJax.Hub.Config({tex2jax: {inlineMath: [[&#x27;$&#x27;,&#x27;$&#x27;], [&#x27
         <item>
             <title>Genymotion模拟器安装 Xposed</title>
             <pubDate>Sat, 17 Jun 2017 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/genymotion-with-xposed/</link>
-            <guid>https://blog.zongwu233.com/genymotion-with-xposed/</guid>
+            <link>https://blog.zongwu233.xyz/genymotion-with-xposed/</link>
+            <guid>https://blog.zongwu233.xyz/genymotion-with-xposed/</guid>
             <description>&lt;p&gt;macOS环境。&lt;&#x2F;p&gt;
 &lt;p&gt;Xposed 现在的版本需要先安装installer，再安装framework。&lt;&#x2F;p&gt;
 &lt;p&gt;网上很多文章说需要通过recovery模式安装installer，但是genymotion没这个模式，真悲惨。&lt;&#x2F;p&gt;
@@ -1171,8 +1171,8 @@ http:&#x2F;&#x2F;www.vkyii.com&#x2F;2015&#x2F;09&#x2F;09&#x2F;install-xposed-in-
         <item>
             <title>Android项目持续集成环境</title>
             <pubDate>Sun, 11 Jun 2017 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/android-project-ci-jenkins/</link>
-            <guid>https://blog.zongwu233.com/android-project-ci-jenkins/</guid>
+            <link>https://blog.zongwu233.xyz/android-project-ci-jenkins/</link>
+            <guid>https://blog.zongwu233.xyz/android-project-ci-jenkins/</guid>
             <description>&lt;h5 id=&quot;xi-tong-huan-jing&quot;&gt;系统环境&lt;&#x2F;h5&gt;
 &lt;p&gt;系统环境centOS 7&lt;&#x2F;p&gt;
 &lt;h5 id=&quot;zhi-zuo-jenkinsde-dockerjing-xiang&quot;&gt;制作jenkins的Docker镜像&lt;&#x2F;h5&gt;
@@ -1232,8 +1232,8 @@ http:&#x2F;&#x2F;www.vkyii.com&#x2F;2015&#x2F;09&#x2F;09&#x2F;install-xposed-in-
         <item>
             <title>重度信息阅读症</title>
             <pubDate>Thu, 11 May 2017 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/severe-info-reading/</link>
-            <guid>https://blog.zongwu233.com/severe-info-reading/</guid>
+            <link>https://blog.zongwu233.xyz/severe-info-reading/</link>
+            <guid>https://blog.zongwu233.xyz/severe-info-reading/</guid>
             <description>&lt;p&gt;从什么时候开始，我成为了重度信息阅读症人群的一员了呢？&lt;&#x2F;p&gt;
 &lt;p&gt;起床先刷一下微信&lt;&#x2F;p&gt;
 &lt;p&gt;无聊刷刷微博&lt;&#x2F;p&gt;
@@ -1247,8 +1247,8 @@ http:&#x2F;&#x2F;www.vkyii.com&#x2F;2015&#x2F;09&#x2F;09&#x2F;install-xposed-in-
         <item>
             <title>Android工程构建</title>
             <pubDate>Fri, 19 Aug 2016 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/android-project-from-gradle-2-buck/</link>
-            <guid>https://blog.zongwu233.com/android-project-from-gradle-2-buck/</guid>
+            <link>https://blog.zongwu233.xyz/android-project-from-gradle-2-buck/</link>
+            <guid>https://blog.zongwu233.xyz/android-project-from-gradle-2-buck/</guid>
             <description>&lt;h4 id=&quot;why&quot;&gt;Why&lt;&#x2F;h4&gt;
 &lt;p&gt;为什么我要从官方指定的gradle构建方式迁移到buck？&lt;&#x2F;p&gt;
 &lt;p&gt;​	我们的项目包含20+个模块。如果是纯工程依赖，在Android studio＋gradle 下面做日常开发一旦进行项目构建，AS就变得又慢又卡。通过检测AS的jvm发现，高峰期可以占用7G的内存（AS本身进程＋启动的gradle进程）。而且还持续进行GC，不卡才怪。&lt;&#x2F;p&gt;
@@ -1392,8 +1392,8 @@ http:&#x2F;&#x2F;www.vkyii.com&#x2F;2015&#x2F;09&#x2F;09&#x2F;install-xposed-in-
         <item>
             <title>数据抽象</title>
             <pubDate>Sat, 09 Apr 2016 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/data-abstract/</link>
-            <guid>https://blog.zongwu233.com/data-abstract/</guid>
+            <link>https://blog.zongwu233.xyz/data-abstract/</link>
+            <guid>https://blog.zongwu233.xyz/data-abstract/</guid>
             <description>&lt;p&gt;SICP在第二章(构造数据抽象)中提出了一个问题：&lt;br &#x2F;&gt;
 数据究竟意味着什么？&lt;br &#x2F;&gt;
 书中的答案是：&lt;strong&gt;数据是一组适当的选择函数和构造函数。&lt;&#x2F;strong&gt;&lt;br &#x2F;&gt;
@@ -1404,8 +1404,8 @@ http:&#x2F;&#x2F;www.vkyii.com&#x2F;2015&#x2F;09&#x2F;09&#x2F;install-xposed-in-
         <item>
             <title>业务模块无耦合通信协议的设计</title>
             <pubDate>Sun, 27 Mar 2016 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/module-protocol-design-think/</link>
-            <guid>https://blog.zongwu233.com/module-protocol-design-think/</guid>
+            <link>https://blog.zongwu233.xyz/module-protocol-design-think/</link>
+            <guid>https://blog.zongwu233.xyz/module-protocol-design-think/</guid>
             <description>&lt;h3 id=&quot;ding-yi&quot;&gt;定义&lt;&#x2F;h3&gt;
 &lt;p&gt;模块：独立提供特定业务功能的完整体，这里并不指代无业务的基础组件&lt;br &#x2F;&gt;
 主客户端：接入各个模块的容器App&lt;br &#x2F;&gt;
@@ -1417,8 +1417,8 @@ http:&#x2F;&#x2F;www.vkyii.com&#x2F;2015&#x2F;09&#x2F;09&#x2F;install-xposed-in-
         <item>
             <title>不规范的HTTP 204 响应格式</title>
             <pubDate>Wed, 30 Sep 2015 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/nonstandard-204-response/</link>
-            <guid>https://blog.zongwu233.com/nonstandard-204-response/</guid>
+            <link>https://blog.zongwu233.xyz/nonstandard-204-response/</link>
+            <guid>https://blog.zongwu233.xyz/nonstandard-204-response/</guid>
             <description>&lt;p&gt;总悟君这次要说的是最近遇到的关于Http返回异常格式的问题。&lt;&#x2F;p&gt;
 &lt;p&gt;起因是这个:&lt;&#x2F;p&gt;
 &lt;pre data-lang=&quot;java&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-java &quot;&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span style=&quot;color:#ebcb8b;&quot;&gt;SyncNetworkPerformer&lt;&#x2F;span&gt;&lt;span&gt;.execute: 
@@ -1482,8 +1482,8 @@ http:&#x2F;&#x2F;www.vkyii.com&#x2F;2015&#x2F;09&#x2F;09&#x2F;install-xposed-in-
         <item>
             <title>dexopt的源码跟踪</title>
             <pubDate>Sun, 27 Sep 2015 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/dexopt-process/</link>
-            <guid>https://blog.zongwu233.com/dexopt-process/</guid>
+            <link>https://blog.zongwu233.xyz/dexopt-process/</link>
+            <guid>https://blog.zongwu233.xyz/dexopt-process/</guid>
             <description>&lt;p&gt;关于dexopt的预备知识在&lt;a href=&quot;http:&#x2F;&#x2F;www.netmite.com&#x2F;android&#x2F;mydroid&#x2F;dalvik&#x2F;docs&#x2F;dexopt.html&quot;&gt;这里&lt;&#x2F;a&gt;。&lt;br &#x2F;&gt;
 一般都是从AndroidStudio run出来的apk安装到手机，这里从 adb shell pm install -r xxx.apk 开始看起：&lt;br &#x2F;&gt;
 找到android&#x2F;frameworks&#x2F;base&#x2F;cmds&#x2F;pm&#x2F;src&#x2F;com&#x2F;android&#x2F;commands&#x2F;pm&#x2F;pm.java pm命令的源码&lt;br &#x2F;&gt;
@@ -2186,8 +2186,8 @@ android.support.multidex.MultiDex.V14#makeDexElements();&lt;br &#x2F;&gt;
         <item>
             <title>其实你不知道MultiDex到底有多坑</title>
             <pubDate>Sat, 26 Sep 2015 00:00:00 +0000</pubDate>
-            <link>https://blog.zongwu233.com/the-touble-of-multidex/</link>
-            <guid>https://blog.zongwu233.com/the-touble-of-multidex/</guid>
+            <link>https://blog.zongwu233.xyz/the-touble-of-multidex/</link>
+            <guid>https://blog.zongwu233.xyz/the-touble-of-multidex/</guid>
             <description>&lt;p&gt;愉快地写着Android代码的总悟君往工程里引入了一个默默无闻的jar然后Run了一下， 经过漫长的等待AndroidStudio构建失败了。&lt;&#x2F;p&gt;
 </description>
         </item>
