@@ -82,6 +82,22 @@
         </header>
 
         
+        <div class="content post-summary">
+            <p><code>scotty</code> 是一款非常容易上手的、构建在 WAI/Wrap 之上的 Haskell web frameowrk，官方文档的 start 例子：</p>
+<pre data-lang="haskell" style="background-color:#2b303b;color:#c0c5ce;" class="language-haskell "><code class="language-haskell" data-lang="haskell"><span>{-# </span><span style="color:#b48ead;">LANGUAGE</span><span> OverloadedStrings #-}
+</span><span style="color:#b48ead;">import </span><span>Web.Scotty
+</span><span>
+</span><span style="color:#b48ead;">import </span><span>Data.Monoid (</span><span style="color:#8fa1b3;">mconcat</span><span>)
+</span><span>
+</span><span>main = scotty </span><span style="color:#d08770;">3000 </span><span>$
+</span><span>    get &quot;</span><span style="color:#a3be8c;">/:word</span><span>&quot; $ </span><span style="color:#b48ead;">do
+</span><span>        beam &lt;- param &quot;</span><span style="color:#a3be8c;">word</span><span>&quot;
+</span><span>        html $ mconcat [&quot;</span><span style="color:#a3be8c;">&lt;h1&gt;Scotty, </span><span>&quot;, beam, &quot;</span><span style="color:#a3be8c;"> me up!&lt;/h1&gt;</span><span>&quot;]
+</span></code></pre>
+<p>编译运行即可体验简单的 web 应用。</p>
+
+        </div>
+        
         
         
     <div class="article-info">
