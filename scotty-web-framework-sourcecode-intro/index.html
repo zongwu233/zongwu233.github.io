@@ -216,9 +216,16 @@
 </span><span>    reader = lift . reader
 </span></code></pre>
 <p><code>ExceptT e m</code> 实现里 <code>MonadReader  r m</code>，所以我们关注的 <code>ask</code> 就是 <code>ExceptT (ActionError e) (ReaderT ActionEnv (StateT ScottyResponse m)) a</code>的 <code>ask</code></p>
-<p><code>MonadReader r (ExceptT e m)</code> 的 <code>ask = lift ask</code>也就是将 <code>ask``lift</code> 到 <code>ExceptT e m</code>的 <code>m</code> 也就是 <code>(ReaderT ActionEnv (StateT ScottyResponse m))</code></p>
-<p>这样就获取到了 <code>ActionEnv</code> 。</p>
-<p>最终得到 <code>ask :: ExceptT (ActionError e) (ReaderT ActionEnv (StateT ScottyResponse m)) ActionEnv</code></p>
+<p><code>MonadReader r (ExceptT e m)</code> 的 <code>ask = lift ask</code> 。</p>
+<p>结合 <code>lift :: (MonadTrans t, Monad m) =&gt; m a -&gt; t m a </code>的定义，
+<code>m a</code>  提升（<code>lift</code>）到了 <code> t m a</code> 。</p>
+<p>这里就是：
+<code>(ReaderT ActionEnv (StateT ScottyResponse m)) a</code> 提升（<code>lift</code>）到了 <code>ExceptT (ActionError e) (ReaderT ActionEnv (StateT ScottyResponse m)) a</code>。</p>
+<p><code>(ReaderT ActionEnv (StateT ScottyResponse m))</code> 的 <code>ask</code> 我们熟悉， <code>ask :: Monad m =&gt; ReaderT r m r</code> 
+也就是 <code>(ReaderT ActionEnv (StateT ScottyResponse m)) ActionEnv</code> 
+把这个结构<code>lift</code>到 <code>ExceptT ...</code> 最终得到：</p>
+<p><code>ask :: ExceptT (ActionError e) (ReaderT ActionEnv (StateT ScottyResponse m)) ActionEnv</code></p>
+<p>呼呼。</p>
 <p>至于 <code>liftM getReq ask</code>的类型就得到 <code>liftM getReq ask :: ExceptT (ActionError e) (ReaderT ActionEnv (StateT ScottyResponse m)) Request</code></p>
 <p>然后再结合上最前面的<code>ActionT </code> 得到 <code>request :: ActionT e m Request</code></p>
 <p>此外，我们在源码里有：</p>
