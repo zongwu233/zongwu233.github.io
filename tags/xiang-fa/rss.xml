@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+      <title>zongwu&#x27;s blog - 想法</title>
+      <link>https://blog.zongwu233.com</link>
+      <description></description>
+      <generator>Zola</generator>
+      <language>en</language>
+      <atom:link href="https://blog.zongwu233.com/tags/xiang-fa/rss.xml" rel="self" type="application/rss+xml"/>
+      <lastBuildDate>Sun, 20 Dec 2020 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>[翻译]发明原则(inventing on principle)</title>
+          <pubDate>Sun, 20 Dec 2020 00:00:00 +0000</pubDate>
+          <author>Unknown</author>
+          <link>https://blog.zongwu233.com/inventing-on-principle/</link>
+          <guid>https://blog.zongwu233.com/inventing-on-principle/</guid>
+          <description xml:base="https://blog.zongwu233.com/inventing-on-principle/">&lt;blockquote&gt;
+&lt;p&gt;找到并遵循你自己的原则。&lt;&#x2F;p&gt;
+&lt;p&gt;持续地去解决工作生活中违背这些原则的事情，优秀的工具或者产品，不过是这个过程的副作用。&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h2 id=&quot;bei-jing&quot;&gt;背景&lt;&#x2F;h2&gt;
+&lt;p&gt;该演讲最初由Bret Victor在CUSEC(Canadian University Software Engineering Conference) 2012上发表。&lt;&#x2F;p&gt;</description>
+      </item>
+    </channel>
+</rss>

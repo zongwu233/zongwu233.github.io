@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+
+    <title>不规范的HTTP 204 响应格式</title>
+    <meta name="description" content="">
+
+    <link rel="stylesheet" href="https://blog.zongwu233.com/main.css">
+
+    
+        
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
+        
+    
+
+    
+    
+</head>
+<body>
+    <a class="skip-main" href="#main">Skip to content</a>
+    <div class="container">
+        <header> 
+            <h1 class="site-header">
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
+            </h1>
+            <nav>
+                
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
+                
+                
+            </nav>
+        </header>
+        <main id="main" tabindex="-1">
+            
+
+<article class="post">
+    <header>
+        <h1>不规范的HTTP 204 响应格式</h1>
+    </header>
+    <div class="content">
+        <p>总悟君这次要说的是最近遇到的关于Http返回异常格式的问题。</p>
+<p>起因是这个:</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="java"><span class="giallo-l"><span>SyncNetworkPerformer</span><span style="color: #9399B2;">.</span><span>execute</span><span style="color: #CBA6F7;">:</span><span> </span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">Unhandled</span><span> exception com</span><span style="color: #9399B2;">.</span><span>zongwu</span><span style="color: #9399B2;">.</span><span>common</span><span style="color: #9399B2;">.</span><span>http</span><span style="color: #9399B2;">.</span><span>volley</span><span style="color: #9399B2;">.</span><span>NoConnectionError</span><span style="color: #CBA6F7;">:</span><span> java</span><span style="color: #9399B2;">.</span><span>net</span><span style="color: #9399B2;">.</span><span>ProtocolException</span><span style="color: #CBA6F7;">:</span><span> </span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">Unexpected</span><span> status line</span><span style="color: #CBA6F7;">:</span><span> nullHTTP</span><span style="color: #94E2D5;">/</span><span style="color: #FAB387;">1.1 200</span><span style="color: #CBA6F7;"> OK</span><span>   </span></span>
+<span class="giallo-l"><span>com</span><span style="color: #9399B2;">.</span><span>zongwu</span><span style="color: #9399B2;">.</span><span>common</span><span style="color: #9399B2;">.</span><span>http</span><span style="color: #9399B2;">.</span><span>volley</span><span style="color: #9399B2;">.</span><span>NoConnectionError</span><span style="color: #CBA6F7;">:</span><span> java</span><span style="color: #9399B2;">.</span><span>net</span><span style="color: #9399B2;">.</span><span>ProtocolException</span><span style="color: #CBA6F7;">: Unexpected</span><span> status line</span><span style="color: #CBA6F7;">:</span><span> nullHTTP</span><span style="color: #94E2D5;">/</span><span style="color: #FAB387;">1.1 200</span><span style="color: #CBA6F7;"> OK</span><span>           </span></span>
+<span class="giallo-l"><span>at com</span><span style="color: #9399B2;">.</span><span>zongwu</span><span style="color: #9399B2;">.</span><span>common</span><span style="color: #9399B2;">.</span><span>http</span><span style="color: #9399B2;">.</span><span>volley</span><span style="color: #9399B2;">.</span><span>toolbox</span><span style="color: #9399B2;">.</span><span>BasicNetwork</span><span style="color: #9399B2;">.</span><span style="color: #89B4FA;font-style: italic;">performRequest</span><span style="color: #9399B2;">(</span><span>BasicNetwork</span><span style="color: #9399B2;">.</span><span>java</span><span style="color: #CBA6F7;">:</span><span style="color: #FAB387;">163</span><span style="color: #9399B2;">)</span><span>  </span></span>
+<span class="giallo-l"><span>at com</span><span style="color: #9399B2;">.</span><span>zongwu</span><span style="color: #9399B2;">.</span><span>common</span><span style="color: #9399B2;">.</span><span>http</span><span style="color: #9399B2;">.</span><span>volley</span><span style="color: #9399B2;">.</span><span>SyncNetworkPerformer</span><span style="color: #9399B2;">.</span><span style="color: #89B4FA;font-style: italic;">execute</span><span style="color: #9399B2;">(</span><span>SyncNetworkPerformer</span><span style="color: #9399B2;">.</span><span>java</span><span style="color: #CBA6F7;">:</span><span style="color: #FAB387;">64</span><span style="color: #9399B2;">)</span></span></code></pre>
+<p>什么情况，服务端居然返回给我错误的http头部？？但是现在还不能找服务端的童鞋<del>撕x</del>理论，因为还有几个疑点我还回答不上来。</p>
+<ol>
+<li>该问题不是必现。</li>
+<li>线上版本跑的好好的，我把HTTP请求库切换成volley就出问题了。<br />
+总悟君很快就必现了bug：反复调用该方法，HTTP返回204之后的下一次一定出现该问题。那新问题又出现了，<strong>HTTP是无状态的请求</strong>，为何上一次的请求可以影响下一个请求呢？答案是TCP通道的复用。<a rel="external" href="http://tools.ietf.org/html/rfc2616#section-8.1.2">html rfc2616#8.1.2</a> 介绍了HTTP1.1默认开启持久化连接。
+仔细查看线上版本的代码发现每一次Http请求完成后都调用了shutdown()方法。</li>
+</ol>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="java"><span class="giallo-l"><span style="color: #CBA6F7;">DefaultHttpClient</span><span> client</span><span style="color: #94E2D5;"> =</span><span style="color: #89B4FA;font-style: italic;"> getHttpClient</span><span style="color: #9399B2;">(</span><span>httpPost</span><span style="color: #9399B2;">.</span><span style="color: #89B4FA;font-style: italic;">getURI</span><span style="color: #9399B2;">().</span><span style="color: #89B4FA;font-style: italic;">toString</span><span style="color: #9399B2;">());</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">  ...</span></span>
+<span class="giallo-l"><span>  client</span><span style="color: #9399B2;">.</span><span style="color: #89B4FA;font-style: italic;">getConnectionManager</span><span style="color: #9399B2;">().</span><span style="color: #89B4FA;font-style: italic;">shutdown</span><span style="color: #9399B2;">();</span></span></code></pre>
+<p>这个当然是关闭了TCP通道的链接。
+两个疑点都搞定，但是这个null到底是什么时候塞进来的呢？总悟君祭出大杀器<strong>WireShark</strong> 。(幽默风趣的<a rel="external" href="http://weibo.com/linpeiman">林沛满</a>为WireShark写了一本很有意思的入门<a rel="external" href="https://book.douban.com/subject/26268767">书籍</a>推荐读一读)
+设置好wifi热点，手机连到该wifi上，开始抓包。
+出现问题的包是这样的：</p>
+<p><img src="http://7xn3gz.com1.z0.glb.clouddn.com/204-response-with-null.png" alt="图片" /></p>
+<p>2 reassembled TCP Segments 149 bytes?<br />
+查看 #44005 最后的4个bytes就是null。而这个#44005是上一次的HTTP 204返回结果的TCP序号。#44005的数据已经发送到了客户端，为何最后4个bytes再次被算进来了？？
+让我们先去看看HTTP 1.1对204返回值的<a rel="external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html">规范</a>:</p>
+<blockquote>
+<p>10.2.5 204 No Content</p>
+</blockquote>
+<blockquote>
+<p>The server has fulfilled the request but does not need to return an entity-body, and might want to return updated metainformation. The response MAY include new or updated metainformation in the form of entity-headers, which if present SHOULD be associated with the requested variant.</p>
+</blockquote>
+<blockquote>
+<p>If the client is a user agent, it SHOULD NOT change its document view from that which caused the request to be sent. This response is primarily intended to allow input for actions to take place without causing a change to the user agent's active document view, although any new or updated metainformation SHOULD be applied to the document currently in the user agent's active view.</p>
+</blockquote>
+<blockquote>
+<p>The 204 response <strong>MUST NOT</strong>include a message-body, and thus is always terminated by the first empty line after the header fields.</p>
+</blockquote>
+<p><strong>最后一段明确说明204响应不允许包含消息体。</strong></p>
+<p>于是总悟君脑补了一下客户端和服务端的对话：</p>
+<p>客户端：hi 你好 （SYN）<br />
+服务端：hi 你好	（SYN）
+客户端：耶 联系上你拉	（ACK）
+(三次握手，建立TCP通道)<br />
+客户端：我想要查看某个资源 (GET /ad?xxx=x)<br />
+服务端：收到你的请求了 （ACK）<br />
+服务端：该资源没更新
+（HTTP/1.1 204 NO Content  ... <strong>null</strong> ）	（<strong>注意结尾带了个null</strong>）
+客户端：收到（ACK）<br />
+（客户端内心独白）：204啊那就没有任何数据需要consume咯。(刚才出现的<strong>null</strong>字符残留在tcp接收缓冲区内)<br />
+（本次HTTP请求结束。但是TCP长链接没有断开）<br />
+客户端：我想要查看某个资源 (GET /ad?xxx=x)<br />
+服务端：收到请求，有数据下发（ACK）<br />
+服务端：HTTP/1.1 200 OK<br />
+客户端：（取数据） nullHTTP/1.1 200 OK 。。。 服务端！你给我了啥。。。 (读取接收缓存区 的时候 ，上次残留的null字符也被一起读进来，问题出现了)</p>
+<p>问题原因找到。服务端童鞋按照规范修改了204的返回格式。一切都正常了~</p>
+
+    </div>
+
+    
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2015-09-30">2015-09-30</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+        </div>
+    </div>
+
+</article>
+
+
+        </main>
+        <footer>
+            <p>
+                © zongwu&#x27;s blog 2026<br>
+                Powered by <a target="_blank" href="https://getzola.org/">Zola</a>, Theme <a target="_blank" href="https://github.com/zbrox/anpu-zola-theme">Anpu</a>.
+            </p>
+            <p>
+                
+                
+            </p>
+        </footer>
+    </div>
+
+    <div class="dark-mode-buttons">
+  <button class="dark-mode-button" id="dark-mode-on">
+    <img
+      class="themed-icon"
+      src="https://blog.zongwu233.com/dark_mode.svg"
+      width="24"
+      height="24"
+      alt="Dark mode"
+      aria-label="dark mode toggle"
+      title="Dark mode"
+    />
+  </button>
+  <button class="dark-mode-button" id="dark-mode-off">
+    <img
+      class="themed-icon"
+      src="https://blog.zongwu233.com/light_mode.svg "
+      width="24"
+      height="24"
+      alt="Light mode"
+      aria-label="light mode toggle"
+      title="Light mode"
+    />
+  </button>
+</div>
+<script>
+  const cls = document.body.classList;
+  const getSessionTheme = sessionStorage.getItem("theme");
+  if (getSessionTheme === "dark") {
+    cls.toggle("dark-mode", true);
+  } else if (getSessionTheme === "light") {
+    cls.toggle("dark-mode", false);
+  } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    cls.toggle("dark-mode", true);
+  }
+  document
+    .getElementById("dark-mode-on")
+    .addEventListener("click", function (e) {
+      cls.toggle("dark-mode", true);
+      sessionStorage.setItem("theme", "dark");
+    });
+  document
+    .getElementById("dark-mode-off")
+    .addEventListener("click", function (e) {
+      cls.toggle("dark-mode", false);
+      sessionStorage.setItem("theme", "light");
+    });
+</script>
+<noscript>
+  <style>
+    .dark-mode-buttons {
+      display: none;
+    }
+  </style>
+</noscript>
+
+    
+</body>
+</html>

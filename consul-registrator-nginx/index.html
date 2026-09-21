@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+
+    <title>Consul+Registrator+Nginx方案的部署</title>
+    <meta name="description" content="">
+
+    <link rel="stylesheet" href="https://blog.zongwu233.com/main.css">
+
+    
+        
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
+        
+    
+
+    
+    
+</head>
+<body>
+    <a class="skip-main" href="#main">Skip to content</a>
+    <div class="container">
+        <header> 
+            <h1 class="site-header">
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
+            </h1>
+            <nav>
+                
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
+                
+                
+            </nav>
+        </header>
+        <main id="main" tabindex="-1">
+            
+
+<article class="post">
+    <header>
+        <h1>Consul+Registrator+Nginx方案的部署</h1>
+    </header>
+    <div class="content">
+        <p>详细介绍Consul+Registrator+Nginx方案的部署细节。</p>
+<span id="continue-reading"></span><h2 id="consulji-qun">Consul集群</h2>
+<h3 id="consul-ji-qun-jia-gou">Consul 集群架构</h3>
+<p><img src="https://www.consul.io/assets/images/consul-arch-420ce04a.png" alt="consul集群" /></p>
+<p>图中Consul集群有两个数据中心，DATACENTER1 和DATACENTER2 。DATACENTER1中，有3个Consul server（一个leader 和2个follewer），3个Consul Client。实际上Consul Server也可以充当Client，比如DATACENTER2只有Server。Server具备Client所有的功能，此外还会把服务的信息持久化下来。服务一般是通过Consul Client注册到Consul集群中，但是也可以直接通过Server注册。</p>
+<h3 id="ji-qun-jie-dian">集群节点</h3>
+<table><thead><tr><th>IP</th><th>角色</th><th>节点名称</th><th></th></tr></thead><tbody>
+<tr><td>192.168.0.223</td><td>Consul Server  leader</td><td>consul_server_master</td><td></td></tr>
+<tr><td>192.168.0.226</td><td>Consul Server  follower</td><td>consul_server_slave</td><td></td></tr>
+<tr><td>192.168.0.245</td><td>Consul Server  follower</td><td>consul_server_slave2</td><td></td></tr>
+</tbody></table>
+<p>如果机器是阿里云ECS ，注意三台机器安全组配置打开端口：</p>
+<p>tcp 端口  8300 8301 8302 8400 8500  8600</p>
+<p>udp端口 8301 8302</p>
+<h2 id="tong-guo-dockerbu-shu-consul">通过Docker部署Consul</h2>
+<p>每个节点上的consul  service 的 name 都叫 consul_server。</p>
+<p>业务应用的 docker  container 通过  <code>--link  consul_server:consul</code> 启动 ，就可以在应用内访以 <code>host : consul</code> 来访问 consul API。</p>
+<p>阿里云的docker compose 不支持从文件中读取变量信息，无法一次性部署3个节点，只能一个个部署。</p>
+<p>对于192.168.0.223节点的docker-compose.yml ：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="yaml"><span class="giallo-l"><span style="color: #89B4FA;">version</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> &#39;2&#39;</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">services</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">  consul_server</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    image</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;">  consul:latest</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    hostname</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> consul_server</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    ports</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;8300:8300&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;8301:8301&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;8301:8301/udp&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;8302:8302&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;8302:8302/udp&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;8400:8400&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;8500:8500&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;8600:8600&quot;</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    volumes</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;/consul/data:/consul/data:rw&quot;</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    command</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> consul agent -server -bootstrap-expect 1  -advertise 192.168.0.223 -data-dir /consul/data -node consul_server_master  -client 0.0.0.0 -ui</span><span> </span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">networks</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">  default</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    external</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">      name</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> multi-host-network</span></span></code></pre>
+<p><code>consul agent -server </code> 是以server模式启动consul。</p>
+<p><code>-bootstrap-expect 1</code>  consul集群最少1个实例即可运行。如果配置为3，需要3个consul server节点都启动，集群才能正常工作。</p>
+<p><code>multi-host-network</code> 是docker集群的网络（该网络实际上由阿里云容器服务默认创建）。也可以自行创建网络。</p>
+<p>可以启动该consul节点。</p>
+<p>对于 192.168.0.226 节点的docker-compose.yml ：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="yaml"><span class="giallo-l"><span style="color: #89B4FA;">version</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> &#39;2&#39;</span><span> </span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">services</span><span style="color: #94E2D5;">:</span><span> </span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">  consul_server</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    image</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;">  consul:latest</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    hostname</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> consul_server</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    ports</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;8300:8300&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;8301:8301&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;8301:8301/udp&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;8302:8302&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;8302:8302/udp&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;8400:8400&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;8500:8500&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;8600:8600&quot;</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    volumes</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;/consul/data:/consul/data:rw&quot;</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    command</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> consul agent -server  -retry-join=192.168.0.223  -advertise 192.168.0.226 -data-dir /consul/data  -node consul_server_slave  -client 0.0.0.0</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">networks</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">  default</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    external</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">      name</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> multi-host-network</span></span></code></pre>
+<p><code>-retry-join=192.168.0.223</code>  表明该节点启动后（或者异常退出重启后）尝试加入<code>192.168.0.223 </code>的集群中。</p>
+<p>同样的对于 192.168.0.245 节点的docker-compose.yml ：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="yaml"><span class="giallo-l"><span style="color: #89B4FA;">version</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> &#39;2&#39;</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">services</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">  consul_server</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    image</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;">  consul:latest</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    hostname</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> consul_server</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    ports</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;8300:8300&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;8301:8301&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;8301:8301/udp&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;8302:8302&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;8302:8302/udp&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;8400:8400&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;8500:8500&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;8600:8600&quot;</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    volumes</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;/consul/data:/consul/data:rw&quot;</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    command</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> consul agent -server  -retry-join=192.168.0.223 -advertise 192.168.0.245 -data-dir /consul/data -node consul_server_slave2  -client 0.0.0.0</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">networks</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">  default</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    external</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">      name</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> multi-host-network</span></span></code></pre>
+<p>只是<code>-node consul_server_slave2</code> 不同。</p>
+<p>把两个follower启动起来。</p>
+<h2 id="tong-guo-dockerbu-shu-lb-registrator">通过Docker部署LB+Registrator</h2>
+<p>接下来部署 <code>consul-template+Ngnix+registrator</code></p>
+<p>并没有跟consul集群的docker compose 文件合并成一个文件， 因为consul集群一旦启动，基本上不需要重新部署。而``consul-template+Ngnix`可能后续会修改。</p>
+<p>对于192.168.0.223节点的docker-compose.yml ：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="yaml"><span class="giallo-l"><span style="color: #89B4FA;">version</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> &#39;2&#39;</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">services</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">  load_balancer</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    image</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;">  registry.cn-hangzhou.aliyuncs.com/zongwu233/nginx-consul-template:v1.1</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    hostname</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> lb</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    external_links</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> consul_server:consul</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    ports</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;80:80&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;8788:8788&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;9000:9000&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;9001:9001&quot;</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">  registrator</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    image</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> gliderlabs/registrator:latest</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    hostname</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> registrator</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    external_links</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> consul_server:consul</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    volumes</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;/var/run/docker.sock:/tmp/docker.sock&quot;</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    command</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;">  -ip 192.168.0.223  consul://192.168.0.223:8500</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">networks</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">  default</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    external</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">      name</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> multi-host-network</span></span>
+<span class="giallo-l"></span></code></pre>
+<p><code>nginx-consul-template</code> 镜像带有consul-template 和nginx两个服务。详细介绍见<a rel="external" href="https://github.com/liberalman/nginx-consul-template">https://github.com/liberalman/nginx-consul-template</a>  。</p>
+<p>该镜像中的<code>nginx.conf.ctmpl</code>文件是<code>consul-template</code>模版，会在启动后生成合适的<code>nginx.conf</code>并调用<code>nginx</code>的reload命令加载该文件。实际上，我们定制了<code>nginx-consul-template</code> docker镜像，后面再介绍。</p>
+<p>对于<code>load_balancer</code>通过<code>external_links</code> 链接 同一台机器上的<code>consul_server</code> 。</p>
+<p>对于<code>registrator</code>同样通过<code>external_links</code>链接到<code>consul_server</code>。</p>
+<p>对于192.168.0.226节点的docker-compose.yml ：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="yaml"><span class="giallo-l"><span style="color: #89B4FA;">version</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> &#39;2&#39;</span><span> </span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">services</span><span style="color: #94E2D5;">:</span><span> </span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">  load_balancer</span><span style="color: #94E2D5;">:</span><span> </span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    image</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;">  registry.cn-hangzhou.aliyuncs.com/zongwu233/nginx-consul-template:v1.1</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    hostname</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> lb</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    external_links</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> consul_server:consul</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    ports</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;80:80&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;8788:8788&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;9000:9000&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;9001:9001&quot;</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">  registrator</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    image</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> gliderlabs/registrator:latest</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    hostname</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> registrator</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    external_links</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> consul_server:consul</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    volumes</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;/var/run/docker.sock:/tmp/docker.sock&quot;</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    command</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;">  -ip 192.168.0.226  consul://192.168.0.226:8500</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">networks</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">  default</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    external</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">      name</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> multi-host-network</span></span></code></pre>
+<p>对于192.168.0.245节点的docker-compose.yml ：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="yaml"><span class="giallo-l"><span style="color: #89B4FA;">version</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> &#39;2&#39;</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">services</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">  load_balancer</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    image</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> registry.cn-hangzhou.aliyuncs.com/zongwu233/nginx-consul-template:v1.1</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    hostname</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> lb</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    external_links</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> consul_server:consul</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    ports</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;80:80&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;8788:8788&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;9000:9000&quot;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;9001:9001&quot;</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">  registrator</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    image</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> gliderlabs/registrator:latest</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    hostname</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> registrator</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    external_links</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> consul_server:consul</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    volumes</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;/var/run/docker.sock:/tmp/docker.sock&quot;</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    command</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;">  -ip 192.168.0.245  consul://192.168.0.245:8500</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">networks</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">  default</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    external</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">      name</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> multi-host-network</span></span>
+<span class="giallo-l"></span></code></pre>
+<p>配置完成之后分别启动。</p>
+<p>这样，整个框架部署完成，通过 <a rel="external" href="http://192.168.0.223:8500/ui/dc1/services">http://192.168.0.223:8500/ui/dc1/services</a> 可以访问consul 的UI 界面。</p>
+<h2 id="testying-yong">Test应用</h2>
+<p>部署一个testHello 应用来测试。先构建一个简单的SpringBoot应用，端口是9123。并实现简单的<code>/health</code> 接口，直接返回200，供<code>consul</code> 调用。</p>
+<p><code>docker-compose</code>文件内容：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="yaml"><span class="giallo-l"><span style="color: #89B4FA;">version</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> &#39;2&#39;</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">services</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">  test_hello</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    image</span><span style="color: #94E2D5;">:</span><span style="color: #A6E3A1;"> registry.cn-hangzhou.aliyuncs.com/zongwu233/testhello:latest</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    environment</span><span style="color: #94E2D5;">:</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> SERVICE_9123_NAME=my-web-server</span><span> </span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> SERVICE_9123_TAGS=test-service-01</span><span> </span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> SERVICE_9123_CHECK_INTERVAL=10s</span><span> </span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> SERVICE_9123_CHECK_TIMEOUT=2s</span><span> </span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> SERVICE_9123_CHECK_HTTP=/health</span><span> </span></span>
+<span class="giallo-l"><span style="color: #89B4FA;">    ports</span><span style="color: #94E2D5;">:</span><span> </span></span>
+<span class="giallo-l"><span style="color: #9399B2;">      -</span><span style="color: #A6E3A1;"> &quot;9123:9123&quot;</span></span>
+<span class="giallo-l"></span></code></pre>
+<p>服务注册到consul，需要配置特定的<code>environment</code>信息。格式是<code>SERVICE_PORT_XXX</code> 。</p>
+<p>访问 <a rel="external" href="http://192.168.0.223:8500/ui/dc1/services">http://192.168.0.223:8500/ui/dc1/services</a>  即可看到 <code>test_hello</code>的相关信息。</p>
+<p>外部还不能直接访问<code>testHello</code>服务，该服务虽然注册到了<code>consul</code>，但是<code>Ngnix</code>并没有设置相应的代理。</p>
+<p>调整<code>nginx-consul-template</code> 的<code>nginx.conf.ctmpl</code>文件添加：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="nginx"><span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">upstream</span><span> my-web-server{</span></span>
+<span class="giallo-l"><span>  {{</span><span style="color: #CBA6F7;">range</span><span> service </span><span style="color: #A6E3A1;">&quot;my-web-server&quot;</span><span>}}server {{.Address}}:{{.Port}} max_fails=3 fail_timeout=60 weight=1</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span>  {{else}}</span><span style="color: #CBA6F7;">server</span><span> 127.0.0.1:65535;</span><span style="color: #9399B2;font-style: italic;"> # force a 502{{end}}</span></span>
+<span class="giallo-l"><span>}</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>server{</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">  listen</span><span style="color: #FAB387;"> 8788</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">  server_name</span><span> hello.zongwu233.com</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">  location</span><span> / {</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">    proxy_pass</span><span> http://my-web-server</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">    proxy_set_header</span><span> X-Forwarded-For $proxy_add_x_forwarded_for</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">    proxy_set_header</span><span> Host $host</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">    proxy_set_header</span><span> X-Real-IP $remote_addr</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span>  }</span></span>
+<span class="giallo-l"><span>}</span></span>
+<span class="giallo-l"></span></code></pre>
+<p>这里配置了一个<code>upstream</code> server。其中</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="nginx"><span class="giallo-l"><span>{{</span><span style="color: #CBA6F7;">range</span><span> service </span><span style="color: #A6E3A1;">&quot;my-web-server&quot;</span><span>}}server {{.Address}}:{{.Port}} max_fails=3 fail_timeout=60 weight=1</span><span style="color: #9399B2;">;</span></span></code></pre>
+<p>是获取 consul中所有的<code>my-web-server</code> ，生成多个 server配置 ，由于我们只启动了一个实例，最终生成：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="nginx"><span class="giallo-l"><span style="color: #CBA6F7;">server</span><span style="color: #FAB387;"> 172.17.0.2 9123</span><span style="color: #EBA0AC;font-style: italic;"> max_fails</span><span style="color: #94E2D5;">=</span><span style="color: #FAB387;">3</span><span> fail_timeout=60</span><span style="color: #EBA0AC;font-style: italic;"> weight</span><span style="color: #94E2D5;">=</span><span style="color: #FAB387;">1</span><span>;</span></span></code></pre>
+<p><code>172.17.0.2</code>是 testHello 实例的容器ip。</p>
+<p>这里的<code>8788</code>端口用于Ngnix对接我们使用的SLB。如果没有SLB需要依据实际情况修改（比如写成80）。</p>
+<h2 id="openresty">OpenResty</h2>
+<p>将Nginx替换为OpenResty，不能直接使用 <code>nginx-consul-template</code> 了，自己定义Dockerfile。</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="docker"><span class="giallo-l"><span style="color: #CBA6F7;">FROM</span><span> openresty/openresty:1.13.6.2-2-alpine</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">MAINTAINER</span><span> zongwu233</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">RUN</span><span> wget -P /usr/local/openresty/lualib/resty/ https://raw.githubusercontent.com/ledgetech/lua-resty-http/master/lib/resty/http.lua \</span></span>
+<span class="giallo-l"><span> &amp;&amp; wget -P /usr/local/openresty/lualib/resty/ https://raw.githubusercontent.com/ledgetech/lua-resty-http/master/lib/resty/http_headers.lua</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">RUN</span><span> ln -s /usr/local/openresty/nginx/sbin/nginx /usr/sbin/nginx</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"># install runit curl</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">RUN</span><span> apk --update --no-cache add curl runit</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;">#ENV CT_URL http://releases.hashicorp.com/consul-template/0.19.0/consul-template_0.19.0_linux_amd64.tgz</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;">#RUN curl -L $CT_URL | tar -C /usr/local/bin/ --strip-components 1 -zxf -</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">ADD</span><span> consul-template_0.19.0_linux_amd64.tgz /usr/local/bin/</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">ADD</span><span> nginx.service /etc/service/nginx/run</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">RUN</span><span> chmod a+x /etc/service/nginx/run</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">ADD</span><span> consul-template.service /etc/service/consul-template/run</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">RUN</span><span> chmod a+x /etc/service/consul-template/run</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">RUN</span><span> rm -v /etc/nginx/conf.d/*</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">RUN</span><span> mkdir -p /run/nginx/</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">ADD</span><span> nginx.conf.ctmpl /etc/consul-templates/nginx.conf.ctmpl</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">ADD</span><span> lualib/access-auth.lua /usr/local/openresty/site/lualib/access-auth.lua</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">ADD</span><span> lualib/limit-invite.lua /usr/local/openresty/site/lualib/limit-invite.lua</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">CMD</span><span> [</span><span style="color: #A6E3A1;">&quot;runsvdir&quot;</span><span>, </span><span style="color: #A6E3A1;">&quot;/etc/service&quot;</span><span>]</span></span>
+<span class="giallo-l"></span></code></pre>
+<p>构建镜像并且替换刚才的 registry.cn-hangzhou.aliyuncs.com/zongwu233/nginx-consul-template:v1.1 即可。</p>
+<h2 id="qi-ta">其他</h2>
+<p>关于结合<code>consul</code>集群，定制<code>nginx.conf.ctmpl</code>文件，支持蓝绿部署策略，有时间再介绍。</p>
+
+    </div>
+
+    
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2018-12-20">2018-12-20</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+        </div>
+    </div>
+
+</article>
+
+
+        </main>
+        <footer>
+            <p>
+                © zongwu&#x27;s blog 2026<br>
+                Powered by <a target="_blank" href="https://getzola.org/">Zola</a>, Theme <a target="_blank" href="https://github.com/zbrox/anpu-zola-theme">Anpu</a>.
+            </p>
+            <p>
+                
+                
+            </p>
+        </footer>
+    </div>
+
+    <div class="dark-mode-buttons">
+  <button class="dark-mode-button" id="dark-mode-on">
+    <img
+      class="themed-icon"
+      src="https://blog.zongwu233.com/dark_mode.svg"
+      width="24"
+      height="24"
+      alt="Dark mode"
+      aria-label="dark mode toggle"
+      title="Dark mode"
+    />
+  </button>
+  <button class="dark-mode-button" id="dark-mode-off">
+    <img
+      class="themed-icon"
+      src="https://blog.zongwu233.com/light_mode.svg "
+      width="24"
+      height="24"
+      alt="Light mode"
+      aria-label="light mode toggle"
+      title="Light mode"
+    />
+  </button>
+</div>
+<script>
+  const cls = document.body.classList;
+  const getSessionTheme = sessionStorage.getItem("theme");
+  if (getSessionTheme === "dark") {
+    cls.toggle("dark-mode", true);
+  } else if (getSessionTheme === "light") {
+    cls.toggle("dark-mode", false);
+  } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    cls.toggle("dark-mode", true);
+  }
+  document
+    .getElementById("dark-mode-on")
+    .addEventListener("click", function (e) {
+      cls.toggle("dark-mode", true);
+      sessionStorage.setItem("theme", "dark");
+    });
+  document
+    .getElementById("dark-mode-off")
+    .addEventListener("click", function (e) {
+      cls.toggle("dark-mode", false);
+      sessionStorage.setItem("theme", "light");
+    });
+</script>
+<noscript>
+  <style>
+    .dark-mode-buttons {
+      display: none;
+    }
+  </style>
+</noscript>
+
+    
+</body>
+</html>

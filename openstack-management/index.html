@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+
+    <title>OpenStack 管理</title>
+    <meta name="description" content="">
+
+    <link rel="stylesheet" href="https://blog.zongwu233.com/main.css">
+
+    
+        
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
+        
+    
+
+    
+    
+</head>
+<body>
+    <a class="skip-main" href="#main">Skip to content</a>
+    <div class="container">
+        <header> 
+            <h1 class="site-header">
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
+            </h1>
+            <nav>
+                
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
+                
+                
+            </nav>
+        </header>
+        <main id="main" tabindex="-1">
+            
+
+<article class="post">
+    <header>
+        <h1>OpenStack 管理</h1>
+    </header>
+    <div class="content">
+        <h2 id="pei-zhi-wai-bu-wang-luo">配置外部网络</h2>
+<p>前提，本机双网卡，用于管理地址的 IP 地址为10.0.0.104，用于联网的 IP 地址为 192.168.1.100。</p>
+<p>在后台管理界面进入 管理员 -&gt; 网络 -&gt; 网络</p>
+<p><img src="https://i.loli.net/2020/08/13/Ll4b3aZ7BNrUmwA.png" alt="external_net_1.jpg" /></p>
+<p>选择 新建网络，名称填写 external ，项目选择 admin ，供应商网络类型 选择 Flat，物理网络填写 physnet1，勾选 共享的，外部网络。</p>
+<p><img src="https://i.loli.net/2020/08/13/lG2QUuISFhC8NsO.png" alt="external_net_2.jpg" /></p>
+<p>对于物理网络名称，不能填错，具体名称可以通过以下步骤查看。</p>
+<p>在本机执行以下命令进入 neutron docker 容器</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">docker</span><span style="color: #A6E3A1;"> exec -it neutron_server  bash</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;">#查看</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">cat</span><span style="color: #A6E3A1;"> /etc/neutron/plugins/ml2/ml2_conf.ini</span><span> </span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #9399B2;">[</span><span>ml2_type_flat</span><span style="color: #9399B2;">]</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">flat_networks</span><span style="color: #A6E3A1;"> = physnet1</span></span></code></pre>
+<p>点击下一项，创建子网。子网填写本机器所在的真实网络配置，本机ip地址 192.168.1.100。</p>
+<p><img src="https://i.loli.net/2020/08/13/iglDKoTBNtAXw43.png" alt="" /></p>
+<p>子网名称 ext_subnet，网络地址 192.168.1.0/24 网关IP 192.168.1.1</p>
+<p>点击下一项，子网详情， 分配地址池， 填写192.168.1.160,192.168.1.200 这里预留40个ip。dns服务器 填写 223.5.5.5 。最后点创建。</p>
+<h2 id="pei-zhi-nei-bu-wang-luo">配置内部网络</h2>
+<p>在后台管理界面进入  项目 -&gt; 网络 -&gt; 网络</p>
+<p><img src="https://i.loli.net/2020/08/13/2UXtKvWJbyVqFL4.png" alt="normal_net_1.jpg" /></p>
+<p><img src="https://i.loli.net/2020/08/13/TB9KnI7MdmCgbUD.png" alt="" /></p>
+<p>选择创建网络 ，填写网络名称 normal，点下一项，填写子网名称，网络地址，这里填写 172.16.0.0/24 网关填写 172.16.0.1 。</p>
+<p><img src="https://i.loli.net/2020/08/13/WYFpgAfvJGLlkBK.png" alt="" />点击下一项，填写子网详情，分配地址池 填写 172.16.0.100,127.16.0.200 。dns服务器填写 223.5.5.5 。最后点创建。</p>
+<p>然后点击 项目 -&gt; 网络 -&gt; 路由</p>
+<p><img src="https://i.loli.net/2020/08/13/uzRmcjpNfBoC7ks.png" alt="" /></p>
+<p>创建路由，填写路由名称， 选择刚才创建的外网 external， 点击创建。</p>
+<p>进入 项目 -&gt; 网络 -&gt; 网络拓扑</p>
+<p><img src="https://i.loli.net/2020/08/13/vFNLkqJPpWwBSgV.png" alt="" /></p>
+<p>选择图中的路由，点击添加接口，选择子网，就是刚才创建的 normal。</p>
+<p>到此，网络创建完毕。</p>
+<h2 id="an-quan-zu-pei-zhi">安全组配置</h2>
+<p>进入 项目 -&gt; 网络 -&gt; 安全组</p>
+<p>点击管理规则，点击添加规则</p>
+<p>分别添加 所有ICMP的入口方向和出口方向，TCP 22端口(用于SSH)的出口方向和入口方向，TCP 53端口(用于DNS)的出口方向和入口方向，UDP 53端口(用于DNS)的出口方向和入口方向。</p>
+<p><img src="https://i.loli.net/2020/08/13/Rt6qQCcOgAHsEkM.png" alt="安全组" /></p>
+<h2 id="jing-xiang-guan-li">镜像管理</h2>
+<p>镜像下载，下载地址 http://cloud.centos.org/centos/7/images/?C=M;O=D 或者阿里云 https://mirrors.aliyun.com/centos/</p>
+<p>这里选择其中一个，wget http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2c</p>
+<p>在本机的控制台输入</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #F38BA8;font-style: italic;">.</span><span style="color: #A6E3A1;"> /etc/kolla/admin-openrc.sh</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;">#上传镜像到glance</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">openstack</span><span style="color: #A6E3A1;"> image create &quot;CentOS7-image&quot;</span><span style="color: #F5C2E7;"> \</span></span>
+<span class="giallo-l"><span style="color: #A6E3A1;">  --file CentOS-7-x86_64-GenericCloud.qcow2c</span><span style="color: #F5C2E7;"> \</span></span>
+<span class="giallo-l"><span style="color: #A6E3A1;">  --disk-format qcow2 --container-format bare</span><span style="color: #F5C2E7;"> \</span></span>
+<span class="giallo-l"><span style="color: #A6E3A1;">  --public</span></span></code></pre>
+<p>创建虚拟机规格</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">    openstack</span><span style="color: #A6E3A1;"> flavor create --id</span><span style="color: #FAB387;"> 1</span><span style="color: #A6E3A1;"> --ram</span><span style="color: #FAB387;"> 512</span><span style="color: #A6E3A1;"> --disk</span><span style="color: #FAB387;"> 1</span><span style="color: #A6E3A1;"> --vcpus</span><span style="color: #FAB387;"> 1</span><span style="color: #A6E3A1;"> m1.tiny</span><span> </span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">    openstack</span><span style="color: #A6E3A1;"> flavor create --id</span><span style="color: #FAB387;"> 2</span><span style="color: #A6E3A1;"> --ram</span><span style="color: #FAB387;"> 2048</span><span style="color: #A6E3A1;"> --disk</span><span style="color: #FAB387;"> 20</span><span style="color: #A6E3A1;"> --vcpus</span><span style="color: #FAB387;"> 1</span><span style="color: #A6E3A1;"> m1.small</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">    openstack</span><span style="color: #A6E3A1;"> flavor create --id</span><span style="color: #FAB387;"> 3</span><span style="color: #A6E3A1;"> --ram</span><span style="color: #FAB387;"> 4096</span><span style="color: #A6E3A1;"> --disk</span><span style="color: #FAB387;"> 40</span><span style="color: #A6E3A1;"> --vcpus</span><span style="color: #FAB387;"> 2</span><span style="color: #A6E3A1;"> m1.medium</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">    openstack</span><span style="color: #A6E3A1;"> flavor create --id</span><span style="color: #FAB387;"> 4</span><span style="color: #A6E3A1;"> --ram</span><span style="color: #FAB387;"> 8192</span><span style="color: #A6E3A1;"> --disk</span><span style="color: #FAB387;"> 80</span><span style="color: #A6E3A1;"> --vcpus</span><span style="color: #FAB387;"> 4</span><span style="color: #A6E3A1;"> m1.large</span></span></code></pre><h2 id="chuang-jian-xu-ni-ji-shi-li">创建虚拟机实例</h2>
+<p>进入 项目 -&gt; 计算 -&gt; 实例</p>
+<p><img src="https://i.loli.net/2020/08/13/TVs8PBNpudxEAH3.png" alt="" /></p>
+<p>点击创建实例，填写实例名称，镜像选择刚才创建的 CentOS7-image ，云主机类型选择 m1.medium ，网络选择normal，安全组默认是 default，不创建密钥对，在配置里面输入下面的shell</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #F5C2E7;font-style: italic;">#!/bin/sh</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">passwd</span><span style="color: #A6E3A1;"> root</span><span style="color: #94E2D5;"> &lt;&lt;</span><span style="color: #A6E3A1;">EOF</span></span>
+<span class="giallo-l"><span style="color: #A6E3A1;">123456</span></span>
+<span class="giallo-l"><span style="color: #A6E3A1;">123456</span></span>
+<span class="giallo-l"><span style="color: #A6E3A1;">EOF</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">sed</span><span style="color: #A6E3A1;"> -i &#39;s/PasswordAuthentication no/PasswordAuthentication yes/g&#39; /etc/ssh/sshd_config</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">sed</span><span style="color: #A6E3A1;"> -i &#39;s/#PubkeyAuthentication yes/PubkeyAuthentication yes/g&#39;  /etc/ssh/sshd_config</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">service</span><span style="color: #A6E3A1;"> ssh restart</span></span></code></pre>
+<p>该脚本会修改虚拟机实例用户 root 的密码为123456</p>
+<p>点击创建实例。</p>
+<p>创建成功之后， 点击该实例名称，进入控制台界面，然后登陆即可。</p>
+<p>此时实例可访问外网，但是在局域网环境 (10.0.0.x) 无法访问该实例。</p>
+<h2 id="fen-pei-fu-dong-ip">分配浮动IP</h2>
+<p>进入 项目 -&gt; 网络 -&gt; 浮动IP</p>
+<p><img src="https://i.loli.net/2020/08/13/FQfsDRxlM1X7b4n.png" alt="" /></p>
+<p>点击分配IP给项目，点击分配IP，则生成一个IP地址，属于 192.168.1.0/24 网段。然后对刚刚生成的IP点击关联，关联到刚刚创建的虚拟机实例上。</p>
+<p>可以在局域网其他机器上通过SSH登陆该虚拟机实例。</p>
+
+    </div>
+
+    
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2020-08-16">2020-08-16</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/openstack/">#OpenStack</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/shi-yong/">#使用</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/stein/">#stein</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+</article>
+
+
+        </main>
+        <footer>
+            <p>
+                © zongwu&#x27;s blog 2026<br>
+                Powered by <a target="_blank" href="https://getzola.org/">Zola</a>, Theme <a target="_blank" href="https://github.com/zbrox/anpu-zola-theme">Anpu</a>.
+            </p>
+            <p>
+                
+                
+            </p>
+        </footer>
+    </div>
+
+    <div class="dark-mode-buttons">
+  <button class="dark-mode-button" id="dark-mode-on">
+    <img
+      class="themed-icon"
+      src="https://blog.zongwu233.com/dark_mode.svg"
+      width="24"
+      height="24"
+      alt="Dark mode"
+      aria-label="dark mode toggle"
+      title="Dark mode"
+    />
+  </button>
+  <button class="dark-mode-button" id="dark-mode-off">
+    <img
+      class="themed-icon"
+      src="https://blog.zongwu233.com/light_mode.svg "
+      width="24"
+      height="24"
+      alt="Light mode"
+      aria-label="light mode toggle"
+      title="Light mode"
+    />
+  </button>
+</div>
+<script>
+  const cls = document.body.classList;
+  const getSessionTheme = sessionStorage.getItem("theme");
+  if (getSessionTheme === "dark") {
+    cls.toggle("dark-mode", true);
+  } else if (getSessionTheme === "light") {
+    cls.toggle("dark-mode", false);
+  } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    cls.toggle("dark-mode", true);
+  }
+  document
+    .getElementById("dark-mode-on")
+    .addEventListener("click", function (e) {
+      cls.toggle("dark-mode", true);
+      sessionStorage.setItem("theme", "dark");
+    });
+  document
+    .getElementById("dark-mode-off")
+    .addEventListener("click", function (e) {
+      cls.toggle("dark-mode", false);
+      sessionStorage.setItem("theme", "light");
+    });
+</script>
+<noscript>
+  <style>
+    .dark-mode-buttons {
+      display: none;
+    }
+  </style>
+</noscript>
+
+    
+</body>
+</html>

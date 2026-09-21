@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+      <title>zongwu&#x27;s blog - scotty</title>
+      <link>https://blog.zongwu233.com</link>
+      <description></description>
+      <generator>Zola</generator>
+      <language>en</language>
+      <atom:link href="https://blog.zongwu233.com/tags/scotty/rss.xml" rel="self" type="application/rss+xml"/>
+      <lastBuildDate>Mon, 06 Feb 2023 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>Scotty web framework 源码初探</title>
+          <pubDate>Mon, 06 Feb 2023 00:00:00 +0000</pubDate>
+          <author>Unknown</author>
+          <link>https://blog.zongwu233.com/scotty-web-framework-sourcecode-intro/</link>
+          <guid>https://blog.zongwu233.com/scotty-web-framework-sourcecode-intro/</guid>
+          <description xml:base="https://blog.zongwu233.com/scotty-web-framework-sourcecode-intro/">&lt;p&gt;&lt;code&gt;scotty&lt;&#x2F;code&gt; 是一款非常容易上手的、构建在 WAI&#x2F;Wrap 之上的 Haskell web frameowrk，官方文档的 start 例子：&lt;&#x2F;p&gt;
+&lt;pre class=&quot;giallo&quot; style=&quot;color: #CDD6F4; background-color: #1E1E2E;&quot;&gt;&lt;code data-lang=&quot;haskell&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;{-#&lt;&#x2F;span&gt;&lt;span style=&quot;color: #CBA6F7;&quot;&gt; LANGUAGE OverloadedStrings&lt;&#x2F;span&gt;&lt;span&gt; #-}&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #CBA6F7;&quot;&gt;import&lt;&#x2F;span&gt;&lt;span style=&quot;color: #F9E2AF;&quot;&gt; Web.Scotty&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span style=&quot;color: #CBA6F7;&quot;&gt;import&lt;&#x2F;span&gt;&lt;span style=&quot;color: #F9E2AF;&quot;&gt; Data.Monoid&lt;&#x2F;span&gt;&lt;span style=&quot;color: #9399B2;&quot;&gt; (&lt;&#x2F;span&gt;&lt;span style=&quot;color: #89B4FA;font-style: italic;&quot;&gt;mconcat&lt;&#x2F;span&gt;&lt;span style=&quot;color: #9399B2;&quot;&gt;)&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;main &lt;&#x2F;span&gt;&lt;span style=&quot;color: #94E2D5;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; scotty &lt;&#x2F;span&gt;&lt;span style=&quot;color: #FAB387;&quot;&gt;3000&lt;&#x2F;span&gt;&lt;span style=&quot;color: #94E2D5;&quot;&gt; $&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;    get &lt;&#x2F;span&gt;&lt;span style=&quot;color: #A6E3A1;&quot;&gt;&amp;quot;&#x2F;:word&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #94E2D5;&quot;&gt; $&lt;&#x2F;span&gt;&lt;span style=&quot;color: #CBA6F7;&quot;&gt; do&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;        beam &lt;&#x2F;span&gt;&lt;span style=&quot;color: #94E2D5;&quot;&gt;&amp;lt;-&lt;&#x2F;span&gt;&lt;span&gt; param &lt;&#x2F;span&gt;&lt;span style=&quot;color: #A6E3A1;&quot;&gt;&amp;quot;word&amp;quot;&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;        html &lt;&#x2F;span&gt;&lt;span style=&quot;color: #94E2D5;&quot;&gt;$&lt;&#x2F;span&gt;&lt;span&gt; mconcat &lt;&#x2F;span&gt;&lt;span style=&quot;color: #9399B2;&quot;&gt;[&lt;&#x2F;span&gt;&lt;span style=&quot;color: #A6E3A1;&quot;&gt;&amp;quot;&amp;lt;h1&amp;gt;Scotty, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #9399B2;&quot;&gt;,&lt;&#x2F;span&gt;&lt;span&gt; beam&lt;&#x2F;span&gt;&lt;span style=&quot;color: #9399B2;&quot;&gt;,&lt;&#x2F;span&gt;&lt;span style=&quot;color: #A6E3A1;&quot;&gt; &amp;quot; me up!&amp;lt;&#x2F;h1&amp;gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color: #9399B2;&quot;&gt;]&lt;&#x2F;span&gt;&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;编译运行即可体验简单的 web 应用。&lt;&#x2F;p&gt;</description>
+      </item>
+    </channel>
+</rss>

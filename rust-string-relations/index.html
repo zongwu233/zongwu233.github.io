@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+
+    <title>Rust Chars</title>
+    <meta name="description" content="">
+
+    <link rel="stylesheet" href="https://blog.zongwu233.com/main.css">
+
+    
+        
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
+        
+    
+
+    
+    
+</head>
+<body>
+    <a class="skip-main" href="#main">Skip to content</a>
+    <div class="container">
+        <header> 
+            <h1 class="site-header">
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
+            </h1>
+            <nav>
+                
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
+                
+                
+            </nav>
+        </header>
+        <main id="main" tabindex="-1">
+            
+
+<article class="post">
+    <header>
+        <h1>Rust Chars</h1>
+    </header>
+    <div class="content">
+        <h2 id="lian-xi-ti">练习题</h2>
+<p><code>codewars</code>上有一道题：</p>
+<blockquote>
+<p>This time no story, no theory.</p>
+<p>The examples below show you how to write function <code>accum</code>:</p>
+<p><strong>Examples:</strong></p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="rust"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">accum</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;abcd&quot;</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #A6E3A1;"> &quot;A-Bb-Ccc-Dddd&quot;</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">accum</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;RqaEzty&quot;</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #A6E3A1;"> &quot;R-Qq-Aaa-Eeee-Zzzzz-Tttttt-Yyyyyyy&quot;</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">accum</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;cwAt&quot;</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #A6E3A1;"> &quot;C-Ww-Aaa-Tttt&quot;</span></span></code></pre>
+<p>The parameter of accum is a string which includes only letters from <code>a..z</code> and <code>A..Z</code>.</p>
+</blockquote>
+<p>要求实现<code>accum()</code>。</p>
+<p>题目本身不难，大体思路是：对于入参，转变成字符列表，然后对每个字符进行<code>repeat</code> m 次，m就等于该字符在字符串的index，（<code>repeat </code>结果的首字母大写），最后使用<code>-</code>将这些结果<code>join</code>起来就完成了。</p>
+<p>对于<code>str</code>有个<code>chars()</code>方法，文档说明：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="rust"><span class="giallo-l"><span style="color: #CBA6F7;">pub fn</span><span style="color: #89B4FA;font-style: italic;"> chars</span><span style="color: #9399B2;">(</span><span style="color: #94E2D5;">&amp;</span><span style="color: #F38BA8;">self</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #F9E2AF;font-style: italic;"> Chars</span><span style="color: #89DCEB;">&lt;</span><span style="color: #9399B2;">&#39;</span><span style="color: #89B4FA;font-style: italic;">_</span><span style="color: #89DCEB;">&gt;</span></span></code></pre>
+<p>例如：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="rust"><span class="giallo-l"><span style="color: #CBA6F7;">let</span><span> word</span><span style="color: #94E2D5;"> =</span><span style="color: #A6E3A1;"> &quot;goodbye&quot;</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">let mut</span><span> chars</span><span style="color: #94E2D5;"> =</span><span> word</span><span style="color: #94E2D5;">.</span><span style="color: #89B4FA;font-style: italic;">chars</span><span style="color: #9399B2;">();</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">assert_eq!</span><span style="color: #9399B2;">(</span><span style="color: #F9E2AF;font-style: italic;">Some</span><span style="color: #9399B2;">(&#39;</span><span style="color: #A6E3A1;">g</span><span style="color: #9399B2;">&#39;),</span><span> chars</span><span style="color: #94E2D5;">.</span><span style="color: #89B4FA;font-style: italic;">next</span><span style="color: #9399B2;">());</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">assert_eq!</span><span style="color: #9399B2;">(</span><span style="color: #F9E2AF;font-style: italic;">Some</span><span style="color: #9399B2;">(&#39;</span><span style="color: #A6E3A1;">o</span><span style="color: #9399B2;">&#39;),</span><span> chars</span><span style="color: #94E2D5;">.</span><span style="color: #89B4FA;font-style: italic;">next</span><span style="color: #9399B2;">());</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">assert_eq!</span><span style="color: #9399B2;">(</span><span style="color: #F9E2AF;font-style: italic;">Some</span><span style="color: #9399B2;">(&#39;</span><span style="color: #A6E3A1;">o</span><span style="color: #9399B2;">&#39;),</span><span> chars</span><span style="color: #94E2D5;">.</span><span style="color: #89B4FA;font-style: italic;">next</span><span style="color: #9399B2;">());</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">assert_eq!</span><span style="color: #9399B2;">(</span><span style="color: #F9E2AF;font-style: italic;">Some</span><span style="color: #9399B2;">(&#39;</span><span style="color: #A6E3A1;">d</span><span style="color: #9399B2;">&#39;),</span><span> chars</span><span style="color: #94E2D5;">.</span><span style="color: #89B4FA;font-style: italic;">next</span><span style="color: #9399B2;">());</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">assert_eq!</span><span style="color: #9399B2;">(</span><span style="color: #F9E2AF;font-style: italic;">Some</span><span style="color: #9399B2;">(&#39;</span><span style="color: #A6E3A1;">b</span><span style="color: #9399B2;">&#39;),</span><span> chars</span><span style="color: #94E2D5;">.</span><span style="color: #89B4FA;font-style: italic;">next</span><span style="color: #9399B2;">());</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">assert_eq!</span><span style="color: #9399B2;">(</span><span style="color: #F9E2AF;font-style: italic;">Some</span><span style="color: #9399B2;">(&#39;</span><span style="color: #A6E3A1;">y</span><span style="color: #9399B2;">&#39;),</span><span> chars</span><span style="color: #94E2D5;">.</span><span style="color: #89B4FA;font-style: italic;">next</span><span style="color: #9399B2;">());</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">assert_eq!</span><span style="color: #9399B2;">(</span><span style="color: #F9E2AF;font-style: italic;">Some</span><span style="color: #9399B2;">(&#39;</span><span style="color: #A6E3A1;">e</span><span style="color: #9399B2;">&#39;),</span><span> chars</span><span style="color: #94E2D5;">.</span><span style="color: #89B4FA;font-style: italic;">next</span><span style="color: #9399B2;">());</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">assert_eq!</span><span style="color: #9399B2;">(</span><span style="color: #F9E2AF;font-style: italic;">None</span><span style="color: #9399B2;">,</span><span> chars</span><span style="color: #94E2D5;">.</span><span style="color: #89B4FA;font-style: italic;">next</span><span style="color: #9399B2;">());</span></span></code></pre>
+<p>返回的<code>Chars</code>类型，是<code>str</code>的在其<code>chars</code>的迭代器。</p>
+<p>接下来我们会对每个字符做<code>map</code>操作，但是我们同时需要每个字符在字符串的index位置。这时候就要介绍一下<code>enumerate()</code>方法。在迭代数据的时候，同时给出当前的索引值。</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="rust"><span class="giallo-l"><span style="color: #CBA6F7;">fn</span><span style="color: #89B4FA;font-style: italic;"> enumerate</span><span style="color: #9399B2;">(</span><span style="color: #F38BA8;">self</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #F9E2AF;font-style: italic;"> Enumerate</span><span style="color: #89DCEB;">&lt;</span><span style="color: #F38BA8;">Self</span><span style="color: #89DCEB;">&gt;</span></span></code></pre>
+<p>例如：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="rust"><span class="giallo-l"><span style="color: #CBA6F7;">let</span><span> a</span><span style="color: #94E2D5;"> =</span><span style="color: #9399B2;"> [&#39;</span><span style="color: #A6E3A1;">a</span><span style="color: #9399B2;">&#39;, &#39;</span><span style="color: #A6E3A1;">b</span><span style="color: #9399B2;">&#39;, &#39;</span><span style="color: #A6E3A1;">c</span><span style="color: #9399B2;">&#39;];</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">let mut</span><span> iter</span><span style="color: #94E2D5;"> =</span><span> a</span><span style="color: #94E2D5;">.</span><span style="color: #89B4FA;font-style: italic;">iter</span><span style="color: #9399B2;">()</span><span style="color: #94E2D5;">.</span><span style="color: #89B4FA;font-style: italic;">enumerate</span><span style="color: #9399B2;">();</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">assert_eq!</span><span style="color: #9399B2;">(</span><span>iter</span><span style="color: #94E2D5;">.</span><span style="color: #89B4FA;font-style: italic;">next</span><span style="color: #9399B2;">(),</span><span style="color: #F9E2AF;font-style: italic;"> Some</span><span style="color: #9399B2;">((</span><span style="color: #FAB387;">0</span><span style="color: #9399B2;">,</span><span style="color: #94E2D5;"> &amp;</span><span style="color: #9399B2;">&#39;</span><span style="color: #A6E3A1;">a</span><span style="color: #9399B2;">&#39;)));</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">assert_eq!</span><span style="color: #9399B2;">(</span><span>iter</span><span style="color: #94E2D5;">.</span><span style="color: #89B4FA;font-style: italic;">next</span><span style="color: #9399B2;">(),</span><span style="color: #F9E2AF;font-style: italic;"> Some</span><span style="color: #9399B2;">((</span><span style="color: #FAB387;">1</span><span style="color: #9399B2;">,</span><span style="color: #94E2D5;"> &amp;</span><span style="color: #9399B2;">&#39;</span><span style="color: #A6E3A1;">b</span><span style="color: #9399B2;">&#39;)));</span></span></code></pre>
+<p>如何重复某个字符m次？标准库里有个<code>repeat()</code>方法：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="rust"><span class="giallo-l"><span style="color: #CBA6F7;">let</span><span> a</span><span style="color: #94E2D5;">=</span><span style="color: #A6E3A1;"> &quot;a&quot;</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">let</span><span> b</span><span style="color: #94E2D5;">=</span><span style="color: #F9E2AF;"> std</span><span style="color: #94E2D5;">::</span><span style="color: #F9E2AF;">iter</span><span style="color: #94E2D5;">::</span><span style="color: #89B4FA;font-style: italic;">repeat</span><span style="color: #9399B2;">(</span><span>a</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;">.</span><span style="color: #89B4FA;font-style: italic;">take</span><span style="color: #9399B2;">(</span><span style="color: #FAB387;">3</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;">.</span><span style="color: #89B4FA;font-style: italic;">collect</span><span style="color: #94E2D5;">::</span><span style="color: #89DCEB;">&lt;</span><span style="color: #F9E2AF;font-style: italic;">String</span><span style="color: #89DCEB;">&gt;</span><span style="color: #9399B2;">();</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">println!</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;result </span><span style="color: #9399B2;">{}</span><span style="color: #A6E3A1;">&quot;</span><span style="color: #9399B2;">,</span><span>b</span><span style="color: #9399B2;">);</span></span></code></pre>
+<p>关于<code>join()</code>方法，先看看其在<code>slice</code>的定义：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="rust"><span class="giallo-l"><span style="color: #CBA6F7;">pub fn</span><span style="color: #89B4FA;font-style: italic;"> join</span><span style="color: #89DCEB;">&lt;</span><span style="color: #F9E2AF;font-style: italic;">Separator</span><span style="color: #89DCEB;">&gt;</span><span style="color: #9399B2;">(</span></span>
+<span class="giallo-l"><span style="color: #94E2D5;">    &amp;</span><span style="color: #F38BA8;">self</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span style="color: #EBA0AC;">    sep</span><span style="color: #94E2D5;">:</span><span style="color: #F9E2AF;font-style: italic;"> Separator</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #89DCEB;"> &lt;</span><span style="color: #9399B2;">[</span><span style="color: #F9E2AF;font-style: italic;">T</span><span style="color: #9399B2;">]</span><span style="color: #CBA6F7;"> as</span><span style="color: #F9E2AF;font-style: italic;"> Join</span><span style="color: #89DCEB;">&lt;</span><span style="color: #F9E2AF;font-style: italic;">Separator</span><span style="color: #89DCEB;">&gt;&gt;</span><span style="color: #94E2D5;">::</span><span style="color: #F9E2AF;font-style: italic;">Output</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">where</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">    [</span><span style="color: #F9E2AF;font-style: italic;">T</span><span style="color: #9399B2;">]</span><span style="color: #94E2D5;">:</span><span style="color: #F9E2AF;font-style: italic;"> Join</span><span style="color: #89DCEB;">&lt;</span><span style="color: #F9E2AF;font-style: italic;">Separator</span><span style="color: #89DCEB;">&gt;</span><span style="color: #9399B2;">,</span><span> </span></span></code></pre>
+<p>将<code>slice</code> T 转变成使用<code>Separator</code>连接的<code>Output</code>类型的值。</p>
+<p><code>Join</code>是个<code>trait</code> 它的定义是</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="rust"><span class="giallo-l"><span style="color: #CBA6F7;">pub trait</span><span style="color: #F9E2AF;font-style: italic;"> Join</span><span style="color: #89DCEB;">&lt;</span><span style="color: #F9E2AF;font-style: italic;">Separator</span><span style="color: #89DCEB;">&gt;</span><span style="color: #9399B2;"> {</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">    type</span><span style="color: #F9E2AF;font-style: italic;"> Output</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">    fn</span><span style="color: #89B4FA;font-style: italic;"> join</span><span style="color: #9399B2;">(</span><span style="color: #EBA0AC;">slice</span><span style="color: #94E2D5;">: &amp;</span><span style="color: #F38BA8;">Self</span><span style="color: #9399B2;">,</span><span style="color: #EBA0AC;"> sep</span><span style="color: #94E2D5;">:</span><span style="color: #F9E2AF;font-style: italic;"> Separator</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #F38BA8;"> Self</span><span style="color: #94E2D5;">::</span><span style="color: #F9E2AF;font-style: italic;">Output</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">}</span></span></code></pre>
+<p>其中定义了一个 <code>Associated Type</code>  <code>Output</code>。<code>Join trait</code>自带了几个实现：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="rust"><span class="giallo-l"><span style="color: #9399B2;font-style: italic;">//使用 &amp;str join [S],这个最常用</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">impl</span><span style="color: #89DCEB;">&lt;</span><span style="color: #9399B2;">&#39;</span><span style="color: #89B4FA;font-style: italic;">_</span><span style="color: #9399B2;">,</span><span style="color: #F9E2AF;font-style: italic;"> S</span><span style="color: #89DCEB;">&gt;</span><span style="color: #F9E2AF;font-style: italic;"> Join</span><span style="color: #89DCEB;">&lt;</span><span style="color: #94E2D5;">&amp;</span><span style="color: #9399B2;">&#39;</span><span style="color: #89B4FA;font-style: italic;">_</span><span style="color: #F9E2AF;font-style: italic;"> str</span><span style="color: #89DCEB;">&gt;</span><span style="color: #CBA6F7;"> for</span><span style="color: #9399B2;"> [</span><span style="color: #F9E2AF;font-style: italic;">S</span><span style="color: #9399B2;">]</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">where</span></span>
+<span class="giallo-l"><span style="color: #F9E2AF;font-style: italic;">    S</span><span style="color: #94E2D5;">:</span><span style="color: #F9E2AF;font-style: italic;"> Borrow</span><span style="color: #89DCEB;">&lt;</span><span style="color: #F9E2AF;font-style: italic;">str</span><span style="color: #89DCEB;">&gt;</span><span style="color: #9399B2;">,</span></span></code></pre>
+<p>例如：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="rust"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">assert_eq!</span><span style="color: #9399B2;">([</span><span style="color: #A6E3A1;">&quot;hello&quot;</span><span style="color: #9399B2;">,</span><span style="color: #A6E3A1;"> &quot;world&quot;</span><span style="color: #9399B2;">]</span><span style="color: #94E2D5;">.</span><span style="color: #89B4FA;font-style: italic;">join</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot; &quot;</span><span style="color: #9399B2;">),</span><span style="color: #A6E3A1;"> &quot;hello world&quot;</span><span style="color: #9399B2;">);</span></span></code></pre><pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="rust"><span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;">//使用 &amp;T join [V]</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">impl</span><span style="color: #89DCEB;">&lt;</span><span style="color: #9399B2;">&#39;</span><span style="color: #89B4FA;font-style: italic;">_</span><span style="color: #9399B2;">,</span><span style="color: #F9E2AF;font-style: italic;"> T</span><span style="color: #9399B2;">,</span><span style="color: #F9E2AF;font-style: italic;"> V</span><span style="color: #89DCEB;">&gt;</span><span style="color: #F9E2AF;font-style: italic;"> Join</span><span style="color: #89DCEB;">&lt;</span><span style="color: #94E2D5;">&amp;</span><span style="color: #9399B2;">&#39;</span><span style="color: #89B4FA;font-style: italic;">_</span><span style="color: #F9E2AF;font-style: italic;"> T</span><span style="color: #89DCEB;">&gt;</span><span style="color: #CBA6F7;"> for</span><span style="color: #9399B2;"> [</span><span style="color: #F9E2AF;font-style: italic;">V</span><span style="color: #9399B2;">]</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">where</span></span>
+<span class="giallo-l"><span style="color: #F9E2AF;font-style: italic;">    T</span><span style="color: #94E2D5;">:</span><span style="color: #F9E2AF;font-style: italic;"> Clone</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span style="color: #F9E2AF;font-style: italic;">    V</span><span style="color: #94E2D5;">:</span><span style="color: #F9E2AF;font-style: italic;"> Borrow</span><span style="color: #89DCEB;">&lt;</span><span style="color: #9399B2;">[</span><span style="color: #F9E2AF;font-style: italic;">T</span><span style="color: #9399B2;">]</span><span style="color: #89DCEB;">&gt;</span><span style="color: #9399B2;">,</span><span> </span></span></code></pre>
+<p>例如：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="rust"><span class="giallo-l"><span style="color: #9399B2;font-style: italic;">//这里 T 与 V 是同一个type了</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">assert_eq!</span><span style="color: #9399B2;">([[</span><span style="color: #FAB387;">1</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 2</span><span style="color: #9399B2;">], [</span><span style="color: #FAB387;">3</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 4</span><span style="color: #9399B2;">]]</span><span style="color: #94E2D5;">.</span><span style="color: #89B4FA;font-style: italic;">join</span><span style="color: #9399B2;">(</span><span style="color: #94E2D5;">&amp;</span><span style="color: #FAB387;">0</span><span style="color: #9399B2;">), [</span><span style="color: #FAB387;">1</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 2</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 3</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 4</span><span style="color: #9399B2;">]);</span></span></code></pre><pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="rust"><span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;">//使用 &amp;[T] join [V]</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">impl</span><span style="color: #89DCEB;">&lt;</span><span style="color: #9399B2;">&#39;</span><span style="color: #89B4FA;font-style: italic;">_</span><span style="color: #9399B2;">,</span><span style="color: #F9E2AF;font-style: italic;"> T</span><span style="color: #9399B2;">,</span><span style="color: #F9E2AF;font-style: italic;"> V</span><span style="color: #89DCEB;">&gt;</span><span style="color: #F9E2AF;font-style: italic;"> Join</span><span style="color: #89DCEB;">&lt;</span><span style="color: #94E2D5;">&amp;</span><span style="color: #9399B2;">&#39;</span><span style="color: #89B4FA;font-style: italic;">_</span><span style="color: #9399B2;"> [</span><span style="color: #F9E2AF;font-style: italic;">T</span><span style="color: #9399B2;">]</span><span style="color: #89DCEB;">&gt;</span><span style="color: #CBA6F7;"> for</span><span style="color: #9399B2;"> [</span><span style="color: #F9E2AF;font-style: italic;">V</span><span style="color: #9399B2;">]</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">where</span></span>
+<span class="giallo-l"><span style="color: #F9E2AF;font-style: italic;">    T</span><span style="color: #94E2D5;">:</span><span style="color: #F9E2AF;font-style: italic;"> Clone</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span style="color: #F9E2AF;font-style: italic;">    V</span><span style="color: #94E2D5;">:</span><span style="color: #F9E2AF;font-style: italic;"> Borrow</span><span style="color: #89DCEB;">&lt;</span><span style="color: #9399B2;">[</span><span style="color: #F9E2AF;font-style: italic;">T</span><span style="color: #9399B2;">]</span><span style="color: #89DCEB;">&gt;</span><span style="color: #9399B2;">,</span><span> </span></span></code></pre>
+<p>例如：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="rust"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">assert_eq!</span><span style="color: #9399B2;">([[</span><span style="color: #FAB387;">1</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 2</span><span style="color: #9399B2;">], [</span><span style="color: #FAB387;">3</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 4</span><span style="color: #9399B2;">]]</span><span style="color: #94E2D5;">.</span><span style="color: #89B4FA;font-style: italic;">join</span><span style="color: #9399B2;">(</span><span style="color: #94E2D5;">&amp;</span><span style="color: #9399B2;">[</span><span style="color: #FAB387;">0</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">][</span><span style="color: #94E2D5;">..</span><span style="color: #9399B2;">]), [</span><span style="color: #FAB387;">1</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 2</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 3</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 4</span><span style="color: #9399B2;">]);</span></span></code></pre>
+<p>讲完<code>slice</code>再讲讲<code>std::vev::Vec</code>的<code>join()</code>方法。</p>
+<p>嗯，就比较简单了，<code>std::vev::Vec</code>凭借着 <strong>Methods from Deref&lt;Target = [T]&gt;</strong> <code>Vec</code>直接就具备了<code>slice</code>的能力。</p>
+<p>好了吧上面的步骤组合起来的到解决方案：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="rust"><span class="giallo-l"><span style="color: #CBA6F7;">fn</span><span style="color: #89B4FA;font-style: italic;"> accum</span><span style="color: #9399B2;">(</span><span style="color: #EBA0AC;">s</span><span style="color: #94E2D5;">:&amp;</span><span style="color: #F9E2AF;font-style: italic;">str</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;">-&gt;</span><span style="color: #F9E2AF;font-style: italic;">String</span><span style="color: #9399B2;"> {</span></span>
+<span class="giallo-l"><span>    s</span></span>
+<span class="giallo-l"><span style="color: #94E2D5;">    .</span><span style="color: #89B4FA;font-style: italic;">to_lowercase</span><span style="color: #9399B2;">()</span></span>
+<span class="giallo-l"><span style="color: #94E2D5;">    .</span><span style="color: #89B4FA;font-style: italic;">chars</span><span style="color: #9399B2;">()</span></span>
+<span class="giallo-l"><span style="color: #94E2D5;">    .</span><span style="color: #89B4FA;font-style: italic;">enumerate</span><span style="color: #9399B2;">()</span></span>
+<span class="giallo-l"><span style="color: #94E2D5;">    .</span><span style="color: #89B4FA;font-style: italic;">map</span><span style="color: #9399B2;">(</span><span style="color: #94E2D5;">|</span><span style="color: #9399B2;">(</span><span>i</span><span style="color: #9399B2;">,</span><span>e</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;">|</span><span> e</span><span style="color: #94E2D5;">.</span><span style="color: #89B4FA;font-style: italic;">to_uppercase</span><span style="color: #9399B2;">()</span><span style="color: #94E2D5;">.</span><span style="color: #89B4FA;font-style: italic;">to_string</span><span style="color: #9399B2;">()</span><span style="color: #94E2D5;"> +</span><span> </span></span>
+<span class="giallo-l"><span style="color: #94E2D5;">            &amp;</span><span style="color: #F9E2AF;">std</span><span style="color: #94E2D5;">::</span><span style="color: #F9E2AF;">iter</span><span style="color: #94E2D5;">::</span><span style="color: #89B4FA;font-style: italic;">repeat</span><span style="color: #9399B2;">(</span><span>e</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;">.</span><span style="color: #89B4FA;font-style: italic;">take</span><span style="color: #9399B2;">(</span><span>i</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;">.</span><span style="color: #89B4FA;font-style: italic;">collect</span><span style="color: #94E2D5;">::</span><span style="color: #89DCEB;">&lt;</span><span style="color: #F9E2AF;font-style: italic;">String</span><span style="color: #89DCEB;">&gt;</span><span style="color: #9399B2;">() )</span><span> </span></span>
+<span class="giallo-l"><span style="color: #94E2D5;">    .</span><span style="color: #89B4FA;font-style: italic;">collect</span><span style="color: #94E2D5;">::</span><span style="color: #89DCEB;">&lt;</span><span style="color: #F9E2AF;font-style: italic;">Vec</span><span style="color: #89DCEB;">&lt;</span><span>_</span><span style="color: #89DCEB;">&gt;&gt;</span><span style="color: #9399B2;">()</span></span>
+<span class="giallo-l"><span style="color: #94E2D5;">    .</span><span style="color: #89B4FA;font-style: italic;">join</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;-&quot;</span><span style="color: #9399B2;">)</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">}</span></span></code></pre>
+<p>需要稍微解释的是我们将大写字母拼接上<code>repeat()</code> 了 m-1(刚好是i)次的字符。而不是<code>repeat()</code> m次。</p>
+<h2 id="lei-tu">类图</h2>
+<p>于是趁着做这道题，就梳理一下<code>str</code>,<code>slice</code>,<code>String</code>等等类型之间的关系。</p>
+<p><a rel="external" href="https://imgchr.com/i/sQYpwD"><img src="https://s3.ax1x.com/2021/01/09/sQYpwD.jpg" alt="rust-string-relations" /></a></p>
+
+    </div>
+
+    
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2020-12-26">2020-12-26</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/rust/">#Rust</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/bian-cheng-yu-yan/">#编程语言</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/slice/">#slice</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/chars/">#Chars</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+</article>
+
+
+        </main>
+        <footer>
+            <p>
+                © zongwu&#x27;s blog 2026<br>
+                Powered by <a target="_blank" href="https://getzola.org/">Zola</a>, Theme <a target="_blank" href="https://github.com/zbrox/anpu-zola-theme">Anpu</a>.
+            </p>
+            <p>
+                
+                
+            </p>
+        </footer>
+    </div>
+
+    <div class="dark-mode-buttons">
+  <button class="dark-mode-button" id="dark-mode-on">
+    <img
+      class="themed-icon"
+      src="https://blog.zongwu233.com/dark_mode.svg"
+      width="24"
+      height="24"
+      alt="Dark mode"
+      aria-label="dark mode toggle"
+      title="Dark mode"
+    />
+  </button>
+  <button class="dark-mode-button" id="dark-mode-off">
+    <img
+      class="themed-icon"
+      src="https://blog.zongwu233.com/light_mode.svg "
+      width="24"
+      height="24"
+      alt="Light mode"
+      aria-label="light mode toggle"
+      title="Light mode"
+    />
+  </button>
+</div>
+<script>
+  const cls = document.body.classList;
+  const getSessionTheme = sessionStorage.getItem("theme");
+  if (getSessionTheme === "dark") {
+    cls.toggle("dark-mode", true);
+  } else if (getSessionTheme === "light") {
+    cls.toggle("dark-mode", false);
+  } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    cls.toggle("dark-mode", true);
+  }
+  document
+    .getElementById("dark-mode-on")
+    .addEventListener("click", function (e) {
+      cls.toggle("dark-mode", true);
+      sessionStorage.setItem("theme", "dark");
+    });
+  document
+    .getElementById("dark-mode-off")
+    .addEventListener("click", function (e) {
+      cls.toggle("dark-mode", false);
+      sessionStorage.setItem("theme", "light");
+    });
+</script>
+<noscript>
+  <style>
+    .dark-mode-buttons {
+      display: none;
+    }
+  </style>
+</noscript>
+
+    
+</body>
+</html>

@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+
+    <title>dexopt的源码跟踪</title>
+    <meta name="description" content="">
+
+    <link rel="stylesheet" href="https://blog.zongwu233.com/main.css">
+
+    
+        
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
+        
+    
+
+    
+    
+</head>
+<body>
+    <a class="skip-main" href="#main">Skip to content</a>
+    <div class="container">
+        <header> 
+            <h1 class="site-header">
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
+            </h1>
+            <nav>
+                
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
+                
+                
+            </nav>
+        </header>
+        <main id="main" tabindex="-1">
+            
+
+<article class="post">
+    <header>
+        <h1>dexopt的源码跟踪</h1>
+    </header>
+    <div class="content">
+        <p>关于dexopt的预备知识在<a rel="external" href="http://www.netmite.com/android/mydroid/dalvik/docs/dexopt.html">这里</a>。<br />
+一般都是从AndroidStudio run出来的apk安装到手机，这里从 adb shell pm install -r xxx.apk 开始看起：<br />
+找到android/frameworks/base/cmds/pm/src/com/android/commands/pm/pm.java pm命令的源码<br />
+main函数调用了new Pm().run(args);<br />
+找到 runInstall（）方法<br />
+哦刚才的常用参数 "-r" 表示覆盖安装模式 INSTALL_REPLACE_EXISTING<br />
+runInstall（）方法最终会调用</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="c"><span class="giallo-l"><span>mPm.</span><span style="color: #89B4FA;font-style: italic;">installPackageWithVerification</span><span style="color: #9399B2;">(</span><span>apkURI</span><span style="color: #9399B2;">,</span><span> obs</span><span style="color: #9399B2;">,</span><span> installFlags</span><span style="color: #9399B2;">,</span><span> installerPackageName</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span> verificationURI</span><span style="color: #9399B2;">,</span><span> null</span><span style="color: #9399B2;">,</span><span> encryptionParams</span><span style="color: #9399B2;">);</span></span></code></pre>
+<p>而 mPm = IPackageManager.Stub.asInterface(ServiceManager.getService("package")); 就是PackageMangerService<br />
+PackageMangerService 的main方法：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="java"><span class="giallo-l"><span style="color: #CBA6F7;">public static final IPackageManager</span><span style="color: #89B4FA;font-style: italic;"> main</span><span style="color: #9399B2;">(</span><span style="color: #CBA6F7;">Context</span><span> context</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> Installer</span><span> installer</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> boolean</span><span> factoryTest</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> boolean</span><span> onlyCore</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> PackageManagerService</span><span> m</span><span style="color: #94E2D5;"> =</span><span style="color: #CBA6F7;"> new</span><span style="color: #89B4FA;font-style: italic;"> PackageManagerService</span><span style="color: #9399B2;">(</span><span>context</span><span style="color: #9399B2;">,</span><span> installer</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span> factoryTest</span><span style="color: #9399B2;">,</span><span> onlyCore</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span> ServiceManager</span><span style="color: #9399B2;">.</span><span style="color: #89B4FA;font-style: italic;">addService</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;package&quot;</span><span style="color: #9399B2;">,</span><span> m</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span> m</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span></code></pre>
+<p>去看installPackageWithVerification()</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="java"><span class="giallo-l"><span style="color: #FAB387;">@Override</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> public void</span><span style="color: #89B4FA;font-style: italic;"> installPackageWithVerification</span><span style="color: #9399B2;">(</span><span style="color: #CBA6F7;">Uri</span><span> packageURI</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> IPackageInstallObserver</span><span> observer</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> int</span><span> flags</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> String</span><span> installerPackageName</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> Uri</span><span> verificationURI</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> ManifestDigest</span><span> manifestDigest</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> ContainerEncryptionParams</span><span> encryptionParams</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> VerificationParams</span><span> verificationParams</span><span style="color: #94E2D5;"> =</span><span style="color: #CBA6F7;"> new</span><span style="color: #89B4FA;font-style: italic;"> VerificationParams</span><span style="color: #9399B2;">(</span><span>verificationURI</span><span style="color: #9399B2;">,</span><span style="color: #F38BA8;"> null</span><span style="color: #9399B2;">,</span><span style="color: #F38BA8;"> null</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span> VerificationParams</span><span style="color: #9399B2;">.</span><span>NO_UID</span><span style="color: #9399B2;">,</span><span> manifestDigest</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> installPackageWithVerificationAndEncryption</span><span style="color: #9399B2;">(</span><span>packageURI</span><span style="color: #9399B2;">,</span><span> observer</span><span style="color: #9399B2;">,</span><span> flags</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span> installerPackageName</span><span style="color: #9399B2;">,</span><span> verificationParams</span><span style="color: #9399B2;">,</span><span> encryptionParams</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span></code></pre>
+<p>接着看 installPackageWithVerificationAndEncryption()方法</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="c"><span class="giallo-l"><span>public </span><span style="color: #CBA6F7;">void</span><span style="color: #89B4FA;font-style: italic;"> installPackageWithVerificationAndEncryption</span><span style="color: #9399B2;">(</span><span>Uri </span><span style="color: #EBA0AC;font-style: italic;">packageURI</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span> IPackageInstallObserver </span><span style="color: #EBA0AC;font-style: italic;">observer</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> int</span><span style="color: #EBA0AC;font-style: italic;"> flags</span><span style="color: #9399B2;">,</span><span> String </span><span style="color: #EBA0AC;font-style: italic;">installerPackageName</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span> VerificationParams </span><span style="color: #EBA0AC;font-style: italic;">verificationParams</span><span style="color: #9399B2;">,</span><span> ContainerEncryptionParams </span><span style="color: #EBA0AC;font-style: italic;">encryptionParams</span><span style="color: #9399B2;">)</span></span></code></pre>
+<p>在最后的时候：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="c"><span class="giallo-l"><span>final Message msg </span><span style="color: #94E2D5;">=</span><span> mHandler.</span><span style="color: #89B4FA;font-style: italic;">obtainMessage</span><span style="color: #9399B2;">(</span><span>INIT_COPY</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span> msg.obj </span><span style="color: #94E2D5;">=</span><span> new </span><span style="color: #89B4FA;font-style: italic;">InstallParams</span><span style="color: #9399B2;">(</span><span>packageURI</span><span style="color: #9399B2;">,</span><span> observer</span><span style="color: #9399B2;">,</span><span> filteredFlags</span><span style="color: #9399B2;">,</span><span> installerPackageName</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span> verificationParams</span><span style="color: #9399B2;">,</span><span> encryptionParams</span><span style="color: #9399B2;">,</span><span> user</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span> mHandler.</span><span style="color: #89B4FA;font-style: italic;">sendMessage</span><span style="color: #9399B2;">(</span><span>msg</span><span style="color: #9399B2;">);</span></span></code></pre>
+<p>发messge 给handler，找到这个handler的定义</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="java"><span class="giallo-l"><span>mHandlerThread</span><span style="color: #9399B2;">.</span><span style="color: #89B4FA;font-style: italic;">start</span><span style="color: #9399B2;">();</span></span>
+<span class="giallo-l"><span> mHandler </span><span style="color: #94E2D5;">=</span><span style="color: #CBA6F7;"> new</span><span style="color: #89B4FA;font-style: italic;"> PackageHandler</span><span style="color: #9399B2;">(</span><span>mHandlerThread</span><span style="color: #9399B2;">.</span><span style="color: #89B4FA;font-style: italic;">getLooper</span><span style="color: #9399B2;">());</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">final HandlerThread</span><span> mHandlerThread</span><span style="color: #94E2D5;"> =</span><span style="color: #CBA6F7;"> new</span><span style="color: #89B4FA;font-style: italic;"> HandlerThread</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;PackageManager&quot;</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span> Process</span><span style="color: #9399B2;">.</span><span>THREAD_PRIORITY_BACKGROUND</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> final PackageHandler</span><span> mHandler</span><span style="color: #9399B2;">;</span></span></code></pre>
+<p>看来 是个工作线程。<br />
+跟进handler的handlemsg()  消息类型会从 INIT_COPY 绕成 MCS_BOUND。总算调用了 params.startCopy()<br />
+先看handleStartCopy(). InstallParams 对该方法的实现。 略过各种检查和校验  找到了ret = args.copyApk(mContainerService, true);copy apk文件 到 /data/app 目录下 而且是以一种临时文件的格式。</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="java"><span class="giallo-l"><span style="color: #CBA6F7;">final boolean</span><span style="color: #89B4FA;font-style: italic;"> startCopy</span><span style="color: #9399B2;">() {</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> boolean</span><span> res</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> try</span><span style="color: #9399B2;"> {</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>DEBUG_INSTALL</span><span style="color: #9399B2;">)</span><span> Slog</span><span style="color: #9399B2;">.</span><span style="color: #89B4FA;font-style: italic;">i</span><span style="color: #9399B2;">(</span><span>TAG</span><span style="color: #9399B2;">,</span><span style="color: #A6E3A1;"> &quot;startCopy&quot;</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span style="color: #94E2D5;">++</span><span>mRetries </span><span style="color: #94E2D5;">&gt;</span><span> MAX_RETRIES</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span> Slog</span><span style="color: #9399B2;">.</span><span style="color: #89B4FA;font-style: italic;">w</span><span style="color: #9399B2;">(</span><span>TAG</span><span style="color: #9399B2;">,</span><span style="color: #A6E3A1;"> &quot;Failed to invoke remote methods on default container service. Giving up&quot;</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span> mHandler</span><span style="color: #9399B2;">.</span><span style="color: #89B4FA;font-style: italic;">sendEmptyMessage</span><span style="color: #9399B2;">(</span><span>MCS_GIVE_UP</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> handleServiceError</span><span style="color: #9399B2;">();</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span style="color: #F38BA8;"> false</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span><span style="color: #CBA6F7;"> else</span><span style="color: #9399B2;"> {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> handleStartCopy</span><span style="color: #9399B2;">();</span></span>
+<span class="giallo-l"><span> res </span><span style="color: #94E2D5;">=</span><span style="color: #F38BA8;"> true</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span><span style="color: #CBA6F7;"> catch</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">RemoteException</span><span style="color: #EBA0AC;font-style: italic;"> e</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>DEBUG_INSTALL</span><span style="color: #9399B2;">)</span><span> Slog</span><span style="color: #9399B2;">.</span><span style="color: #89B4FA;font-style: italic;">i</span><span style="color: #9399B2;">(</span><span>TAG</span><span style="color: #9399B2;">,</span><span style="color: #A6E3A1;"> &quot;Posting install MCS_RECONNECT&quot;</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span> mHandler</span><span style="color: #9399B2;">.</span><span style="color: #89B4FA;font-style: italic;">sendEmptyMessage</span><span style="color: #9399B2;">(</span><span>MCS_RECONNECT</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span> res </span><span style="color: #94E2D5;">=</span><span style="color: #F38BA8;"> false</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> handleReturnCode</span><span style="color: #9399B2;">();</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span> res</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span></code></pre>
+<p>然后是handleReturnCode()   主要是:</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="c"><span class="giallo-l"><span> private </span><span style="color: #CBA6F7;">void</span><span style="color: #89B4FA;font-style: italic;"> processPendingInstall</span><span style="color: #9399B2;">(</span><span>final InstallArgs </span><span style="color: #EBA0AC;font-style: italic;">args</span><span style="color: #9399B2;">,</span><span> final </span><span style="color: #CBA6F7;">int</span><span style="color: #EBA0AC;font-style: italic;"> currentStatus</span><span style="color: #9399B2;">)</span><span> </span></span></code></pre>
+<p>该方法调用</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="java"><span class="giallo-l"><span style="color: #CBA6F7;">private void</span><span style="color: #89B4FA;font-style: italic;"> installNewPackageLI</span><span style="color: #9399B2;">(</span><span>PackageParser</span><span style="color: #9399B2;">.</span><span>Package pkg</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> int</span><span> parseFlags</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> int</span><span> scanMode</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> UserHandle</span><span> user</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> String</span><span> installerPackageName</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> PackageInstalledInfo</span><span> res</span><span style="color: #9399B2;">)</span></span></code></pre>
+<p>终于到了 installnewPackage 了</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="java"><span class="giallo-l"><span style="color: #CBA6F7;">private void</span><span style="color: #89B4FA;font-style: italic;"> installNewPackageLI</span><span style="color: #9399B2;">(</span><span>PackageParser</span><span style="color: #9399B2;">.</span><span>Package pkg</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">int</span><span> parseFlags</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> int</span><span> scanMode</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> UserHandle</span><span> user</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">String</span><span> installerPackageName</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> PackageInstalledInfo</span><span> res</span><span style="color: #9399B2;">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">private</span><span> PackageParser</span><span style="color: #9399B2;">.</span><span>Package</span><span style="color: #89B4FA;font-style: italic;"> scanPackageLI</span><span style="color: #9399B2;">(</span><span style="color: #CBA6F7;">File</span><span> scanFile</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> int</span><span> parseFlags</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> int</span><span> scanMode</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> long</span><span> currentTime</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> UserHandle</span><span> user</span><span style="color: #9399B2;">)</span></span></code></pre>
+<p>然后调用了</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="java"><span class="giallo-l"><span style="color: #9399B2;font-style: italic;">// Note that we invoke the following method only if we are about to unpack an application</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> PackageParser</span><span style="color: #9399B2;">.</span><span style="color: #CBA6F7;">Package</span><span> scannedPkg</span><span style="color: #94E2D5;"> =</span><span style="color: #89B4FA;font-style: italic;"> scanPackageLI</span><span style="color: #9399B2;">(</span><span>pkg</span><span style="color: #9399B2;">,</span><span> parseFlags</span><span style="color: #9399B2;">,</span><span> scanMode</span></span>
+<span class="giallo-l"><span style="color: #94E2D5;"> |</span><span> SCAN_UPDATE_SIGNATURE</span><span style="color: #9399B2;">,</span><span> currentTime</span><span style="color: #9399B2;">,</span><span> user</span><span style="color: #9399B2;">);</span></span></code></pre>
+<p>其中有</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="c"><span class="giallo-l"><span style="color: #9399B2;font-style: italic;">//invoke installer to do the actual installation</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> int</span><span> ret </span><span style="color: #94E2D5;">=</span><span style="color: #89B4FA;font-style: italic;"> createDataDirsLI</span><span style="color: #9399B2;">(</span><span>pkgName</span><span style="color: #9399B2;">,</span><span> pkg.applicationInfo.uid</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">if</span><span style="color: #9399B2;"> ((</span><span>scanMode</span><span style="color: #94E2D5;">&amp;</span><span>SCAN_NO_DEX</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> ==</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span style="color: #89B4FA;font-style: italic;">performDexOptLI</span><span style="color: #9399B2;">(</span><span>pkg</span><span style="color: #9399B2;">,</span><span> forceDex</span><span style="color: #9399B2;">, (</span><span>scanMode</span><span style="color: #94E2D5;">&amp;</span><span>SCAN_DEFER_DEX</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> !=</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">)</span></span>
+<span class="giallo-l"><span style="color: #94E2D5;"> ==</span><span> DEX_OPT_FAILED</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span> mLastScanError </span><span style="color: #94E2D5;">=</span><span> PackageManager</span><span style="color: #9399B2;">.</span><span>INSTALL_FAILED_DEXOPT</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span> null</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span></code></pre>
+<p>先看scanPackageLI</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="c"><span class="giallo-l"><span>private </span><span style="color: #CBA6F7;">int</span><span style="color: #89B4FA;font-style: italic;"> createDataDirsLI</span><span style="color: #9399B2;">(</span><span>String </span><span style="color: #EBA0AC;font-style: italic;">packageName</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> int</span><span style="color: #EBA0AC;font-style: italic;"> uid</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> int[]</span><span> users </span><span style="color: #94E2D5;">=</span><span> sUserManager</span><span style="color: #9399B2;">.</span><span style="color: #89B4FA;font-style: italic;">getUserIds</span><span style="color: #9399B2;">();</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> int</span><span> res </span><span style="color: #94E2D5;">=</span><span> mInstaller</span><span style="color: #9399B2;">.</span><span style="color: #89B4FA;font-style: italic;">install</span><span style="color: #9399B2;">(</span><span>packageName</span><span style="color: #9399B2;">,</span><span> uid</span><span style="color: #9399B2;">,</span><span> uid</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>res </span><span style="color: #94E2D5;">&lt;</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span> res</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> for</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">int</span><span> user </span><span style="color: #9399B2;">:</span><span> users</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>user </span><span style="color: #94E2D5;">!=</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span> res </span><span style="color: #94E2D5;">=</span><span> mInstaller</span><span style="color: #9399B2;">.</span><span style="color: #89B4FA;font-style: italic;">createUserData</span><span style="color: #9399B2;">(</span><span>packageName</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span> UserHandle</span><span style="color: #9399B2;">.</span><span style="color: #89B4FA;font-style: italic;">getUid</span><span style="color: #9399B2;">(</span><span>user</span><span style="color: #9399B2;">,</span><span> uid</span><span style="color: #9399B2;">),</span><span> user</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>res </span><span style="color: #94E2D5;">&lt;</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span> res</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span> res</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span></code></pre>
+<p>mInstaller.install()  出现了<br />
+再看performDexOptLI()</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="java"><span class="giallo-l"><span style="color: #CBA6F7;">private int</span><span style="color: #89B4FA;font-style: italic;"> performDexOptLI</span><span style="color: #9399B2;">(</span><span>PackageParser</span><span style="color: #9399B2;">.</span><span>Package pkg</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> boolean</span><span> forceDex</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> boolean</span><span> defer</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> boolean</span><span> performed</span><span style="color: #94E2D5;"> =</span><span style="color: #F38BA8;"> false</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> ((</span><span>pkg</span><span style="color: #9399B2;">.</span><span>applicationInfo</span><span style="color: #9399B2;">.</span><span>flags</span><span style="color: #94E2D5;">&amp;</span><span>ApplicationInfo</span><span style="color: #9399B2;">.</span><span>FLAG_HAS_CODE</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> !=</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> String</span><span> path</span><span style="color: #94E2D5;"> =</span><span> pkg</span><span style="color: #9399B2;">.</span><span>mScanPath</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> int</span><span> ret</span><span style="color: #94E2D5;"> =</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> try</span><span style="color: #9399B2;"> {</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>forceDex </span><span style="color: #94E2D5;">||</span><span> dalvik</span><span style="color: #9399B2;">.</span><span>system</span><span style="color: #9399B2;">.</span><span>DexFile</span><span style="color: #9399B2;">.</span><span style="color: #89B4FA;font-style: italic;">isDexOptNeeded</span><span style="color: #9399B2;">(</span><span>path</span><span style="color: #9399B2;">)) {</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span style="color: #94E2D5;">!</span><span>forceDex </span><span style="color: #94E2D5;">&amp;&amp;</span><span> defer</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span> mDeferredDexOpt</span><span style="color: #9399B2;">.</span><span style="color: #89B4FA;font-style: italic;">add</span><span style="color: #9399B2;">(</span><span>pkg</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span> DEX_OPT_DEFERRED</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span><span style="color: #CBA6F7;"> else</span><span style="color: #9399B2;"> {</span></span>
+<span class="giallo-l"><span> Log</span><span style="color: #9399B2;">.</span><span style="color: #89B4FA;font-style: italic;">i</span><span style="color: #9399B2;">(</span><span>TAG</span><span style="color: #9399B2;">,</span><span style="color: #A6E3A1;"> &quot;Running dexopt on: &quot;</span><span style="color: #94E2D5;"> +</span><span> pkg</span><span style="color: #9399B2;">.</span><span>applicationInfo</span><span style="color: #9399B2;">.</span><span>packageName</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> final int</span><span> sharedGid</span><span style="color: #94E2D5;"> =</span><span> UserHandle</span><span style="color: #9399B2;">.</span><span style="color: #89B4FA;font-style: italic;">getSharedAppGid</span><span style="color: #9399B2;">(</span><span>pkg</span><span style="color: #9399B2;">.</span><span>applicationInfo</span><span style="color: #9399B2;">.</span><span>uid</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span> ret </span><span style="color: #94E2D5;">=</span><span> mInstaller</span><span style="color: #9399B2;">.</span><span style="color: #89B4FA;font-style: italic;">dexopt</span><span style="color: #9399B2;">(</span><span>path</span><span style="color: #9399B2;">,</span><span> sharedGid</span><span style="color: #9399B2;">,</span><span style="color: #94E2D5;"> !</span><span style="color: #89B4FA;font-style: italic;">isForwardLocked</span><span style="color: #9399B2;">(</span><span>pkg</span><span style="color: #9399B2;">));</span></span>
+<span class="giallo-l"><span> pkg</span><span style="color: #9399B2;">.</span><span>mDidDexOpt</span><span style="color: #94E2D5;"> =</span><span style="color: #F38BA8;"> true</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span> performed </span><span style="color: #94E2D5;">=</span><span style="color: #F38BA8;"> true</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span><span style="color: #CBA6F7;"> catch</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">FileNotFoundException</span><span style="color: #EBA0AC;font-style: italic;"> e</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span> Slog</span><span style="color: #9399B2;">.</span><span style="color: #89B4FA;font-style: italic;">w</span><span style="color: #9399B2;">(</span><span>TAG</span><span style="color: #9399B2;">,</span><span style="color: #A6E3A1;"> &quot;Apk not found for dexopt: &quot;</span><span style="color: #94E2D5;"> +</span><span> path</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span> ret </span><span style="color: #94E2D5;">= -</span><span style="color: #FAB387;">1</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span><span style="color: #CBA6F7;"> catch</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">IOException</span><span style="color: #EBA0AC;font-style: italic;"> e</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span> Slog</span><span style="color: #9399B2;">.</span><span style="color: #89B4FA;font-style: italic;">w</span><span style="color: #9399B2;">(</span><span>TAG</span><span style="color: #9399B2;">,</span><span style="color: #A6E3A1;"> &quot;IOException reading apk: &quot;</span><span style="color: #94E2D5;"> +</span><span> path</span><span style="color: #9399B2;">,</span><span> e</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span> ret </span><span style="color: #94E2D5;">= -</span><span style="color: #FAB387;">1</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span><span style="color: #CBA6F7;"> catch</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">dalvik.system.StaleDexCacheError</span><span style="color: #EBA0AC;font-style: italic;"> e</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span> Slog</span><span style="color: #9399B2;">.</span><span style="color: #89B4FA;font-style: italic;">w</span><span style="color: #9399B2;">(</span><span>TAG</span><span style="color: #9399B2;">,</span><span style="color: #A6E3A1;"> &quot;StaleDexCacheError when reading apk: &quot;</span><span style="color: #94E2D5;"> +</span><span> path</span><span style="color: #9399B2;">,</span><span> e</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span> ret </span><span style="color: #94E2D5;">= -</span><span style="color: #FAB387;">1</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span><span style="color: #CBA6F7;"> catch</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">Exception</span><span style="color: #EBA0AC;font-style: italic;"> e</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span> Slog</span><span style="color: #9399B2;">.</span><span style="color: #89B4FA;font-style: italic;">w</span><span style="color: #9399B2;">(</span><span>TAG</span><span style="color: #9399B2;">,</span><span style="color: #A6E3A1;"> &quot;Exception when doing dexopt : &quot;</span><span style="color: #9399B2;">,</span><span> e</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span> ret </span><span style="color: #94E2D5;">= -</span><span style="color: #FAB387;">1</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>ret </span><span style="color: #94E2D5;">&lt;</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> //error from installer</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span> DEX_OPT_FAILED</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span> performed </span><span style="color: #CBA6F7;">?</span><span> DEX_OPT_PERFORMED </span><span style="color: #CBA6F7;">:</span><span> DEX_OPT_SKIPPED</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span></code></pre>
+<p>mInstaller.dexopt() 终于也找出来了<br />
+PackageManagerService通过socket访问installd的服务进程，而installd的服务是在init进程里被启动的。继续看
+frameworks/base/cmds/installd/installd.c</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="c"><span class="giallo-l"><span style="color: #CBA6F7;">int</span><span style="color: #89B4FA;font-style: italic;"> main</span><span style="color: #9399B2;">(</span><span style="color: #CBA6F7;">const int</span><span style="color: #EBA0AC;font-style: italic;"> argc</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> const char</span><span style="color: #94E2D5;"> *</span><span style="color: #EBA0AC;font-style: italic;">argv</span><span style="color: #CBA6F7;">[]</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> char</span><span> buf</span><span style="color: #9399B2;">[</span><span>BUFFER_MAX</span><span style="color: #9399B2;">];</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> struct</span><span> sockaddr addr</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #F9E2AF;font-style: italic;"> socklen_t</span><span> alen</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> int</span><span> lsocket</span><span style="color: #9399B2;">,</span><span> s</span><span style="color: #9399B2;">,</span><span> count</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span style="color: #89B4FA;font-style: italic;">initialize_globals</span><span style="color: #9399B2;">()</span><span style="color: #94E2D5;"> &lt;</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGE</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;Could not initialize globals; exiting.</span><span style="color: #F5C2E7;">\n</span><span style="color: #A6E3A1;">&quot;</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> exit</span><span style="color: #9399B2;">(</span><span style="color: #FAB387;">1</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span style="color: #89B4FA;font-style: italic;">initialize_directories</span><span style="color: #9399B2;">()</span><span style="color: #94E2D5;"> &lt;</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGE</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;Could not create directories; exiting.</span><span style="color: #F5C2E7;">\n</span><span style="color: #A6E3A1;">&quot;</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> exit</span><span style="color: #9399B2;">(</span><span style="color: #FAB387;">1</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span> lsocket </span><span style="color: #94E2D5;">=</span><span style="color: #89B4FA;font-style: italic;"> android_get_control_socket</span><span style="color: #9399B2;">(</span><span>SOCKET_PATH</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>lsocket </span><span style="color: #94E2D5;">&lt;</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGE</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;Failed to get socket from environment: %s</span><span style="color: #F5C2E7;">\n</span><span style="color: #A6E3A1;">&quot;</span><span style="color: #9399B2;">,</span><span style="color: #89B4FA;font-style: italic;"> strerror</span><span style="color: #9399B2;">(</span><span>errno</span><span style="color: #9399B2;">));</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> exit</span><span style="color: #9399B2;">(</span><span style="color: #FAB387;">1</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span style="color: #89B4FA;font-style: italic;">listen</span><span style="color: #9399B2;">(</span><span>lsocket</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 5</span><span style="color: #9399B2;">)) {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGE</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;Listen on socket failed: %s</span><span style="color: #F5C2E7;">\n</span><span style="color: #A6E3A1;">&quot;</span><span style="color: #9399B2;">,</span><span style="color: #89B4FA;font-style: italic;"> strerror</span><span style="color: #9399B2;">(</span><span>errno</span><span style="color: #9399B2;">));</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> exit</span><span style="color: #9399B2;">(</span><span style="color: #FAB387;">1</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> fcntl</span><span style="color: #9399B2;">(</span><span>lsocket</span><span style="color: #9399B2;">,</span><span> F_SETFD</span><span style="color: #9399B2;">,</span><span> FD_CLOEXEC</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> for</span><span style="color: #9399B2;"> (;;) {</span></span>
+<span class="giallo-l"><span> alen </span><span style="color: #94E2D5;">= sizeof</span><span style="color: #9399B2;">(</span><span>addr</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span> s </span><span style="color: #94E2D5;">=</span><span style="color: #89B4FA;font-style: italic;"> accept</span><span style="color: #9399B2;">(</span><span>lsocket</span><span style="color: #9399B2;">,</span><span style="color: #94E2D5;"> &amp;</span><span>addr</span><span style="color: #9399B2;">,</span><span style="color: #94E2D5;"> &amp;</span><span>alen</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>s </span><span style="color: #94E2D5;">&lt;</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGE</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;Accept failed: %s</span><span style="color: #F5C2E7;">\n</span><span style="color: #A6E3A1;">&quot;</span><span style="color: #9399B2;">,</span><span style="color: #89B4FA;font-style: italic;"> strerror</span><span style="color: #9399B2;">(</span><span>errno</span><span style="color: #9399B2;">));</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> continue</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> fcntl</span><span style="color: #9399B2;">(</span><span>s</span><span style="color: #9399B2;">,</span><span> F_SETFD</span><span style="color: #9399B2;">,</span><span> FD_CLOEXEC</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGI</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;new connection</span><span style="color: #F5C2E7;">\n</span><span style="color: #A6E3A1;">&quot;</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> for</span><span style="color: #9399B2;"> (;;) {</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> unsigned short</span><span> count</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span style="color: #89B4FA;font-style: italic;">readx</span><span style="color: #9399B2;">(</span><span>s</span><span style="color: #9399B2;">,</span><span style="color: #94E2D5;"> &amp;</span><span>count</span><span style="color: #9399B2;">,</span><span style="color: #94E2D5;"> sizeof</span><span style="color: #9399B2;">(</span><span>count</span><span style="color: #9399B2;">))) {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGE</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;failed to read size</span><span style="color: #F5C2E7;">\n</span><span style="color: #A6E3A1;">&quot;</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> break</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> ((</span><span>count </span><span style="color: #94E2D5;">&lt;</span><span style="color: #FAB387;"> 1</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> ||</span><span style="color: #9399B2;"> (</span><span>count </span><span style="color: #94E2D5;">&gt;=</span><span> BUFFER_MAX</span><span style="color: #9399B2;">)) {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGE</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;invalid size %d</span><span style="color: #F5C2E7;">\n</span><span style="color: #A6E3A1;">&quot;</span><span style="color: #9399B2;">,</span><span> count</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> break</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span style="color: #89B4FA;font-style: italic;">readx</span><span style="color: #9399B2;">(</span><span>s</span><span style="color: #9399B2;">,</span><span> buf</span><span style="color: #9399B2;">,</span><span> count</span><span style="color: #9399B2;">)) {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGE</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;failed to read command</span><span style="color: #F5C2E7;">\n</span><span style="color: #A6E3A1;">&quot;</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> break</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span> buf</span><span style="color: #9399B2;">[</span><span>count</span><span style="color: #9399B2;">]</span><span style="color: #94E2D5;"> =</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span style="color: #89B4FA;font-style: italic;">execute</span><span style="color: #9399B2;">(</span><span>s</span><span style="color: #9399B2;">,</span><span> buf</span><span style="color: #9399B2;">))</span><span style="color: #CBA6F7;"> break</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGI</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;closing connection</span><span style="color: #F5C2E7;">\n</span><span style="color: #A6E3A1;">&quot;</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> close</span><span style="color: #9399B2;">(</span><span>s</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">}</span></span></code></pre>
+<p>接收的命令:</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="c"><span class="giallo-l"><span style="color: #CBA6F7;">struct</span><span> cmdinfo </span><span style="color: #9399B2;">{</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> const char</span><span style="color: #94E2D5;"> *</span><span>name</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> unsigned</span><span> numargs</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> int</span><span style="color: #9399B2;"> (</span><span style="color: #94E2D5;">*</span><span>func</span><span style="color: #9399B2;">)(</span><span style="color: #CBA6F7;">char</span><span style="color: #94E2D5;"> **</span><span>arg</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> char</span><span> reply</span><span style="color: #9399B2;">[</span><span>REPLY_MAX</span><span style="color: #9399B2;">]);</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">};</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">struct</span><span> cmdinfo cmds</span><span style="color: #CBA6F7;">[]</span><span style="color: #94E2D5;"> =</span><span style="color: #9399B2;"> {</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> {</span><span style="color: #A6E3A1;"> &quot;ping&quot;</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">,</span><span> do_ping </span><span style="color: #9399B2;">},</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> {</span><span style="color: #A6E3A1;"> &quot;install&quot;</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 3</span><span style="color: #9399B2;">,</span><span> do_install </span><span style="color: #9399B2;">},</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> {</span><span style="color: #A6E3A1;"> &quot;dexopt&quot;</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 3</span><span style="color: #9399B2;">,</span><span> do_dexopt </span><span style="color: #9399B2;">},</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> {</span><span style="color: #A6E3A1;"> &quot;movedex&quot;</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 2</span><span style="color: #9399B2;">,</span><span> do_move_dex </span><span style="color: #9399B2;">},</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> {</span><span style="color: #A6E3A1;"> &quot;rmdex&quot;</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 1</span><span style="color: #9399B2;">,</span><span> do_rm_dex </span><span style="color: #9399B2;">},</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> {</span><span style="color: #A6E3A1;"> &quot;remove&quot;</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 2</span><span style="color: #9399B2;">,</span><span> do_remove </span><span style="color: #9399B2;">},</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> {</span><span style="color: #A6E3A1;"> &quot;rename&quot;</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 2</span><span style="color: #9399B2;">,</span><span> do_rename </span><span style="color: #9399B2;">},</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> {</span><span style="color: #A6E3A1;"> &quot;freecache&quot;</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 1</span><span style="color: #9399B2;">,</span><span> do_free_cache </span><span style="color: #9399B2;">},</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> {</span><span style="color: #A6E3A1;"> &quot;rmcache&quot;</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 1</span><span style="color: #9399B2;">,</span><span> do_rm_cache </span><span style="color: #9399B2;">},</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> {</span><span style="color: #A6E3A1;"> &quot;protect&quot;</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 2</span><span style="color: #9399B2;">,</span><span> do_protect </span><span style="color: #9399B2;">},</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> {</span><span style="color: #A6E3A1;"> &quot;getsize&quot;</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 4</span><span style="color: #9399B2;">,</span><span> do_get_size </span><span style="color: #9399B2;">},</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> {</span><span style="color: #A6E3A1;"> &quot;rmuserdata&quot;</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 2</span><span style="color: #9399B2;">,</span><span> do_rm_user_data </span><span style="color: #9399B2;">},</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> {</span><span style="color: #A6E3A1;"> &quot;movefiles&quot;</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">,</span><span> do_movefiles </span><span style="color: #9399B2;">},</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> {</span><span style="color: #A6E3A1;"> &quot;linklib&quot;</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 2</span><span style="color: #9399B2;">,</span><span> do_linklib </span><span style="color: #9399B2;">},</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> {</span><span style="color: #A6E3A1;"> &quot;unlinklib&quot;</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 1</span><span style="color: #9399B2;">,</span><span> do_unlinklib </span><span style="color: #9399B2;">},</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> {</span><span style="color: #A6E3A1;"> &quot;mkuserdata&quot;</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 3</span><span style="color: #9399B2;">,</span><span> do_mk_user_data </span><span style="color: #9399B2;">},</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> {</span><span style="color: #A6E3A1;"> &quot;rmuser&quot;</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 1</span><span style="color: #9399B2;">,</span><span> do_rm_user </span><span style="color: #9399B2;">},</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> {</span><span style="color: #A6E3A1;"> &quot;cloneuserdata&quot;</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 3</span><span style="color: #9399B2;">,</span><span> do_clone_user_data </span><span style="color: #9399B2;">},</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">};</span></span></code></pre>
+<p>比如</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="c"><span class="giallo-l"><span style="color: #CBA6F7;">static int</span><span style="color: #89B4FA;font-style: italic;"> do_install</span><span style="color: #9399B2;">(</span><span style="color: #CBA6F7;">char</span><span style="color: #94E2D5;"> **</span><span style="color: #EBA0AC;font-style: italic;">arg</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> char</span><span> reply</span><span style="color: #9399B2;">[</span><span>REPLY_MAX</span><span style="color: #9399B2;">])</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">{</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span style="color: #89B4FA;font-style: italic;"> install</span><span style="color: #9399B2;">(</span><span>arg</span><span style="color: #9399B2;">[</span><span style="color: #FAB387;">0</span><span style="color: #9399B2;">],</span><span style="color: #89B4FA;font-style: italic;"> atoi</span><span style="color: #9399B2;">(</span><span>arg</span><span style="color: #9399B2;">[</span><span style="color: #FAB387;">1</span><span style="color: #9399B2;">]),</span><span style="color: #89B4FA;font-style: italic;"> atoi</span><span style="color: #9399B2;">(</span><span>arg</span><span style="color: #9399B2;">[</span><span style="color: #FAB387;">2</span><span style="color: #9399B2;">]));</span><span style="color: #9399B2;font-style: italic;"> /* pkgname, uid, gid */</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">}</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">static int</span><span style="color: #89B4FA;font-style: italic;"> do_dexopt</span><span style="color: #9399B2;">(</span><span style="color: #CBA6F7;">char</span><span style="color: #94E2D5;"> **</span><span style="color: #EBA0AC;font-style: italic;">arg</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> char</span><span> reply</span><span style="color: #9399B2;">[</span><span>REPLY_MAX</span><span style="color: #9399B2;">])</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">{</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> /* apk_path, uid, is_public */</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span style="color: #89B4FA;font-style: italic;"> dexopt</span><span style="color: #9399B2;">(</span><span>arg</span><span style="color: #9399B2;">[</span><span style="color: #FAB387;">0</span><span style="color: #9399B2;">],</span><span style="color: #89B4FA;font-style: italic;"> atoi</span><span style="color: #9399B2;">(</span><span>arg</span><span style="color: #9399B2;">[</span><span style="color: #FAB387;">1</span><span style="color: #9399B2;">]),</span><span style="color: #89B4FA;font-style: italic;"> atoi</span><span style="color: #9399B2;">(</span><span>arg</span><span style="color: #9399B2;">[</span><span style="color: #FAB387;">2</span><span style="color: #9399B2;">]));</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">}</span></span></code></pre>
+<p>frameworks/base/cmds/installd/commands.c</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="c"><span class="giallo-l"><span style="color: #CBA6F7;">int</span><span style="color: #89B4FA;font-style: italic;"> install</span><span style="color: #9399B2;">(</span><span style="color: #CBA6F7;">const char</span><span style="color: #94E2D5;"> *</span><span style="color: #EBA0AC;font-style: italic;">pkgname</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> uid_t</span><span style="color: #EBA0AC;font-style: italic;"> uid</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> gid_t</span><span style="color: #EBA0AC;font-style: italic;"> gid</span><span style="color: #9399B2;">)</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">{</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> char</span><span> pkgdir</span><span style="color: #9399B2;">[</span><span>PKG_PATH_MAX</span><span style="color: #9399B2;">];</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> char</span><span> libdir</span><span style="color: #9399B2;">[</span><span>PKG_PATH_MAX</span><span style="color: #9399B2;">];</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> ((</span><span>uid </span><span style="color: #94E2D5;">&lt;</span><span> AID_SYSTEM</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> ||</span><span style="color: #9399B2;"> (</span><span>gid </span><span style="color: #94E2D5;">&lt;</span><span> AID_SYSTEM</span><span style="color: #9399B2;">)) {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGE</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;invalid uid/gid: %d %d</span><span style="color: #F5C2E7;">\n</span><span style="color: #A6E3A1;">&quot;</span><span style="color: #9399B2;">,</span><span> uid</span><span style="color: #9399B2;">,</span><span> gid</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span style="color: #94E2D5;"> -</span><span style="color: #FAB387;">1</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span style="color: #89B4FA;font-style: italic;">create_pkg_path</span><span style="color: #9399B2;">(</span><span>pkgdir</span><span style="color: #9399B2;">,</span><span> pkgname</span><span style="color: #9399B2;">,</span><span> PKG_DIR_POSTFIX</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">)) {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGE</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;cannot create package path</span><span style="color: #F5C2E7;">\n</span><span style="color: #A6E3A1;">&quot;</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span style="color: #94E2D5;"> -</span><span style="color: #FAB387;">1</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span style="color: #89B4FA;font-style: italic;">create_pkg_path</span><span style="color: #9399B2;">(</span><span>libdir</span><span style="color: #9399B2;">,</span><span> pkgname</span><span style="color: #9399B2;">,</span><span> PKG_LIB_POSTFIX</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">)) {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGE</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;cannot create package lib path</span><span style="color: #F5C2E7;">\n</span><span style="color: #A6E3A1;">&quot;</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span style="color: #94E2D5;"> -</span><span style="color: #FAB387;">1</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span style="color: #89B4FA;font-style: italic;">mkdir</span><span style="color: #9399B2;">(</span><span>pkgdir</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> 0</span><span style="color: #FAB387;">751</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> &lt;</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGE</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;cannot create dir &#39;%s&#39;: %s</span><span style="color: #F5C2E7;">\n</span><span style="color: #A6E3A1;">&quot;</span><span style="color: #9399B2;">,</span><span> pkgdir</span><span style="color: #9399B2;">,</span><span style="color: #89B4FA;font-style: italic;"> strerror</span><span style="color: #9399B2;">(</span><span>errno</span><span style="color: #9399B2;">));</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span style="color: #94E2D5;"> -</span><span>errno</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span style="color: #89B4FA;font-style: italic;">chmod</span><span style="color: #9399B2;">(</span><span>pkgdir</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> 0</span><span style="color: #FAB387;">751</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> &lt;</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGE</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;cannot chmod dir &#39;%s&#39;: %s</span><span style="color: #F5C2E7;">\n</span><span style="color: #A6E3A1;">&quot;</span><span style="color: #9399B2;">,</span><span> pkgdir</span><span style="color: #9399B2;">,</span><span style="color: #89B4FA;font-style: italic;"> strerror</span><span style="color: #9399B2;">(</span><span>errno</span><span style="color: #9399B2;">));</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> unlink</span><span style="color: #9399B2;">(</span><span>pkgdir</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span style="color: #94E2D5;"> -</span><span>errno</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span style="color: #89B4FA;font-style: italic;">chown</span><span style="color: #9399B2;">(</span><span>pkgdir</span><span style="color: #9399B2;">,</span><span> uid</span><span style="color: #9399B2;">,</span><span> gid</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> &lt;</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGE</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;cannot chown dir &#39;%s&#39;: %s</span><span style="color: #F5C2E7;">\n</span><span style="color: #A6E3A1;">&quot;</span><span style="color: #9399B2;">,</span><span> pkgdir</span><span style="color: #9399B2;">,</span><span style="color: #89B4FA;font-style: italic;"> strerror</span><span style="color: #9399B2;">(</span><span>errno</span><span style="color: #9399B2;">));</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> unlink</span><span style="color: #9399B2;">(</span><span>pkgdir</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span style="color: #94E2D5;"> -</span><span>errno</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span style="color: #89B4FA;font-style: italic;">mkdir</span><span style="color: #9399B2;">(</span><span>libdir</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> 0</span><span style="color: #FAB387;">755</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> &lt;</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGE</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;cannot create dir &#39;%s&#39;: %s</span><span style="color: #F5C2E7;">\n</span><span style="color: #A6E3A1;">&quot;</span><span style="color: #9399B2;">,</span><span> libdir</span><span style="color: #9399B2;">,</span><span style="color: #89B4FA;font-style: italic;"> strerror</span><span style="color: #9399B2;">(</span><span>errno</span><span style="color: #9399B2;">));</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> unlink</span><span style="color: #9399B2;">(</span><span>pkgdir</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span style="color: #94E2D5;"> -</span><span>errno</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span style="color: #89B4FA;font-style: italic;">chmod</span><span style="color: #9399B2;">(</span><span>libdir</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> 0</span><span style="color: #FAB387;">755</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> &lt;</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGE</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;cannot chmod dir &#39;%s&#39;: %s</span><span style="color: #F5C2E7;">\n</span><span style="color: #A6E3A1;">&quot;</span><span style="color: #9399B2;">,</span><span> libdir</span><span style="color: #9399B2;">,</span><span style="color: #89B4FA;font-style: italic;"> strerror</span><span style="color: #9399B2;">(</span><span>errno</span><span style="color: #9399B2;">));</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> unlink</span><span style="color: #9399B2;">(</span><span>libdir</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> unlink</span><span style="color: #9399B2;">(</span><span>pkgdir</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span style="color: #94E2D5;"> -</span><span>errno</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span style="color: #89B4FA;font-style: italic;">chown</span><span style="color: #9399B2;">(</span><span>libdir</span><span style="color: #9399B2;">,</span><span> AID_SYSTEM</span><span style="color: #9399B2;">,</span><span> AID_SYSTEM</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> &lt;</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGE</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;cannot chown dir &#39;%s&#39;: %s</span><span style="color: #F5C2E7;">\n</span><span style="color: #A6E3A1;">&quot;</span><span style="color: #9399B2;">,</span><span> libdir</span><span style="color: #9399B2;">,</span><span style="color: #89B4FA;font-style: italic;"> strerror</span><span style="color: #9399B2;">(</span><span>errno</span><span style="color: #9399B2;">));</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> unlink</span><span style="color: #9399B2;">(</span><span>libdir</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> unlink</span><span style="color: #9399B2;">(</span><span>pkgdir</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span style="color: #94E2D5;"> -</span><span>errno</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span><span style="color: #FAB387;">2</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">}</span></span></code></pre>
+<p>adb pm -r install xxx.apk 的流程跟踪结束。</p>
+<p><strong>再来看看MultiDex.install（）的流程：</strong></p>
+<p>android.support.multidex.MultiDex.V14#install()<br />
+android.support.multidex.MultiDex.V14#makeDexElements();<br />
+通过反射调用了DexPathList 的makeDexElements()<br />
+该方法就是调用dex = loadDexFile(file, optimizedDirectory);<br />
+看看 loadDexFile</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="java"><span class="giallo-l"><span style="color: #9399B2;font-style: italic;">/**</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * Constructs a {@code DexFile} instance, as appropriate depending</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * on whether {@code optimizedDirectory} is {@code null}.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> */</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> private static DexFile</span><span style="color: #89B4FA;font-style: italic;"> loadDexFile</span><span style="color: #9399B2;">(</span><span style="color: #CBA6F7;">File</span><span> file</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> File</span><span> optimizedDirectory</span><span style="color: #9399B2;">)</span></span>
+<span class="giallo-l"><span> throws IOException </span><span style="color: #9399B2;">{</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>optimizedDirectory </span><span style="color: #94E2D5;">==</span><span style="color: #F38BA8;"> null</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return new</span><span style="color: #89B4FA;font-style: italic;"> DexFile</span><span style="color: #9399B2;">(</span><span>file</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span><span style="color: #CBA6F7;"> else</span><span style="color: #9399B2;"> {</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> String</span><span> optimizedPath</span><span style="color: #94E2D5;"> =</span><span style="color: #89B4FA;font-style: italic;"> optimizedPathFor</span><span style="color: #9399B2;">(</span><span>file</span><span style="color: #9399B2;">,</span><span> optimizedDirectory</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span> DexFile</span><span style="color: #9399B2;">.</span><span style="color: #89B4FA;font-style: italic;">loadDex</span><span style="color: #9399B2;">(</span><span>file</span><span style="color: #9399B2;">.</span><span style="color: #89B4FA;font-style: italic;">getPath</span><span style="color: #9399B2;">(),</span><span> optimizedPath</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span></code></pre>
+<p>第一次load dex文件的时候  是 optimizedDirectory 空的 。
+进入 return new DexFile(file); 的分支。</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="java"><span class="giallo-l"><span style="color: #9399B2;font-style: italic;">/*</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;">* Open a DEX file. The value returned is a magic VM cookie. On</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;">* failure, an IOException is thrown.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;">*/</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">native private static int</span><span style="color: #89B4FA;font-style: italic;"> openDexFile</span><span style="color: #9399B2;">(</span><span style="color: #CBA6F7;">String</span><span> sourceName</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> String</span><span> outputName</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">int</span><span> flags</span><span style="color: #9399B2;">)</span><span> throws IOException</span><span style="color: #9399B2;">;</span></span></code></pre>
+<p>进入native层代码openDexFile()</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="c"><span class="giallo-l"><span style="color: #CBA6F7;">static void</span><span style="color: #89B4FA;font-style: italic;"> Dalvik_dalvik_system_DexFile_openDexFile</span><span style="color: #9399B2;">(</span><span style="color: #CBA6F7;">const</span><span> u4</span><span style="color: #94E2D5;">*</span><span style="color: #EBA0AC;font-style: italic;"> args</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span>JValue</span><span style="color: #94E2D5;">*</span><span style="color: #EBA0AC;font-style: italic;"> pResult</span><span style="color: #9399B2;">)</span></span></code></pre>
+<p>该方法比较长 主要是调用了dvmJarFileOpen()方法，在 android/dalvik/vm/JarFile.cpp</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="c"><span class="giallo-l"><span style="color: #9399B2;font-style: italic;">/*</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * Open a Jar file. It&#39;s okay if it&#39;s just a Zip archive without all of</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * the Jar trimmings, but we do insist on finding &quot;classes.dex&quot; inside</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * or an appropriately-named &quot;.odex&quot; file alongside.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> *</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * If &quot;isBootstrap&quot; is not set, the optimizer/verifier regards this DEX as</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * being part of a different class loader.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> */</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">int</span><span style="color: #89B4FA;font-style: italic;"> dvmJarFileOpen</span><span style="color: #9399B2;">(</span><span style="color: #CBA6F7;">const char</span><span style="color: #94E2D5;">*</span><span style="color: #EBA0AC;font-style: italic;"> fileName</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> const char</span><span style="color: #94E2D5;">*</span><span style="color: #EBA0AC;font-style: italic;"> odexOutputName</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span> JarFile</span><span style="color: #94E2D5;">**</span><span style="color: #EBA0AC;font-style: italic;"> ppJarFile</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> bool</span><span style="color: #EBA0AC;font-style: italic;"> isBootstrap</span><span style="color: #9399B2;">)</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">{</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> /*</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * TODO: This function has been duplicated and modified to become</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * dvmRawDexFileOpen() in RawDexFile.c. This should be refactored.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> */</span></span>
+<span class="giallo-l"><span> ZipArchive archive</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span> DvmDex</span><span style="color: #94E2D5;">*</span><span> pDvmDex </span><span style="color: #94E2D5;">=</span><span style="color: #F38BA8;"> NULL</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> char</span><span style="color: #94E2D5;">*</span><span> cachedName </span><span style="color: #94E2D5;">=</span><span style="color: #F38BA8;"> NULL</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> bool</span><span> archiveOpen </span><span style="color: #94E2D5;">=</span><span style="color: #F38BA8;"> false</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> bool</span><span> locked </span><span style="color: #94E2D5;">=</span><span style="color: #F38BA8;"> false</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> int</span><span> fd </span><span style="color: #94E2D5;">= -</span><span style="color: #FAB387;">1</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> int</span><span> result </span><span style="color: #94E2D5;">= -</span><span style="color: #FAB387;">1</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> /* Even if we&#39;re not going to look at the archive, we need to</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * open it so we can stuff it into ppJarFile.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> */</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span style="color: #89B4FA;font-style: italic;">dexZipOpenArchive</span><span style="color: #9399B2;">(</span><span>fileName</span><span style="color: #9399B2;">,</span><span style="color: #94E2D5;"> &amp;</span><span>archive</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> !=</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">)</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> goto</span><span> bail</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span> archiveOpen </span><span style="color: #94E2D5;">=</span><span style="color: #F38BA8;"> true</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> /* If we fork/exec into dexopt, don&#39;t let it inherit the archive&#39;s fd.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> */</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> dvmSetCloseOnExec</span><span style="color: #9399B2;">(</span><span style="color: #89B4FA;font-style: italic;">dexZipGetArchiveFd</span><span style="color: #9399B2;">(</span><span style="color: #94E2D5;">&amp;</span><span>archive</span><span style="color: #9399B2;">));</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> /* First, look for a &quot;.odex&quot; alongside the jar file. It will</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * have the same name/path except for the extension.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> */</span></span>
+<span class="giallo-l"><span> fd </span><span style="color: #94E2D5;">=</span><span style="color: #89B4FA;font-style: italic;"> openAlternateSuffix</span><span style="color: #9399B2;">(</span><span>fileName</span><span style="color: #9399B2;">,</span><span style="color: #A6E3A1;"> &quot;odex&quot;</span><span style="color: #9399B2;">,</span><span> O_RDONLY</span><span style="color: #9399B2;">,</span><span style="color: #94E2D5;"> &amp;</span><span>cachedName</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>fd </span><span style="color: #94E2D5;">&gt;=</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGV</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;Using alternate file (odex) for %s ...&quot;</span><span style="color: #9399B2;">,</span><span> fileName</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span style="color: #94E2D5;">!</span><span style="color: #89B4FA;font-style: italic;">dvmCheckOptHeaderAndDependencies</span><span style="color: #9399B2;">(</span><span>fd</span><span style="color: #9399B2;">,</span><span style="color: #F38BA8;"> false</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">,</span><span style="color: #F38BA8;"> true</span><span style="color: #9399B2;">,</span><span style="color: #F38BA8;"> true</span><span style="color: #9399B2;">)) {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGE</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;%s odex has stale dependencies&quot;</span><span style="color: #9399B2;">,</span><span> fileName</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> free</span><span style="color: #9399B2;">(</span><span>cachedName</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span> cachedName </span><span style="color: #94E2D5;">=</span><span style="color: #F38BA8;"> NULL</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> close</span><span style="color: #9399B2;">(</span><span>fd</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span> fd </span><span style="color: #94E2D5;">= -</span><span style="color: #FAB387;">1</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> goto</span><span> tryArchive</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span><span style="color: #CBA6F7;"> else</span><span style="color: #9399B2;"> {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGV</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;%s odex has good dependencies&quot;</span><span style="color: #9399B2;">,</span><span> fileName</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> //TODO: make sure that the .odex actually corresponds</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> // to the classes.dex inside the archive (if present).</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> // For typical use there will be no classes.dex.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span><span style="color: #CBA6F7;"> else</span><span style="color: #9399B2;"> {</span></span>
+<span class="giallo-l"><span> ZipEntry entry</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span>tryArchive:</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> /*</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * Pre-created .odex absent or stale. Look inside the jar for a</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * &quot;classes.dex&quot;.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> */</span></span>
+<span class="giallo-l"><span> entry </span><span style="color: #94E2D5;">=</span><span style="color: #89B4FA;font-style: italic;"> dexZipFindEntry</span><span style="color: #9399B2;">(</span><span style="color: #94E2D5;">&amp;</span><span>archive</span><span style="color: #9399B2;">,</span><span> kDexInJarName</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>entry </span><span style="color: #94E2D5;">!=</span><span style="color: #F38BA8;"> NULL</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> bool</span><span> newFile </span><span style="color: #94E2D5;">=</span><span style="color: #F38BA8;"> false</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> /*</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * We&#39;ve found the one we want. See if there&#39;s an up-to-date copy</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * in the cache.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> *</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * On return, &quot;fd&quot; will be seeked just past the &quot;opt&quot; header.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> *</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * If a stale .odex file is present and classes.dex exists in</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * the archive, this will *not* return an fd pointing to the</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * .odex file; the fd will point into dalvik-cache like any</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * other jar.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> */</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>odexOutputName </span><span style="color: #94E2D5;">==</span><span style="color: #F38BA8;"> NULL</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span> cachedName </span><span style="color: #94E2D5;">=</span><span style="color: #89B4FA;font-style: italic;"> dexOptGenerateCacheFileName</span><span style="color: #9399B2;">(</span><span>fileName</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span> kDexInJarName</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>cachedName </span><span style="color: #94E2D5;">==</span><span style="color: #F38BA8;"> NULL</span><span style="color: #9399B2;">)</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> goto</span><span> bail</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span><span style="color: #CBA6F7;"> else</span><span style="color: #9399B2;"> {</span></span>
+<span class="giallo-l"><span> cachedName </span><span style="color: #94E2D5;">=</span><span style="color: #89B4FA;font-style: italic;"> strdup</span><span style="color: #9399B2;">(</span><span>odexOutputName</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGV</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;dvmJarFileOpen: Checking cache for %s (%s)&quot;</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span> fileName</span><span style="color: #9399B2;">,</span><span> cachedName</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span> fd </span><span style="color: #94E2D5;">=</span><span style="color: #89B4FA;font-style: italic;"> dvmOpenCachedDexFile</span><span style="color: #9399B2;">(</span><span>fileName</span><span style="color: #9399B2;">,</span><span> cachedName</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> dexGetZipEntryModTime</span><span style="color: #9399B2;">(</span><span style="color: #94E2D5;">&amp;</span><span>archive</span><span style="color: #9399B2;">,</span><span> entry</span><span style="color: #9399B2;">),</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> dexGetZipEntryCrc32</span><span style="color: #9399B2;">(</span><span style="color: #94E2D5;">&amp;</span><span>archive</span><span style="color: #9399B2;">,</span><span> entry</span><span style="color: #9399B2;">),</span></span>
+<span class="giallo-l"><span> isBootstrap</span><span style="color: #9399B2;">,</span><span style="color: #94E2D5;"> &amp;</span><span>newFile</span><span style="color: #9399B2;">,</span><span style="color: #9399B2;font-style: italic;"> /*createIfMissing=*/</span><span style="color: #F38BA8;">true</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>fd </span><span style="color: #94E2D5;">&lt;</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGI</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;Unable to open or create cache for %s (%s)&quot;</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span> fileName</span><span style="color: #9399B2;">,</span><span> cachedName</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> goto</span><span> bail</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span> locked </span><span style="color: #94E2D5;">=</span><span style="color: #F38BA8;"> true</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> /*</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * If fd points to a new file (because there was no cached version,</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * or the cached version was stale), generate the optimized DEX.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * The file descriptor returned is still locked, and is positioned</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * just past the optimization header.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> */</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>newFile</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span> u8 startWhen</span><span style="color: #9399B2;">,</span><span> extractWhen</span><span style="color: #9399B2;">,</span><span> endWhen</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> bool</span><span> result</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> off_t</span><span> dexOffset</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span> dexOffset </span><span style="color: #94E2D5;">=</span><span style="color: #89B4FA;font-style: italic;"> lseek</span><span style="color: #9399B2;">(</span><span>fd</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">,</span><span> SEEK_CUR</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span> result </span><span style="color: #94E2D5;">=</span><span style="color: #9399B2;"> (</span><span>dexOffset </span><span style="color: #94E2D5;">&gt;</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>result</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span> startWhen </span><span style="color: #94E2D5;">=</span><span style="color: #89B4FA;font-style: italic;"> dvmGetRelativeTimeUsec</span><span style="color: #9399B2;">();</span></span>
+<span class="giallo-l"><span> result </span><span style="color: #94E2D5;">=</span><span style="color: #89B4FA;font-style: italic;"> dexZipExtractEntryToFile</span><span style="color: #9399B2;">(</span><span style="color: #94E2D5;">&amp;</span><span>archive</span><span style="color: #9399B2;">,</span><span> entry</span><span style="color: #9399B2;">,</span><span> fd</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> ==</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span> extractWhen </span><span style="color: #94E2D5;">=</span><span style="color: #89B4FA;font-style: italic;"> dvmGetRelativeTimeUsec</span><span style="color: #9399B2;">();</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>result</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span> result </span><span style="color: #94E2D5;">=</span><span style="color: #89B4FA;font-style: italic;"> dvmOptimizeDexFile</span><span style="color: #9399B2;">(</span><span>fd</span><span style="color: #9399B2;">,</span><span> dexOffset</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> dexGetZipEntryUncompLen</span><span style="color: #9399B2;">(</span><span style="color: #94E2D5;">&amp;</span><span>archive</span><span style="color: #9399B2;">,</span><span> entry</span><span style="color: #9399B2;">),</span></span>
+<span class="giallo-l"><span> fileName</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> dexGetZipEntryModTime</span><span style="color: #9399B2;">(</span><span style="color: #94E2D5;">&amp;</span><span>archive</span><span style="color: #9399B2;">,</span><span> entry</span><span style="color: #9399B2;">),</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> dexGetZipEntryCrc32</span><span style="color: #9399B2;">(</span><span style="color: #94E2D5;">&amp;</span><span>archive</span><span style="color: #9399B2;">,</span><span> entry</span><span style="color: #9399B2;">),</span></span>
+<span class="giallo-l"><span> isBootstrap</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span style="color: #94E2D5;">!</span><span>result</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGE</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;Unable to extract+optimize DEX from &#39;%s&#39;&quot;</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span> fileName</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> goto</span><span> bail</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span> endWhen </span><span style="color: #94E2D5;">=</span><span style="color: #89B4FA;font-style: italic;"> dvmGetRelativeTimeUsec</span><span style="color: #9399B2;">();</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGD</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;DEX prep &#39;%s&#39;: unzip in %dms, rewrite %dms&quot;</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span> fileName</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">int</span><span style="color: #9399B2;">) (</span><span>extractWhen </span><span style="color: #94E2D5;">-</span><span> startWhen</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> /</span><span style="color: #FAB387;"> 1000</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">int</span><span style="color: #9399B2;">) (</span><span>endWhen </span><span style="color: #94E2D5;">-</span><span> extractWhen</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> /</span><span style="color: #FAB387;"> 1000</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span><span style="color: #CBA6F7;"> else</span><span style="color: #9399B2;"> {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGI</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;Zip is good, but no %s inside, and no valid .odex &quot;</span></span>
+<span class="giallo-l"><span style="color: #A6E3A1;"> &quot;file in the same directory&quot;</span><span style="color: #9399B2;">,</span><span> kDexInJarName</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> goto</span><span> bail</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> /*</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * Map the cached version. This immediately rewinds the fd, so it</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * doesn&#39;t have to be seeked anywhere in particular.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> */</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span style="color: #89B4FA;font-style: italic;">dvmDexFileOpenFromFd</span><span style="color: #9399B2;">(</span><span>fd</span><span style="color: #9399B2;">,</span><span style="color: #94E2D5;"> &amp;</span><span>pDvmDex</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> !=</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGI</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;Unable to map %s in %s&quot;</span><span style="color: #9399B2;">,</span><span> kDexInJarName</span><span style="color: #9399B2;">,</span><span> fileName</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> goto</span><span> bail</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>locked</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> /* unlock the fd */</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span style="color: #94E2D5;">!</span><span style="color: #89B4FA;font-style: italic;">dvmUnlockCachedDexFile</span><span style="color: #9399B2;">(</span><span>fd</span><span style="color: #9399B2;">)) {</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> /* uh oh -- this process needs to exit or we&#39;ll wedge the system */</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGE</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;Unable to unlock DEX file&quot;</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> goto</span><span> bail</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span> locked </span><span style="color: #94E2D5;">=</span><span style="color: #F38BA8;"> false</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGV</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;Successfully opened &#39;%s&#39; in &#39;%s&#39;&quot;</span><span style="color: #9399B2;">,</span><span> kDexInJarName</span><span style="color: #9399B2;">,</span><span> fileName</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #94E2D5;"> *</span><span>ppJarFile </span><span style="color: #94E2D5;">=</span><span style="color: #9399B2;"> (</span><span>JarFile</span><span style="color: #94E2D5;">*</span><span style="color: #9399B2;">)</span><span style="color: #89B4FA;font-style: italic;"> calloc</span><span style="color: #9399B2;">(</span><span style="color: #FAB387;">1</span><span style="color: #9399B2;">,</span><span style="color: #94E2D5;"> sizeof</span><span style="color: #9399B2;">(</span><span>JarFile</span><span style="color: #9399B2;">));</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> (</span><span style="color: #94E2D5;">*</span><span>ppJarFile</span><span style="color: #9399B2;">)-&gt;</span><span>archive</span><span style="color: #94E2D5;"> =</span><span> archive</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> (</span><span style="color: #94E2D5;">*</span><span>ppJarFile</span><span style="color: #9399B2;">)-&gt;</span><span>cacheFileName</span><span style="color: #94E2D5;"> =</span><span> cachedName</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> (</span><span style="color: #94E2D5;">*</span><span>ppJarFile</span><span style="color: #9399B2;">)-&gt;</span><span>pDvmDex</span><span style="color: #94E2D5;"> =</span><span> pDvmDex</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span> cachedName </span><span style="color: #94E2D5;">=</span><span style="color: #F38BA8;"> NULL</span><span style="color: #9399B2;">;</span><span style="color: #9399B2;font-style: italic;"> // don&#39;t free it below</span></span>
+<span class="giallo-l"><span> result </span><span style="color: #94E2D5;">=</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span>bail:</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> /* clean up, closing the open file */</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>archiveOpen </span><span style="color: #94E2D5;">&amp;&amp;</span><span> result </span><span style="color: #94E2D5;">!=</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">)</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> dexZipCloseArchive</span><span style="color: #9399B2;">(</span><span style="color: #94E2D5;">&amp;</span><span>archive</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> free</span><span style="color: #9399B2;">(</span><span>cachedName</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>fd </span><span style="color: #94E2D5;">&gt;=</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>locked</span><span style="color: #9399B2;">)</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">void</span><span style="color: #9399B2;">)</span><span style="color: #89B4FA;font-style: italic;"> dvmUnlockCachedDexFile</span><span style="color: #9399B2;">(</span><span>fd</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> close</span><span style="color: #9399B2;">(</span><span>fd</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span> result</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">}</span></span></code></pre>
+<p>其中 , 执行了dvmOpenCachedDexFile（）后 newFile 为true 。 会执行</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="java"><span class="giallo-l"><span>result </span><span style="color: #94E2D5;">=</span><span style="color: #89B4FA;font-style: italic;"> dvmOptimizeDexFile</span><span style="color: #9399B2;">(</span><span>fd</span><span style="color: #9399B2;">,</span><span> dexOffset</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> dexGetZipEntryUncompLen</span><span style="color: #9399B2;">(</span><span style="color: #94E2D5;">&amp;</span><span>archive</span><span style="color: #9399B2;">,</span><span> entry</span><span style="color: #9399B2;">),</span></span>
+<span class="giallo-l"><span> fileName</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> dexGetZipEntryModTime</span><span style="color: #9399B2;">(</span><span style="color: #94E2D5;">&amp;</span><span>archive</span><span style="color: #9399B2;">,</span><span> entry</span><span style="color: #9399B2;">),</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> dexGetZipEntryCrc32</span><span style="color: #9399B2;">(</span><span style="color: #94E2D5;">&amp;</span><span>archive</span><span style="color: #9399B2;">,</span><span> entry</span><span style="color: #9399B2;">),</span></span>
+<span class="giallo-l"><span> isBootstrap</span><span style="color: #9399B2;">);</span></span></code></pre>
+<p>这里调用了 /dalvik/vm/RawDexFile.cpp  中的 dvmOptimizeDexFile()方法</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="java"><span class="giallo-l"><span style="color: #9399B2;font-style: italic;">/*</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * Given a descriptor for a file with DEX data in it, produce an</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * optimized version.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> *</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * The file pointed to by &quot;fd&quot; is expected to be a locked shared resource</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * (or private); we make no efforts to enforce multi-process correctness</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * here.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> *</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * &quot;fileName&quot; is only used for debug output. &quot;modWhen&quot; and &quot;crc&quot; are stored</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * in the dependency set.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> *</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * The &quot;isBootstrap&quot; flag determines how the optimizer and verifier handle</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * package-scope access checks. When optimizing, we only load the bootstrap</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * class DEX files and the target DEX, so the flag determines whether the</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * target DEX classes are given a (synthetic) non-NULL classLoader pointer.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * This only really matters if the target DEX contains classes that claim to</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * be in the same package as bootstrap classes.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> *</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * The optimizer will need to load every class in the target DEX file.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * This is generally undesirable, so we start a subprocess to do the</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * work and wait for it to complete.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> *</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * Returns &quot;true&quot; on success. All data will have been written to &quot;fd&quot;.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> */</span></span>
+<span class="giallo-l"><span>bool </span><span style="color: #89B4FA;font-style: italic;">dvmOptimizeDexFile</span><span style="color: #9399B2;">(</span><span style="color: #CBA6F7;">int</span><span> fd</span><span style="color: #9399B2;">,</span><span> off_t dexOffset</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> long</span><span> dexLength</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> const char</span><span style="color: #94E2D5;">*</span><span> fileName</span><span style="color: #9399B2;">,</span><span> u4 modWhen</span><span style="color: #9399B2;">,</span><span> u4 crc</span><span style="color: #9399B2;">,</span><span> bool isBootstrap</span><span style="color: #9399B2;">)</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">{</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> const char</span><span style="color: #94E2D5;">*</span><span> lastPart </span><span style="color: #94E2D5;">=</span><span style="color: #89B4FA;font-style: italic;"> strrchr</span><span style="color: #9399B2;">(</span><span>fileName</span><span style="color: #9399B2;">,</span><span style="color: #A6E3A1;"> &#39;/&#39;</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>lastPart </span><span style="color: #94E2D5;">!=</span><span> NULL</span><span style="color: #9399B2;">)</span></span>
+<span class="giallo-l"><span> lastPart</span><span style="color: #94E2D5;">++</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> else</span></span>
+<span class="giallo-l"><span> lastPart </span><span style="color: #94E2D5;">=</span><span> fileName</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGD</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;DexOpt: --- BEGIN &#39;%s&#39; (bootstrap=%d) ---&quot;</span><span style="color: #9399B2;">,</span><span> lastPart</span><span style="color: #9399B2;">,</span><span> isBootstrap</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span> pid_t pid</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> /*</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * This could happen if something in our bootclasspath, which we thought</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * was all optimized, got rejected.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> */</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>gDvm</span><span style="color: #9399B2;">.</span><span>optimizing</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGW</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;Rejecting recursive optimization attempt on &#39;%s&#39;&quot;</span><span style="color: #9399B2;">,</span><span> fileName</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span style="color: #F38BA8;"> false</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span> pid </span><span style="color: #94E2D5;">=</span><span style="color: #89B4FA;font-style: italic;"> fork</span><span style="color: #9399B2;">();</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>pid </span><span style="color: #94E2D5;">==</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> static const int</span><span> kUseValgrind</span><span style="color: #94E2D5;"> =</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> static const char</span><span style="color: #94E2D5;">*</span><span> kDexOptBin </span><span style="color: #94E2D5;">=</span><span style="color: #A6E3A1;"> &quot;/bin/dexopt&quot;</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> static const char</span><span style="color: #94E2D5;">*</span><span> kValgrinder </span><span style="color: #94E2D5;">=</span><span style="color: #A6E3A1;"> &quot;/usr/bin/valgrind&quot;</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> static const int</span><span> kFixedArgCount</span><span style="color: #94E2D5;"> =</span><span style="color: #FAB387;"> 10</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> static const int</span><span> kValgrindArgCount</span><span style="color: #94E2D5;"> =</span><span style="color: #FAB387;"> 5</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> static const int</span><span> kMaxIntLen</span><span style="color: #94E2D5;"> =</span><span style="color: #FAB387;"> 12</span><span style="color: #9399B2;">;</span><span style="color: #9399B2;font-style: italic;"> // &#39;-&#39;+10dig+&#39;\0&#39; -OR- 0x+8dig</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> int</span><span> bcpSize</span><span style="color: #94E2D5;"> =</span><span style="color: #89B4FA;font-style: italic;"> dvmGetBootPathSize</span><span style="color: #9399B2;">();</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> int</span><span> argc</span><span style="color: #94E2D5;"> =</span><span> kFixedArgCount </span><span style="color: #94E2D5;">+</span><span> bcpSize</span></span>
+<span class="giallo-l"><span style="color: #94E2D5;"> +</span><span style="color: #9399B2;"> (</span><span>kValgrindArgCount </span><span style="color: #94E2D5;">*</span><span> kUseValgrind</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> const char</span><span style="color: #94E2D5;">*</span><span> argv</span><span style="color: #9399B2;">[</span><span>argc</span><span style="color: #94E2D5;">+</span><span style="color: #FAB387;">1</span><span style="color: #9399B2;">];</span><span style="color: #9399B2;font-style: italic;"> // last entry is NULL</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> char</span><span> values </span><span style="color: #9399B2;">[</span><span>argc</span><span style="color: #9399B2;">][</span><span>kMaxIntLen</span><span style="color: #9399B2;">];</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> char</span><span style="color: #94E2D5;">*</span><span> execFile</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> const char</span><span style="color: #94E2D5;">*</span><span> androidRoot</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> int</span><span> flags</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> /* change process groups, so we don&#39;t clash with ProcessManager */</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> setpgid</span><span style="color: #9399B2;">(</span><span style="color: #FAB387;">0</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> /* full path to optimizer */</span></span>
+<span class="giallo-l"><span> androidRoot </span><span style="color: #94E2D5;">=</span><span style="color: #89B4FA;font-style: italic;"> getenv</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;ANDROID_ROOT&quot;</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>androidRoot </span><span style="color: #94E2D5;">==</span><span> NULL</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGW</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;ANDROID_ROOT not set, defaulting to /system&quot;</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span> androidRoot </span><span style="color: #94E2D5;">=</span><span style="color: #A6E3A1;"> &quot;/system&quot;</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span> execFile </span><span style="color: #94E2D5;">=</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">char</span><span style="color: #94E2D5;">*</span><span style="color: #9399B2;">)</span><span style="color: #89B4FA;font-style: italic;">alloca</span><span style="color: #9399B2;">(</span><span style="color: #89B4FA;font-style: italic;">strlen</span><span style="color: #9399B2;">(</span><span>androidRoot</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> +</span><span style="color: #89B4FA;font-style: italic;"> strlen</span><span style="color: #9399B2;">(</span><span>kDexOptBin</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> +</span><span style="color: #FAB387;"> 1</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> strcpy</span><span style="color: #9399B2;">(</span><span>execFile</span><span style="color: #9399B2;">,</span><span> androidRoot</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> strcat</span><span style="color: #9399B2;">(</span><span>execFile</span><span style="color: #9399B2;">,</span><span> kDexOptBin</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> /*</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * Create arg vector.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> */</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> int</span><span> curArg</span><span style="color: #94E2D5;"> =</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>kUseValgrind</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> /* probably shouldn&#39;t ship the hard-coded path */</span></span>
+<span class="giallo-l"><span> argv</span><span style="color: #9399B2;">[</span><span>curArg</span><span style="color: #94E2D5;">++</span><span style="color: #9399B2;">]</span><span style="color: #94E2D5;"> =</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">char</span><span style="color: #94E2D5;">*</span><span style="color: #9399B2;">)</span><span>kValgrinder</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span> argv</span><span style="color: #9399B2;">[</span><span>curArg</span><span style="color: #94E2D5;">++</span><span style="color: #9399B2;">]</span><span style="color: #94E2D5;"> =</span><span style="color: #A6E3A1;"> &quot;--tool=memcheck&quot;</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span> argv</span><span style="color: #9399B2;">[</span><span>curArg</span><span style="color: #94E2D5;">++</span><span style="color: #9399B2;">]</span><span style="color: #94E2D5;"> =</span><span style="color: #A6E3A1;"> &quot;--leak-check=yes&quot;</span><span style="color: #9399B2;">;</span><span style="color: #9399B2;font-style: italic;"> // check for leaks too</span></span>
+<span class="giallo-l"><span> argv</span><span style="color: #9399B2;">[</span><span>curArg</span><span style="color: #94E2D5;">++</span><span style="color: #9399B2;">]</span><span style="color: #94E2D5;"> =</span><span style="color: #A6E3A1;"> &quot;--leak-resolution=med&quot;</span><span style="color: #9399B2;">;</span><span style="color: #9399B2;font-style: italic;"> // increase from 2 to 4</span></span>
+<span class="giallo-l"><span> argv</span><span style="color: #9399B2;">[</span><span>curArg</span><span style="color: #94E2D5;">++</span><span style="color: #9399B2;">]</span><span style="color: #94E2D5;"> =</span><span style="color: #A6E3A1;"> &quot;--num-callers=16&quot;</span><span style="color: #9399B2;">;</span><span style="color: #9399B2;font-style: italic;"> // default is 12</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> assert</span><span style="color: #9399B2;">(</span><span>curArg </span><span style="color: #94E2D5;">==</span><span> kValgrindArgCount</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span> argv</span><span style="color: #9399B2;">[</span><span>curArg</span><span style="color: #94E2D5;">++</span><span style="color: #9399B2;">]</span><span style="color: #94E2D5;"> =</span><span> execFile</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span> argv</span><span style="color: #9399B2;">[</span><span>curArg</span><span style="color: #94E2D5;">++</span><span style="color: #9399B2;">]</span><span style="color: #94E2D5;"> =</span><span style="color: #A6E3A1;"> &quot;--dex&quot;</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> sprintf</span><span style="color: #9399B2;">(</span><span>values</span><span style="color: #9399B2;">[</span><span style="color: #FAB387;">2</span><span style="color: #9399B2;">],</span><span style="color: #A6E3A1;"> &quot;%d&quot;</span><span style="color: #9399B2;">,</span><span> DALVIK_VM_BUILD</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span> argv</span><span style="color: #9399B2;">[</span><span>curArg</span><span style="color: #94E2D5;">++</span><span style="color: #9399B2;">]</span><span style="color: #94E2D5;"> =</span><span> values</span><span style="color: #9399B2;">[</span><span style="color: #FAB387;">2</span><span style="color: #9399B2;">];</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> sprintf</span><span style="color: #9399B2;">(</span><span>values</span><span style="color: #9399B2;">[</span><span style="color: #FAB387;">3</span><span style="color: #9399B2;">],</span><span style="color: #A6E3A1;"> &quot;%d&quot;</span><span style="color: #9399B2;">,</span><span> fd</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span> argv</span><span style="color: #9399B2;">[</span><span>curArg</span><span style="color: #94E2D5;">++</span><span style="color: #9399B2;">]</span><span style="color: #94E2D5;"> =</span><span> values</span><span style="color: #9399B2;">[</span><span style="color: #FAB387;">3</span><span style="color: #9399B2;">];</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> sprintf</span><span style="color: #9399B2;">(</span><span>values</span><span style="color: #9399B2;">[</span><span style="color: #FAB387;">4</span><span style="color: #9399B2;">],</span><span style="color: #A6E3A1;"> &quot;%d&quot;</span><span style="color: #9399B2;">, (</span><span style="color: #CBA6F7;">int</span><span style="color: #9399B2;">)</span><span> dexOffset</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span> argv</span><span style="color: #9399B2;">[</span><span>curArg</span><span style="color: #94E2D5;">++</span><span style="color: #9399B2;">]</span><span style="color: #94E2D5;"> =</span><span> values</span><span style="color: #9399B2;">[</span><span style="color: #FAB387;">4</span><span style="color: #9399B2;">];</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> sprintf</span><span style="color: #9399B2;">(</span><span>values</span><span style="color: #9399B2;">[</span><span style="color: #FAB387;">5</span><span style="color: #9399B2;">],</span><span style="color: #A6E3A1;"> &quot;%d&quot;</span><span style="color: #9399B2;">, (</span><span style="color: #CBA6F7;">int</span><span style="color: #9399B2;">)</span><span> dexLength</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span> argv</span><span style="color: #9399B2;">[</span><span>curArg</span><span style="color: #94E2D5;">++</span><span style="color: #9399B2;">]</span><span style="color: #94E2D5;"> =</span><span> values</span><span style="color: #9399B2;">[</span><span style="color: #FAB387;">5</span><span style="color: #9399B2;">];</span></span>
+<span class="giallo-l"><span> argv</span><span style="color: #9399B2;">[</span><span>curArg</span><span style="color: #94E2D5;">++</span><span style="color: #9399B2;">]</span><span style="color: #94E2D5;"> =</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">char</span><span style="color: #94E2D5;">*</span><span style="color: #9399B2;">)</span><span>fileName</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> sprintf</span><span style="color: #9399B2;">(</span><span>values</span><span style="color: #9399B2;">[</span><span style="color: #FAB387;">7</span><span style="color: #9399B2;">],</span><span style="color: #A6E3A1;"> &quot;%d&quot;</span><span style="color: #9399B2;">, (</span><span style="color: #CBA6F7;">int</span><span style="color: #9399B2;">)</span><span> modWhen</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span> argv</span><span style="color: #9399B2;">[</span><span>curArg</span><span style="color: #94E2D5;">++</span><span style="color: #9399B2;">]</span><span style="color: #94E2D5;"> =</span><span> values</span><span style="color: #9399B2;">[</span><span style="color: #FAB387;">7</span><span style="color: #9399B2;">];</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> sprintf</span><span style="color: #9399B2;">(</span><span>values</span><span style="color: #9399B2;">[</span><span style="color: #FAB387;">8</span><span style="color: #9399B2;">],</span><span style="color: #A6E3A1;"> &quot;%d&quot;</span><span style="color: #9399B2;">, (</span><span style="color: #CBA6F7;">int</span><span style="color: #9399B2;">)</span><span> crc</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span> argv</span><span style="color: #9399B2;">[</span><span>curArg</span><span style="color: #94E2D5;">++</span><span style="color: #9399B2;">]</span><span style="color: #94E2D5;"> =</span><span> values</span><span style="color: #9399B2;">[</span><span style="color: #FAB387;">8</span><span style="color: #9399B2;">];</span></span>
+<span class="giallo-l"><span> flags </span><span style="color: #94E2D5;">=</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>gDvm</span><span style="color: #9399B2;">.</span><span>dexOptMode</span><span style="color: #94E2D5;"> !=</span><span> OPTIMIZE_MODE_NONE</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span> flags </span><span style="color: #94E2D5;">|=</span><span> DEXOPT_OPT_ENABLED</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>gDvm</span><span style="color: #9399B2;">.</span><span>dexOptMode</span><span style="color: #94E2D5;"> ==</span><span> OPTIMIZE_MODE_ALL</span><span style="color: #9399B2;">)</span></span>
+<span class="giallo-l"><span> flags </span><span style="color: #94E2D5;">|=</span><span> DEXOPT_OPT_ALL</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>gDvm</span><span style="color: #9399B2;">.</span><span>classVerifyMode</span><span style="color: #94E2D5;"> !=</span><span> VERIFY_MODE_NONE</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span> flags </span><span style="color: #94E2D5;">|=</span><span> DEXOPT_VERIFY_ENABLED</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>gDvm</span><span style="color: #9399B2;">.</span><span>classVerifyMode</span><span style="color: #94E2D5;"> ==</span><span> VERIFY_MODE_ALL</span><span style="color: #9399B2;">)</span></span>
+<span class="giallo-l"><span> flags </span><span style="color: #94E2D5;">|=</span><span> DEXOPT_VERIFY_ALL</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>isBootstrap</span><span style="color: #9399B2;">)</span></span>
+<span class="giallo-l"><span> flags </span><span style="color: #94E2D5;">|=</span><span> DEXOPT_IS_BOOTSTRAP</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>gDvm</span><span style="color: #9399B2;">.</span><span>generateRegisterMaps</span><span style="color: #9399B2;">)</span></span>
+<span class="giallo-l"><span> flags </span><span style="color: #94E2D5;">|=</span><span> DEXOPT_GEN_REGISTER_MAPS</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> sprintf</span><span style="color: #9399B2;">(</span><span>values</span><span style="color: #9399B2;">[</span><span style="color: #FAB387;">9</span><span style="color: #9399B2;">],</span><span style="color: #A6E3A1;"> &quot;%d&quot;</span><span style="color: #9399B2;">,</span><span> flags</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span> argv</span><span style="color: #9399B2;">[</span><span>curArg</span><span style="color: #94E2D5;">++</span><span style="color: #9399B2;">]</span><span style="color: #94E2D5;"> =</span><span> values</span><span style="color: #9399B2;">[</span><span style="color: #FAB387;">9</span><span style="color: #9399B2;">];</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> assert</span><span style="color: #9399B2;">(((</span><span style="color: #94E2D5;">!</span><span>kUseValgrind </span><span style="color: #94E2D5;">&amp;&amp;</span><span> curArg </span><span style="color: #94E2D5;">==</span><span> kFixedArgCount</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> ||</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> ((</span><span>kUseValgrind </span><span style="color: #94E2D5;">&amp;&amp;</span><span> curArg </span><span style="color: #94E2D5;">==</span><span> kFixedArgCount</span><span style="color: #94E2D5;">+</span><span>kValgrindArgCount</span><span style="color: #9399B2;">))));</span></span>
+<span class="giallo-l"><span> ClassPathEntry</span><span style="color: #94E2D5;">*</span><span> cpe</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> for</span><span style="color: #9399B2;"> (</span><span>cpe </span><span style="color: #94E2D5;">=</span><span> gDvm</span><span style="color: #9399B2;">.</span><span>bootClassPath</span><span style="color: #9399B2;">;</span><span> cpe</span><span style="color: #CBA6F7;">-&gt;</span><span>ptr </span><span style="color: #94E2D5;">!=</span><span> NULL</span><span style="color: #9399B2;">;</span><span> cpe</span><span style="color: #94E2D5;">++</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span> argv</span><span style="color: #9399B2;">[</span><span>curArg</span><span style="color: #94E2D5;">++</span><span style="color: #9399B2;">]</span><span style="color: #94E2D5;"> =</span><span> cpe</span><span style="color: #CBA6F7;">-&gt;</span><span>fileName</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> assert</span><span style="color: #9399B2;">(</span><span>curArg </span><span style="color: #94E2D5;">==</span><span> argc</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span> argv</span><span style="color: #9399B2;">[</span><span>curArg</span><span style="color: #9399B2;">]</span><span style="color: #94E2D5;"> =</span><span> NULL</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>kUseValgrind</span><span style="color: #9399B2;">)</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> execv</span><span style="color: #9399B2;">(</span><span>kValgrinder</span><span style="color: #9399B2;">,</span><span> const_cast</span><span style="color: #94E2D5;">&lt;</span><span style="color: #CBA6F7;">char</span><span style="color: #94E2D5;">**&gt;</span><span style="color: #9399B2;">(</span><span>argv</span><span style="color: #9399B2;">));</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> else</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> execv</span><span style="color: #9399B2;">(</span><span>execFile</span><span style="color: #9399B2;">,</span><span> const_cast</span><span style="color: #94E2D5;">&lt;</span><span style="color: #CBA6F7;">char</span><span style="color: #94E2D5;">**&gt;</span><span style="color: #9399B2;">(</span><span>argv</span><span style="color: #9399B2;">));</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGE</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;execv &#39;%s&#39;%s failed: %s&quot;</span><span style="color: #9399B2;">,</span><span> execFile</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span> kUseValgrind </span><span style="color: #CBA6F7;">?</span><span style="color: #A6E3A1;"> &quot; [valgrind]&quot;</span><span style="color: #CBA6F7;"> :</span><span style="color: #A6E3A1;"> &quot;&quot;</span><span style="color: #9399B2;">,</span><span style="color: #89B4FA;font-style: italic;"> strerror</span><span style="color: #9399B2;">(</span><span>errno</span><span style="color: #9399B2;">));</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> exit</span><span style="color: #9399B2;">(</span><span style="color: #FAB387;">1</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span><span style="color: #CBA6F7;"> else</span><span style="color: #9399B2;"> {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGV</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;DexOpt: waiting for verify+opt, pid=%d&quot;</span><span style="color: #9399B2;">, (</span><span style="color: #CBA6F7;">int</span><span style="color: #9399B2;">)</span><span> pid</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> int</span><span> status</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span> pid_t gotPid</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> /*</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * Wait for the optimization process to finish. We go into VMWAIT</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> * mode here so GC suspension won&#39;t have to wait for us.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"> */</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> ThreadStatus</span><span> oldStatus</span><span style="color: #94E2D5;"> =</span><span style="color: #89B4FA;font-style: italic;"> dvmChangeStatus</span><span style="color: #9399B2;">(</span><span>NULL</span><span style="color: #9399B2;">,</span><span> THREAD_VMWAIT</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> while</span><span style="color: #9399B2;"> (</span><span style="color: #F38BA8;">true</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span> gotPid </span><span style="color: #94E2D5;">=</span><span style="color: #89B4FA;font-style: italic;"> waitpid</span><span style="color: #9399B2;">(</span><span>pid</span><span style="color: #9399B2;">,</span><span style="color: #94E2D5;"> &amp;</span><span>status</span><span style="color: #9399B2;">,</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>gotPid </span><span style="color: #94E2D5;">== -</span><span style="color: #FAB387;">1</span><span style="color: #94E2D5;"> &amp;&amp;</span><span> errno </span><span style="color: #94E2D5;">==</span><span> EINTR</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGD</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;waitpid interrupted, retrying&quot;</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span><span style="color: #CBA6F7;"> else</span><span style="color: #9399B2;"> {</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> break</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> dvmChangeStatus</span><span style="color: #9399B2;">(</span><span>NULL</span><span style="color: #9399B2;">,</span><span> oldStatus</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span>gotPid </span><span style="color: #94E2D5;">!=</span><span> pid</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGE</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;waitpid failed: wanted %d, got %d: %s&quot;</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">int</span><span style="color: #9399B2;">)</span><span> pid</span><span style="color: #9399B2;">, (</span><span style="color: #CBA6F7;">int</span><span style="color: #9399B2;">)</span><span> gotPid</span><span style="color: #9399B2;">,</span><span style="color: #89B4FA;font-style: italic;"> strerror</span><span style="color: #9399B2;">(</span><span>errno</span><span style="color: #9399B2;">));</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span style="color: #F38BA8;"> false</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> if</span><span style="color: #9399B2;"> (</span><span style="color: #89B4FA;font-style: italic;">WIFEXITED</span><span style="color: #9399B2;">(</span><span>status</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> &amp;&amp;</span><span style="color: #89B4FA;font-style: italic;"> WEXITSTATUS</span><span style="color: #9399B2;">(</span><span>status</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> ==</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">) {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGD</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;DexOpt: --- END &#39;%s&#39; (success) ---&quot;</span><span style="color: #9399B2;">,</span><span> lastPart</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span style="color: #F38BA8;"> true</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span><span style="color: #CBA6F7;"> else</span><span style="color: #9399B2;"> {</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;"> ALOGW</span><span style="color: #9399B2;">(</span><span style="color: #A6E3A1;">&quot;DexOpt: --- END &#39;%s&#39; --- status=0x%04x, process failed&quot;</span><span style="color: #9399B2;">,</span></span>
+<span class="giallo-l"><span> lastPart</span><span style="color: #9399B2;">,</span><span> status</span><span style="color: #9399B2;">);</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;"> return</span><span style="color: #F38BA8;"> false</span><span style="color: #9399B2;">;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">}</span></span></code></pre>
+<p>终于找到 ALOGD("DexOpt: --- BEGIN '%s' (bootstrap=%d) ---", lastPart, isBootstrap); 这句日志的出处了！</p>
+<p>该方法的注释写的也比较详细了，其中pid=fork(); 表明dexopt确实开启了新的进程来完成，而且当前进程是使用while循环等待这个子进程返回结果的。</p>
+<p>那么之前关于dexopt的所有疑惑都解开了。</p>
+
+    </div>
+
+    
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2015-09-27">2015-09-27</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+        </div>
+    </div>
+
+</article>
+
+
+        </main>
+        <footer>
+            <p>
+                © zongwu&#x27;s blog 2026<br>
+                Powered by <a target="_blank" href="https://getzola.org/">Zola</a>, Theme <a target="_blank" href="https://github.com/zbrox/anpu-zola-theme">Anpu</a>.
+            </p>
+            <p>
+                
+                
+            </p>
+        </footer>
+    </div>
+
+    <div class="dark-mode-buttons">
+  <button class="dark-mode-button" id="dark-mode-on">
+    <img
+      class="themed-icon"
+      src="https://blog.zongwu233.com/dark_mode.svg"
+      width="24"
+      height="24"
+      alt="Dark mode"
+      aria-label="dark mode toggle"
+      title="Dark mode"
+    />
+  </button>
+  <button class="dark-mode-button" id="dark-mode-off">
+    <img
+      class="themed-icon"
+      src="https://blog.zongwu233.com/light_mode.svg "
+      width="24"
+      height="24"
+      alt="Light mode"
+      aria-label="light mode toggle"
+      title="Light mode"
+    />
+  </button>
+</div>
+<script>
+  const cls = document.body.classList;
+  const getSessionTheme = sessionStorage.getItem("theme");
+  if (getSessionTheme === "dark") {
+    cls.toggle("dark-mode", true);
+  } else if (getSessionTheme === "light") {
+    cls.toggle("dark-mode", false);
+  } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    cls.toggle("dark-mode", true);
+  }
+  document
+    .getElementById("dark-mode-on")
+    .addEventListener("click", function (e) {
+      cls.toggle("dark-mode", true);
+      sessionStorage.setItem("theme", "dark");
+    });
+  document
+    .getElementById("dark-mode-off")
+    .addEventListener("click", function (e) {
+      cls.toggle("dark-mode", false);
+      sessionStorage.setItem("theme", "light");
+    });
+</script>
+<noscript>
+  <style>
+    .dark-mode-buttons {
+      display: none;
+    }
+  </style>
+</noscript>
+
+    
+</body>
+</html>

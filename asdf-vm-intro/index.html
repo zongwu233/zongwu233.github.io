@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+
+    <title>adsf-vm </title>
+    <meta name="description" content="">
+
+    <link rel="stylesheet" href="https://blog.zongwu233.com/main.css">
+
+    
+        
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
+        
+    
+
+    
+    
+</head>
+<body>
+    <a class="skip-main" href="#main">Skip to content</a>
+    <div class="container">
+        <header> 
+            <h1 class="site-header">
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
+            </h1>
+            <nav>
+                
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
+                
+                
+            </nav>
+        </header>
+        <main id="main" tabindex="-1">
+            
+
+<article class="post">
+    <header>
+        <h1>adsf-vm </h1>
+    </header>
+    <div class="content">
+        <p>官方给出的定义是：</p>
+<blockquote>
+<p>Manage multiple runtime versions with a single CLI tool</p>
+</blockquote>
+<p>大家在日常开发时，经常遇到需要对同一个编程语言/框架安装不同版本的情况，比如 python 2/3 ，ruby 1.8/1.9，scala 2.11/2.12/... ，gradle 4.x/5.x 等等。虽然已经有pyenv，rvm，sdkman 等等针对这些语言进行多版本的管理，方便不同版本的环境切换，但是：</p>
+<span id="continue-reading"></span>
+<ol>
+<li>要安装很多这种管理软件</li>
+<li>有些编程语言/框架没有类似的多版本环境管理软件</li>
+</ol>
+<p>于是有了<code>adsf-vm</code>。一个工具管理多版本的运行时环境，而且提供了<code>plugin</code>的概念，方便所有人扩展定义针对编程语言/框架的管理。比如 <code>Elasticsearch</code> <code>Kubectl</code> <code>MySQL</code> 等都可以用<code>adsf-vm</code>进行版本管理。</p>
+<h2 id="an-zhuang">安装</h2>
+<p>参考官方文档即可。https://asdf-vm.com/#/core-manage-asdf-vm
+对于<code>macOS</code> 我是通过<code>brew</code>安装，比较简单：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">brew</span><span style="color: #A6E3A1;"> install coreutils curl git</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">brew</span><span style="color: #A6E3A1;"> install asdf</span></span></code></pre>
+<p>添加到<code>zsh</code>环境：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #F38BA8;font-style: italic;">echo</span><span style="color: #A6E3A1;"> -e &quot;\n. </span><span style="color: #9399B2;">$(</span><span style="color: #89B4FA;font-style: italic;">brew</span><span style="color: #A6E3A1;"> --prefix asdf</span><span style="color: #9399B2;">)</span><span style="color: #A6E3A1;">/asdf.sh&quot;</span><span style="color: #94E2D5;"> &gt;&gt;</span><span style="color: #A6E3A1;"> ~/.zshrc</span></span></code></pre>
+<p>搞定。</p>
+<h2 id="cha-jian-guan-li">插件管理</h2>
+<p>主要流程是：先添加插件，然后安装，设置当前使用的版本。就可以使用了。
+添加插件：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">asdf</span><span style="color: #A6E3A1;"> plugin add</span><span style="color: #94E2D5;"> &lt;</span><span style="color: #A6E3A1;">nam</span><span>e</span><span style="color: #94E2D5;">&gt;</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"># asdf plugin add gradle</span></span></code></pre>
+<p>如果需要安装的插件不在当前插件库，也可以指定插件的仓库url:</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">asdf</span><span style="color: #A6E3A1;"> plugin add</span><span style="color: #94E2D5;"> &lt;</span><span style="color: #A6E3A1;">nam</span><span>e</span><span style="color: #94E2D5;">&gt; &lt;</span><span style="color: #A6E3A1;">git-ur</span><span>l</span><span style="color: #94E2D5;">&gt;</span></span></code></pre>
+<p>查看当前添加的插件列表：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">asdf</span><span style="color: #A6E3A1;"> plugin list</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"># asdf plugin list</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"># java</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"># nodejs</span></span></code></pre><pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">asdf</span><span style="color: #A6E3A1;"> plugin list --urls</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"># asdf plugin list</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"># java            https://github.com/halcyon/asdf-java.git</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;"># nodejs          https://github.com/asdf-vm/asdf-nodejs.git</span></span></code></pre>
+<p>更新插件：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">asdf</span><span style="color: #A6E3A1;"> plugin update --all</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">asdf</span><span style="color: #A6E3A1;"> plugin update</span><span style="color: #94E2D5;"> &lt;</span><span style="color: #A6E3A1;">nam</span><span>e</span><span style="color: #94E2D5;">&gt;</span></span></code></pre>
+<p>移除一个插件：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">asdf</span><span style="color: #A6E3A1;"> plugin remove</span><span style="color: #94E2D5;"> &lt;</span><span style="color: #A6E3A1;">nam</span><span>e</span><span style="color: #94E2D5;">&gt;</span></span></code></pre><h2 id="cha-jian-de-ban-ben-guan-li">插件的版本管理</h2>
+<p>查看插件库里所有可用的版本</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">asdf</span><span style="color: #A6E3A1;"> list all</span><span style="color: #94E2D5;"> &lt;</span><span style="color: #A6E3A1;">nam</span><span>e</span><span style="color: #94E2D5;">&gt;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">asdf</span><span style="color: #A6E3A1;"> list all</span><span style="color: #94E2D5;"> &lt;</span><span style="color: #A6E3A1;">nam</span><span>e</span><span style="color: #94E2D5;">&gt; &lt;</span><span style="color: #A6E3A1;">versio</span><span>n</span><span style="color: #94E2D5;">&gt;</span></span></code></pre>
+<p>指定插件的版本安装：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">asdf</span><span style="color: #A6E3A1;"> install</span><span style="color: #94E2D5;"> &lt;</span><span style="color: #A6E3A1;">nam</span><span>e</span><span style="color: #94E2D5;">&gt; &lt;</span><span style="color: #A6E3A1;">versio</span><span>n</span><span style="color: #94E2D5;">&gt;</span></span></code></pre>
+<p>查看已经安装的插件版本：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">asdf</span><span style="color: #A6E3A1;"> list</span><span style="color: #94E2D5;"> &lt;</span><span style="color: #A6E3A1;">nam</span><span>e</span><span style="color: #94E2D5;">&gt;</span></span></code></pre>
+<p>设置插件的当前版本：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">asdf</span><span style="color: #A6E3A1;"> global</span><span style="color: #94E2D5;"> &lt;</span><span style="color: #A6E3A1;">nam</span><span>e</span><span style="color: #94E2D5;">&gt; &lt;</span><span style="color: #A6E3A1;">versio</span><span>n</span><span style="color: #94E2D5;">&gt;</span><span> [&lt;version&gt;...]</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">asdf</span><span style="color: #A6E3A1;"> shell</span><span style="color: #94E2D5;"> &lt;</span><span style="color: #A6E3A1;">nam</span><span>e</span><span style="color: #94E2D5;">&gt; &lt;</span><span style="color: #A6E3A1;">versio</span><span>n</span><span style="color: #94E2D5;">&gt;</span><span> [&lt;version&gt;...]</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">asdf</span><span style="color: #A6E3A1;"> local</span><span style="color: #94E2D5;"> &lt;</span><span style="color: #A6E3A1;">nam</span><span>e</span><span style="color: #94E2D5;">&gt; &lt;</span><span style="color: #A6E3A1;">versio</span><span>n</span><span style="color: #94E2D5;">&gt;</span><span> [&lt;version&gt;...]</span></span></code></pre>
+<p><code>global</code> 就是全局设定了，会把版本写入<code>$HOME/.tool-versions</code>
+<code>shell</code> 就是设定在当前shell环境生效。实际上是把版本信息写入了当前环境变量<code>ASDF_${LANG}_VERSION</code>
+<code>local</code> 会写入<code>$PWD/.tool-versions</code></p>
+<p>查看插件的当前版本</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">asdf</span><span style="color: #A6E3A1;"> current</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">asdf</span><span style="color: #A6E3A1;"> current</span><span style="color: #94E2D5;"> &lt;</span><span style="color: #A6E3A1;">nam</span><span>e</span><span style="color: #94E2D5;">&gt;</span></span></code></pre>
+<p>卸载当前版本</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="shellscript"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">asdf</span><span style="color: #A6E3A1;"> uninstall</span><span style="color: #94E2D5;"> &lt;</span><span style="color: #A6E3A1;">nam</span><span>e</span><span style="color: #94E2D5;">&gt; &lt;</span><span style="color: #A6E3A1;">versio</span><span>n</span><span style="color: #94E2D5;">&gt;</span></span></code></pre><h2 id="shen-ru-cha-jian">深入插件</h2>
+<p>插件非常简单，就是一个git库。包含3个脚本，用于响应<code>list-all</code>, <code>install</code> 或者 <code>uninstall</code> 命令。</p>
+<ol>
+<li><code>bin/list-all</code> 列出插件所有可用版本</li>
+<li><code>bin/download</code> 下载插件</li>
+<li><code>bin/install</code> 安装特定版本的插件</li>
+</ol>
+<p>实际上大部分插件都只有<code>bin/list-all</code> <code>bin/install</code> 这俩个文件。</p>
+
+    </div>
+
+    
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2020-11-10">2020-11-10</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/duo-ban-ben-guan-li/">#多版本管理</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/gong-ju/">#工具</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/cli/">#CLI</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/ruan-jian/">#软件</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+</article>
+
+
+        </main>
+        <footer>
+            <p>
+                © zongwu&#x27;s blog 2026<br>
+                Powered by <a target="_blank" href="https://getzola.org/">Zola</a>, Theme <a target="_blank" href="https://github.com/zbrox/anpu-zola-theme">Anpu</a>.
+            </p>
+            <p>
+                
+                
+            </p>
+        </footer>
+    </div>
+
+    <div class="dark-mode-buttons">
+  <button class="dark-mode-button" id="dark-mode-on">
+    <img
+      class="themed-icon"
+      src="https://blog.zongwu233.com/dark_mode.svg"
+      width="24"
+      height="24"
+      alt="Dark mode"
+      aria-label="dark mode toggle"
+      title="Dark mode"
+    />
+  </button>
+  <button class="dark-mode-button" id="dark-mode-off">
+    <img
+      class="themed-icon"
+      src="https://blog.zongwu233.com/light_mode.svg "
+      width="24"
+      height="24"
+      alt="Light mode"
+      aria-label="light mode toggle"
+      title="Light mode"
+    />
+  </button>
+</div>
+<script>
+  const cls = document.body.classList;
+  const getSessionTheme = sessionStorage.getItem("theme");
+  if (getSessionTheme === "dark") {
+    cls.toggle("dark-mode", true);
+  } else if (getSessionTheme === "light") {
+    cls.toggle("dark-mode", false);
+  } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    cls.toggle("dark-mode", true);
+  }
+  document
+    .getElementById("dark-mode-on")
+    .addEventListener("click", function (e) {
+      cls.toggle("dark-mode", true);
+      sessionStorage.setItem("theme", "dark");
+    });
+  document
+    .getElementById("dark-mode-off")
+    .addEventListener("click", function (e) {
+      cls.toggle("dark-mode", false);
+      sessionStorage.setItem("theme", "light");
+    });
+</script>
+<noscript>
+  <style>
+    .dark-mode-buttons {
+      display: none;
+    }
+  </style>
+</noscript>
+
+    
+</body>
+</html>

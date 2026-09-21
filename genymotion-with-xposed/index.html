@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+
+    <title>Genymotion模拟器安装 Xposed</title>
+    <meta name="description" content="">
+
+    <link rel="stylesheet" href="https://blog.zongwu233.com/main.css">
+
+    
+        
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
+        
+    
+
+    
+    
+</head>
+<body>
+    <a class="skip-main" href="#main">Skip to content</a>
+    <div class="container">
+        <header> 
+            <h1 class="site-header">
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
+            </h1>
+            <nav>
+                
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
+                
+                
+            </nav>
+        </header>
+        <main id="main" tabindex="-1">
+            
+
+<article class="post">
+    <header>
+        <h1>Genymotion模拟器安装 Xposed</h1>
+    </header>
+    <div class="content">
+        <p>macOS环境。</p>
+<p>Xposed 现在的版本需要先安装installer，再安装framework。</p>
+<p>网上很多文章说需要通过recovery模式安装installer，但是genymotion没这个模式，真悲惨。</p>
+<p>Xposed的作者写了一个脚本https://github.com/rovo89/GenyFlash 来解决这个问题，但是目前测试无效。（估计是我的genymotion版本较高2.9.0，脚本是两年前的）</p>
+<p>找到一种更简单的方式安装。</p>
+<p>在genymotion创建 5.1.0的模拟器，genymotion支持拖拽apk到窗口内，安装方式非常方便。</p>
+<h5 id="an-zhuang-arm-translation-1-1">安装ARM Translation 1.1</h5>
+<p>https://docs.google.com/uc?authuser=0&amp;id=0B2wvlvvQ2cX3OUVKcnpjRmxyOGs&amp;export=download</p>
+<p>zip格式，拖到模拟器里面。</p>
+<h5 id="an-zhuang-xposed-installer-3-1">安装xposed installer 3.1</h5>
+<p>https://forum.xda-developers.com/showthread.php?t=3034811</p>
+<p>拖到模拟器里面。</p>
+<h5 id="an-zhuang-xposed-de-framework">安装xposed  的framework</h5>
+<p>http://dl-xda.xposed.info/framework/</p>
+<p>选择sdk22下载。拖到模拟器里面。也可以打开installer，在它的界面里点install／update 提升安装，同意。</p>
+<p>完成了。</p>
+<h5 id="bian-xie-hookdai-ma">编写hook代码</h5>
+<p>安装，并选择软启动（soft reboot）。</p>
+<h5 id="bian-xie-ce-shi-app">编写测试App</h5>
+<h5 id="can-kao-wen-zhang">参考文章</h5>
+<p>https://acpm.mobi/genymotion-xposed-inspeckage/
+http://www.vkyii.com/2015/09/09/install-xposed-in-genymotion-android.html</p>
+
+    </div>
+
+    
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2017-06-17">2017-06-17</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+        </div>
+    </div>
+
+</article>
+
+
+        </main>
+        <footer>
+            <p>
+                © zongwu&#x27;s blog 2026<br>
+                Powered by <a target="_blank" href="https://getzola.org/">Zola</a>, Theme <a target="_blank" href="https://github.com/zbrox/anpu-zola-theme">Anpu</a>.
+            </p>
+            <p>
+                
+                
+            </p>
+        </footer>
+    </div>
+
+    <div class="dark-mode-buttons">
+  <button class="dark-mode-button" id="dark-mode-on">
+    <img
+      class="themed-icon"
+      src="https://blog.zongwu233.com/dark_mode.svg"
+      width="24"
+      height="24"
+      alt="Dark mode"
+      aria-label="dark mode toggle"
+      title="Dark mode"
+    />
+  </button>
+  <button class="dark-mode-button" id="dark-mode-off">
+    <img
+      class="themed-icon"
+      src="https://blog.zongwu233.com/light_mode.svg "
+      width="24"
+      height="24"
+      alt="Light mode"
+      aria-label="light mode toggle"
+      title="Light mode"
+    />
+  </button>
+</div>
+<script>
+  const cls = document.body.classList;
+  const getSessionTheme = sessionStorage.getItem("theme");
+  if (getSessionTheme === "dark") {
+    cls.toggle("dark-mode", true);
+  } else if (getSessionTheme === "light") {
+    cls.toggle("dark-mode", false);
+  } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    cls.toggle("dark-mode", true);
+  }
+  document
+    .getElementById("dark-mode-on")
+    .addEventListener("click", function (e) {
+      cls.toggle("dark-mode", true);
+      sessionStorage.setItem("theme", "dark");
+    });
+  document
+    .getElementById("dark-mode-off")
+    .addEventListener("click", function (e) {
+      cls.toggle("dark-mode", false);
+      sessionStorage.setItem("theme", "light");
+    });
+</script>
+<noscript>
+  <style>
+    .dark-mode-buttons {
+      display: none;
+    }
+  </style>
+</noscript>
+
+    
+</body>
+</html>

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+
+    <title>Scotty web framework 源码初探</title>
+    <meta name="description" content="">
+
+    <link rel="stylesheet" href="https://blog.zongwu233.com/main.css">
+
+    
+        
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
+        
+    
+
+    
+    
+</head>
+<body>
+    <a class="skip-main" href="#main">Skip to content</a>
+    <div class="container">
+        <header> 
+            <h1 class="site-header">
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
+            </h1>
+            <nav>
+                
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
+                
+                
+            </nav>
+        </header>
+        <main id="main" tabindex="-1">
+            
+
+<article class="post">
+    <header>
+        <h1>Scotty web framework 源码初探</h1>
+    </header>
+    <div class="content">
+        <p><code>scotty</code> 是一款非常容易上手的、构建在 WAI/Wrap 之上的 Haskell web frameowrk，官方文档的 start 例子：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span>{-#</span><span style="color: #CBA6F7;"> LANGUAGE OverloadedStrings</span><span> #-}</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">import</span><span style="color: #F9E2AF;"> Web.Scotty</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">import</span><span style="color: #F9E2AF;"> Data.Monoid</span><span style="color: #9399B2;"> (</span><span style="color: #89B4FA;font-style: italic;">mconcat</span><span style="color: #9399B2;">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>main </span><span style="color: #94E2D5;">=</span><span> scotty </span><span style="color: #FAB387;">3000</span><span style="color: #94E2D5;"> $</span></span>
+<span class="giallo-l"><span>    get </span><span style="color: #A6E3A1;">&quot;/:word&quot;</span><span style="color: #94E2D5;"> $</span><span style="color: #CBA6F7;"> do</span></span>
+<span class="giallo-l"><span>        beam </span><span style="color: #94E2D5;">&lt;-</span><span> param </span><span style="color: #A6E3A1;">&quot;word&quot;</span></span>
+<span class="giallo-l"><span>        html </span><span style="color: #94E2D5;">$</span><span> mconcat </span><span style="color: #9399B2;">[</span><span style="color: #A6E3A1;">&quot;&lt;h1&gt;Scotty, &quot;</span><span style="color: #9399B2;">,</span><span> beam</span><span style="color: #9399B2;">,</span><span style="color: #A6E3A1;"> &quot; me up!&lt;/h1&gt;&quot;</span><span style="color: #9399B2;">]</span></span></code></pre>
+<p>编译运行即可体验简单的 web 应用。</p>
+<span id="continue-reading"></span>
+<p>放到末尾看 <code>scotty</code>类型，先从简单的入手。</p>
+<h2 id="tian-jia-route">添加 Route</h2>
+<p>增加不同的 url route 和对应的 <code>handler</code>方法如下：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span>{-#</span><span style="color: #CBA6F7;"> LANGUAGE OverloadedStrings</span><span> #-}</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">import</span><span style="color: #F9E2AF;"> Web.Scotty</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>main </span><span style="color: #94E2D5;">=</span><span> scotty </span><span style="color: #FAB387;">3000</span><span style="color: #94E2D5;"> $</span></span>
+<span class="giallo-l"><span>    get </span><span style="color: #A6E3A1;">&quot;/foo&quot;</span><span style="color: #94E2D5;"> $</span><span style="color: #CBA6F7;"> do</span></span>
+<span class="giallo-l"><span style="color: #94E2D5;">      ...</span></span>
+<span class="giallo-l"><span>    get </span><span style="color: #A6E3A1;">&quot;/bar&quot;</span><span style="color: #94E2D5;"> $</span><span style="color: #CBA6F7;"> do</span></span>
+<span class="giallo-l"><span style="color: #94E2D5;">        ...</span></span></code></pre>
+<p>查看文档：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">scotty</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> Port</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ScottyM</span><span style="color: #9399B2;"> ()</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> IO</span><span style="color: #9399B2;"> ()</span></span></code></pre><pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">get</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> RoutePattern</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ActionM</span><span style="color: #9399B2;"> ()</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ScottyM</span><span style="color: #9399B2;"> ()</span></span></code></pre>
+<p>这里就有点奇怪了，<code>get</code>方法需要两个参数  <code>RoutePattern</code> 和<code>ActionM ()</code> 然后返回 <code>ScottyM ()</code>。 多次调用 <code>get</code>方法每次都返回 <code>ScottyM ()</code> ，<code>scotty</code>使用的只是最后一个 <code>ScottyM ()</code>，那中间设置的那些<code>ScottyM ()</code>咧？</p>
+<p>我们继续深入看<code>get</code>方法的实现。</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span>get </span><span style="color: #94E2D5;">=</span><span> addroute GET</span></span></code></pre><pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">addroute</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> StdMethod</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> RoutePattern</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ActionM</span><span style="color: #9399B2;"> ()</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ScottyM</span><span style="color: #9399B2;"> ()</span></span>
+<span class="giallo-l"><span>addroute </span><span style="color: #94E2D5;">=</span><span style="color: #F9E2AF;"> Trans.</span><span>addroute</span></span></code></pre>
+<p>继续看源码</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">addroute</span><span style="color: #94E2D5;"> ::</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">ScottyError</span><span> e</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> MonadIO</span><span> m</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> =&gt;</span><span style="color: #CBA6F7;"> StdMethod</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> RoutePattern</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ActionT</span><span> e m</span><span style="color: #9399B2;"> ()</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ScottyT</span><span> e m</span><span style="color: #9399B2;"> ()</span></span>
+<span class="giallo-l"><span>addroute method pat action </span><span style="color: #94E2D5;">=</span><span> ScottyT</span><span style="color: #94E2D5;"> $</span><span style="color: #F9E2AF;"> MS.</span><span>modify </span><span style="color: #94E2D5;">$ \</span><span>s </span><span style="color: #94E2D5;">-&gt;</span><span> addRoute </span><span style="color: #9399B2;">(</span><span>route </span><span style="color: #9399B2;">(</span><span>routeOptions s</span><span style="color: #9399B2;">) (</span><span>handler s</span><span style="color: #9399B2;">) (</span><span>Just method</span><span style="color: #9399B2;">)</span><span> pat action</span><span style="color: #9399B2;">)</span><span> s</span></span></code></pre>
+<p>到这一步就能解惑了，每一次使用<code>get</code>方法，都会 <code>modify</code> <code>ScottyT e m ()</code>(也就是 <code>scottyM() </code>)，上面的方法实现里：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">route</span><span style="color: #94E2D5;"> ::</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">ScottyError</span><span> e</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> MonadIO</span><span> m</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> =&gt;</span><span style="color: #CBA6F7;"> RouteOptions</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ErrorHandler</span><span> e m</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> Maybe StdMethod</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> RoutePattern</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ActionT</span><span> e m</span><span style="color: #9399B2;"> ()</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> Middleware</span><span> m</span></span></code></pre><pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">addRoute</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> Middleware</span><span> m</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ScottyState</span><span> e m</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ScottyState</span><span> e m</span></span>
+<span class="giallo-l"><span>addRoute r s</span><span style="color: #94E2D5;">@</span><span style="color: #9399B2;">(</span><span>ScottyState</span><span style="color: #9399B2;"> {</span><span>routes</span><span style="color: #94E2D5;"> =</span><span> rs</span><span style="color: #9399B2;">})</span><span style="color: #94E2D5;"> =</span><span> s </span><span style="color: #9399B2;">{</span><span> routes</span><span style="color: #94E2D5;"> =</span><span> r</span><span style="color: #94E2D5;">:</span><span>rs </span><span style="color: #9399B2;">}</span></span></code></pre><pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #94E2D5;">\</span><span>s </span><span style="color: #94E2D5;">-&gt;</span><span> addRoute </span><span style="color: #9399B2;">(</span><span>route </span><span style="color: #94E2D5;">...</span><span style="color: #9399B2;">)</span><span> s</span></span></code></pre>
+<p>这个 lambda 中的 <code>s::ScottyState e m</code>。完美。</p>
+<p>类似的还有：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">post</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> RoutePattern</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ActionM</span><span style="color: #9399B2;"> ()</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ScottyM</span><span style="color: #9399B2;"> ()</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">put</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> RoutePattern</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ActionM</span><span style="color: #9399B2;"> ()</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ScottyM</span><span style="color: #9399B2;"> ()</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">delete</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> RoutePattern</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ActionM</span><span style="color: #9399B2;"> ()</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ScottyM</span><span style="color: #9399B2;"> ()</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">patch</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> RoutePattern</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ActionM</span><span style="color: #9399B2;"> ()</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ScottyM</span><span style="color: #9399B2;"> ()</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">options</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> RoutePattern</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ActionM</span><span style="color: #9399B2;"> ()</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ScottyM</span><span style="color: #9399B2;"> ()</span></span></code></pre><h2 id="routepattern">RoutePattern</h2>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span>{-#</span><span style="color: #CBA6F7;"> LANGUAGE OverloadedStrings</span><span> #-}</span></span>
+<span class="giallo-l"><span style="color: #94E2D5;">...</span></span>
+<span class="giallo-l"><span>get </span><span style="color: #A6E3A1;">&quot;/foo/:bar&quot;</span><span style="color: #94E2D5;"> $ ...</span></span></code></pre>
+<p>其实就是：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span>get </span><span style="color: #9399B2;">(</span><span>capture </span><span style="color: #A6E3A1;">&quot;/foo/:bar&quot;</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> $ ...</span></span></code></pre>
+<p>使用了<code>OverloadedStrings</code>  扩展不需要显式地写 <code>capture</code>。源码：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #CBA6F7;">instance IsString RoutePattern where</span></span>
+<span class="giallo-l"><span>    fromString </span><span style="color: #94E2D5;">=</span><span> Capture</span><span style="color: #94E2D5;"> .</span><span> pack</span></span></code></pre>
+<p><code>RoutePattern</code> 的定义：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #CBA6F7;">data RoutePattern</span><span style="color: #94E2D5;"> =</span><span> Capture</span><span style="color: #CBA6F7;">   Text</span></span>
+<span class="giallo-l"><span style="color: #94E2D5;">                  |</span><span> Literal</span><span style="color: #CBA6F7;">   Text</span></span>
+<span class="giallo-l"><span style="color: #94E2D5;">                  |</span><span> Function</span><span style="color: #9399B2;">  (</span><span style="color: #CBA6F7;">Request</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> Maybe</span><span style="color: #9399B2;"> [</span><span style="color: #CBA6F7;">Param</span><span style="color: #9399B2;">])</span></span></code></pre>
+<p>除了上面的 <code>capture</code> URL 匹配方式，还支持正则匹配：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">regex</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> String</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> RoutePattern</span></span></code></pre>
+<p>复杂的方法匹配：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">function</span><span style="color: #94E2D5;"> ::</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">Request</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> Maybe</span><span style="color: #9399B2;"> [</span><span style="color: #CBA6F7;">Param</span><span style="color: #9399B2;">])</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> RoutePattern</span></span></code></pre>
+<p>以及精确匹配：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">literal</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> String</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> RoutePattern</span></span></code></pre><h2 id="middleware">middleware</h2>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">middleware</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> Middleware</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ScottyM</span><span style="color: #9399B2;"> ()</span></span>
+<span class="giallo-l"><span>middleware </span><span style="color: #94E2D5;">=</span><span style="color: #F9E2AF;"> Trans.</span><span>middleware</span></span></code></pre>
+<p><code>Trans.middleware</code>的定义：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">middleware</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> Middleware</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ScottyT</span><span> e m</span><span style="color: #9399B2;"> ()</span></span>
+<span class="giallo-l"><span>middleware </span><span style="color: #94E2D5;">=</span><span> ScottyT</span><span style="color: #94E2D5;"> .</span><span> modify </span><span style="color: #94E2D5;">.</span><span> addMiddleware</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">addMiddleware</span><span style="color: #94E2D5;"> ::</span><span style="color: #F9E2AF;"> Wai.</span><span style="color: #CBA6F7;">Middleware</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ScottyState</span><span> e m</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ScottyState</span><span> e m</span></span>
+<span class="giallo-l"><span>addMiddleware m s</span><span style="color: #94E2D5;">@</span><span style="color: #9399B2;">(</span><span>ScottyState</span><span style="color: #9399B2;"> {</span><span>middlewares</span><span style="color: #94E2D5;"> =</span><span> ms</span><span style="color: #9399B2;">})</span><span style="color: #94E2D5;"> =</span><span> s </span><span style="color: #9399B2;">{</span><span> middlewares</span><span style="color: #94E2D5;"> =</span><span> m</span><span style="color: #94E2D5;">:</span><span>ms </span><span style="color: #9399B2;">}</span></span></code></pre><h2 id="huo-qu-qing-qiu-can-shu">获取请求参数</h2>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">request</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> ActionM Request</span></span>
+<span class="giallo-l"><span>request </span><span style="color: #94E2D5;">=</span><span style="color: #F9E2AF;"> Trans.</span><span>request</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;">-- Trans.request</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">-- |</span><span style="color: #9399B2;font-style: italic;"> Get the &#39;Request&#39; object.</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">request</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> Monad</span><span> m</span><span style="color: #94E2D5;"> =&gt;</span><span style="color: #CBA6F7;"> ActionT</span><span> e m</span><span style="color: #CBA6F7;"> Request</span></span>
+<span class="giallo-l"><span>request </span><span style="color: #94E2D5;">=</span><span> ActionT</span><span style="color: #94E2D5;"> $</span><span> liftM getReq ask</span></span></code></pre>
+<p>比较简单，这里注意下 <code>liftM</code>，提升一个函数到 <code>monad m</code></p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">liftM</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> Monad</span><span> m</span><span style="color: #94E2D5;"> =&gt;</span><span style="color: #9399B2;"> (</span><span>a1</span><span style="color: #94E2D5;"> -&gt;</span><span> r</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> -&gt;</span><span> m a1</span><span style="color: #94E2D5;"> -&gt;</span><span> m r</span></span></code></pre>
+<p><code>getReq</code>就是 <code>data ActionEnv</code>的获取<code>getReq</code>的函数咯：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #CBA6F7;">data ActionEnv</span><span style="color: #94E2D5;"> =</span><span> Env</span><span style="color: #9399B2;"> {</span><span> getReq</span><span style="color: #94E2D5;">       ::</span><span style="color: #CBA6F7;"> Request</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">                     ,</span><span> getParams</span><span style="color: #94E2D5;">    ::</span><span style="color: #9399B2;"> [</span><span style="color: #CBA6F7;">Param</span><span style="color: #9399B2;">]</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">                     ,</span><span> getBody</span><span style="color: #94E2D5;">      ::</span><span style="color: #CBA6F7;"> IO ByteString</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">                     ,</span><span> getBodyChunk</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> IO</span><span style="color: #F9E2AF;"> BS.</span><span style="color: #CBA6F7;">ByteString</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">                     ,</span><span> getFiles</span><span style="color: #94E2D5;">     ::</span><span style="color: #9399B2;"> [</span><span style="color: #CBA6F7;">File</span><span style="color: #9399B2;">]</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">                     }</span></span></code></pre><pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #CBA6F7;">newtype ActionT</span><span> e m a</span><span style="color: #94E2D5;"> =</span><span> ActionT</span><span style="color: #9399B2;"> {</span><span> runAM</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> ExceptT</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">ActionError</span><span> e</span><span style="color: #9399B2;">) (</span><span style="color: #CBA6F7;">ReaderT ActionEnv</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">StateT ScottyResponse</span><span> m</span><span style="color: #9399B2;">))</span><span> a</span><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">    deriving</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;"> Functor</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> Applicative</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> MonadIO</span><span style="color: #9399B2;"> )</span></span></code></pre>
+<p>这里有点复杂，我们知道<code>ask :: m r </code>，这是个多态函数，所以具体是什么类型？</p>
+<p>我们注意到：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">request</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> Monad</span><span> m</span><span style="color: #94E2D5;"> =&gt;</span><span style="color: #CBA6F7;"> ActionT</span><span> e m</span><span style="color: #CBA6F7;"> Request</span></span>
+<span class="giallo-l"><span>request </span><span style="color: #94E2D5;">=</span><span> ActionT</span><span style="color: #94E2D5;"> $ ...</span></span></code></pre>
+<p>这里的<code>ActionT</code>显然是数据构造子 （data constructor），它的类型是 <code>ExceptT (ActionError e) (ReaderT  ActionEnv (StateT ScottyResponse  m)) a  -&gt; ActionT e m a</code></p>
+<p>那么  <code>liftM getReq ask</code>的类型就是 <code>ExceptT (ActionError e) (ReaderT ActionEnv (StateT ScottyResponse m)) a</code> 又结合 <code>request::ActionT e m Request</code>  所以：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span>liftM getReq ask </span><span style="color: #94E2D5;">::</span><span style="color: #CBA6F7;"> ExceptT</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">ActionError</span><span> e</span><span style="color: #9399B2;">) (</span><span style="color: #CBA6F7;">ReaderT ActionEnv</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">StateT ScottyResponse</span><span> m</span><span style="color: #9399B2;">))</span><span style="color: #CBA6F7;"> Request</span></span></code></pre>
+<p><code>liftM getReq ask</code> 的计算顺序是 先<code>ask</code>  然后再 <code>liftM getReq</code></p>
+<p>我们知道 <code>liftM :: Monad m =&gt; (a1 -&gt; r) -&gt; m a1 -&gt; m r</code>， 不改变 <code>m</code> 而是修改 <code>m</code>里的 <code>a1</code>，那么:</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">ask</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> ExceptT</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">ActionError</span><span> e</span><span style="color: #9399B2;">) (</span><span style="color: #CBA6F7;">ReaderT ActionEnv</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">StateT ScottyResponse</span><span> m</span><span style="color: #9399B2;">))</span><span> a</span></span></code></pre>
+<p>我们先用<code>a</code> 代表 <code>ask :: m r</code> 中的 <code>r</code> 。我们当然猜测它是<code>ActionEnv</code>，但是还需要严密地推断。</p>
+<p>这时候，就需要一个额外知识:</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #CBA6F7;">instance MonadReader</span><span> r m</span><span style="color: #94E2D5;"> =&gt;</span><span style="color: #CBA6F7;"> MonadReader</span><span> r</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">ExceptT</span><span> e m</span><span style="color: #9399B2;">)</span><span style="color: #CBA6F7;"> where</span></span>
+<span class="giallo-l"><span>    ask   </span><span style="color: #94E2D5;">=</span><span> lift ask</span></span>
+<span class="giallo-l"><span>    local </span><span style="color: #94E2D5;">=</span><span> mapExceptT </span><span style="color: #94E2D5;">.</span><span> local</span></span>
+<span class="giallo-l"><span>    reader </span><span style="color: #94E2D5;">=</span><span> lift </span><span style="color: #94E2D5;">.</span><span> reader</span></span></code></pre>
+<p><code>ExceptT e m</code> 实现里 <code>MonadReader  r m</code>，所以我们关注的 <code>ask</code> 就是 <code>ExceptT (ActionError e) (ReaderT ActionEnv (StateT ScottyResponse m)) a</code>的 <code>ask</code></p>
+<p><code>MonadReader r (ExceptT e m)</code> 的 <code>ask = lift ask</code> 。</p>
+<p>结合 <code>lift :: (MonadTrans t, Monad m) =&gt; m a -&gt; t m a </code>的定义，
+<code>m a</code>  提升（<code>lift</code>）到了 <code> t m a</code> 。</p>
+<p>这里就是：
+<code>(ReaderT ActionEnv (StateT ScottyResponse m)) a</code> 提升（<code>lift</code>）到了 <code>ExceptT (ActionError e) (ReaderT ActionEnv (StateT ScottyResponse m)) a</code>。</p>
+<p><code>(ReaderT ActionEnv (StateT ScottyResponse m))</code> 的 <code>ask</code> 我们熟悉， <code>ask :: Monad m =&gt; ReaderT r m r</code>
+也就是 <code>(ReaderT ActionEnv (StateT ScottyResponse m)) ActionEnv</code>
+把这个结构<code>lift</code>到 <code>ExceptT ...</code> 最终得到：</p>
+<p><code>ask :: ExceptT (ActionError e) (ReaderT ActionEnv (StateT ScottyResponse m)) ActionEnv</code></p>
+<p>呼呼。</p>
+<p>至于 <code>liftM getReq ask</code>的类型就得到 <code>liftM getReq ask :: ExceptT (ActionError e) (ReaderT ActionEnv (StateT ScottyResponse m)) Request</code></p>
+<p>然后再结合上最前面的<code>ActionT </code> 得到 <code>request :: ActionT e m Request</code></p>
+<p>此外，我们在源码里有：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #CBA6F7;">instance</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">Monad</span><span> m</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> ScottyError</span><span> e</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> =&gt;</span><span style="color: #F9E2AF;"> Monad.</span><span style="color: #CBA6F7;">Monad</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">ActionT</span><span> e m</span><span style="color: #9399B2;">)</span><span style="color: #CBA6F7;"> where</span></span>
+<span class="giallo-l"><span>    return </span><span style="color: #94E2D5;">=</span><span> ActionT</span><span style="color: #94E2D5;"> .</span><span> return</span></span>
+<span class="giallo-l"><span>    ActionT m </span><span style="color: #94E2D5;">&gt;&gt;=</span><span> k </span><span style="color: #94E2D5;">=</span><span> ActionT</span><span style="color: #9399B2;"> (</span><span>m </span><span style="color: #94E2D5;">&gt;&gt;=</span><span> runAM </span><span style="color: #94E2D5;">.</span><span> k</span><span style="color: #9399B2;">)</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">#</span><span>if !(MIN_VERSION_base(4,13,0))</span></span>
+<span class="giallo-l"><span>    fail </span><span style="color: #94E2D5;">=</span><span style="color: #F9E2AF;"> Fail.</span><span>fail</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">#</span><span>endif</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">instance ScottyError</span><span> e</span><span style="color: #94E2D5;"> =&gt;</span><span style="color: #CBA6F7;"> MonadTrans</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">ActionT</span><span> e</span><span style="color: #9399B2;">)</span><span style="color: #CBA6F7;"> where</span></span>
+<span class="giallo-l"><span>    lift </span><span style="color: #94E2D5;">=</span><span> ActionT</span><span style="color: #94E2D5;"> .</span><span> lift </span><span style="color: #94E2D5;">.</span><span> lift </span><span style="color: #94E2D5;">.</span><span> lift</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">instance</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">MonadReader</span><span> r m</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> ScottyError</span><span> e</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> =&gt;</span><span style="color: #CBA6F7;"> MonadReader</span><span> r</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">ActionT</span><span> e m</span><span style="color: #9399B2;">)</span><span style="color: #CBA6F7;"> where</span></span>
+<span class="giallo-l"><span>    {-#</span><span style="color: #CBA6F7;"> INLINE</span><span> ask #-}</span></span>
+<span class="giallo-l"><span>    ask </span><span style="color: #94E2D5;">=</span><span> lift ask</span></span>
+<span class="giallo-l"><span>    {-#</span><span style="color: #CBA6F7;"> INLINE</span><span> local #-}</span></span>
+<span class="giallo-l"><span>    local f </span><span style="color: #94E2D5;">=</span><span> ActionT</span><span style="color: #94E2D5;"> .</span><span> mapExceptT </span><span style="color: #9399B2;">(</span><span>mapReaderT </span><span style="color: #9399B2;">(</span><span>mapStateT </span><span style="color: #94E2D5;">$</span><span> local f</span><span style="color: #9399B2;">))</span><span style="color: #94E2D5;"> .</span><span> runAM</span></span></code></pre>
+<p>这里稍微注意一下 <code>return = ActionT . retrun</code> 。左边的 <code>return </code>是 <code>Monad.Monad (ActionT e m) </code>的，右边的<code>return</code>:</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span>return a </span><span style="color: #94E2D5;">=</span><span> ExceptT</span><span style="color: #9399B2;"> (</span><span>ActionError e</span><span style="color: #9399B2;">) (</span><span>ReaderT ActionEnv</span><span style="color: #9399B2;"> (</span><span>StateT ScottyResponse m</span><span style="color: #9399B2;">))</span><span> a</span></span></code></pre>
+<p>然后再用<code>ActionT</code>包装了一下。</p>
+<p><code>&gt;&gt;=</code> 操作也是类似，实质上是先将 <code>ActionT</code>脱去做计算，最后再包上<code>ActionT</code>。</p>
+<p>类似的还有：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">header</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> Text</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ActionM</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">Maybe Text</span><span style="color: #9399B2;">)</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">headers</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> ActionM</span><span style="color: #9399B2;"> [(</span><span style="color: #CBA6F7;">Text</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> Text</span><span style="color: #9399B2;">)]</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">body</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> ActionM ByteString</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">bodyReader</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> ActionM</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">IO ByteString</span><span style="color: #9399B2;">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">param</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> Parsable</span><span> a</span><span style="color: #94E2D5;"> =&gt;</span><span style="color: #CBA6F7;"> Text</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ActionM</span><span> a</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">params</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> ActionM</span><span style="color: #9399B2;"> [</span><span style="color: #CBA6F7;">Param</span><span style="color: #9399B2;">]</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">jsonData</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> FromJSON</span><span> a</span><span style="color: #94E2D5;"> =&gt;</span><span style="color: #CBA6F7;"> ActionM</span><span> a</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">files</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> ActionM</span><span style="color: #9399B2;"> [</span><span style="color: #CBA6F7;">File</span><span style="color: #9399B2;">]</span></span></code></pre><h2 id="xiu-gai-response">修改Response</h2>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">status</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> Status</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ActionM</span><span style="color: #9399B2;"> ()</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">addHeader</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> Text</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> Text</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ActionM</span><span style="color: #9399B2;"> ()</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">setHeader</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> Text</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> Text</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ActionM</span><span style="color: #9399B2;"> ()</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">redirect</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> Text</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ActionM</span><span> a</span></span></code></pre><h3 id="she-zhi-response">设置 Response</h3>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">text</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> Text</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ActionM</span><span style="color: #9399B2;"> ()</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">html</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> Text</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ActionM</span><span style="color: #9399B2;"> ()</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">file</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> FilePath</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ActionM</span><span style="color: #9399B2;"> ()</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">json</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> ToJSON</span><span> a</span><span style="color: #94E2D5;"> =&gt;</span><span> a</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ActionM</span><span style="color: #9399B2;"> ()</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">stream</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> StreamingBody</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ActionM</span><span style="color: #9399B2;"> ()</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">raw</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> ByteString</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ActionM</span><span style="color: #9399B2;"> ()</span></span></code></pre><h2 id="exception">Exception</h2>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">raise</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> Text</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ActionM</span><span> a</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">raiseStatus</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> Status</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> Text</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ActionM</span><span> a</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">rescue</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> ActionM</span><span> a</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">Text</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ActionM</span><span> a</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ActionM</span><span> a</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">next</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> ActionM</span><span> a</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">finish</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> ActionM</span><span> a</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">defaultHandler</span><span style="color: #94E2D5;"> ::</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">Text</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ActionM</span><span style="color: #9399B2;"> ())</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ScottyM</span><span style="color: #9399B2;"> ()</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">liftAndCatchIO</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> IO</span><span> a</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ActionM</span><span> a</span></span></code></pre><h2 id="scotty">Scotty</h2>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #CBA6F7;">type ScottyM</span><span style="color: #94E2D5;"> =</span><span style="color: #CBA6F7;"> ScottyT Text IO</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">type ActionM</span><span style="color: #94E2D5;"> =</span><span style="color: #CBA6F7;"> ActionT Text IO</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #9399B2;">-- |</span><span style="color: #9399B2;font-style: italic;"> Run a scotty application using the warp server.</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">scotty</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> Port</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> ScottyM</span><span style="color: #9399B2;"> ()</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> IO</span><span style="color: #9399B2;"> ()</span></span>
+<span class="giallo-l"><span>scotty p </span><span style="color: #94E2D5;">=</span><span style="color: #F9E2AF;"> Trans.</span><span>scottyT p id</span></span></code></pre>
+<p>跟进 <code>Trans.scottyT</code> 看看</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #9399B2;">-- |</span><span style="color: #9399B2;font-style: italic;"> Run a scotty application using the warp server.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;">-- NB: scotty p === scottyT p id</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">scottyT</span><span style="color: #94E2D5;"> ::</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">Monad</span><span> m</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> MonadIO</span><span> n</span><span style="color: #9399B2;">)</span></span>
+<span class="giallo-l"><span style="color: #94E2D5;">        =&gt;</span><span style="color: #CBA6F7;"> Port</span></span>
+<span class="giallo-l"><span style="color: #94E2D5;">        -&gt;</span><span style="color: #9399B2;"> (</span><span>m</span><span style="color: #CBA6F7;"> Response</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> IO Response</span><span style="color: #9399B2;">)</span><span style="color: #9399B2;font-style: italic;"> -- ^ Run monad &#39;m&#39; into &#39;IO&#39;, called at each action.</span></span>
+<span class="giallo-l"><span style="color: #94E2D5;">        -&gt;</span><span style="color: #CBA6F7;"> ScottyT</span><span> e m</span><span style="color: #9399B2;"> ()</span></span>
+<span class="giallo-l"><span style="color: #94E2D5;">        -&gt;</span><span> n</span><span style="color: #9399B2;"> ()</span></span>
+<span class="giallo-l"><span>scottyT p </span><span style="color: #94E2D5;">=</span><span> scottyOptsT </span><span style="color: #94E2D5;">$</span><span> def </span><span style="color: #9399B2;">{</span><span> settings</span><span style="color: #94E2D5;"> =</span><span> setPort p </span><span style="color: #9399B2;">(</span><span>settings def</span><span style="color: #9399B2;">) }</span></span></code></pre>
+<p>主要是设置 <code>settings</code>  的端口。</p>
+<p>还有个 <code>def :: forall a. Default a =&gt; a</code> 主要是获取 <code>a</code> 的默认值 。</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #9399B2;">-- |</span><span style="color: #9399B2;font-style: italic;"> Run a scotty application using the warp server, passing extra options.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;">-- NB: scottyOpts opts === scottyOptsT opts id</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">scottyOptsT</span><span style="color: #94E2D5;"> ::</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">Monad</span><span> m</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> MonadIO</span><span> n</span><span style="color: #9399B2;">)</span></span>
+<span class="giallo-l"><span style="color: #94E2D5;">            =&gt;</span><span style="color: #CBA6F7;"> Options</span></span>
+<span class="giallo-l"><span style="color: #94E2D5;">            -&gt;</span><span style="color: #9399B2;"> (</span><span>m</span><span style="color: #CBA6F7;"> Response</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> IO Response</span><span style="color: #9399B2;">)</span><span style="color: #9399B2;font-style: italic;"> -- ^ Run monad &#39;m&#39; into &#39;IO&#39;, called at each action.</span></span>
+<span class="giallo-l"><span style="color: #94E2D5;">            -&gt;</span><span style="color: #CBA6F7;"> ScottyT</span><span> e m</span><span style="color: #9399B2;"> ()</span></span>
+<span class="giallo-l"><span style="color: #94E2D5;">            -&gt;</span><span> n</span><span style="color: #9399B2;"> ()</span></span>
+<span class="giallo-l"><span>scottyOptsT opts runActionToIO s </span><span style="color: #94E2D5;">=</span><span style="color: #CBA6F7;"> do</span></span>
+<span class="giallo-l"><span>    when </span><span style="color: #9399B2;">(</span><span>verbose opts </span><span style="color: #94E2D5;">&gt;</span><span style="color: #FAB387;"> 0</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> $</span></span>
+<span class="giallo-l"><span>        liftIO </span><span style="color: #94E2D5;">$</span><span> putStrLn </span><span style="color: #94E2D5;">$</span><span style="color: #A6E3A1;"> &quot;Setting phasers to stun... (port &quot;</span><span style="color: #94E2D5;"> ++</span><span> show </span><span style="color: #9399B2;">(</span><span>getPort </span><span style="color: #9399B2;">(</span><span>settings opts</span><span style="color: #9399B2;">))</span><span style="color: #94E2D5;"> ++</span><span style="color: #A6E3A1;"> &quot;) (ctrl-c to quit)&quot;</span></span>
+<span class="giallo-l"><span>    liftIO </span><span style="color: #94E2D5;">.</span><span> runSettings </span><span style="color: #9399B2;">(</span><span>settings opts</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> =&lt;&lt;</span><span> scottyAppT runActionToIO s</span></span></code></pre>
+<p>这里要注意 <code>=&lt;&lt;</code> 操作符：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #94E2D5;">=&lt;&lt; ::</span><span style="color: #CBA6F7;"> forall</span><span style="color: #9399B2;"> (</span><span>m</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> *</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> *</span><span style="color: #9399B2;">)</span><span> a b</span><span style="color: #94E2D5;">.</span><span style="color: #CBA6F7;"> Monad</span><span> m</span><span style="color: #94E2D5;"> =&gt;</span><span style="color: #9399B2;"> (</span><span>a</span><span style="color: #94E2D5;"> -&gt;</span><span> m b</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> -&gt;</span><span> m a</span><span style="color: #94E2D5;"> -&gt;</span><span> m b</span></span></code></pre>
+<p>回忆一下 <code>&gt;&gt;=</code> 的类型:</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #94E2D5;">&gt;&gt;= ::</span><span style="color: #CBA6F7;">  forall</span><span style="color: #9399B2;"> (</span><span>m</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> *</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> *</span><span style="color: #9399B2;">)</span><span> a b</span><span style="color: #94E2D5;">.</span><span style="color: #CBA6F7;"> Monad</span><span> m</span><span style="color: #94E2D5;"> =&gt;</span><span> m a</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #9399B2;"> (</span><span>a</span><span style="color: #94E2D5;"> -&gt;</span><span> m b</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> -&gt;</span><span> m b</span></span></code></pre>
+<p>最后就是 <code>scottyAppT</code></p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #9399B2;">-- |</span><span style="color: #9399B2;font-style: italic;"> Turn a scotty application into a WAI &#39;Application&#39;, which can be</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;">-- run with any WAI handler.</span></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;">-- NB: scottyApp === scottyAppT id</span></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">scottyAppT</span><span style="color: #94E2D5;"> ::</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">Monad</span><span> m</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> Monad</span><span> n</span><span style="color: #9399B2;">)</span></span>
+<span class="giallo-l"><span style="color: #94E2D5;">           =&gt;</span><span style="color: #9399B2;"> (</span><span>m</span><span style="color: #CBA6F7;"> Response</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> IO Response</span><span style="color: #9399B2;">)</span><span style="color: #9399B2;font-style: italic;"> -- ^ Run monad &#39;m&#39; into &#39;IO&#39;, called at each action.</span></span>
+<span class="giallo-l"><span style="color: #94E2D5;">           -&gt;</span><span style="color: #CBA6F7;"> ScottyT</span><span> e m</span><span style="color: #9399B2;"> ()</span></span>
+<span class="giallo-l"><span style="color: #94E2D5;">           -&gt;</span><span> n</span><span style="color: #CBA6F7;"> Application</span></span>
+<span class="giallo-l"><span>scottyAppT runActionToIO defs </span><span style="color: #94E2D5;">=</span><span style="color: #CBA6F7;"> do</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">    let</span><span> s </span><span style="color: #94E2D5;">=</span><span> execState </span><span style="color: #9399B2;">(</span><span>runS defs</span><span style="color: #9399B2;">)</span><span> def</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">    let</span><span> rapp req callback </span><span style="color: #94E2D5;">=</span><span> runActionToIO </span><span style="color: #9399B2;">(</span><span>foldl </span><span style="color: #9399B2;">(</span><span>flip </span><span style="color: #9399B2;">(</span><span style="color: #89B4FA;font-style: italic;">$</span><span style="color: #9399B2;">))</span><span> notFoundApp </span><span style="color: #9399B2;">(</span><span>routes s</span><span style="color: #9399B2;">)</span><span> req</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> &gt;&gt;=</span><span> callback</span></span>
+<span class="giallo-l"><span>    return </span><span style="color: #94E2D5;">$</span><span> foldl </span><span style="color: #9399B2;">(</span><span>flip </span><span style="color: #9399B2;">(</span><span style="color: #89B4FA;font-style: italic;">$</span><span style="color: #9399B2;">))</span><span> rapp </span><span style="color: #9399B2;">(</span><span>middlewares s</span><span style="color: #9399B2;">)</span></span></code></pre>
+<p><code>runS</code> 的定义：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #CBA6F7;">newtype ScottyT</span><span> e m a</span><span style="color: #94E2D5;"> =</span><span> ScottyT</span><span style="color: #9399B2;"> {</span><span> runS</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> State</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">ScottyState</span><span> e m</span><span style="color: #9399B2;">)</span><span> a</span><span style="color: #9399B2;"> }</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">    deriving</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;"> Functor</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> Applicative</span><span style="color: #9399B2;">,</span><span style="color: #CBA6F7;"> Monad</span><span style="color: #9399B2;"> )</span></span></code></pre>
+<p><code>let s = execState (runS defs) def</code>  的结果 <code>s :: ScottyState e m</code> 它的默认值定义：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #CBA6F7;">instance Default</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">ScottyState</span><span> e m</span><span style="color: #9399B2;">)</span><span style="color: #CBA6F7;"> where</span></span>
+<span class="giallo-l"><span>    def </span><span style="color: #94E2D5;">=</span><span> ScottyState</span><span style="color: #9399B2;"> [] []</span><span> Nothing def</span></span></code></pre><pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #9399B2;font-style: italic;">----- Transformer Aware Applications/Middleware -----</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">type Middleware</span><span> m</span><span style="color: #94E2D5;"> =</span><span style="color: #CBA6F7;"> Application</span><span> m</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> Application</span><span> m</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">type Application</span><span> m</span><span style="color: #94E2D5;"> =</span><span style="color: #CBA6F7;"> Request</span><span style="color: #94E2D5;"> -&gt;</span><span> m</span><span style="color: #CBA6F7;"> Response</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #9399B2;font-style: italic;">--------------- Scotty Applications -----------------</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">data ScottyState</span><span> e m</span><span style="color: #94E2D5;"> =</span></span>
+<span class="giallo-l"><span>    ScottyState</span><span style="color: #9399B2;"> {</span><span> middlewares</span><span style="color: #94E2D5;"> ::</span><span style="color: #9399B2;"> [</span><span style="color: #F9E2AF;">Wai.</span><span style="color: #CBA6F7;">Middleware</span><span style="color: #9399B2;">]</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">                ,</span><span> routes</span><span style="color: #94E2D5;"> ::</span><span style="color: #9399B2;"> [</span><span style="color: #CBA6F7;">Middleware</span><span> m</span><span style="color: #9399B2;">]</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">                ,</span><span> handler</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> ErrorHandler</span><span> e m</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">                ,</span><span> routeOptions</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> RouteOptions</span></span>
+<span class="giallo-l"><span style="color: #9399B2;">                }</span></span></code></pre><pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">notFoundApp</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> Monad</span><span> m</span><span style="color: #94E2D5;"> =&gt;</span><span style="color: #F9E2AF;"> Scotty.</span><span style="color: #CBA6F7;">Application</span><span> m</span></span>
+<span class="giallo-l"><span>notFoundApp _ </span><span style="color: #94E2D5;">=</span><span> return </span><span style="color: #94E2D5;">$</span><span> responseBuilder status404 </span><span style="color: #9399B2;">[(</span><span style="color: #A6E3A1;">&quot;Content-Type&quot;</span><span style="color: #9399B2;">,</span><span style="color: #A6E3A1;">&quot;text/html&quot;</span><span style="color: #9399B2;">)]</span></span>
+<span class="giallo-l"><span style="color: #94E2D5;">                       $</span><span> fromByteString </span><span style="color: #A6E3A1;">&quot;&lt;h1&gt;404: File Not Found!&lt;/h1&gt;&quot;</span></span></code></pre>
+<p>这里比较复杂点的代码是：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #CBA6F7;">    let</span><span> rapp req callback </span><span style="color: #94E2D5;">=</span><span> runActionToIO </span><span style="color: #9399B2;">(</span><span>foldl </span><span style="color: #9399B2;">(</span><span>flip </span><span style="color: #9399B2;">(</span><span style="color: #89B4FA;font-style: italic;">$</span><span style="color: #9399B2;">))</span><span> notFoundApp </span><span style="color: #9399B2;">(</span><span>routes s</span><span style="color: #9399B2;">)</span><span> req</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> &gt;&gt;=</span><span> callback</span></span></code></pre>
+<p>先看</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span>foldl </span><span style="color: #9399B2;">(</span><span>flip </span><span style="color: #9399B2;">(</span><span style="color: #89B4FA;font-style: italic;">$</span><span style="color: #9399B2;">))</span><span> notFoundApp </span><span style="color: #9399B2;">(</span><span>routes s</span><span style="color: #9399B2;">)</span><span> req</span></span></code></pre>
+<p>这里是以 <code>notFoundApp</code> 为初始值，取 <code>routes s :: [Middleware m]</code> 数组里的第一个值，结合 <code>flip ($)</code> 元算， 就是  <code>Middleware m $ notFoundApp</code> 结果依然是一个 <code>Application m</code> 毕竟 <code>Middleware m</code>  作为中间件只是包裹了一下 <code>Application m </code>不改变其类型。得到结果后，依次取数组的值一直执行，这里就是把所有的 <code>routes s</code> 都挂载到 初始的 <code>Application m</code> 上（<code>notFoundApp</code>就是初始的 App ，对所有的请求都返回 404）</p>
+<p>我们知道 <code>type Application m = Request -&gt; m Response</code>   然后给一个 <code>req</code> 之后，会返回 <code>m response</code></p>
+<p>然后再由 <code>runActionToIO</code> 执行，最后 <code>&gt;&gt;= callback</code></p>
+<p>注意 <code>rapp :: Request -&gt; (Response -&gt; IO b) -&gt; IO b</code>等下回头看。</p>
+<p>整个函数最后的结果:</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span>    return </span><span style="color: #94E2D5;">$</span><span> foldl </span><span style="color: #9399B2;">(</span><span>flip </span><span style="color: #9399B2;">(</span><span style="color: #89B4FA;font-style: italic;">$</span><span style="color: #9399B2;">))</span><span> rapp </span><span style="color: #9399B2;">(</span><span>middlewares s</span><span style="color: #9399B2;">)</span></span></code></pre>
+<p>这里也是用类似的 <code>foldl</code> 将 <code>[Wai.Middleware]</code> 应用到 <code>rapp</code> 上。</p>
+<p>这里要注意，<code>middlewares s :: [Wai.Middleware]</code></p>
+<p>而 <code>Wai.Middleware</code>的定义：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #CBA6F7;">type Middleware</span><span style="color: #94E2D5;"> =</span><span style="color: #CBA6F7;"> Application</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> Application</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">type Application</span><span style="color: #94E2D5;"> =</span><span style="color: #CBA6F7;"> Request</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">Response</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> IO ResponseReceived</span><span style="color: #9399B2;">)</span><span style="color: #94E2D5;"> -&gt;</span><span style="color: #CBA6F7;"> IO ResponseReceived.</span></span></code></pre>
+<p>可以看出来刚刚提到的 <code>rapp</code> 就是 <code>Wai.Application</code> 。 <code>callback :: Response -&gt; IO ResponseReceived</code>。</p>
+
+    </div>
+
+    
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2023-02-06">2023-02-06</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/haskell/">#Haskell</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/web-framework/">#web framework</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/scotty/">#scotty</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/source-code/">#source code</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+</article>
+
+
+        </main>
+        <footer>
+            <p>
+                © zongwu&#x27;s blog 2026<br>
+                Powered by <a target="_blank" href="https://getzola.org/">Zola</a>, Theme <a target="_blank" href="https://github.com/zbrox/anpu-zola-theme">Anpu</a>.
+            </p>
+            <p>
+                
+                
+            </p>
+        </footer>
+    </div>
+
+    <div class="dark-mode-buttons">
+  <button class="dark-mode-button" id="dark-mode-on">
+    <img
+      class="themed-icon"
+      src="https://blog.zongwu233.com/dark_mode.svg"
+      width="24"
+      height="24"
+      alt="Dark mode"
+      aria-label="dark mode toggle"
+      title="Dark mode"
+    />
+  </button>
+  <button class="dark-mode-button" id="dark-mode-off">
+    <img
+      class="themed-icon"
+      src="https://blog.zongwu233.com/light_mode.svg "
+      width="24"
+      height="24"
+      alt="Light mode"
+      aria-label="light mode toggle"
+      title="Light mode"
+    />
+  </button>
+</div>
+<script>
+  const cls = document.body.classList;
+  const getSessionTheme = sessionStorage.getItem("theme");
+  if (getSessionTheme === "dark") {
+    cls.toggle("dark-mode", true);
+  } else if (getSessionTheme === "light") {
+    cls.toggle("dark-mode", false);
+  } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    cls.toggle("dark-mode", true);
+  }
+  document
+    .getElementById("dark-mode-on")
+    .addEventListener("click", function (e) {
+      cls.toggle("dark-mode", true);
+      sessionStorage.setItem("theme", "dark");
+    });
+  document
+    .getElementById("dark-mode-off")
+    .addEventListener("click", function (e) {
+      cls.toggle("dark-mode", false);
+      sessionStorage.setItem("theme", "light");
+    });
+</script>
+<noscript>
+  <style>
+    .dark-mode-buttons {
+      display: none;
+    }
+  </style>
+</noscript>
+
+    
+</body>
+</html>

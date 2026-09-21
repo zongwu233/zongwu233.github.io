@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+      <title>zongwu&#x27;s blog - 翻译</title>
+      <link>https://blog.zongwu233.com</link>
+      <description></description>
+      <generator>Zola</generator>
+      <language>en</language>
+      <atom:link href="https://blog.zongwu233.com/tags/fan-yi/rss.xml" rel="self" type="application/rss+xml"/>
+      <lastBuildDate>Sat, 14 Aug 2021 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>[翻译]ReaderT 设计模式 </title>
+          <pubDate>Sat, 14 Aug 2021 00:00:00 +0000</pubDate>
+          <author>Unknown</author>
+          <link>https://blog.zongwu233.com/readert-design-pattern/</link>
+          <guid>https://blog.zongwu233.com/readert-design-pattern/</guid>
+          <description xml:base="https://blog.zongwu233.com/readert-design-pattern/">&lt;blockquote&gt;
+&lt;p&gt;讲解工程实践中为什么需要 ReaderT 模式比较清晰的文章，就翻译了一下。原文见&lt;a rel=&quot;external&quot; href=&quot;https:&#x2F;&#x2F;www.fpcomplete.com&#x2F;blog&#x2F;2017&#x2F;06&#x2F;readert-design-pattern&#x2F;&quot;&gt;这里&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;在工程实践中，一些语言比如 Java 通过设计模式用来解决某些常见的场景问题。&lt;code&gt;Haskell&lt;&#x2F;code&gt; 语言没有这类设计模式，它通过语言层面的特性解决这些问题。
+然而，我相信仍然有一些关于程序结构的高级指导的空间，我将其松散地称为 &lt;code&gt;Haskell&lt;&#x2F;code&gt; 设计模式。
+这次描述的模式被称为 &lt;code&gt;ReaderT 模式&lt;&#x2F;code&gt; 。我将其用作 &lt;code&gt;Yesod&lt;&#x2F;code&gt; 框架 &lt;code&gt;Handler&lt;&#x2F;code&gt; 类型设计的基础。&lt;&#x2F;p&gt;</description>
+      </item>
+      <item>
+          <title>[翻译]发明原则(inventing on principle)</title>
+          <pubDate>Sun, 20 Dec 2020 00:00:00 +0000</pubDate>
+          <author>Unknown</author>
+          <link>https://blog.zongwu233.com/inventing-on-principle/</link>
+          <guid>https://blog.zongwu233.com/inventing-on-principle/</guid>
+          <description xml:base="https://blog.zongwu233.com/inventing-on-principle/">&lt;blockquote&gt;
+&lt;p&gt;找到并遵循你自己的原则。&lt;&#x2F;p&gt;
+&lt;p&gt;持续地去解决工作生活中违背这些原则的事情，优秀的工具或者产品，不过是这个过程的副作用。&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h2 id=&quot;bei-jing&quot;&gt;背景&lt;&#x2F;h2&gt;
+&lt;p&gt;该演讲最初由Bret Victor在CUSEC(Canadian University Software Engineering Conference) 2012上发表。&lt;&#x2F;p&gt;</description>
+      </item>
+    </channel>
+</rss>

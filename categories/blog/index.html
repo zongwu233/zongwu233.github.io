@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+
+    <title>blog</title>
+    <meta name="description" content="">
+
+    <link rel="stylesheet" href="https://blog.zongwu233.com/main.css">
+
+    
+        
+        <link rel="alternate" type="application/rss+xml" title="RSS" href="https://blog.zongwu233.com/rss.xml">
+        
+    
+
+    
+    
+</head>
+<body>
+    <a class="skip-main" href="#main">Skip to content</a>
+    <div class="container">
+        <header> 
+            <h1 class="site-header">
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com">zongwu&#x27;s blog</a>
+            </h1>
+            <nav>
+                
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com">Home</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;categories&#x2F;">Categories</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;tags&#x2F;">Tags</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;about&#x2F;">About</a>
+                
+                
+                <a  href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rss.xml">RSS</a>
+                
+                
+            </nav>
+        </header>
+        <main id="main" tabindex="-1">
+            
+<h1>Category: blog</h1>
+<div class="article-info">
+    <a href="https://blog.zongwu233.com/categories">To all categories</a>
+</div>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;scotty-web-framework-sourcecode-intro&#x2F;">Scotty web framework 源码初探</a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <p><code>scotty</code> 是一款非常容易上手的、构建在 WAI/Wrap 之上的 Haskell web frameowrk，官方文档的 start 例子：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span>{-#</span><span style="color: #CBA6F7;"> LANGUAGE OverloadedStrings</span><span> #-}</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">import</span><span style="color: #F9E2AF;"> Web.Scotty</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">import</span><span style="color: #F9E2AF;"> Data.Monoid</span><span style="color: #9399B2;"> (</span><span style="color: #89B4FA;font-style: italic;">mconcat</span><span style="color: #9399B2;">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>main </span><span style="color: #94E2D5;">=</span><span> scotty </span><span style="color: #FAB387;">3000</span><span style="color: #94E2D5;"> $</span></span>
+<span class="giallo-l"><span>    get </span><span style="color: #A6E3A1;">&quot;/:word&quot;</span><span style="color: #94E2D5;"> $</span><span style="color: #CBA6F7;"> do</span></span>
+<span class="giallo-l"><span>        beam </span><span style="color: #94E2D5;">&lt;-</span><span> param </span><span style="color: #A6E3A1;">&quot;word&quot;</span></span>
+<span class="giallo-l"><span>        html </span><span style="color: #94E2D5;">$</span><span> mconcat </span><span style="color: #9399B2;">[</span><span style="color: #A6E3A1;">&quot;&lt;h1&gt;Scotty, &quot;</span><span style="color: #9399B2;">,</span><span> beam</span><span style="color: #9399B2;">,</span><span style="color: #A6E3A1;"> &quot; me up!&lt;/h1&gt;&quot;</span><span style="color: #9399B2;">]</span></span></code></pre>
+<p>编译运行即可体验简单的 web 应用。</p>
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2023-02-06">2023-02-06</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/haskell/">#Haskell</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/web-framework/">#web framework</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/scotty/">#scotty</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/source-code/">#source code</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;video-basic-concepts&#x2F;">视频基础概念 </a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <p>最近经常会遇到视频相关的概念，比如 AVI、MP4、RMVB、MKV、FLV以及m3u8、H.264、H.265等等，这些格式都是做什么的？它们之间到底都是什么关系，今天梳理一下。</p>
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2022-09-22">2022-09-22</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/ji-ben-gai-nian/">#基本概念</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/shi-pin/">#视频</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/shi-pin-ge-shi/">#视频格式</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/shi-pin-liu/">#视频流</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;writert-source-code-analysis&#x2F;">WriterT 相关源码分析 </a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <p>看完<code>ReaderT</code>的<a href="/readert-source-code-analysis">源码</a>，接着来分析<code>WriterT</code>的源码。</p>
+<h2 id="shi-li">示例</h2>
+<p>先看一个超级简单的例子：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #CBA6F7;">import</span><span style="color: #F9E2AF;"> Control.Monad</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">import</span><span style="color: #F9E2AF;"> Control.Monad.Trans.Writer</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">data LogEntry</span><span style="color: #94E2D5;"> =</span><span> LogEntry</span><span style="color: #9399B2;"> {</span><span> msg</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> String</span><span style="color: #9399B2;"> }</span><span style="color: #CBA6F7;"> deriving</span><span style="color: #9399B2;"> (</span><span style="color: #CBA6F7;">Eq</span><span>, </span><span style="color: #CBA6F7;">Show</span><span style="color: #9399B2;">)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span style="color: #89B4FA;font-style: italic;">calc</span><span style="color: #94E2D5;"> ::</span><span style="color: #CBA6F7;"> Writer</span><span style="color: #9399B2;"> [</span><span style="color: #CBA6F7;">LogEntry</span><span style="color: #9399B2;">]</span><span style="color: #CBA6F7;"> Integer</span></span>
+<span class="giallo-l"><span>calc </span><span style="color: #94E2D5;">=</span><span style="color: #CBA6F7;"> do</span></span>
+<span class="giallo-l"><span>    tell </span><span style="color: #9399B2;">[</span><span>LogEntry</span><span style="color: #A6E3A1;"> &quot;Start&quot;</span><span style="color: #9399B2;">]</span></span>
+<span class="giallo-l"><span style="color: #CBA6F7;">    let</span><span> x </span><span style="color: #94E2D5;">=</span><span> sum </span><span style="color: #9399B2;">[</span><span style="color: #FAB387;">1</span><span style="color: #94E2D5;"> ..</span><span style="color: #FAB387;"> 10000000</span><span style="color: #9399B2;">]</span></span>
+<span class="giallo-l"><span>    tell </span><span style="color: #9399B2;">[</span><span>LogEntry</span><span style="color: #9399B2;"> (</span><span>show x</span><span style="color: #9399B2;">)]</span></span>
+<span class="giallo-l"><span>    tell </span><span style="color: #9399B2;">[</span><span>LogEntry</span><span style="color: #A6E3A1;"> &quot;done&quot;</span><span style="color: #9399B2;">]</span></span>
+<span class="giallo-l"><span>    return x</span></span>
+<span class="giallo-l"><span>    </span></span>
+<span class="giallo-l"><span>test </span><span style="color: #94E2D5;">=</span><span> execWriter calc</span></span>
+<span class="giallo-l"><span>test2 </span><span style="color: #94E2D5;">=</span><span> runWriter calc</span></span></code></pre>
+<p><code>test</code>执行结果：</p>
+<pre class="giallo" style="color: #CDD6F4; background-color: #1E1E2E;"><code data-lang="haskell"><span class="giallo-l"><span style="color: #9399B2;">[</span><span>LogEntry</span><span style="color: #9399B2;"> {</span><span>msg</span><span style="color: #94E2D5;"> =</span><span style="color: #A6E3A1;"> &quot;Start&quot;</span><span style="color: #9399B2;">},</span><span>LogEntry</span><span style="color: #9399B2;"> {</span><span>msg</span><span style="color: #94E2D5;"> =</span><span style="color: #A6E3A1;"> &quot;50000005000000&quot;</span><span style="color: #9399B2;">},</span><span>LogEntry</span><span style="color: #9399B2;"> {</span><span>msg</span><span style="color: #94E2D5;"> =</span><span style="color: #A6E3A1;"> &quot;done&quot;</span><span style="color: #9399B2;">}]</span></span></code></pre>
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2021-08-24">2021-08-24</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/haskell/">#Haskell</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/ruan-jian-she-ji/">#软件设计</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/bian-cheng-yu-yan/">#编程语言</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/yuan-ma/">#源码</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;readert-source-code-analysis&#x2F;">ReaderT 相关源码分析 </a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <p><code>ReaderT</code>是<code>Haskell</code>里很常见的一种模式。比如读取环境配置：</p>
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2021-08-15">2021-08-15</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/haskell/">#Haskell</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/ruan-jian-she-ji/">#软件设计</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/bian-cheng-yu-yan/">#编程语言</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/yuan-ma/">#源码</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;readert-design-pattern&#x2F;">[翻译]ReaderT 设计模式 </a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <blockquote>
+<p>讲解工程实践中为什么需要 ReaderT 模式比较清晰的文章，就翻译了一下。原文见<a rel="external" href="https://www.fpcomplete.com/blog/2017/06/readert-design-pattern/">这里</a></p>
+</blockquote>
+<p>在工程实践中，一些语言比如 Java 通过设计模式用来解决某些常见的场景问题。<code>Haskell</code> 语言没有这类设计模式，它通过语言层面的特性解决这些问题。
+然而，我相信仍然有一些关于程序结构的高级指导的空间，我将其松散地称为 <code>Haskell</code> 设计模式。
+这次描述的模式被称为 <code>ReaderT 模式</code> 。我将其用作 <code>Yesod</code> 框架 <code>Handler</code> 类型设计的基础。</p>
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2021-08-14">2021-08-14</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/haskell/">#Haskell</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/she-ji-mo-shi/">#设计模式</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/fan-yi/">#翻译</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;linux-usb3-driver&#x2F;">Linux USB3.0 接移动硬盘频繁卡死问题解决方法 </a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <h2 id="wen-ti">问题</h2>
+<p>在 <code>rockpi</code> (系统 <code>ubuntu 20.4</code>)上通过USB3.0连接大容量硬盘，读取数据的时候，会频繁导致系统卡死，只能重启机器。</p>
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2021-08-07">2021-08-07</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/linux/">#linux</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/gong-ju/">#工具</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/yi-nan-wen-ti/">#疑难问题</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/linuxqu-dong/">#linux驱动</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/rockpi/">#rockpi</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rust-string-relations&#x2F;">Rust Chars</a>
+            </h1>
+        </header>
+
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2020-12-26">2020-12-26</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/rust/">#Rust</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/bian-cheng-yu-yan/">#编程语言</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/slice/">#slice</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/chars/">#Chars</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;inventing-on-principle&#x2F;">[翻译]发明原则(inventing on principle)</a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <blockquote>
+<p>找到并遵循你自己的原则。</p>
+<p>持续地去解决工作生活中违背这些原则的事情，优秀的工具或者产品，不过是这个过程的副作用。</p>
+</blockquote>
+<h2 id="bei-jing">背景</h2>
+<p>该演讲最初由Bret Victor在CUSEC(Canadian University Software Engineering Conference) 2012上发表。</p>
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2020-12-20">2020-12-20</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/fan-yi/">#翻译</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/yuan-ze/">#原则</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/xiang-fa/">#想法</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/ke-shi-hua/">#可视化</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/ji-shi-fan-kui/">#即时反馈</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/shi-jie-guan/">#世界观</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;so-far-we-still-dont-know-if-the-mice-in-the-parallel-universe-understand-information-theory&#x2F;">至今我们仍未得知那些平行宇宙里的小白鼠们是否懂得信息论</a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <!-- Math rendering -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<h2 id="wen-ti">问题</h2>
+<blockquote>
+<p>假设现在有1000瓶药水，其中一瓶是毒药，服用后一小时发作身亡。毒药可以无限稀释，并且混合药水花费的时间可以忽略，那么给定一小时你需要至少几只小白鼠来找到毒药？</p>
+</blockquote>
+<p>一直以来，小白鼠们为生物医学科研和制药行业贡献太多。</p>
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2020-12-09">2020-12-09</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/ke-xue-fang-fa-lun/">#科学方法论</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/xin-xi-lun/">#信息论</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/xin-xi-shang/">#信息熵</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/zhuan-hua-si-wei/">#转化思维</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/hei-xiang-xi-tong/">#黑箱系统</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;what-exactly-is-rest-and-restful&#x2F;">REST 以及 RESTful 辨析</a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <p>从<code>REST</code>概念提出到现在已经20年了，业界的主流实践采纳借鉴了其部分原则，但与其最核心的架构设计渐行渐远。</p>
+<p>实际上那个去中心化的、面向全世界开放的万维网时代正在落幕，构建在其基础之上的<code>REST</code>架构思想，也无可避免地被冷落或者被误解。</p>
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2020-12-09">2020-12-09</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/rest/">#REST</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/restful/">#RESTful</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/webfu-wu-jia-gou/">#web服务架构</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/jia-gou-feng-ge/">#架构风格</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/api/">#API</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;talk-about-rust-ownership&#x2F;">让我们聊一聊Rust的所有权系统</a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <p>所有权（ownership）系统是 Rust 最与众不同的特性，让Rust实现了<strong>既要</strong>保障内存安全<strong>又要</strong>无GC，运行时高性能的目标。</p>
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2020-11-24">2020-11-24</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/rust/">#Rust</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/bian-cheng-yu-yan/">#编程语言</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/suo-you-quan/">#所有权</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/nei-cun-guan-li/">#内存管理</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;asdf-vm-intro&#x2F;">adsf-vm </a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <p>官方给出的定义是：</p>
+<blockquote>
+<p>Manage multiple runtime versions with a single CLI tool</p>
+</blockquote>
+<p>大家在日常开发时，经常遇到需要对同一个编程语言/框架安装不同版本的情况，比如 python 2/3 ，ruby 1.8/1.9，scala 2.11/2.12/... ，gradle 4.x/5.x 等等。虽然已经有pyenv，rvm，sdkman 等等针对这些语言进行多版本的管理，方便不同版本的环境切换，但是：</p>
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2020-11-10">2020-11-10</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/duo-ban-ben-guan-li/">#多版本管理</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/gong-ju/">#工具</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/cli/">#CLI</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/ruan-jian/">#软件</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;git-proxy-config&#x2F;">Git协议代理配置</a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <p><code>Git</code>使用四种主要的协议来传输资料：本地协议（Local），HTTP 协议，SSH（Secure Shell）协议及 Git 协议。</p>
+<p>为了能够顺畅使用<code>GitHub</code> ，我们需要为 <code>HTTPS</code> <code>SSH</code>配置代理。</p>
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2020-10-17">2020-10-17</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/ke-xue-shang-wang/">#科学上网</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/git/">#git</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/ssh/">#ssh</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/proxy/">#proxy</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/macos/">#macOS</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;consistency-models&#x2F;">一致性模型</a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <h2 id="ji-ben-gai-nian">基本概念</h2>
+<h3 id="zheng-que-xing-correctness">正确性（Correctness）</h3>
+<p><strong>一个系统是由一个状态和一些转换该状态的操作组成的</strong>。当系统运行时，它通过一些操作记录从一个状态转换到另一个状态。</p>
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2020-09-22">2020-09-22</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/fen-bu-shi-xi-tong/">#分布式系统</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/yi-zhi-xing/">#一致性</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/yuan-li/">#原理</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;openstack-management&#x2F;">OpenStack 管理</a>
+            </h1>
+        </header>
+
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2020-08-16">2020-08-16</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/openstack/">#OpenStack</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/shi-yong/">#使用</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/stein/">#stein</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;kolla-ansible-deploy-all-in-one-mode-openstack-stein-version&#x2F;">kolla-ansible 部署 all-in-one 模式 OpenStack stein版</a>
+            </h1>
+        </header>
+
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2020-08-15">2020-08-15</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/openstack/">#OpenStack</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/kolla-ansible/">#kolla-ansible</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/ansible/">#ansible</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;rust-mio-source-scenario-analysis&#x2F;">Rust mio库源码情景分析</a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <p>mio 是 Metal IO，Rust语言生态比较底层的I/O库，官网的介绍：</p>
+<blockquote>
+<p>Mio is a lightweight I/O library for Rust with a focus on adding as little overhead as possible over the OS abstractions.</p>
+</blockquote>
+<p>mio目前已经发布了v0.6.19版本，这次分析代码版本选择 <code>master</code>分支，<code>commit id  </code> <code>14f37f283576040c8763f45de6c2b2bbcb82436d</code></p>
+<p>我们从官方自带的example进行源码跟踪分析。</p>
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2019-10-30">2019-10-30</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/rust/">#Rust</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/mio/">#mio</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/yuan-ma/">#源码</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/ji-chu-ku/">#基础库</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;enlarge-your-personal-ability-1&#x2F;">如何放大你的个人能力（一）</a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <!-- Math rendering -->
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<h2 id="wen-ti">问题</h2>
+<p>一个普通人如何具有强大的能力，做到某些他原本无法做到的事情呢？</p>
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2019-10-11">2019-10-11</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/ke-xue-fang-fa-lun/">#科学方法论</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;the-simplest-navigation-website&#x2F;">最简单的内网导航网站</a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <p>随着业务系统的增长，运维工具的增多，我们经常需要访问监控页面、ssh登录机器，需要记住很多常用信息，但是这些信息不值得占用宝贵的大脑资源，只需要存储下来用的时候访问即可。
+我们需要一个超简单的导航网站。</p>
+<p>如何最简单地实现一个静态的网站？不要任何多余的东西。</p>
+<p>最好几行代码实现服务，向外提供一个html文件访问服务。新增内容时候，只需要添加到html文件即可。</p>
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2019-01-26">2019-01-26</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;architecture-evolution&#x2F;">服务端架构演进</a>
+            </h1>
+        </header>
+
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2018-12-23">2018-12-23</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/wei-fu-wu/">#微服务</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/jia-gou/">#架构</a></li>
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/consul/">#consul</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;consul-registrator-nginx&#x2F;">Consul+Registrator+Nginx方案的部署</a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <p>详细介绍Consul+Registrator+Nginx方案的部署细节。</p>
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2018-12-20">2018-12-20</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;update-config-automated-tool&#x2F;">更新配置自动化工具</a>
+            </h1>
+        </header>
+
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2018-11-03">2018-11-03</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;gradle-build-springboot-dockerimage&#x2F;">使用Gradle 构建SpringBoot应用的Docker镜像</a>
+            </h1>
+        </header>
+
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2018-10-24">2018-10-24</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;zerotoone-reading-notes&#x2F;">《从0到1》读书笔记</a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <p>市面上大把的书教你如何变得优秀：如何成为优秀的人，如何创立优秀的公司。</p>
+<p>这本书谈的是卓越。</p>
+<p>优秀是大众看得到的，显而易见的好，但卓越一开始是反直觉的，而且很难，直到最后的结果太强大，大家不得不接受。</p>
+<blockquote>
+<p>如果你照搬他们（比尔盖茨，拉奇佩里，扎克伯格）的成果，你就不是在向他们学习。</p>
+</blockquote>
+<p>画家齐白石也有过类似的话：</p>
+<p>学我者生，似我者死。</p>
+<p>模仿大师的产品，是没有前途的。要模仿学习的的是他们的思考方式。</p>
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2018-09-09">2018-09-09</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;high-performance-olap&#x2F;">高性能OLAP调研</a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <p>业界有没有面向亿级数据多维度组合查询能够亚秒级响应的系统？</p>
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2018-07-29">2018-07-29</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;whose-all-in&#x2F;">到底是谁的All In</a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <p>3周了，朋友圈还是陆续有创业者转发这篇文章。</p>
+<p>https://mp.weixin.qq.com/s/-PZ-NtXAfg2jNEmvKN5OBQ</p>
+<p>很可惜这篇文章出现了严重的定位错误。</p>
+<p>如果文章名字叫《不能All in 的人别去创业》讲给创业CEO听的，倒是贴切。</p>
+<p>但讲给创业公司的所有员工听，那只能说是认识上犯了很大的错误。</p>
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2018-06-14">2018-06-14</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;the-handicraft-software-age&#x2F;">软件工程的手工艺时代</a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <p>目前的软件设计/软件架构非常依赖个人经验。</p>
+<p>基本上是从个人经验出发定义问题，分析问题抽象模型然后做决策，不具备普适性更不能形式化证明，不能流程化，没有坚实的系统化的理论指导。</p>
+<p>很多人喜欢谈架构，在架构设计上争高低，但大部分都是谈论基于自己经验的认知甚至都没有对当前问题做统一定义。</p>
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2018-05-24">2018-05-24</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+                <ul class="article-tags">
+                    
+                    <li><a href="https://blog.zongwu233.com/tags/ruan-jian-gong-cheng/">#软件工程</a></li>
+                    
+                </ul>
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;hanlp-vs-ltp&#x2F;">HanLP vs LTP 对比</a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <p>两个NLP库对比</p>
+<p>HanLP https://github.com/hankcs/HanLP 自然语言处理库。</p>
+<p>LTP https://github.com/HIT-SCIR/ltp  哈工大 语言技术平台(Language Technology Platform，LTP)。</p>
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2018-03-28">2018-03-28</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;oneplus3t-root&#x2F;">一加3T Root</a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <h5 id="yu-bei">预备</h5>
+<p>安装adb，直接安装 android sdk 即可。配置adb所在目录到环境变量</p>
+<p>下载TWRP的 recoveryhttps://dl.twrp.me/oneplus3t/twrp-3.1.1-2-oneplus3t.img.html 保存为 twrp-oneplus3.img</p>
+<p>下载SuperSU  https://download.chainfire.eu/1021/SuperSU/SR3-SuperSU-v2.79-SR3-20170114223742.zip 保存为 sr3-superSU.zip</p>
+<p>进入到 twrp-oneplus3.img    sr3-superSU.zip 所在目录，方便执行命令。</p>
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2017-07-03">2017-07-03</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;genymotion-with-xposed&#x2F;">Genymotion模拟器安装 Xposed</a>
+            </h1>
+        </header>
+
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2017-06-17">2017-06-17</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;android-project-ci-jenkins&#x2F;">Android项目持续集成环境</a>
+            </h1>
+        </header>
+
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2017-06-11">2017-06-11</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;android-project-from-gradle-2-buck&#x2F;">Android工程构建</a>
+            </h1>
+        </header>
+
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2016-08-19">2016-08-19</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;data-abstract&#x2F;">数据抽象</a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <p>SICP在第二章(构造数据抽象)中提出了一个问题：<br />
+数据究竟意味着什么？<br />
+书中的答案是：<strong>数据是一组适当的选择函数和构造函数。</strong><br />
+(这里的<strong>适当的</strong>是指那些<strong>能够刻画数据本质特征的</strong>)<br />
+也即是：<strong>数据是函数</strong>。</p>
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2016-04-09">2016-04-09</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;module-protocol-design-think&#x2F;">业务模块无耦合通信协议的设计</a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <h3 id="ding-yi">定义</h3>
+<p>模块：独立提供特定业务功能的完整体，这里并不指代无业务的基础组件<br />
+主客户端：接入各个模块的容器App<br />
+通信解释器：实现了本文定义的通信协议的组件</p>
+<h3 id="wen-ti">问题</h3>
+<p>虽然目前我们已经在代码组织形式上拆分了出了各个module，避免了代码级别的到处复制，在主客户端组合了每一个业务模块，但是目前的模块化依然存在诸多问题：</p>
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2016-03-27">2016-03-27</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;nonstandard-204-response&#x2F;">不规范的HTTP 204 响应格式</a>
+            </h1>
+        </header>
+
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2015-09-30">2015-09-30</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;dexopt-process&#x2F;">dexopt的源码跟踪</a>
+            </h1>
+        </header>
+
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2015-09-27">2015-09-27</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+    <article class="post-list">
+        <header> 
+            <h1>
+                <a href="https:&#x2F;&#x2F;blog.zongwu233.com&#x2F;the-touble-of-multidex&#x2F;">其实你不知道MultiDex到底有多坑</a>
+            </h1>
+        </header>
+
+        
+        <div class="content post-summary">
+            <p>愉快地写着Android代码的总悟君往工程里引入了一个默默无闻的jar然后Run了一下， 经过漫长的等待AndroidStudio构建失败了。</p>
+        </div>
+        
+        
+        
+    <div class="article-info">
+        
+        <time class="article-date" datetime="2015-09-26">2015-09-26</time>
+        
+        <div class="article-taxonomies">
+            
+                <ul class="article-categories">
+                    
+                    <li><a href="https://blog.zongwu233.com/categories/blog/">blog</a></li>
+                    
+                </ul>
+            
+            
+        </div>
+    </div>
+
+    </article>
+
+
+
+
+        </main>
+        <footer>
+            <p>
+                © zongwu&#x27;s blog 2026<br>
+                Powered by <a target="_blank" href="https://getzola.org/">Zola</a>, Theme <a target="_blank" href="https://github.com/zbrox/anpu-zola-theme">Anpu</a>.
+            </p>
+            <p>
+                
+                
+            </p>
+        </footer>
+    </div>
+
+    <div class="dark-mode-buttons">
+  <button class="dark-mode-button" id="dark-mode-on">
+    <img
+      class="themed-icon"
+      src="https://blog.zongwu233.com/dark_mode.svg"
+      width="24"
+      height="24"
+      alt="Dark mode"
+      aria-label="dark mode toggle"
+      title="Dark mode"
+    />
+  </button>
+  <button class="dark-mode-button" id="dark-mode-off">
+    <img
+      class="themed-icon"
+      src="https://blog.zongwu233.com/light_mode.svg "
+      width="24"
+      height="24"
+      alt="Light mode"
+      aria-label="light mode toggle"
+      title="Light mode"
+    />
+  </button>
+</div>
+<script>
+  const cls = document.body.classList;
+  const getSessionTheme = sessionStorage.getItem("theme");
+  if (getSessionTheme === "dark") {
+    cls.toggle("dark-mode", true);
+  } else if (getSessionTheme === "light") {
+    cls.toggle("dark-mode", false);
+  } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    cls.toggle("dark-mode", true);
+  }
+  document
+    .getElementById("dark-mode-on")
+    .addEventListener("click", function (e) {
+      cls.toggle("dark-mode", true);
+      sessionStorage.setItem("theme", "dark");
+    });
+  document
+    .getElementById("dark-mode-off")
+    .addEventListener("click", function (e) {
+      cls.toggle("dark-mode", false);
+      sessionStorage.setItem("theme", "light");
+    });
+</script>
+<noscript>
+  <style>
+    .dark-mode-buttons {
+      display: none;
+    }
+  </style>
+</noscript>
+
+    
+</body>
+</html>

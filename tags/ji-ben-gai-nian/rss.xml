@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+      <title>zongwu&#x27;s blog - 基本概念</title>
+      <link>https://blog.zongwu233.com</link>
+      <description></description>
+      <generator>Zola</generator>
+      <language>en</language>
+      <atom:link href="https://blog.zongwu233.com/tags/ji-ben-gai-nian/rss.xml" rel="self" type="application/rss+xml"/>
+      <lastBuildDate>Thu, 22 Sep 2022 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>视频基础概念 </title>
+          <pubDate>Thu, 22 Sep 2022 00:00:00 +0000</pubDate>
+          <author>Unknown</author>
+          <link>https://blog.zongwu233.com/video-basic-concepts/</link>
+          <guid>https://blog.zongwu233.com/video-basic-concepts/</guid>
+          <description xml:base="https://blog.zongwu233.com/video-basic-concepts/">&lt;p&gt;最近经常会遇到视频相关的概念，比如 AVI、MP4、RMVB、MKV、FLV以及m3u8、H.264、H.265等等，这些格式都是做什么的？它们之间到底都是什么关系，今天梳理一下。&lt;&#x2F;p&gt;</description>
+      </item>
+    </channel>
+</rss>
